@@ -329,7 +329,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    PROCESS_PRIORITY_HIGH();
+    // PROCESS_PRIORITY_HIGH();
 
 
     LEGEND_CHANCE = 10000 - atoi(argv[5]);
