@@ -49,6 +49,10 @@ module BattleCatsRolls
       end
     end
 
+    def talent?
+      index == 2 || index == 3
+    end
+
     def level
       super || DefaultLevel
     end

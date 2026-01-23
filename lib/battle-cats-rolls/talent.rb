@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'ability'
+require 'delegate'
 
 module BattleCatsRolls
   module TalentUtility
@@ -20,8 +21,25 @@ module BattleCatsRolls
   end
 
   class Talent < Struct.new(:key, :data, :ability)
+    class AugmentationDelegator < SimpleDelegator
+      include AbilityUtility
+
+      attr_reader :talent
+
+      def initialize talent, stat
+        @talent = talent
+        super(stat)
+      end
+    end
+
     class IncreaseHealth < Talent
       include TalentUtility
+
+      class Augmentation < AugmentationDelegator
+        def health
+          highlight((super * (1 + (talent.max / 100.0))).round)
+        end
+      end
 
       def name
         'Increase'
@@ -546,6 +564,26 @@ module BattleCatsRolls
     def self.constant_name key
       key.gsub(/(?:^|_)(\w)/) do |letter|
         letter[-1].upcase
+      end
+    end
+
+    def self.augment talents, stats
+      stats.map do |stat|
+        if stat.talent?
+          talents.inject(stat) do |result, talent|
+            talent.augment(result)
+          end
+        else
+          stat
+        end
+      end
+    end
+
+    def augment stat
+      if self.class.const_defined?(:Augmentation, false)
+        self.class.const_get(:Augmentation, false).new(self, stat)
+      else
+        stat
       end
     end
 
