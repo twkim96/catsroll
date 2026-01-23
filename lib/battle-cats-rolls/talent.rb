@@ -21,23 +21,15 @@ module BattleCatsRolls
   end
 
   class Talent < Struct.new(:key, :data, :ability)
-    class AugmentationDelegator < SimpleDelegator
-      include AbilityUtility
-
-      attr_reader :talent
-
-      def initialize talent, stat
-        @talent = talent
-        super(stat)
-      end
-    end
-
     class IncreaseHealth < Talent
       include TalentUtility
 
-      class Augmentation < AugmentationDelegator
-        def health
-          highlight((super * (1 + (talent.max / 100.0))).round)
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:health_raw) do
+            super() * (1 + (talent.max / 100.0))
+          end
         end
       end
 
@@ -52,6 +44,16 @@ module BattleCatsRolls
 
     class IncreaseDamage < Talent
       include TalentUtility
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:damage_raw) do |n=0|
+            result = super(n)
+            result * (1 + (talent.max / 100.0)) if result
+          end
+        end
+      end
 
       def name
         'Increase'
@@ -571,7 +573,9 @@ module BattleCatsRolls
       stats.map do |stat|
         if stat.talent?
           talents.inject(stat) do |result, talent|
-            talent.augment(result)
+            result.singleton_class.prepend(talent.augment_module) if
+              talent.augment_module
+            result
           end
         else
           stat
@@ -579,12 +583,7 @@ module BattleCatsRolls
       end
     end
 
-    def augment stat
-      if self.class.const_defined?(:Augmentation, false)
-        self.class.const_get(:Augmentation, false).new(self, stat)
-      else
-        stat
-      end
+    def augment_module
     end
 
     def name
