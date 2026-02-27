@@ -122,11 +122,11 @@ module BattleCatsRolls
         Runner.build(lang)
       rescue Date::Error => e
         puts "WARN: Ignoring for #{lang}: <#{e.class}> #{e.message}"
-      rescue Errno::ECONNRESET => e
+      rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError => e
         puts "WARN: Retrying for #{lang}: <#{e.class}> #{e.message}"
         begin
           Runner.build(lang)
-        rescue Errno::ECONNRESET => e
+        rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError => e
           puts "WARN: Retried. Ignoring for #{lang}: <#{e.class}> #{e.message}"
         end
       end
