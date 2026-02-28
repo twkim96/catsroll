@@ -89,7 +89,7 @@ module BattleCatsRolls
       end
 
       rarity = color_rarity(cat)
-      ownership = :owned if route.owned.include?(cat.id)
+      ownership = :owned if route.owned_set.include?(cat.id)
 
       [cursor, rarity, ownership, picked].compact.join(' ')
     end
