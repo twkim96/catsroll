@@ -379,18 +379,45 @@ h1, h2, h3, h4, h5, h6 {
 }
 .navigate { cursor: help; }
 .pick { cursor: cell; }
-.picked {
-  background-image: linear-gradient(#00000033, #00000033);
-}
-.picked_consecutively {
-  background-image: linear-gradient(#00000088, #00000088);
-}
+.picked,
+.picked_consecutively,
 .next_position {
-  background-image: repeating-linear-gradient(
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.picked::after,
+.picked_consecutively::after,
+.next_position::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.picked::after {
+  background: repeating-linear-gradient(
     90deg,
     #00000055  5px, #00000055 15px,
     #00000033 15px, #00000033 25px
   );
+  opacity: 0.9;
+}
+
+.picked_consecutively::after {
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 1;
+}
+
+.next_position::after {
+  background: repeating-linear-gradient(
+    90deg,
+    #00000055  5px, #00000055 15px,
+    #00000033 15px, #00000033 25px
+  );
+  opacity: 0.9;
 }
 .menu { width: 60px; height: 60px; }
 .section { margin-bottom: 15px; }
