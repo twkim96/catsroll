@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'stat'
+require_relative 'talent'
 
 module BattleCatsRolls
   module Filter
@@ -22,11 +23,14 @@ module BattleCatsRolls
               when String, NilClass
                 abilities[filter] || abilities[item]
               else
-                filter.match?(abilities,
-                  Stat.new(id: id, info: info, index: index,
-                    level: level,
-                    sum_no_wave: sum_no_wave,
-                    dps_no_critical: dps_no_critical))
+                stat = Stat.new(
+                  id: id, info: info, index: index, level: level,
+                  sum_no_wave: sum_no_wave,
+                  dps_no_critical: dps_no_critical)
+                talents = Talent.build(info)
+                stat = Talent.augment(talents, stat) unless exclude_talents
+
+                filter.match?(abilities, stat)
               end
             end
           end

@@ -153,7 +153,8 @@ module BattleCatsRolls
               dps_no_critical: route.dps_no_critical)
           end
           talents = Talent.build(info)
-          stats = Talent.augment(talents, stats) unless route.exclude_talents
+          stats.map!(&Talent.method(:augment).curry[talents]) unless
+            route.exclude_talents
         else
           stats = []
           talents = {}

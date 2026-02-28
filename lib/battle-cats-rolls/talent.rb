@@ -582,17 +582,15 @@ module BattleCatsRolls
       end
     end
 
-    def self.augment talents, stats
-      stats.map do |stat|
-        if stat.talent?
-          talents.inject(stat) do |result, talent|
-            result.singleton_class.prepend(talent.augment_module) if
-              talent.augment_module
-            result
-          end
-        else
-          stat
+    def self.augment talents, stat
+      if stat.talent?
+        talents.inject(stat) do |result, talent|
+          result.singleton_class.prepend(talent.augment_module) if
+            talent.augment_module
+          result
         end
+      else
+        stat
       end
     end
 
