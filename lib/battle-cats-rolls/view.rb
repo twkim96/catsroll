@@ -88,7 +88,10 @@ module BattleCatsRolls
         cursor = :navigate
       end
 
-      "#{cursor} #{color_rarity(cat)} #{picked}".chomp(' ')
+      rarity = color_rarity(cat)
+      ownership = :owned if route.owned.include?(cat.id)
+
+      [cursor, rarity, ownership, picked].compact.join(' ')
     end
 
     def color_rarity cat
@@ -99,8 +102,6 @@ module BattleCatsRolls
         case cat.id
         when route.find
           :found
-        when *route.owned
-          :owned
         when *FindCat.exclusives
           :exclusive
         else
