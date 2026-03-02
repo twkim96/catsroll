@@ -83,13 +83,19 @@ module BattleCatsRolls
             'VampireFlower'
           end
 
-        IO.popen([
+        result = IO.popen([
           "#{Root}/Seeker/Seeker-#{suffix}",
           *ENV['SEEKER_OPT'].to_s.split(' '), *source.split(' ').drop(1),
           err: %i[child out]], 'r+') do |io|
           io.close_write
           io.read.scan(/\d+/).map(&:to_i)
         end
+
+        if Process.last_status.exitstatus == 139 # segfault
+          logger.warn("Seeking seed failed with #{source}")
+        end
+
+        result
       when 'godfat'
         IO.popen([
           "#{Root}/Seeker/Seeker",
