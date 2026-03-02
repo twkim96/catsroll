@@ -34,6 +34,7 @@
 
 ## Features and utilities
 
+* Add light purple for double legends which are just uber in regular banners
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
 * Collapse past events. The dropdown can look like:
