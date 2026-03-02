@@ -91,7 +91,8 @@ module BattleCatsRolls
           io.read.scan(/\d+/).map(&:to_i)
         end
 
-        if Process.last_status.exitstatus == 139 # segfault
+        exitstatus = Process.last_status.exitstatus
+        if exitstatus != 0 && exitstatus != 1
           logger.warn("Seeking seed failed with #{source}")
         end
 
