@@ -84,7 +84,7 @@ pair<seet_t, seet_t> calculateSeedThread(seet_t begin, seet_t end) {
 					continue;
 				else {
 					if (j == 0) break;
-					if ((rarity == catList.at(j - 1).at(0)) && (rarity == 0)) {
+					if ((rarity == catList.at(j - 1).at(0)) && (rarity == 0) && currentCouple.second == catList.at(j-1).at(1)) {
 						int oldSlot = currentCouple.second;
 						currentCouple = seedIter(pair<seet_t, seet_t>(currentCouple.first, numberRare - 1));
 						if (currentCouple.second > oldSlot) currentCouple.second = (currentCouple.second + 1) % numberRare; //TODO implementation for collabs is missing
