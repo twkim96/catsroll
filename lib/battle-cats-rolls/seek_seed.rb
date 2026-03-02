@@ -97,14 +97,7 @@ module BattleCatsRolls
           err: %i[child out]], 'r+') do |io|
           io.puts source.sub(/\A\S+ /, '')
           io.close_write
-          out = io.read
-          result = out.scan(/\d+/).map(&:to_i)
-
-          if result.empty? && !out.start_with?('No seeds found.')
-            logger.warn("Seeking seed failed with #{source}")
-          end
-
-          result
+          io.read.scan(/\d+/).map(&:to_i)
         end
       else
         []
