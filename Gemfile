@@ -13,10 +13,6 @@ platforms :ruby do
   gem 'raindrops'
 end
 
-group :build do
-  gem 'nokogiri' # For downloading apk
-end
-
 group :cache do
   # Pick one for caching
   gem 'dalli'
