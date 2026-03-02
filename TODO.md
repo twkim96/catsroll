@@ -56,7 +56,6 @@
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Tracking history (by recording rolls we click)
-* Use browser timezone offset to calculate local time
 * Normal gacha banners and tracks
 * Client-side seed seeker
 
