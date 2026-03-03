@@ -231,7 +231,7 @@ module BattleCatsRolls
 
       post '/seek/enqueue' do
         source = route.seek_source
-        key = Digest::SHA1.hexdigest(source)
+        key = Digest::SHA1.hexdigest(source.join(' '))
 
         if cache[key]
           found route.seek_result(key)

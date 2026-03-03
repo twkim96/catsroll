@@ -51,7 +51,11 @@ module BattleCatsRolls
          gacha.rare, gacha.supa, gacha.uber, gacha.legend,
          gacha.rare_cats.size, gacha.supa_cats.size,
          gacha.uber_cats.size, gacha.legend_cats.size,
-         *request.POST['rolls']].join(' ').squeeze(' ')
+         *seek_rolls].map(&:to_s)
+    end
+
+    def seek_rolls
+      @seek_rolls ||= [*request.POST['rolls']].join(' ').split(' ')
     end
 
     def seek_result key
