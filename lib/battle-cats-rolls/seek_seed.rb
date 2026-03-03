@@ -84,9 +84,9 @@ module BattleCatsRolls
         end.scan(/\d+/).map(&:to_i)
 
         exitstatus = Process.last_status.exitstatus
-        if exitstatus >= 128
-          logger.warn(
-            "Seeking exited with #{exitstatus} and failed with #{source}")
+        if exitstatus.nil? || exitstatus >= 128
+          logger.warn("Seeking exited with #{exitstatus.inspect} and" \
+            " failed with #{source}")
         end
 
         result
