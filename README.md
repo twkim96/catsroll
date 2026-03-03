@@ -13,17 +13,13 @@ optional ones:
 If you would like to avoid installing unnecessary dependencies:
 
     gem install bundler
-    bundle config set without 'build:cache:test'
+    bundle config set without 'cache:test'
     bundle install
 
 And you should pick a caching strategy by choosing one:
 
 * Set up memcached and run `gem install dalli`
 * Use LRU cache so run `gem install lru_redux`
-
-Lastly if you want to build the data:
-
-    gem install nokogiri
 
 ### `sleepy_penguin` compile error on Mac
 
@@ -98,24 +94,6 @@ First install [clang](https://clang.llvm.org), then:
 
 This should build the seed seeker at: `Seeker/Seeker-VampireFlower`, which
 will be used by the Ruby server.
-
-## How to build the forgothowtoreddid seed seeker:
-
-First install [clang++](https://clang.llvm.org), then:
-
-    ./Seeker/bin/build-8.6.sh
-
-This should build the seed seeker at: `Seeker/Seeker-8.6`, which will be used
-by the Ruby server.
-
-## (Deprecated) How to build the 8.5 and 8.4 seed seeker:
-
-First install [GHC](https://www.haskell.org/ghc/), then:
-
-    ./Seeker/bin/build.sh
-
-This should build the seed seeker at: `Seeker/Seeker`, which will be used
-by the Ruby server.
 
 ## How to run the server locally:
 
