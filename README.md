@@ -135,7 +135,7 @@ Tweak the paths in `config/battlecatsrolls@.service` accordingly and run:
 
 Note that this also:
 
-* Set up a bcat user to run for the application server
+* Set up a `bcat` user to run for the application server
 * Set up Git config so auto-updater can work properly
 * Set up sudoer so `bin/rsync-data` can work properly
 
