@@ -12,6 +12,7 @@ require_relative 'stat'
 require 'cgi'
 require 'date'
 require 'forwardable'
+require 'set'
 
 module BattleCatsRolls
   class Route < Struct.new(:request)
@@ -348,6 +349,10 @@ module BattleCatsRolls
         else
           Owned.decode_old(request.params_coercion('owned', :to_s))
         end.sort.uniq
+    end
+
+    def owned_set
+      @owned_set ||= Set.new(owned)
     end
 
     def ticked
