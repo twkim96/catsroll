@@ -233,7 +233,7 @@ module BattleCatsRolls
         source = route.seek_source
         key = Digest::SHA1.hexdigest(source.join(' '))
 
-        if cache[key]
+        if cache[key] || route.seek_rolls.empty? # Ignore empty rolls
           found route.seek_result(key)
         else
           throttle_ip do |clear_throttle|
