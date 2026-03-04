@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'ability'
+require 'delegate'
 
 module BattleCatsRolls
   module TalentUtility
@@ -23,6 +24,15 @@ module BattleCatsRolls
     class IncreaseHealth < Talent
       include TalentUtility
 
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:health_raw) do
+            super() * (1 + (talent.max / 100.0))
+          end
+        end
+      end
+
       def name
         'Increase'
       end
@@ -34,6 +44,16 @@ module BattleCatsRolls
 
     class IncreaseDamage < Talent
       include TalentUtility
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:damage_raw) do |n=0|
+            result = super(n)
+            result * (1 + (talent.max / 100.0)) if result
+          end
+        end
+      end
 
       def name
         'Increase'
@@ -547,6 +567,23 @@ module BattleCatsRolls
       key.gsub(/(?:^|_)(\w)/) do |letter|
         letter[-1].upcase
       end
+    end
+
+    def self.augment talents, stats
+      stats.map do |stat|
+        if stat.talent?
+          talents.inject(stat) do |result, talent|
+            result.singleton_class.prepend(talent.augment_module) if
+              talent.augment_module
+            result
+          end
+        else
+          stat
+        end
+      end
+    end
+
+    def augment_module
     end
 
     def name

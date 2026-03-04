@@ -49,6 +49,10 @@ module BattleCatsRolls
       end
     end
 
+    def talent?
+      index == 2 || index == 3
+    end
+
     def level
       super || DefaultLevel
     end
@@ -58,8 +62,11 @@ module BattleCatsRolls
     end
 
     def health
-      @health ||=
-        (stat['health'] * treasure_multiplier * level_multiplier).round
+      @health ||= health_raw.round
+    end
+
+    def health_raw
+      stat['health'] * treasure_multiplier * level_multiplier
     end
 
     def knockbacks
@@ -267,9 +274,12 @@ module BattleCatsRolls
     end
 
     def damage n=0
-      value = stat["damage_#{n}"]
+      damage_raw(n)&.round
+    end
 
-      (value * treasure_multiplier * level_multiplier).round if value
+    def damage_raw n=0
+      value = stat["damage_#{n}"]
+      value * treasure_multiplier * level_multiplier if value
     end
 
     def long_range n=0
