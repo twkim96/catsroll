@@ -102,6 +102,11 @@ module BattleCatsRolls
       else
         []
       end
+    rescue => error
+      logger.warn(
+        "Seeking seed failed with" \
+        " #{error.class}:#{error.message} with #{source}")
+      []
     end
   end
 end

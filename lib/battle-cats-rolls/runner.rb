@@ -14,7 +14,7 @@ module BattleCatsRolls
     def self.en
       @en ||= [
         'en',
-        '14.3.0',
+        '14.5.0',
         'jp.co.ponos.battlecatsen'
       ]
     end
@@ -22,7 +22,7 @@ module BattleCatsRolls
     def self.tw
       @tw ||= [
         'tw',
-        '14.3.0',
+        '14.5.0',
         'jp.co.ponos.battlecatstw'
       ]
     end
@@ -30,7 +30,7 @@ module BattleCatsRolls
     def self.jp
       @jp ||= [
         'jp',
-        '14.3.0',
+        '14.6.0',
         'jp.co.ponos.battlecats'
       ]
     end
@@ -38,7 +38,7 @@ module BattleCatsRolls
     def self.kr
       @kr ||= [
         'kr',
-        '14.3.0',
+        '14.5.0',
         'jp.co.ponos.battlecatskr'
       ]
     end
@@ -204,6 +204,15 @@ module BattleCatsRolls
         end
     end
 
+    def preserved_server_file_version
+      @preserved_server_file_version ||=
+        if File.exist?(preserved_server_file_version_path)
+          YAML.safe_load_file(preserved_server_file_version_path)
+        else
+          {}
+        end
+    end
+
     def provider
       @provider ||=
         if File.exist?(extract_path)
@@ -222,8 +231,6 @@ module BattleCatsRolls
 
     def download_apk
       %w[
-        https://www.apkmonk.com/app/%{id}/
-        https://apksos.com/app/%{id}
         https://d.apkpure.com/b/XAPK/%{id}
         https://d.apkpure.com/b/APK/%{id}
       ].find do |template|
@@ -236,11 +243,6 @@ module BattleCatsRolls
       FileUtils.mkdir_p(app_data_path)
 
       case apk_url
-      when %r{apkmonk\.com/app}
-        wget(monk_donwload_link(apk_url), apk_path)
-      when %r{apksos\.com/app}
-        wget(sos_download_link(*sos_download_link(apk_url)).first, apk_path)
-        extract_sos_bundle
       when %r{apkpure\.com/b/XAPK}
         wget("#{apk_url}?versionCode=#{version_id}0", apk_path)
         extract_apkpure_bundle
@@ -249,68 +251,10 @@ module BattleCatsRolls
       else
         wget(apk_url, apk_path)
       end
-    rescue VersionNotFound
+    rescue VersionNotFound, SocketError
       false
     else
       true
-    end
-
-    def monk_donwload_link url
-      require 'json'
-
-      uri = URI.parse(url)
-
-      path, = css_download_link(url) do |title|
-        "a[title*='#{title.downcase}']"
-      end
-
-      *, pkg, key = path.split('/')
-      json_uri =
-        "#{uri.scheme}://#{uri.host}/down_file/?pkg=#{pkg}&key=#{key}"
-
-      json, = net_get(json_uri)
-
-      JSON.parse(json)['url']
-    end
-
-    def sos_download_link url, laravel_session=nil
-      css_download_link(url, laravel_session) do |title|
-        "a[title*='#{title}']"
-      end
-    end
-
-    def css_download_link url, laravel_session=nil
-      require 'nokogiri'
-
-      doc, new_laravel_session = net_get(url, laravel_session)
-
-      title = "#{version} APK"
-      link = Nokogiri::HTML.parse(doc).css(yield(title)).first&.attr('href')
-
-      if link
-        [link, new_laravel_session]
-      else
-        raise(VersionNotFound.new("Cannot find #{title} link"))
-      end
-    end
-
-    def net_get url, laravel_session=nil
-      require 'net/http'
-
-      uri = URI.parse(url)
-      get = Net::HTTP::Get.new(uri)
-      get['User-Agent'] = 'Mozilla/5.0'
-      get['Cookie'] = "laravel_session=#{laravel_session}" if laravel_session
-
-      response =
-        Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-          http.request(get)
-        end
-
-      cookie = response['set-cookie']
-      new_laravel_session = cookie[/laravel_session=(.+);/, 1] if cookie
-
-      [response.body, new_laravel_session]
     end
 
     def wget url, path
@@ -324,10 +268,18 @@ module BattleCatsRolls
     def wget_server_zip tsv, packs
       bucket = apk_id[/\w+$/]
       offset = tsv[/\d+(?=\.tsv$)/]
-      packs.map do |pack|
-        identifier = pack[/\d+_\d+/].sub('_', "_#{offset}_")
+      packs.filter_map do |pack|
+        identifier = if version = pack[/\d+_\d+/]
+          version.sub('_', "_#{offset}_")
+        elsif version = preserved_server_file_version[offset.to_i]
+          "#{to_version_id(version)}_#{offset}_00"
+        else
+          next # We don't know the version, skip
+        end
+
         filename = "#{bucket}_#{identifier}.zip"
         url = "https://nyanko-assets.ponosgames.com/iphone/#{bucket}/download/#{filename}"
+
         wget(AwsCf.new(url).generate, "#{app_data_path}/#{filename}")
 
         filename
@@ -353,7 +305,7 @@ module BattleCatsRolls
     def download_server_pack
       Dir["#{app_data_path}/download_*.tsv"].each do |tsv|
         packs = File.read(tsv).
-          scan(/\bImageDataServer_\d+_\d+_\w+(?=\.pack\b)/).uniq
+          scan(/\b\w*ImageDataServer(?:_\d+_\d+_\w+)?(?=\.pack\b)/).uniq
 
         next if packs.empty?
 
@@ -370,10 +322,6 @@ module BattleCatsRolls
       end
 
       true
-    end
-
-    def extract_sos_bundle
-      extract_xapk("#{apk_id}/InstallPack*.apk")
     end
 
     def extract_apkpure_bundle
@@ -456,12 +404,20 @@ module BattleCatsRolls
       @preserved_gacha_path ||= data_path('gacha.yaml')
     end
 
+    def preserved_server_file_version_path
+      @preserved_server_file_version_path ||= data_path('server.yaml')
+    end
+
     def extract_path
       @extract_path ||= "#{Root}/extract/#{lang}/#{version}"
     end
 
     def version_id
-      @version_id ||= version.split('.').map{|int| sprintf('%02d', int)}.join
+      @version_id ||= to_version_id(version)
+    end
+
+    def to_version_id version
+      version.split('.').map{|int| sprintf('%02d', int)}.join
     end
 
     def jwt

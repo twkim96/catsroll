@@ -10,7 +10,144 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
-<%= header(2, "2025-05-04") %>
+<%= header(2, "2025-07-18") %>
+<ul>
+  <li>Avoid building cats without a description.</li>
+</ul>
+
+<%= header(2, "2025-07-18") %>
+<ul>
+  <li>
+    The old seeker is now disabled on the UI. This is disabled because it's
+    very slow comparing to the new one, and sometimes people are still using
+    it, and when that happens, queue is piling up fast. Disabling the old
+    seeker should much help reduce the queue, and help the overall
+    performance under heavy traffic.
+  </li>
+</ul>
+
+<%= header(2, "2025-06-18") %>
+<ul>
+  <li>
+    Fixed a minor bug that all triggered attacks should be area attacks.
+    They should not inherit the type from the main attack, because so far
+    wave, surge, and explosion are all area attack, while the main attack
+    can be single ranged.
+  </li>
+</ul>
+
+<%= header(2, "2025-06-06") %>
+<ul>
+  <li>Compact the descriptions for advanced filters.</li>
+  <li>Add &lt;=3500 and &lt;=4500 cost filters.</li>
+  <li>
+    Show some more meaningful meta description,
+    like page name and cat's name and description.
+  </li>
+</ul>
+
+<%= header(2, "2025-06-02") %>
+<ul><li>Generalized and expanded advanced filters.</li></ul>
+
+<%= header(2, "2025-05-31") %>
+<ul>
+  <li>Moved DPS relevant options under advanced filters.</li>
+  <li>Fixed not remembering advanced filters in some pages.</li>
+  <li>
+    Reordered filters to High, High effective, Very high,
+    Very high effective, and Extremely high effective. This seems
+    easier to follow, even though it's mixing types.
+  </li>
+  <li>
+    Added a background color to advanced filters so it's clear which
+    are the advanced filters.
+  </li>
+  <li>Added a knockbacks filter in the advanced filters.</li>
+</ul>
+
+<%= header(2, "2025-05-30") %>
+<ul>
+  <li>
+    Move DPS, Single blow damage, Health, and other Aspects filters under
+    advanced filters so they don't show up by default. This should make it
+    easier to navigate with basic filters in the default view. When we're
+    hiding the advanced filters, all advanced filters will be dropped as
+    well.
+  </li>
+  <li>
+    Level input is no longer limited at the max level, and can be set to any
+    positive integer >= 1. How stats are calculated does not change, that is
+    it's still limited to the max level. For example, the default is level 30,
+    and the default display for Metal Cat is still showing at level 20, its
+    max, even when the input shows level 30. Now we also show the max level so
+    it's clear if the input is greater than the max, it's calculated at max.
+  </li>
+  <li>
+    The above change should improve the UX when switching view between cats
+    having a lower max level. For example, previously when you visit the
+    Metal Cat, the level can be reduced to 20, and if you use options there,
+    the level input can be then remembered to 20 even when it was set higher
+    before. With this change, level input will never be forced to change.
+  </li>
+  <li>
+    Add the level input when advanced filters are enabled. It'll affect
+    advanced filters for things like DPS, Damage, and Health, so it can be
+    useful there.
+  </li>
+</ul>
+
+<%= header(2, "2025-05-26") %>
+<ul>
+  <li>
+    Added effective health filters. Thresholds are: 100,000, 200,000, 400,000.
+  </li>
+  <li>
+    Display blind spot for long-range and omni-strike cats. <kbd>-</kbd>
+    indicates no blind spot, while 0 means it cannot hit behind itself.
+    A standard area attack can reach -320 behind, so blind spots can be
+    negative as well. It's only considered to have no blind spot if it
+    can hit -320 behind, like a standard area attack.
+  </li>
+</ul>
+
+<%= header(2, "2025-05-25") %>
+<ul>
+  <li>
+    Expanded filtering options with the same from stats: Excluding
+    wave/surge/explosion and critical strike, savage blow from DPS.
+  </li>
+  <li>Split damage related aspects to their own section.</li>
+  <li>Split health related aspects to their own section.</li>
+  <li>Split DPS related aspects to their own section.</li>
+  <li>Use radio buttons for DPS, damage, and health.</li>
+</ul>
+
+<%= header(2, "2025-05-24") %>
+<ul>
+  <li>
+    Added filtering with high effective DPS. The effective DPS thresholds are:
+    7,500, 15,000, 25,000. Fruit treasures are considered so they're different
+    for Aku, Relic, White, and Metal.
+  </li>
+  <li>
+    Added filtering with high effective single blow. The effective single blow
+    thresholds are: 50,000, 100,000, 200,000. Fruit treasures are considered
+    so they're different for Aku, Relic, White, and Metal.
+  </li>
+  <li>
+    Updated filtering with single blow calculation that it no longer considers
+    the damage sum, but truly for a single blow.
+  </li>
+</ul>
+
+<%= header(2, "2025-05-18") %>
+<ul>
+  <li>Display the number of cats within the rarity for the filtered cats.</li>
+  <li>Added filtering with melee, midrange, backline, and rearline.</li>
+  <li>Added filtering with far-reaching, and very far-reaching.</li>
+</ul>
+
+<%= header(2, "2025-05-05") %>
 <ul>
   <li>Fixed damage sum to exclude cascade effects.</li>
   <li>Added aspect filters.</li>

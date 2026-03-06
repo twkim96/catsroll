@@ -10,6 +10,10 @@ module BattleCatsRolls
       triggered_effect.display_short
     end
 
+    def area_type
+      stat.area_type
+    end
+
     def area_display
       @area_display ||= if long_range
         "#{area_range.begin} ~ #{area_range.end}"
@@ -48,7 +52,7 @@ module BattleCatsRolls
       @dps ||= if stat.kamikaze?
         '-'
       elsif stat.attack_cycle
-        raw_dps = (damage.to_f / stat.attack_cycle) * stat.fps
+        raw_dps = (damage.to_f / stat.attack_cycle) * Stat::FPS
 
         if stat.dps_no_critical
           raw_dps
@@ -87,6 +91,10 @@ module BattleCatsRolls
   class TriggeredAttack < Attack
     def triggered_effect
       raise NotImplementedError
+    end
+
+    def area_type
+      'Area' # Wave, Surge, and Explosion are all area attack
     end
 
     def damage

@@ -24,6 +24,14 @@ module BattleCatsRolls
 
     private
 
+    def meta_description
+      if stat = arg&.dig(:stats, 0)
+        h "#{stat.name} - #{stat.desc.tr("\n", ' ').squeeze(' ')}"
+      else
+        route.path_info[/\w+/]&.capitalize || 'Tracks'
+      end
+    end
+
     def l10n text
       L10n.translate(route.ui_lang, text)
     end
@@ -250,6 +258,10 @@ module BattleCatsRolls
       'checked="checked"' if route.details
     end
 
+    def checked_advanced_filters
+      'checked="checked"' if route.advanced_filters
+    end
+
     def checked_exclude_talents
       'checked="checked"' if route.exclude_talents
     end
@@ -342,6 +354,42 @@ module BattleCatsRolls
       'checked="checked"' if route.other.member?(value)
     end
 
+    def checked_dps value
+      'checked="checked"' if route.dps == value
+    end
+
+    def checked_damage value
+      'checked="checked"' if route.damage == value
+    end
+
+    def checked_health value
+      'checked="checked"' if route.health == value
+    end
+
+    def checked_knockbacks value
+      'checked="checked"' if route.knockbacks == value
+    end
+
+    def checked_stand value
+      'checked="checked"' if route.stand == value
+    end
+
+    def checked_reach value
+      'checked="checked"' if route.reach == value
+    end
+
+    def checked_speed value
+      'checked="checked"' if route.speed == value
+    end
+
+    def checked_cost value
+      'checked="checked"' if route.cost == value
+    end
+
+    def checked_production value
+      'checked="checked"' if route.production == value
+    end
+
     def checked_for_aspect value
       'checked="checked"' if route.for_aspect == value
     end
@@ -413,12 +461,15 @@ module BattleCatsRolls
       end
     end
 
+    def display_filter filter
+      h l10n(filter.sub(/^./, &:upcase).tr('_', ' '))
+    end
+
     def stat_time frames
       case frames
       when Numeric
-        fps = 30.0
         title = "#{frames} frames"
-        %Q{<span title="#{title}">#{(frames / fps).round(2)}s</span>}
+        %Q{<span title="#{title}">#{(frames.to_f / Stat::FPS).round(2)}s</span>}
       else
         frames || '?'
       end
@@ -466,6 +517,11 @@ module BattleCatsRolls
         gacha.send(:advance_seed!) # Account for guaranteed roll
         gacha.seed
       end
+    end
+
+    def rarity_header rarity, size
+      label = BattleCatsRolls::Cat.wiki_rarity_label(rarity)
+      header(2, "#{label} (#{size})", label.downcase.gsub(/\W+/, '-'))
     end
 
     def header n, name, id=name.to_s.downcase.gsub(/\W+/, '-')

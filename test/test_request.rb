@@ -12,12 +12,58 @@ describe BattleCatsRolls::Request do
   end
 
   def env
-    @env ||= {'rack.input' => StringIO.new}
+    @env ||= {'rack.input' => StringIO.new(rack_input)}
+  end
+
+  def rack_input
+    ''
+  end
+
+  def query
+    't=0&t=1'
   end
 
   describe '#parse_query' do
     would 'give an array if the same key is given multiple times' do
-      expect(request.parse_query('t=0&t=1')).eq('t' => %w[0 1])
+      expect(request.parse_query(query)).eq('t' => %w[0 1])
+    end
+
+    describe '#GET' do
+      def env
+        @env ||= super.merge({Rack::QUERY_STRING => query})
+      end
+
+      would 'give an array if the same key is given multiple times' do
+        expect(request.GET).eq('t' => %w[0 1])
+      end
+    end
+  end
+
+  describe '#expand_param_pairs' do
+    would 'give an array if the same key is given multiple times' do
+      query_parser = request.__send__(:query_parser)
+
+      pairs = if query_parser.respond_to?(:parse_query_pairs)
+        query_parser.parse_query_pairs(query)
+      else
+        query.split('&').map{ _1.split('=') }
+      end
+
+      expect(request.expand_param_pairs(pairs)).eq('t' => %w[0 1])
+    end
+
+    describe '#POST' do
+      def env
+        @env ||= super.merge({Rack::REQUEST_METHOD => 'POST'})
+      end
+
+      def rack_input
+        query
+      end
+
+      would 'give an array if the same key is given multiple times' do
+        expect(request.POST).eq('t' => %w[0 1])
+      end
     end
   end
 

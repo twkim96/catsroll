@@ -14,7 +14,7 @@ module BattleCatsRolls
           PackReader.new(lang, "#{dir}/#{list}")
         end
 
-      server_readers = Dir["#{dir}/ImageDataServer_*.list"].sort.map do |list|
+      server_readers = Dir["#{dir}/*ImageDataServer*.list"].sort.map do |list|
         PackReader.new(lang, list)
       end
 

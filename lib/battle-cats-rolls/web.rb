@@ -141,11 +141,11 @@ module BattleCatsRolls
       with_canonical_uri("/cats/#{id}") do
         if info = route.cats[id]
           cat = Cat.new(id: id, info: info)
-          level = [route.level, info['max_level']].min
           stats = info['name'].size.times.map do |index|
             conjure_id = info.dig('stat', index, 'conjure')
-            Stat.new(id: id, info: info, index: index, level: level,
+            Stat.new(id: id, info: info, index: index, level: route.level,
               conjure_info: conjure_id && route.cats[conjure_id],
+              cat: cat,
               sum_no_wave: route.sum_no_wave,
               dps_no_critical: route.dps_no_critical)
           end
@@ -155,13 +155,17 @@ module BattleCatsRolls
           talents = {}
         end
 
-        render :stats, cat: cat, level: level, stats: stats, talents: talents
+        render :stats, cat: cat, stats: stats, talents: talents
       end
     end
 
     get '/cats' do
       with_canonical_uri('/cats') do
-        chain = Filter::Chain.new(route.cats.dup, route.exclude_talents)
+        chain = Filter::Chain.new(cats: route.cats.dup,
+          level: route.level,
+          exclude_talents: route.exclude_talents,
+          sum_no_wave: route.sum_no_wave,
+          dps_no_critical: route.dps_no_critical)
 
         from_resistant =
           if route.for_resistant == 'or'
@@ -189,6 +193,15 @@ module BattleCatsRolls
         chain.filter!(route.counter, route.for_counter, Filter::Counter)
         chain.filter!(route.combat, route.for_combat, Filter::Combat)
         chain.filter!(route.other, route.for_other, Filter::Other)
+        chain.filter!([route.dps], 'any', Filter::DPS) if route.dps != 'any'
+        chain.filter!([route.damage], 'any', Filter::Damage) if route.damage != 'any'
+        chain.filter!([route.health], 'any', Filter::Health) if route.health != 'any'
+        chain.filter!([route.knockbacks], 'any', Filter::Knockbacks) if route.knockbacks != 'any'
+        chain.filter!([route.stand], 'any', Filter::Stand) if route.stand != 'any'
+        chain.filter!([route.reach], 'any', Filter::Reach) if route.reach != 'any'
+        chain.filter!([route.speed], 'any', Filter::Speed) if route.speed != 'any'
+        chain.filter!([route.cost], 'any', Filter::Cost) if route.cost != 'any'
+        chain.filter!([route.production], 'any', Filter::Production) if route.production != 'any'
         chain.filter!(route.aspect, route.for_aspect, Filter::Aspect)
 
         render :cats, cats: chain.cats,

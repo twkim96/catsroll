@@ -48,7 +48,7 @@
     </option>
   </select>
 
-  <% if route.path_info == '/' || route.path_info.start_with?('/cats/') %>
+  <% if route.path_info == '/' || route.path_info.start_with?('/cats') %>
   <label for="theme_select">Theme:</label>
   <select id="theme_select" name="theme" onchange="roll(this)">
     <option value="" <%= selected_theme('') %>>Default</option>
@@ -58,52 +58,19 @@
   <%= hidden_inputs('theme') %>
   <% end %>
 
-  <% if route.path_info.match?(%r{\A/cats/\d+\z}) %>
-  <div class="cats_options">
-    <label for="level_input">Level:</label>
-    <input
-      type="number" id="level_input" name="level"
-      value="<%= arg[:level] %>"
-      min="1"
-      max="<%= arg[:cat]&.max_level %>"
-      onclick="this.select()">
-
-    Growth rate: <%= growth_rate(arg[:cat]&.growth) %>
-
-    <div class="stat_options">
-      <label for="hide_wave_input">
-        <input type="checkbox" id="hide_wave_input" name="hide_wave"
-          <%= checked_hide_wave %>
-          onchange="roll(this)">
-         Hide wave/surge/explosion attacks
-      </label>
-      <label for="sum_no_wave_input">
-        <input type="checkbox" id="sum_no_wave_input" name="sum_no_wave"
-          <%= checked_sum_no_wave %>
-          onchange="roll(this)">
-         Discount wave/surge/explosion from DPS and damage sum
-      </label>
-      <label for="dps_no_critical_input">
-        <input type="checkbox" id="dps_no_critical_input"
-          name="dps_no_critical"
-          <%= checked_dps_no_critical %>
-          onchange="roll(this)">
-         Discount critical strikes and savage blows from DPS
-      </label>
-    </div>
-  </div>
+  <% if route.path_info.start_with?('/cats/') && arg[:cat] %>
+    <%= erb :stats_options %>
+  <% elsif route.path_info == '/cats' %>
+    <%= erb :filters %>
   <% else %>
-    <%= hidden_inputs('level', 'hide_wave',
-      'sum_no_wave', 'dps_no_critical') %>
-  <% end %>
-
-  <% if route.path_info == '/cats' %>
-  <%= erb :filters %>
+    <%= hidden_inputs('advanced_filters', 'hide_wave', 'exclude_talents',
+      'sum_no_wave', 'dps_no_critical', 'level') %>
   <% end %>
 </div>
 <% else %>
-<%= hidden_inputs('level', 'lang', 'version', 'name',
-  'hide_wave', 'sum_no_wave', 'dps_no_critical') %>
+<%= hidden_inputs('lang', 'version', 'name',
+  'advanced_filters', 'hide_wave', 'exclude_talents',
+  'sum_no_wave', 'dps_no_critical', 'level') %>
 <% end %>
 
 <%= hidden_inputs('o') %>

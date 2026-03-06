@@ -186,7 +186,7 @@ module BattleCatsRolls
           map{ |s| strip[s.tr(separator_char, "\n").squeeze(' ')] }.
           delete_if(&:empty?)
 
-        size = if names.any?
+        size = if names.any? && descs.any?
           names.size
         elsif descs.any?
           names = ["(#{filename[/\d+/]}?)"]

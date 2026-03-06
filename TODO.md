@@ -36,11 +36,24 @@
 
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
+* Collapse past events. The dropdown can look like:
+  * Upcoming:
+    * Yesterday
+    * Today
+    * Tomorrow
+  * Custom:
+    * Customize...
+  * Past:
+    * Within last year...
+    * Within 2 years ago...
+    * Within 3 years ago...
+  So it expands like "Customize..." when selecting those past ones.
+  To avoid timezone offset, possibly keep 1 day more worth of banners.
+* Retreat seed
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.
   Reference: https://ampuri.github.io/bc-normal-seed-tracking/
-* Retreat seed
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Tracking history (by recording rolls we click)

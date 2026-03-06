@@ -5,7 +5,7 @@ gem 'base64' # stdlib
 
 gem 'jellyfish'
 gem 'tilt'
-gem 'rack'
+gem 'rack', ENV['RACK_VERSION']
 gem 'promise_pool'
 
 platforms :ruby do

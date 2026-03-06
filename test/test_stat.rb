@@ -74,11 +74,16 @@ describe BattleCatsRolls::Stat do
       def health; 33000; end
       paste :check_health
     end
+
+    describe 'Bahamut Cat capped at level 50' do
+      def id; 26; end
+      def level; 999; end
+      def health; 33000; end
+      paste :check_health
+    end
   end
 
   describe 'DPS accounts critical strike and savage blow' do
-    def lang; 'tw'; end # No DPS data for en
-
     describe 'Kyosaka Nanaho' do
       def id; 545; end
       def level; 45; end # This level can test rounding error
@@ -139,8 +144,6 @@ describe BattleCatsRolls::Stat do
   end
 
   describe 'account wave attacks' do
-    def lang; 'jp'; end # No DPS data for en
-
     describe 'Shampoo' do
       def id; 600; end
 
@@ -157,7 +160,7 @@ describe BattleCatsRolls::Stat do
       end
 
       def attack_cycle
-        @attack_cycle ||= stat.attack_cycle.to_f / stat.fps
+        @attack_cycle ||= stat.attack_cycle.to_f / BattleCatsRolls::Stat::FPS
       end
 
       copy :test do
@@ -234,7 +237,6 @@ describe BattleCatsRolls::Stat do
 
   describe 'account surge attacks' do
     describe 'Fabulous Pasalan' do
-      def lang; 'jp'; end
       def id; 565; end
       def index; 2; end
 
@@ -284,6 +286,73 @@ describe BattleCatsRolls::Stat do
     describe 'King of Destiny Phonoa' do
       def id; 691; end
       def area; '590 ~ 600'; end
+
+      paste
+    end
+  end
+
+  describe '#blind_spot' do
+    copy do
+      would 'return correct blind spot' do
+        expect(stat.blind_spot).eq blind_spot
+      end
+    end
+
+    describe 'Cats in the Stroller' do
+      def id; 60; end
+      def index; 3; end
+      def blind_spot; -101; end
+
+      paste
+    end
+
+    describe 'Supernova Cosmo' do
+      def id; 136; end
+      def index; 3; end
+      def blind_spot; -301; end
+
+      paste
+    end
+
+    describe 'CAT-10 Gigapult' do
+      def id; 305; end
+      def index; 3; end
+      def blind_spot; 99; end # Would be -68 with wave talent
+
+      paste
+    end
+
+    describe 'Mighty Kristul Muu' do
+      def id; 464; end
+      def blind_spot; '-'; end
+
+      paste
+    end
+
+    describe 'Gaia the Creator' do
+      def id; 494; end
+      def blind_spot; 349; end
+
+      paste
+    end
+
+    describe 'Chronos the Bride' do
+      def id; 662; end
+      def blind_spot; -68; end
+
+      paste
+    end
+
+    describe 'Daybreaker Izanagi' do
+      def id; 732; end
+      def blind_spot; 0; end
+
+      paste
+    end
+
+    describe 'Master of Life Dr. Nova' do
+      def id; 772; end
+      def blind_spot; 74; end
 
       paste
     end

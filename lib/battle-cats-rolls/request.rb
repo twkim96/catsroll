@@ -9,6 +9,26 @@ module BattleCatsRolls
       query_parser.parse_query(qs, d)
     end
 
+    # So that t=1&t=2 can be parsed as {"t" => [1, 2]}
+    # This removes the normalization and reuse parse_query code
+    def expand_param_pairs(pairs, query_parser = query_parser())
+      params = query_parser.make_params
+
+      pairs.each do |(k, v)|
+        if cur = params[k]
+          if cur.class == Array
+            params[k] << v
+          else
+            params[k] = [cur, v]
+          end
+        else
+          params[k] = v
+        end
+      end
+
+      return params.to_h
+    end
+
     # Rack doesn't memoize this
     def params
       @params ||= super
