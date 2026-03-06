@@ -77,6 +77,13 @@ module BattleCatsRolls
       end
     end
 
+    def mark_next_position cats
+      result = cats.dup
+      result[0] = result[0].dup
+      dup_modify(result, 0, 0, picked_label: :next_position)
+      result
+    end
+
     def pick cats, sequence, track, guaranteed=false
       result = cats.map(&:dup)
 

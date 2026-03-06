@@ -21,4 +21,17 @@ describe BattleCatsRolls::Gacha do
       end
     end
   end
+
+  describe 'advance_seed and retreat_seed' do
+    def gacha
+      # We don't care about the dependency here
+      @gacha ||= BattleCatsRolls::Gacha.allocate
+    end
+
+    would 'advance and retreat back to the original seed' do
+      expect(
+        gacha.__send__(:retreat_seed, gacha.__send__(:advance_seed, 1))
+      ).eq 1
+    end
+  end
 end

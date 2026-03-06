@@ -2,12 +2,15 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <meta name="description" content="Battle Cats Rolls">
+    <%- if picked_stat -%>
+    <meta name="description" content="<%= meta_description %>">
+    <meta name="og:image" content="<%= og_image %>">
+    <%- end -%>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="none">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css" rel="stylesheet" type="text/css">
-    <title>Battle Cats Rolls</title>
+    <title>Battle Cats Rolls - <%= html_title %></title>
     <style>
       .rare { background-color: white; }
       .owned { background-color: azure; }
@@ -79,7 +82,7 @@
       /
       <a href="https://gitlab.com/godfat/battle-cats-rolls">Source</a>
       &copy;
-      2018-2025 Lin Jen-Shin (godfat)
+      2018-2026 Lin Jen-Shin (godfat)
     </div>
   </body>
 </html>

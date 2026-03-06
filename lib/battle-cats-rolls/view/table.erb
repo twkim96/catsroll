@@ -1,17 +1,17 @@
 <div class="table">
-  <table>
+  <table><tbody>
     <tr>
-      <th>No.</th>
+      <th title="Label for this position">No.</th>
       <% if show_details %>
-        <th>Seed</th>
-        <th>Value</th>
+        <th title="The seed used to determine this row">Seed</th>
+        <th title="The transformed value used to determine this row. This is only used in version 8.4 and prior">Value</th>
       <% end %>
       <% if show_details %>
-        <th>Score, slot</th>
+        <th title="Score determines the rarity. Slot determines which cat it is amongst the same rarity">Score, slot</th>
       <% else %>
-        <th>Result</th>
+        <th title="Expected cat">Result</th>
       <% end %>
-      <th>Guaranteed</th>
+      <th title="Expected cat when rolling a guaranteed at this position">Guaranteed</th>
       <% if show_details %>
         <th>Alt. score, slot</th>
       <% else %>
@@ -32,13 +32,16 @@
         <%= score_tds(a, prev_b) %>
 
         <% if prev_b %>
-          <%= cat_tds(prev_b) %>
-          <%= seed_tds(prev_b.slot_fruit, prev_b) %>
-
-        <% elsif show_details %>
-          <td colspan="5"></td>
+        <%= cat_tds(prev_b) %>
+        <%= seed_tds(prev_b.slot_fruit, prev_b) %>
         <% else %>
-          <td colspan="3"></td>
+        <% if show_details %>
+        <td colspan="5">
+        <% else %>
+        <td colspan="3">
+        <% end %>
+          <a href="<%= uri_for_backtrack(2) %>">Backtrack</a>
+        </td>
         <% end %>
       </tr>
 
@@ -72,5 +75,5 @@
       <%= cat_tds(last_b) %>
       <%= seed_tds(last_b.slot_fruit, last_b) %>
     </tr>
-  </table>
+  </tbody></table>
 </div>

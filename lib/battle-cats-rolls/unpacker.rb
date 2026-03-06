@@ -26,41 +26,46 @@ module BattleCatsRolls
       TextUnpacker.new
     end
 
-    def decrypt data, binary: false
-      if cipher_mode
-        safe_decrypt(data, binary: binary)
+    def decrypt data, png: false, mode: cipher_mode
+      if mode
+        safe_decrypt(data, png: png, mode: mode)
       else
         # we try cbc first because newer pack files are in cbc
-        safe_decrypt(data, binary: binary, mode: :cbc) ||
-          safe_decrypt(data, binary: binary, mode: :ecb)
+        %i[cbc ecb text].lazy.filter_map do |mode|
+          safe_decrypt(data, png: png, mode: mode)
+        end.first
       end
     end
 
     private
 
-    def safe_decrypt data, binary: false, mode: cipher_mode
+    def safe_decrypt data, png:, mode:
       self.bad_data = nil
       result = __send__("decrypt_aes_128_#{mode}", data)
-      if binary
+      if (png && verify_png(result)) || verify_text(result)
+        self.cipher_mode = mode
         result
-      else
-        result.force_encoding('UTF-8')
-
-        if result.valid_encoding?
-          self.cipher_mode = mode
-          result
-        end
       end
-    rescue OpenSSL::Cipher::CipherError => e
+    rescue OpenSSL::Cipher::CipherError, ArgumentError => e
       self.bad_data = e
       nil
     end
 
-    def decrypt_aes_128_ecb data
-      cipher = OpenSSL::Cipher.new('aes-128-ecb')
-      cipher.decrypt
-      cipher.key = ecb_key
-      cipher.update(data) + cipher.final
+    def verify_png result
+      if result.start_with?("\x89PNG".b)
+        result
+      else
+        raise ArgumentError.new('Decrypted data not PNG')
+      end
+    end
+
+    def verify_text result
+      result.force_encoding('UTF-8')
+      if result.valid_encoding?
+        result
+      else
+        raise ArgumentError.new('Decrypted text not valid UTF-8')
+      end
     end
 
     def decrypt_aes_128_cbc data
@@ -70,14 +75,16 @@ module BattleCatsRolls
       cipher.iv = cbc_iv
       cipher.update(data) + cipher.final
     end
-  end
 
-  class TextUnpacker
-    def decrypt data, binary: false
-      data.force_encoding('UTF-8')
+    def decrypt_aes_128_ecb data
+      cipher = OpenSSL::Cipher.new('aes-128-ecb')
+      cipher.decrypt
+      cipher.key = ecb_key
+      cipher.update(data) + cipher.final
     end
 
-    def bad_data
+    def decrypt_aes_128_text data
+      data.force_encoding('UTF-8')
     end
   end
 end

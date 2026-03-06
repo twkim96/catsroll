@@ -1,6 +1,6 @@
 <% if route.path_info.match?(%r{\A/(?:seek)?\z}) %>
 <div class="events">
-  <label for="event_select">Event:</label>
+  <label for="event_select" title="Gacha banner to show">Event:</label>
   <select id="event_select" name="event" onchange="roll(this)">
     <optgroup label="Upcoming:">
       <% route.upcoming_events.each do |(event_name, info)| %>

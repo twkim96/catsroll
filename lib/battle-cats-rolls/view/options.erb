@@ -1,6 +1,6 @@
 <% if route.path_info.match?(%r{\A/(?:cats(?:/\d+)?|logs|seek)?\z}) %>
 <div class="options">
-  <label for="lang_select">Region:</label>
+  <label for="lang_select" title="The Battle Cats app region">Region:</label>
   <select id="lang_select" name="lang" onchange="roll(this)">
     <option value="en" <%= selected_lang('en') %>>BCEN</option>
     <option value="tw" <%= selected_lang('tw') %>>BCTW</option>
@@ -9,7 +9,7 @@
   </select>
 
   <% if route.path_info.match?(%r{\A/(?:seek)?\z}) %>
-  <label for="version_select">Version:</label>
+  <label for="version_select" title="Seed tracking version">Version:</label>
   <select id="version_select" name="version" onchange="roll(this)">
     <option value="8.6" <%= selected_version('8.6') %>>8.6+</option>
     <option value="8.5" <%= selected_version('8.5') %>>8.5</option>
@@ -19,8 +19,8 @@
   <%= hidden_inputs('version') %>
   <% end %>
 
-  <% if route.path_info != '/logs' && !route.path_info.start_with?('/cats/') %>
-  <label for="name_select">Name:</label>
+  <% if route.path_info != '/logs' %>
+  <label for="name_select" title="Evolution form used to display the cat's names">Name:</label>
   <select id="name_select" name="name" onchange="roll(this)">
     <option value="0" <%= selected_name(0) %>>Base</option>
     <option value="1" <%= selected_name(1) %>>Evolved</option>
@@ -31,7 +31,7 @@
   <%= hidden_inputs('name') %>
   <% end %>
 
-  <label for="ui_select">UI language:</label>
+  <label for="ui_select" title="Default UI language will match the app region. You can pick a different language, too">UI language:</label>
   <select id="ui_select" name="ui" onchange="roll(this)">
     <option value="" <%= selected_ui('') %>>Default</option>
     <option value="en" <%= selected_ui('en') %>>
@@ -48,8 +48,8 @@
     </option>
   </select>
 
-  <% if route.path_info == '/' || route.path_info.start_with?('/cats/') %>
-  <label for="theme_select">Theme:</label>
+  <% if route.path_info == '/' || route.path_info.start_with?('/cats') %>
+  <label for="theme_select" title="Color theme for highlighting">Theme:</label>
   <select id="theme_select" name="theme" onchange="roll(this)">
     <option value="" <%= selected_theme('') %>>Default</option>
     <option value="mkweb" <%= selected_theme('mkweb') %>>mkweb</option>
@@ -58,52 +58,19 @@
   <%= hidden_inputs('theme') %>
   <% end %>
 
-  <% if route.path_info.match?(%r{\A/cats/\d+\z}) %>
-  <div class="cats_options">
-    <label for="level_input">Level:</label>
-    <input
-      type="number" id="level_input" name="level"
-      value="<%= arg[:level] %>"
-      min="1"
-      max="<%= arg[:cat]&.max_level %>"
-      onclick="this.select()">
-
-    Growth rate: <%= growth_rate(arg[:cat]&.growth) %>
-
-    <div class="stat_options">
-      <label for="hide_wave_input">
-        <input type="checkbox" id="hide_wave_input" name="hide_wave"
-          <%= checked_hide_wave %>
-          onchange="roll(this)">
-         Hide wave/surge/explosion attacks
-      </label>
-      <label for="sum_no_wave_input">
-        <input type="checkbox" id="sum_no_wave_input" name="sum_no_wave"
-          <%= checked_sum_no_wave %>
-          onchange="roll(this)">
-         Discount wave/surge/explosion from DPS and damage sum
-      </label>
-      <label for="dps_no_critical_input">
-        <input type="checkbox" id="dps_no_critical_input"
-          name="dps_no_critical"
-          <%= checked_dps_no_critical %>
-          onchange="roll(this)">
-         Discount critical strikes and savage blows from DPS
-      </label>
-    </div>
-  </div>
+  <% if route.path_info.start_with?('/cats/') && arg[:cat] %>
+    <%= erb :stats_options %>
+  <% elsif route.path_info == '/cats' %>
+    <%= erb :filters %>
   <% else %>
-    <%= hidden_inputs('level', 'hide_wave',
-      'sum_no_wave', 'dps_no_critical') %>
-  <% end %>
-
-  <% if route.path_info == '/cats' %>
-  <%= erb :filters %>
+    <%= hidden_inputs('advanced_filters', 'hide_wave', 'exclude_talents',
+      'sum_no_wave', 'dps_no_critical', 'level') %>
   <% end %>
 </div>
 <% else %>
-<%= hidden_inputs('level', 'lang', 'version', 'name',
-  'hide_wave', 'sum_no_wave', 'dps_no_critical') %>
+<%= hidden_inputs('lang', 'version', 'name',
+  'advanced_filters', 'hide_wave', 'exclude_talents',
+  'sum_no_wave', 'dps_no_critical', 'level') %>
 <% end %>
 
 <%= hidden_inputs('o') %>

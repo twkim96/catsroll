@@ -15,13 +15,7 @@ module BattleCatsRolls
         File.basename(pathname))
 
       @list_unpacker = Unpacker.for_list
-      @pack_unpacker =
-        # Windows does not have file command. Ignore MinGW for now...
-        if !Gem.win_platform? && `file #{pack_path}`.include?('UTF-8')
-          Unpacker.for_text
-        else
-          Unpacker.for_pack(lang)
-        end
+      @pack_unpacker = Unpacker.for_pack(lang)
     end
 
     def each
@@ -41,10 +35,10 @@ module BattleCatsRolls
 
     def read line
       filename, offset, size = line.split(',')
-      binary = filename.end_with?('.png')
+      png = filename.end_with?('.png')
       data = lambda do
         result = pack_unpacker.decrypt(
-          pack_data[offset.to_i, size.to_i], binary: binary)
+          pack_data[offset.to_i, size.to_i], png: png)
 
         if error = pack_unpacker.bad_data
           warn "! [#{error.class}:#{error.message}]" \

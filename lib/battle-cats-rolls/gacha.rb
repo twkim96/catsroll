@@ -6,7 +6,8 @@ require_relative 'fruit'
 require 'forwardable'
 
 module BattleCatsRolls
-  class Gacha < Struct.new(:pool, :seed, :version, :last_both, :last_roll)
+  class Gacha < Struct.new(:pool, :seed, :version,
+    :last_both, :last_roll, :position)
     extend Forwardable
 
     def_delegators :pool, *%w[rare supa uber legend]
@@ -85,15 +86,7 @@ module BattleCatsRolls
     # This can see A and B are passing each other:
     # https://bc.godfat.org/?seed=2390649859&event=2019-06-06_318
     def finish_picking cats, pick, guaranteed_rolls=pool.guaranteed_rolls
-      index = pick.to_i - 1
-      track = (pick[/\A\d+(\w)/, 1] || 'A').ord - 'A'.ord
-      located = cats.dig(index, track)
-      picked =
-        if pick.include?('R')
-          located.rerolled
-        else
-          located
-        end
+      picked = dig_cats_from(cats, pick)
 
       return unless picked # Users can give arbitrary input
       return unless picked.guaranteed if pick.include?('G')
@@ -111,6 +104,25 @@ module BattleCatsRolls
       else
         fill_picking_single(cats, picked, picked.number)
       end
+    end
+
+    def mark_next_position cats
+      if next_position = dig_cats_from(cats, position)
+        if last_roll && last_roll.id == next_position.id &&
+          next_position.rerolled # Only rare would have a rerolled cat
+          next_position.rerolled.picked_label = :next_position
+        else
+          next_position.picked_label = :next_position
+        end
+      elsif next_position = dig_cats_from(cats, position.delete_suffix('R'))
+        # We might be switching to an event which doesn't have a rerolled cat
+        # In that case we fall back to the regular position
+        next_position.picked_label = :next_position
+      end
+    end
+
+    def backtrack_seed base_seed, steps
+      steps.times.inject(base_seed){ |seed| retreat_seed(seed) }
     end
 
     private
@@ -265,6 +277,23 @@ module BattleCatsRolls
       end
     end
 
+    def dig_cats_from cats, marker
+      located = cats.dig(*index_and_track(marker))
+
+      if marker.include?('R')
+        located&.rerolled # Users can give arbitrary input
+      else
+        located
+      end
+    end
+
+    def index_and_track marker
+      index = marker.to_i - 1
+      track = (marker[/\A\d+(\w)/, 1] || 'A').ord - 'A'.ord
+
+      [index, track]
+    end
+
     def fill_picking_single cats, picked, number
       detected = fill_picking_backtrack(cats, number)
 
@@ -288,17 +317,16 @@ module BattleCatsRolls
       fill_picked_consecutively_label(guaranteed_rolls, the_cat)
     end
 
+    # Examples highlighting from last roll:
+    # https://bc.godfat.org/?seed=650315141&last=50&event=2020-09-11_433&pick=2BGX#N2B
+    # https://bc.godfat.org/?seed=3626964723&last=49&event=2020-09-11_433&pick=2BGX#N2B
     def fill_picking_backtrack cats, number, which_cat=:itself
-      a = last_roll || cats.dig(0, 0)
-      b = cats.dig(0, 1)
+      cat = last_roll || dig_cats_from(cats, position) || cats.dig(0, 0)
 
-      found_a = fill_picking_backtrack_from(a, number, which_cat)
-      found_b = fill_picking_backtrack_from(b, number, which_cat, found_a)
-
-      found_a || found_b
+      fill_picking_backtrack_from(cat, number, which_cat)
     end
 
-    def fill_picking_backtrack_from cat, number, which_cat=:itself, found=nil
+    def fill_picking_backtrack_from cat, number, which_cat=:itself
       path = []
 
       begin
@@ -307,19 +335,11 @@ module BattleCatsRolls
         # checking_cat might not be there for out of range guaranteed
         # do not break the loop because last_roll doesn't have one either
         if number === checking_cat&.number # String or Regexp matching
-          if found && found != cat
-            # don't highlight different paths for different cats because
-            # it would be very confusing. see:
-            # https://bc.godfat.org/?seed=650315141&last=50&event=2020-09-11_433&pick=2BGX#N2B
-            # https://bc.godfat.org/?seed=3626964723&last=49&event=2020-09-11_433&pick=2BGX#N2B
-            break
-          else
-            path.each do |passed_cat|
-              passed_cat.picked_label = :picked
-            end
-
-            break cat
+          path.each do |passed_cat|
+            passed_cat.picked_label = :picked
           end
+
+          break cat
         else
           path << cat
         end

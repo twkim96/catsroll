@@ -1,9 +1,14 @@
 <%= erb :form %>
 
-<table>
+<table><tbody>
 <% arg[:stats].each do |stat| %>
-  <tr class="border_upper">
-    <th colspan="6" title="<%= stat.desc %>"><%= h stat.name %></th>
+  <tr class="border_upper" title="<%= h stat.desc %>">
+    <th colspan="2">
+      <div class="cat_avatar">
+        <img src="<%= stat.img_src(route.lang) %>">
+      </div>
+    </th>
+    <th colspan="4"><%= h stat.name %></th>
   </tr>
   <tr class="border_upper">
     <td><%= l10n('Health') %></td>
@@ -31,8 +36,8 @@
   </tr>
   <% if stat.long_range? %>
   <tr class="border_middle">
-    <td></td>
-    <td></td>
+    <td><%= l10n('Blind spot') %></td>
+    <td><%= stat.blind_spot %></td>
     <td><%= l10n('Range') %></td>
     <td><%= stat.range %></td>
     <td><%= l10n('Enemy base range') %></td>
@@ -53,7 +58,7 @@
   <tr class="border_upper <%= attack_tr_class(attack) %>">
     <td><%= l10n('DPS') %></td>
     <td><%= stat_int(attack.dps) %></td>
-    <td><%= l10n(stat.area_type) %></td>
+    <td><%= l10n(attack.area_type) %></td>
     <td><%= attack.area_display %></td>
     <td><%= l10n('Damage') %></td>
     <td><%= attack.damage %></td>
@@ -117,16 +122,18 @@
     </tr>
   <% end %>
 <% end %>
-  <tr class="border_bottom"></tr>
-</table>
+  <tr class="border_bottom"><td style="display: none" colspan="6"></td></tr>
+</tbody></table>
 
 <ul>
   <% if cat = arg[:cat] %>
-  <% if wiki = uri_to_wiki(cat) %>
+    <% if wiki = uri_to_wiki(cat) %>
   <li><a href="<%= wiki %>">The Battle Cats Wiki</a></li>
-  <% end %>
+    <% end %>
   <li><a href="<%= uri_to_cat_db(cat) %>">にゃんこ大戦争データベース</a></li>
   <li><a href="<%= uri_to_my_gamatoto(cat) %>">My Gamatoto</a></li>
-  <% end %>
   <li>Assuming maxed blue orbs, treasures, and legend stages cost</li>
+  <% else %>
+  <li>No such cat found</li>
+  <% end %>
 </ul>

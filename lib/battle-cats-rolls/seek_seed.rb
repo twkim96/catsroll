@@ -71,37 +71,32 @@ module BattleCatsRolls
     end
 
     def seek
-      # logger.info("Seeking seed with #{source}")
+      # logger.info("Seeking seed with #{source.join(' ')}")
 
-      case seeker = source[/\A\S+/]
-      when 'forgothowtoreddid', 'VampireFlower'
-        suffix =
-          case seeker
-          when 'forgothowtoreddid'
-            '8.6'
-          else
-            'VampireFlower'
-          end
-
-        IO.popen([
-          "#{Root}/Seeker/Seeker-#{suffix}",
-          *ENV['SEEKER_OPT'].to_s.split(' '), *source.split(' ').drop(1),
+      case seeker = source.first
+      when 'VampireFlower'
+        result = IO.popen([
+          "#{Root}/Seeker/Seeker-VampireFlower", *source.drop(1),
           err: %i[child out]], 'r+') do |io|
           io.close_write
-          io.read.scan(/\d+/).map(&:to_i)
+          io.read
+        end.scan(/\d+/).map(&:to_i)
+
+        exitstatus = Process.last_status.exitstatus
+        if exitstatus.nil? || exitstatus >= 128
+          logger.warn("Seeking exited with #{exitstatus.inspect} and" \
+            " failed with #{source.join(' ')}")
         end
-      when 'godfat'
-        IO.popen([
-          "#{Root}/Seeker/Seeker",
-          *ENV['SEEKER_OPT'].to_s.split(' '),
-          err: %i[child out]], 'r+') do |io|
-          io.puts source.sub(/\A\S+ /, '')
-          io.close_write
-          io.read.scan(/\d+/).map(&:to_i)
-        end
+
+        result
       else
         []
       end
+    rescue => error
+      logger.warn(
+        "Seeking seed failed with" \
+        " #{error.class}:#{error.message} with #{source.join(' ')}")
+      []
     end
   end
 end

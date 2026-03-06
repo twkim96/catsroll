@@ -1,7 +1,14 @@
 <%= erb :form %>
 
 <%= header(1, "Event data links for BC#{route.lang.upcase}") %>
-<ul><li>Links are removed because they no longer work</li></ul>
+<ul>
+  <% %w[gatya.tsv item.tsv sale.tsv].each do |file| %>
+    <li>
+      <a href="<%= route.event_url(file: file) %>"><%= file %></a>
+      (cached for <%= route.tsv_expires_in %> seconds)
+    </li>
+  <% end %>
+</ul>
 
 <%= header(1, "Known bugs for 8.6+") %><p></p>
 <ol>
@@ -10,7 +17,303 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
-<%= header(2, "2025-05-04") %>
+<%= header(2, "2026-02-19") %>
+<ul>
+  <li>
+    If position is out of range, assuming 1A. This fixed a crash for people
+    setting a position &gt;500 from when the max count can be 999.
+  </li>
+</ul>
+
+<%= header(2, "2026-02-14") %>
+<ul><li>Reduced the max count from 999 to 500 to reduce server load.</li></ul>
+
+<%= header(2, "2026-01-27") %>
+<ul>
+  <li>
+    <p>
+      Fixed slot color coding for fest super rare and fest uber. For a period
+      when regular banners had legends while uberfest and epicfest didn't have
+      legends, this color coding was too complex to be fully accurate.
+      However, since both uberfest and epicfest have 0.3% legends as regular
+      banners, this can be fully aligned and consistent again.
+    </p>
+    <p>
+      Here's an example: Seed
+      <a href="/?seed=2118321982&last=150&event=2026-01-26_986">2118321982</a>
+      2A has a score of 9070, which is now an uber at uberfest and epicfest,
+      but it was coded as just a regular super rare before. After the fix,
+      this is correctly coded as a fest uber.
+    </p>
+    <p>
+      Similarly, a lot of players noticed that some ubers were coded as an uber
+      fest when it's already an uber, would be properly coded as a regular uber
+      now. This applies to scores between 9471 to 9499. Note that this also
+      means those slots while will be shown as a uber now, can be just a super
+      rare in banners which don't have legends. Here's an example: Seed
+      <a href="/?seed=1928358907&last=150&event=2025-12-25_940">1928358907</a>
+      2A has a score of 9498 for a Brainwashed Lizard Cat. Before the fix, this
+      was shown as a fest uber, but in fact it's an uber slot. It is an uber
+      in banners with legends. After the fix, this is shown as an uber, but
+      Brainwashed Lizard Cat is not an uber.
+    </p>
+    <p>
+      This is not a bug because the color coding is always meant for the slot,
+      not the rarity in a particular banner. It is intended for knowing the
+      potential rarity in "other" banners, so we're less likely to miss an
+      important slot when it's less important in the current banner we're
+      looking at.
+    </p>
+    <p>
+      Right now there are too many types of banners with all different rates
+      and different rarities (having legends or not), thus we sacrifice
+      accuracy for simplicity here, that is the most common banners and
+      uberfest and epicfest. Note that this also means it's not fully
+      accurate for superfest!
+    </p>
+    <p>
+      Fixed by
+      <a href="https://gitlab.com/godfat/battle-cats-rolls/-/commit/60c01f6f0f99be2ceb7148447e10f7b2d0a86c92">60c01f6f0f99be2ceb7148447e10f7b2d0a86c92</a>
+    </p>
+  </li>
+</ul>
+
+<%= header(2, "2026-01-26") %>
+<ul>
+  <li>
+    Fixed site crashing when last cat is a duplicated cat of the next cat by
+    checking if there's actually a rerolled cat. Only duplicated rare cat
+    would have a rerolled cat, so this was crashing for super rare and uber,
+    and also legend rare even when it's more rare. This was broken by
+    <a href="https://gitlab.com/godfat/battle-cats-rolls/-/commit/4e00e45fad25a4a4b7c24eb0ea75a843ccb3ff5e">4e00e45fad25a4a4b7c24eb0ea75a843ccb3ff5e</a>
+    and fixed by
+    <a href="https://gitlab.com/godfat/battle-cats-rolls/-/commit/029c74ca4fffc04da1385970755d9ecb504eaba2">029c74ca4fffc04da1385970755d9ecb504eaba2</a>
+  </li>
+</ul>
+
+<%= header(2, "2026-01-22") %>
+<ul>
+  <li>
+    Now we can mark the next position with the rerolled cat by clicking on the
+    same position label. This will rotate between them.
+  </li>
+  <li>
+    Add a backtrack link to go back to previous roll.
+  </li>
+</ul>
+
+<%= header(2, "2026-01-21") %>
+<ul>
+  <li>
+    We no longer highlight the path from 1B. This is replaced by the following
+    next position marker feature.
+  </li>
+  <li>
+    We can now click on the position label to mark the next position.
+    <ul>
+      <li>
+        When a next position is marked, highlighting will start from that
+        particular position rather than 1A. This removes the last cat as well,
+        because last cat is supposed to be 0A, which is not applicable when
+        the next position is beyond 1A.
+      </li>
+      <li>
+        When we advance tracks by clicking on a particular cat, we set the
+        last cat as usual, and we also reset the next position back to 1A.
+      </li>
+      <li>
+        This means the next position marker is mutual exclusive to the last
+        cat feature.
+      </li>
+      <li>
+        NOTE: For now we cannot mark the next position with a rerolled cat.
+        This means highlighting with a specific next position with a rerolled
+        cat will not highlight properly. This will be fixed next.
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<%= header(2, "2026-01-18") %>
+<ul>
+  <li>We serve the tsv files again, cached for 1 hour.</li>
+</ul>
+
+<%= header(2, "2025-11-09") %>
+<ul>
+  <li>Redundant title in the meta description is removed.</li>
+</ul>
+
+<%= header(2, "2025-11-06") %>
+<ul>
+  <li>
+    Add form name selection when showing stats. This decides which
+    meta-description and og-image it should use for the page.
+  </li>
+  <li>HTML title will now also include page info.</li>
+</ul>
+
+<%= header(2, "2025-10-25") %>
+<ul>
+  <li>
+    Various fixes for showing true form stats. If you're interested about
+    all the details, read:
+    <a href="https://gitlab.com/godfat/battle-cats-rolls/-/commit/1a966926403ea67acd6951744505aaff83812f25">Consolidate the form data in stats</a>
+  </li>
+</ul>
+
+<%= header(2, "2025-10-24") %>
+<ul>
+  <li>Now display the cat avatars in stats.</li>
+</ul>
+
+<%= header(2, "2025-10-18") %>
+<ul>
+  <li>
+    Always highlight 1A as next if nothing else is picked.
+    This should give a better sense that we assume 1A is the next.
+  </li>
+  <li>Add tooltips to various control labels.</li>
+</ul>
+
+<%= header(2, "2025-07-18") %>
+<ul>
+  <li>Avoid building cats without a description.</li>
+</ul>
+
+<%= header(2, "2025-07-18") %>
+<ul>
+  <li>
+    The old seeker is now disabled on the UI. This is disabled because it's
+    very slow comparing to the new one, and sometimes people are still using
+    it, and when that happens, queue is piling up fast. Disabling the old
+    seeker should much help reduce the queue, and help the overall
+    performance under heavy traffic.
+  </li>
+</ul>
+
+<%= header(2, "2025-06-18") %>
+<ul>
+  <li>
+    Fixed a minor bug that all triggered attacks should be area attacks.
+    They should not inherit the type from the main attack, because so far
+    wave, surge, and explosion are all area attack, while the main attack
+    can be single ranged.
+  </li>
+</ul>
+
+<%= header(2, "2025-06-06") %>
+<ul>
+  <li>Compact the descriptions for advanced filters.</li>
+  <li>Add &lt;=3500 and &lt;=4500 cost filters.</li>
+  <li>
+    Show some more meaningful meta description,
+    like page name and cat's name and description.
+  </li>
+</ul>
+
+<%= header(2, "2025-06-02") %>
+<ul><li>Generalized and expanded advanced filters.</li></ul>
+
+<%= header(2, "2025-05-31") %>
+<ul>
+  <li>Moved DPS relevant options under advanced filters.</li>
+  <li>Fixed not remembering advanced filters in some pages.</li>
+  <li>
+    Reordered filters to High, High effective, Very high,
+    Very high effective, and Extremely high effective. This seems
+    easier to follow, even though it's mixing types.
+  </li>
+  <li>
+    Added a background color to advanced filters so it's clear which
+    are the advanced filters.
+  </li>
+  <li>Added a knockbacks filter in the advanced filters.</li>
+</ul>
+
+<%= header(2, "2025-05-30") %>
+<ul>
+  <li>
+    Move DPS, Single blow damage, Health, and other Aspects filters under
+    advanced filters so they don't show up by default. This should make it
+    easier to navigate with basic filters in the default view. When we're
+    hiding the advanced filters, all advanced filters will be dropped as
+    well.
+  </li>
+  <li>
+    Level input is no longer limited at the max level, and can be set to any
+    positive integer >= 1. How stats are calculated does not change, that is
+    it's still limited to the max level. For example, the default is level 30,
+    and the default display for Metal Cat is still showing at level 20, its
+    max, even when the input shows level 30. Now we also show the max level so
+    it's clear if the input is greater than the max, it's calculated at max.
+  </li>
+  <li>
+    The above change should improve the UX when switching view between cats
+    having a lower max level. For example, previously when you visit the
+    Metal Cat, the level can be reduced to 20, and if you use options there,
+    the level input can be then remembered to 20 even when it was set higher
+    before. With this change, level input will never be forced to change.
+  </li>
+  <li>
+    Add the level input when advanced filters are enabled. It'll affect
+    advanced filters for things like DPS, Damage, and Health, so it can be
+    useful there.
+  </li>
+</ul>
+
+<%= header(2, "2025-05-26") %>
+<ul>
+  <li>
+    Added effective health filters. Thresholds are: 100,000, 200,000, 400,000.
+  </li>
+  <li>
+    Display blind spot for long-range and omni-strike cats. <kbd>-</kbd>
+    indicates no blind spot, while 0 means it cannot hit behind itself.
+    A standard area attack can reach -320 behind, so blind spots can be
+    negative as well. It's only considered to have no blind spot if it
+    can hit -320 behind, like a standard area attack.
+  </li>
+</ul>
+
+<%= header(2, "2025-05-25") %>
+<ul>
+  <li>
+    Expanded filtering options with the same from stats: Excluding
+    wave/surge/explosion and critical strike, savage blow from DPS.
+  </li>
+  <li>Split damage related aspects to their own section.</li>
+  <li>Split health related aspects to their own section.</li>
+  <li>Split DPS related aspects to their own section.</li>
+  <li>Use radio buttons for DPS, damage, and health.</li>
+</ul>
+
+<%= header(2, "2025-05-24") %>
+<ul>
+  <li>
+    Added filtering with high effective DPS. The effective DPS thresholds are:
+    7,500, 15,000, 25,000. Fruit treasures are considered so they're different
+    for Aku, Relic, White, and Metal.
+  </li>
+  <li>
+    Added filtering with high effective single blow. The effective single blow
+    thresholds are: 50,000, 100,000, 200,000. Fruit treasures are considered
+    so they're different for Aku, Relic, White, and Metal.
+  </li>
+  <li>
+    Updated filtering with single blow calculation that it no longer considers
+    the damage sum, but truly for a single blow.
+  </li>
+</ul>
+
+<%= header(2, "2025-05-18") %>
+<ul>
+  <li>Display the number of cats within the rarity for the filtered cats.</li>
+  <li>Added filtering with melee, midrange, backline, and rearline.</li>
+  <li>Added filtering with far-reaching, and very far-reaching.</li>
+</ul>
+
+<%= header(2, "2025-05-05") %>
 <ul>
   <li>Fixed damage sum to exclude cascade effects.</li>
   <li>Added aspect filters.</li>

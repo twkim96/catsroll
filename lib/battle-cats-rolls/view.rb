@@ -24,6 +24,32 @@ module BattleCatsRolls
 
     private
 
+    def html_title
+      if picked_stat
+        h picked_stat.name
+      else
+        route.path_info[/\w+/]&.capitalize || 'Tracks'
+      end
+    end
+
+    def meta_description
+      if picked_stat
+        h picked_stat.desc.tr("\n", ' ').squeeze(' ')
+      end
+    end
+
+    def og_image
+      "//#{route.web_host}#{picked_stat.img_src(route.lang)}"
+    end
+
+    def picked_stat
+      return @picked_stat if instance_variable_defined?(:@picked_stat)
+
+      @picked_stat = if stats = arg&.dig(:stats)
+        stats[route.name] || stats.last
+      end
+    end
+
     def l10n text
       L10n.translate(route.ui_lang, text)
     end
@@ -98,8 +124,31 @@ module BattleCatsRolls
       rowspan = 2 + [cat.rerolled, other_cat&.rerolled].compact.size
 
       <<~HTML
-        <td rowspan="#{rowspan}" id="N#{cat.number}">#{cat.number}</td>
+        <td rowspan="#{rowspan}" id="N#{cat.number}">
+          <a href="#{uri_for_number_td(cat)}">#{cat.number}</a>
+        </td>
       HTML
+    end
+
+    def uri_for_number_td cat
+      # Rotate between regular and rerolled when it's not 1A
+      # For 1A rerolled or not should be determined only by the last cat
+      pos = if route.pos == cat.number && cat.rerolled && cat.number != '1A'
+        "#{cat.number}R"
+      else
+        cat.number
+      end
+
+      # For 1A we want to keep the last cat
+      last = 0 if cat.number != '1A'
+
+      "#{route.uri(query: {pos: pos, last: last})}#N#{cat.number}"
+    end
+
+    def uri_for_backtrack steps
+      route.uri(query: {
+        seed: route.gacha.backtrack_seed(route.seed, steps),
+        last: 0, pos: '1A'})
     end
 
     def score_tds cat, other_cat
@@ -194,6 +243,10 @@ module BattleCatsRolls
       'selected="selected"' if route.lang == lang_name
     end
 
+    def selected_pos pos
+      'selected="selected"' if route.pos == pos
+    end
+
     def selected_version version_name
       'selected="selected"' if route.version == version_name
     end
@@ -248,6 +301,10 @@ module BattleCatsRolls
 
     def checked_details
       'checked="checked"' if route.details
+    end
+
+    def checked_advanced_filters
+      'checked="checked"' if route.advanced_filters
     end
 
     def checked_exclude_talents
@@ -342,6 +399,42 @@ module BattleCatsRolls
       'checked="checked"' if route.other.member?(value)
     end
 
+    def checked_dps value
+      'checked="checked"' if route.dps == value
+    end
+
+    def checked_damage value
+      'checked="checked"' if route.damage == value
+    end
+
+    def checked_health value
+      'checked="checked"' if route.health == value
+    end
+
+    def checked_knockbacks value
+      'checked="checked"' if route.knockbacks == value
+    end
+
+    def checked_stand value
+      'checked="checked"' if route.stand == value
+    end
+
+    def checked_reach value
+      'checked="checked"' if route.reach == value
+    end
+
+    def checked_speed value
+      'checked="checked"' if route.speed == value
+    end
+
+    def checked_cost value
+      'checked="checked"' if route.cost == value
+    end
+
+    def checked_production value
+      'checked="checked"' if route.production == value
+    end
+
     def checked_for_aspect value
       'checked="checked"' if route.for_aspect == value
     end
@@ -413,12 +506,15 @@ module BattleCatsRolls
       end
     end
 
+    def display_filter filter
+      h l10n(filter.sub(/^./, &:upcase).tr('_', ' '))
+    end
+
     def stat_time frames
       case frames
       when Numeric
-        fps = 30.0
         title = "#{frames} frames"
-        %Q{<span title="#{title}">#{(frames / fps).round(2)}s</span>}
+        %Q{<span title="#{title}">#{(frames.to_f / Stat::FPS).round(2)}s</span>}
       else
         frames || '?'
       end
@@ -466,6 +562,11 @@ module BattleCatsRolls
         gacha.send(:advance_seed!) # Account for guaranteed roll
         gacha.seed
       end
+    end
+
+    def rarity_header rarity, size
+      label = BattleCatsRolls::Cat.wiki_rarity_label(rarity)
+      header(2, "#{label} (#{size})", label.downcase.gsub(/\W+/, '-'))
     end
 
     def header n, name, id=name.to_s.downcase.gsub(/\W+/, '-')
@@ -549,7 +650,7 @@ module BattleCatsRolls
 
     def self.template name
       (@template ||= {})[name.to_s] ||=
-        Tilt.new("#{__dir__}/view/#{name}.erb")
+        Tilt.new("#{__dir__}/view/#{name}.erb", trim: '-')
     end
 
     def self.warmup

@@ -36,7 +36,7 @@
   <li>Your next roll will be located at <strong>2A</strong>, which is a super rare cat (<span class="supa">2A supa cat</span>).</li>
 </ul>
 
-<%= erb :table, cats: arg[:help].read_the_tracks %>
+<%= erb :table, cats: arg[:help].mark_next_position(arg[:help].read_the_tracks) %>
 
 <%= header(2, 'Highlight rolls') %>
 <ul>
@@ -56,7 +56,7 @@
   <li>You can see that the other track will also advance, meaning that you can only pick one in the same row.</li>
 </ul>
 
-<%= erb :table, cats: arg[:help].advance_the_tracks %>
+<%= erb :table, cats: arg[:help].mark_next_position(arg[:help].advance_the_tracks) %>
 
 <%= header(2, "Look up cat's data") %>
 <ul>
@@ -86,7 +86,7 @@
   <li>Here if you make 11 guaranteed rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong>, totally 11 cats.</li>
 </ul>
 
-<%= erb :table, cats: arg[:help].guaranteed_tracks %>
+<%= erb :table, cats: arg[:help].mark_next_position(arg[:help].guaranteed_tracks) %>
 
 <%= header(2, 'Highlight guaranteed rolls') %>
 <ul>
@@ -98,6 +98,24 @@
 </ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 0, true) %>
+
+<%= header(2, 'Marking the next position') %>
+<ul>
+  <li>
+    When we want to plan a few sequence of guaranteed rolls, to avoid
+    confusion, we likely do not want to advance the tracks just yet.
+  </li>
+  <li>
+    Marking the next position can come handy in this case. We can click on
+    the label of the position, for example 11B, to mark that as the next
+    position.
+  </li>
+  <li>
+    Highlighting following that, will start from 11B rather than 1A in that
+    case. This should help us visualize the paths better with multiple
+    tabs opened for each of the guaranteed rolls.
+  </li>
+</ul>
 
 <%= header(2, 'Switch tracks') %>
 <ul>
@@ -123,7 +141,7 @@
   <li>You're staying on the same track, because the next roll is still <span class="uber">3B uber cat</span> and so on, but the perspective is changed and swapped.</li>
 </ul>
 
-<%= erb :table, cats: arg[:help].swap_the_tracks %>
+<%= erb :table, cats: arg[:help].mark_next_position(arg[:help].swap_the_tracks) %>
 
 <%= header(2, 'Consecutive duplicated rare cats') %>
 <ul>

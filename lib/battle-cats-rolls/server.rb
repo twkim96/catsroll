@@ -55,6 +55,9 @@ module BattleCatsRolls
       '/robots.txt' => '/robots.txt' do
       run Rack::Files.new(File.expand_path('asset', __dir__))
     end
+    rewrite '/extract' => '' do
+      run Rack::Files.new("#{Root}/extract/asset")
+    end
 
     map '/seek', to: '/seek', host: SeekHost do
       run Web::Seek.new
@@ -109,8 +112,7 @@ module BattleCatsRolls
     require_relative 'runner'
 
     Task.create(__method__) do
-      # sleep(11 * 60)
-      sleep(61 * 60) # Delay longer for now, see how it'll go
+      sleep(61 * 60)
 
       next if Task.shutting_down
 
@@ -119,7 +121,14 @@ module BattleCatsRolls
 
         Runner.build(lang)
       rescue Date::Error => e
-        puts "WARN: Ignoring error for #{lang}: <#{e.class}> #{e.message}"
+        puts "WARN: Ignoring for #{lang}: <#{e.class}> #{e.message}"
+      rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError => e
+        puts "WARN: Retrying for #{lang}: <#{e.class}> #{e.message}"
+        begin
+          Runner.build(lang)
+        rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError => e
+          puts "WARN: Retried. Ignoring for #{lang}: <#{e.class}> #{e.message}"
+        end
       end
 
       next if Task.shutting_down

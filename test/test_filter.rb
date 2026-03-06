@@ -12,7 +12,7 @@ describe BattleCatsRolls::Filter do
 
   def chain
     @chain ||= BattleCatsRolls::Filter::Chain.new(
-      ball.cats.dup, exclude_talents)
+      cats: ball.cats.dup, exclude_talents: exclude_talents)
   end
 
   would 'not give Metal Cat when filtering against metal specialization' do
@@ -117,85 +117,158 @@ describe BattleCatsRolls::Filter do
   end
 
   would 'filter high DPS' do
-    ids = chain.filter!(['high_DPS'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['high'], 'all',
+      BattleCatsRolls::Filter::DPS).keys
 
     expect(ids).include?(586) # Baby Garu
   end
 
   would 'filter very high DPS' do
-    ids = chain.filter!(['very_high_DPS'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['very_high'], 'all',
+      BattleCatsRolls::Filter::DPS).keys
 
     expect(ids).include?(649) # Lovestruck Lesser Demon
   end
 
+  would 'filter high effective DPS' do
+    ids = chain.filter!(['high_effectively'], 'all',
+      BattleCatsRolls::Filter::DPS).keys
+
+    expect(ids).include?(243) # Santa Kuu
+    expect(ids).include?(654) # Elder Beast Naala
+  end
+
+  would 'filter very high effective DPS' do
+    ids = chain.filter!(['very_high_effectively'], 'all',
+      BattleCatsRolls::Filter::DPS).keys
+
+    expect(ids).include?(442) # D'arktanyan
+    expect(ids).include?(691) # Child of Destiny Phono
+  end
+
+  would 'filter extremely high effective DPS' do
+    ids = chain.filter!(['extremely_high_effectively'], 'all',
+      BattleCatsRolls::Filter::DPS).keys
+
+    expect(ids).include?(693) # Issun Boshi
+    expect(ids).include?(792) # Kaoru Hanayama
+  end
+
   would 'filter high single blow' do
-    ids = chain.filter!(['high_single_blow'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['high'], 'all',
+      BattleCatsRolls::Filter::Damage).keys
 
     expect(ids).include?(284) # Pai-Pai
   end
 
   would 'filter very high single blow' do
-    ids = chain.filter!(['very_high_single_blow'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['very_high'], 'all',
+      BattleCatsRolls::Filter::Damage).keys
 
     expect(ids).include?(107) # Kai
   end
 
+  would 'filter high effective single blow' do
+    ids = chain.filter!(['high_effectively'], 'all',
+      BattleCatsRolls::Filter::Damage).keys
+
+    expect(ids).include?(363) # Saber
+    expect(ids).include?(739) # Izanami of Dusk
+  end
+
+  would 'filter very high effective single blow' do
+    ids = chain.filter!(['very_high_effectively'], 'all',
+      BattleCatsRolls::Filter::Damage).keys
+
+    expect(ids).include?(334) # Shadow Gao
+    expect(ids).include?(793) # Katsumi Orochi
+  end
+
+  would 'filter extremely high effective single blow' do
+    ids = chain.filter!(['extremely_high_effectively'], 'all',
+      BattleCatsRolls::Filter::Damage).keys
+
+    expect(ids).include?(284) # Pai-Pai
+    expect(ids).include?(467) # Black Zeus
+  end
+
   would 'filter high speed' do
-    ids = chain.filter!(['high_speed'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['20'], 'all',
+      BattleCatsRolls::Filter::Speed).keys
 
     expect(ids).include?(93) # Crazed Tank Cat
   end
 
   would 'filter very high speed' do
-    ids = chain.filter!(['very_high_speed'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['40'], 'all',
+      BattleCatsRolls::Filter::Speed).keys
 
     expect(ids).include?(716) # Mighty Sphinx Korps
   end
 
   would 'filter high health' do
-    ids = chain.filter!(['high_health'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['high'], 'all',
+      BattleCatsRolls::Filter::Health).keys
 
     expect(ids).include?(60) # Baby Cat
   end
 
   would 'filter very high health' do
-    ids = chain.filter!(['very_high_health'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['very_high'], 'all',
+      BattleCatsRolls::Filter::Health).keys
 
     expect(ids).include?(770) # Hanasaka Cat
   end
 
+  would 'filter high effective health' do
+    ids = chain.filter!(['high_effectively'], 'all',
+      BattleCatsRolls::Filter::Health).keys
+
+    expect(ids).include?(98) # Crazed Fish Cat
+    expect(ids).include?(448) # Miter Saw Cat
+  end
+
+  would 'filter very high effective health' do
+    ids = chain.filter!(['very_high_effectively'], 'all',
+      BattleCatsRolls::Filter::Health).keys
+
+    expect(ids).include?(323) # Sarukani
+    expect(ids).include?(692) # Ape Lord Luza
+    expect(ids).include?(592) # KAITO & Cat
+  end
+
+  would 'filter extremely high effective health' do
+    ids = chain.filter!(['extremely_high_effectively'], 'all',
+      BattleCatsRolls::Filter::Health).keys
+
+    expect(ids).include?(73) # Maeda Keiji
+    expect(ids).include?(535) # Hades the Punisher
+  end
+
   would 'filter fast production' do
-    ids = chain.filter!(['fast_production'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['350'], 'all',
+      BattleCatsRolls::Filter::Production).keys
 
     expect(ids).include?(381) # D'artanyan
   end
 
   would 'filter very fast production' do
-    ids = chain.filter!(['very_fast_production'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['175'], 'all',
+      BattleCatsRolls::Filter::Production).keys
 
     expect(ids).include?(137) # Momotaro
   end
 
   would 'filter cheap' do
-    ids = chain.filter!(['cheap'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['1000'], 'all',
+      BattleCatsRolls::Filter::Cost).keys
 
     expect(ids).include?(523) # Nymph Cat
   end
 
   would 'filter very cheap' do
-    ids = chain.filter!(['very_cheap'], 'all',
-      BattleCatsRolls::Filter::Aspect).keys
+    ids = chain.filter!(['500'], 'all',
+      BattleCatsRolls::Filter::Cost).keys
 
     expect(ids).include?(528) # Slime Cat
   end

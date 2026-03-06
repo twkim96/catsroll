@@ -2,25 +2,43 @@
 
 require_relative 'ability'
 require_relative 'attack'
+require_relative 'provider'
+require_relative 'root'
 
 module BattleCatsRolls
   class Stat < Struct.new(
-    :id, :info, :index, :level, :conjure_info,
-    :sum_no_wave, :dps_no_critical,
+    :id, :info, :index, :level, :conjure_info, :cat,
+    :exclude_talents, :sum_no_wave, :dps_no_critical,
     keyword_init: true)
 
     DefaultLevel = 30
+    FPS = 30
 
     def inspect
       "#<#{self.class} id=#{id.inspect} name=#{name.inspect}>"
     end
 
     def name
-      info.dig('name', index)
+      info.dig('name', index) || cat&.pick_name(index)
     end
 
     def desc
-      info.dig('desc', index)
+      info.dig('desc', index) || cat&.pick_description(index)
+    end
+
+    def img_src lang
+      dir = "#{Root}/extract/asset"
+      path = sprintf("%s/uni%03d_%s00.png",
+        lang, id - 1, Provider.forms[index])
+
+      if File.exist?("#{dir}/#{path}")
+        "/extract/#{path}"
+      else
+        # Default dimension on Firefox is 1x1, but nonsense on Safari/Chrome
+        "data:image/svg+xml," \
+          "<svg xmlns='http://www.w3.org/2000/svg'" \
+          "%20width='1'%20height='1'/>"
+      end
     end
 
     def stat
@@ -31,12 +49,12 @@ module BattleCatsRolls
       end
     end
 
-    def fps
-      30
-    end
-
     def level
       super || DefaultLevel
+    end
+
+    def effective_level
+      @effective_level ||= [level, info['max_level']].min
     end
 
     def health
@@ -111,6 +129,16 @@ module BattleCatsRolls
 
     def base_range
       stat['long_range_0'] || range
+    end
+
+    def blind_spot
+      min = attacks.min_by{ |atk| atk.area_range.begin }.area_range.begin
+
+      if -width < min
+        min - 1
+      else
+        '-'
+      end
     end
 
     def width
@@ -299,8 +327,8 @@ module BattleCatsRolls
     def level_multiplier
       @level_multiplier ||= begin
         growth = info['growth'].map{ |percent| percent / 100.0 }
-        reminder = level % 10
-        steps = level / 10
+        reminder = effective_level % 10
+        steps = effective_level / 10
         1 + # base multiplier
           (growth[0...steps].sum * 10) + # sum of every 10 levels
           ((growth[steps] || 0) * reminder) -

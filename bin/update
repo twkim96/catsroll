@@ -1,7 +1,7 @@
 #!/bin/sh
 
 root=$(readlink -e "$(dirname "$0")"/..)
-chown -R godfat:godfat "$root/data" "$root/build"
+chown -R godfat:godfat "$root/data" "$root/build" "$root/extract/asset"
 
 user_git(){
   git -C "$root" "$@"
@@ -13,5 +13,5 @@ user_git pull
 user_git stash pop
 user_git reset
 
-chown -R bcat:bcat "$root/data" "$root/build"
+chown -R bcat:bcat "$root/data" "$root/build" "$root/extract/asset"
 sudo -u bcat ruby "$root/bin/cleanup-apk.rb"

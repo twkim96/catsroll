@@ -13,17 +13,13 @@ optional ones:
 If you would like to avoid installing unnecessary dependencies:
 
     gem install bundler
-    bundle config set without 'build:cache:test'
+    bundle config set without 'cache:test'
     bundle install
 
 And you should pick a caching strategy by choosing one:
 
 * Set up memcached and run `gem install dalli`
 * Use LRU cache so run `gem install lru_redux`
-
-Lastly if you want to build the data:
-
-    gem install nokogiri
 
 ### `sleepy_penguin` compile error on Mac
 
@@ -99,24 +95,6 @@ First install [clang](https://clang.llvm.org), then:
 This should build the seed seeker at: `Seeker/Seeker-VampireFlower`, which
 will be used by the Ruby server.
 
-## How to build the forgothowtoreddid seed seeker:
-
-First install [clang++](https://clang.llvm.org), then:
-
-    ./Seeker/bin/build-8.6.sh
-
-This should build the seed seeker at: `Seeker/Seeker-8.6`, which will be used
-by the Ruby server.
-
-## (Deprecated) How to build the 8.5 and 8.4 seed seeker:
-
-First install [GHC](https://www.haskell.org/ghc/), then:
-
-    ./Seeker/bin/build.sh
-
-This should build the seed seeker at: `Seeker/Seeker`, which will be used
-by the Ruby server.
-
 ## How to run the server locally:
 
     ./bin/server
@@ -157,7 +135,7 @@ Tweak the paths in `config/battlecatsrolls@.service` accordingly and run:
 
 Note that this also:
 
-* Set up a bcat user to run for the application server
+* Set up a `bcat` user to run for the application server
 * Set up Git config so auto-updater can work properly
 * Set up sudoer so `bin/rsync-data` can work properly
 
@@ -271,12 +249,13 @@ Build BCKR data:
 * [Battle Cats Ultimate](https://github.com/battlecatsultimate/BCU_java_util_common)
 * [Normal gacha tracking](https://github.com/ampuri/bc-normal-seed-tracking)
   * [Normal gacha data](https://github.com/ampuri/bc-normal-seed-tracking/blob/master/src/utils/bannerData.tsx)
-* [The Battle Cats Modding Library](https://github.com/fieryhenry/tbcml)
-  * [Download server data](https://github.com/fieryhenry/tbcml/blob/master/src/tbcml/server_handler.py)
+* [The Battle Cats Modding Library](https://codeberg.org/fieryhenry/tbcml)
+  * [Download server data](https://codeberg.org/fieryhenry/tbcml/src/branch/master/src/tbcml/server_handler.py)
 
 ## CONTRIBUTORS:
 
 * clam
+* fieryhenry
 * forgothowtoreddid (@reddid)
 * Lin Jen-Shin (@godfat)
 * MandarinSmell
@@ -289,7 +268,7 @@ Build BCKR data:
 
 Apache License 2.0
 
-Copyright (c) 2018-2025, Lin Jen-Shin (godfat)
+Copyright (c) 2018-2026, Lin Jen-Shin (godfat)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

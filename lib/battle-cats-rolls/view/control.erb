@@ -1,26 +1,29 @@
+<%= hidden_inputs('pos') %>
+
 <% if route.path_info == '/' %>
 <div class="control">
-  <label for="seed_input">Seed:</label>
+  <label for="seed_input" title="Seed to determine the tracks">Seed:</label>
   <input
     type="number" id="seed_input" name="seed"
     value="<%= route.seed %>"
     onclick="this.select()">
 
-  <label for="details_input">Details:
+  <label for="details_input" title="Show gacha information and seed values used to determine the rarities and slots">Details:
     <input type="checkbox" id="details_input" name="details"
       <%= checked_details %>
       onchange="roll(this)">
   </label>
 
-  <label for="count_input">Count:</label>
+  <label for="count_input" title="Steps to show in the tracks">Count:</label>
   <input
     type="number" id="count_input" name="count"
-    min="1" max="999" value="<%= route.count %>"
+    min="1" max="<%= BattleCatsRolls::TrackMaxCount %>" value="<%= route.count %>"
     onclick="this.select()">
 
   <input type="submit" value="Roll">
 
-  <label for="last_select">Last roll:</label>
+  <% if route.pos == '1A' %>
+  <label for="last_select" title="This is used to determine if 1A is a duplicated rare or not">Last roll:</label>
   <select id="last_select" name="last" onchange="roll(this)">
     <option value="<%= route.last %>"></option>
 
@@ -52,6 +55,7 @@
       <% end %>
     </optgroup>
   </select>
+  <% end %>
 </div>
 <% else %>
 <%= hidden_inputs('seed', 'details', 'count', 'last') %>

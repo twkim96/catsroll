@@ -394,6 +394,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 .menu { width: 60px; height: 60px; }
 .section { margin-bottom: 15px; }
+.cat_avatar { height: 85px; overflow: hidden; }
+.cat_avatar img { position: relative; top: -25% }
 .border, .border_upper, .border_lower { border: 2px solid; }
 .border_upper { border-bottom: none; }
 .border_lower { border-top: none; }

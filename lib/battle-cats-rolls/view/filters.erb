@@ -1,13 +1,8 @@
 <div class="cats">
   <div class="cats_filters">
-    <label for="exclude_talents">
-      <input type="checkbox" id="exclude_talents" name="exclude_talents"
-        <%= checked_exclude_talents %>
-        onchange="roll(this)">
-       Exclude talents
-    </label>
+    <%= erb :stats_options %>
 
-    <table>
+    <table><tbody>
       <tr>
         <td class="for">
           <label for="for_against_any">
@@ -25,12 +20,12 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Specialization</strong></div>
-          <% BattleCatsRolls::Filter::Specialization.keys.each do |type| %>
+          <% BattleCatsRolls::Filter::Specialization.each_key do |type| %>
             <label for="<%= type %>">
               <input type="checkbox" name="against" id="<%= type %>"
                 value="<%= type %>" <%= checked_against(type) %>
                 onchange="roll(this)">
-              <%= l10n(type.capitalize) %>
+              <%= display_filter(type) %>
             </label>
           <% end %>
         </td>
@@ -46,12 +41,12 @@
         </td>
         <td class="filter">
           <div><strong>Buff</strong></div>
-          <% BattleCatsRolls::Filter::Buff.keys.each do |buff| %>
+          <% BattleCatsRolls::Filter::Buff.each_key do |buff| %>
           <label for="<%= buff %>">
             <input type="checkbox" name="buff" id="<%= buff %>"
              value="<%= buff %>" onchange="roll(this)"
              <%= checked_buff(buff) %>>
-            <%= l10n(buff.capitalize.tr('_', ' ')) %>
+            <%= display_filter(buff) %>
           </label>
           <% end %>
         </td>
@@ -70,12 +65,12 @@
           </label>
         </td>
         <td class="filter">
-          <% BattleCatsRolls::Filter::Resistant.keys.each do |resistant| %>
+          <% BattleCatsRolls::Filter::Resistant.each_key do |resistant| %>
           <label for="<%= resistant %>">
             <input type="checkbox" name="resistant" id="<%= resistant %>"
               value="<%= resistant %>" <%= checked_resistant(resistant) %>
               onchange="roll(this)">
-            <%= l10n(resistant.capitalize.tr('_', ' ')) %>
+            <%= display_filter(resistant) %>
           </label>
           <% end %>
         </td>
@@ -91,12 +86,12 @@
         </td>
         <td class="filter" colspan="2">
           <div><strong>Range</strong></div>
-          <% BattleCatsRolls::Filter::Range.keys.each do |range| %>
+          <% BattleCatsRolls::Filter::Range.each_key do |range| %>
           <label for="<%= range %>">
             <input type="checkbox" name="range" id="<%= range %>"
               value="<%= range %>" <%= checked_range(range) %>
               onchange="roll(this)">
-            <%= l10n(range.capitalize.tr('_', ' ')) %>
+            <%= display_filter(range) %>
           </label>
           <% end %>
         </td>
@@ -108,12 +103,12 @@
               onchange="roll(this)">
             <%= l10n('Any') %>
           </label>
-          <% BattleCatsRolls::Filter::Area.keys.each do |area| %>
+          <% BattleCatsRolls::Filter::Area.each_key do |area| %>
           <label for="<%= area %>">
             <input type="radio" name="area" id="<%= area %>"
               value="<%= area %>" <%= checked_area(area) %>
               onchange="roll(this)">
-            <%= l10n(area.capitalize) %>
+            <%= display_filter(area) %>
           </label>
           <% end %>
         </td>
@@ -135,12 +130,12 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Control</strong></div>
-          <% BattleCatsRolls::Filter::Control.keys.each do |control| %>
+          <% BattleCatsRolls::Filter::Control.each_key do |control| %>
           <label for="control_<%= control %>">
             <input type="checkbox" name="control" id="control_<%= control %>"
               value="<%= control %>" <%= checked_control(control) %>
               onchange="roll(this)">
-            <%= l10n(control.capitalize) %>
+            <%= display_filter(control) %>
           </label>
           <% end %>
         </td>
@@ -162,12 +157,12 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Immunity</strong></div>
-          <% BattleCatsRolls::Filter::Immunity.keys.each do |immunity| %>
+          <% BattleCatsRolls::Filter::Immunity.each_key do |immunity| %>
           <label for="immunity_<%= immunity %>">
             <input type="checkbox" name="immunity" id="immunity_<%= immunity %>"
               value="<%= immunity %>" <%= checked_immunity(immunity) %>
               onchange="roll(this)">
-            <%= l10n(immunity.capitalize.tr('_', ' ')) %>
+            <%= display_filter(immunity) %>
           </label>
           <% end %>
         </td>
@@ -189,12 +184,12 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Counter</strong></div>
-          <% BattleCatsRolls::Filter::Counter.keys.each do |filter| %>
+          <% BattleCatsRolls::Filter::Counter.each_key do |filter| %>
           <label for="<%= filter %>">
             <input type="checkbox" name="counter" id="<%= filter %>"
               value="<%= filter %>" <%= checked_counter(filter) %>
               onchange="roll(this)">
-            <%= l10n(filter.capitalize.tr('_', ' ')) %>
+            <%= display_filter(filter) %>
           </label>
           <% end %>
         </td>
@@ -216,12 +211,12 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Combat</strong></div>
-          <% BattleCatsRolls::Filter::Combat.keys.each do |filter| %>
+          <% BattleCatsRolls::Filter::Combat.each_key do |filter| %>
           <label for="<%= filter %>">
             <input type="checkbox" name="combat" id="<%= filter %>"
               value="<%= filter %>" <%= checked_combat(filter) %>
               onchange="roll(this)">
-            <%= l10n(filter.capitalize.tr('_', ' ')) %>
+            <%= display_filter(filter) %>
           </label>
           <% end %>
         </td>
@@ -243,17 +238,208 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Other</strong></div>
-          <% BattleCatsRolls::Filter::Other.keys.each do |filter| %>
+          <% BattleCatsRolls::Filter::Other.each_key do |filter| %>
           <label for="<%= filter %>">
             <input type="checkbox" name="other" id="<%= filter %>"
               value="<%= filter %>" <%= checked_other(filter) %>
               onchange="roll(this)">
-            <%= l10n(filter.capitalize.tr('_', ' ')) %>
+            <%= display_filter(filter) %>
           </label>
           <% end %>
         </td>
       </tr>
-      <tr>
+
+      <% if route.advanced_filters %>
+      <tr class="attack">
+        <td class="for">
+          <label for="dps_any">
+            <input type="radio" id="dps_any" name="dps"
+              value="any" <%= checked_dps('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>DPS</strong></div>
+          <% BattleCatsRolls::Filter::DPS.each_key do |filter| %>
+          <label for="DPS_<%= filter %>">
+            <input type="radio" name="dps" id="DPS_<%= filter %>"
+              value="<%= filter %>" <%= checked_dps(filter) %>
+              onchange="roll(this)">
+            <%= display_filter(filter) %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="damage_any">
+            <input type="radio" id="damage_any" name="damage"
+              value="any" <%= checked_damage('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Single blow damage</strong></div>
+          <% BattleCatsRolls::Filter::Damage.each_key do |filter| %>
+          <label for="damage_<%= filter %>">
+            <input type="radio" name="damage" id="damage_<%= filter %>"
+              value="<%= filter %>" <%= checked_damage(filter) %>
+              onchange="roll(this)">
+            <%= display_filter(filter) %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="health_any">
+            <input type="radio" id="health_any" name="health"
+              value="any" <%= checked_health('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Health</strong></div>
+          <% BattleCatsRolls::Filter::Health.each_key do |filter| %>
+          <label for="health_<%= filter %>">
+            <input type="radio" name="health" id="health_<%= filter %>"
+              value="<%= filter %>" <%= checked_health(filter) %>
+              onchange="roll(this)">
+            <%= display_filter(filter) %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="knockbacks_any">
+            <input type="radio" id="knockbacks_any" name="knockbacks"
+              value="any" <%= checked_knockbacks('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Knockbacks</strong></div>
+          <% BattleCatsRolls::Filter::Knockbacks.each do |filter, mod| %>
+          <label for="knockbacks_<%= filter %>">
+            <input type="radio" name="knockbacks" id="knockbacks_<%= filter %>"
+              value="<%= filter %>" <%= checked_knockbacks(filter) %>
+              onchange="roll(this)">
+            <%= mod.display %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="stand_any">
+            <input type="radio" id="stand_any" name="stand"
+              value="any" <%= checked_stand('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Stand</strong></div>
+          <% BattleCatsRolls::Filter::Stand.each do |filter, mod| %>
+          <label for="stand_<%= filter %>">
+            <input type="radio" name="stand" id="stand_<%= filter %>"
+              value="<%= filter %>" <%= checked_stand(filter) %>
+              onchange="roll(this)">
+            <%= mod.display %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="reach_any">
+            <input type="radio" id="reach_any" name="reach"
+              value="any" <%= checked_reach('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Reach</strong></div>
+          <% BattleCatsRolls::Filter::Reach.each do |filter, mod| %>
+          <label for="reach_<%= filter %>">
+            <input type="radio" name="reach" id="reach_<%= filter %>"
+              value="<%= filter %>" <%= checked_reach(filter) %>
+              onchange="roll(this)">
+            <%= mod.display %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="speed_any">
+            <input type="radio" id="speed_any" name="speed"
+              value="any" <%= checked_speed('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Speed</strong></div>
+          <% BattleCatsRolls::Filter::Speed.each do |filter, mod| %>
+          <label for="speed_<%= filter %>">
+            <input type="radio" name="speed" id="speed_<%= filter %>"
+              value="<%= filter %>" <%= checked_speed(filter) %>
+              onchange="roll(this)">
+            <%= mod.display %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="cost_any">
+            <input type="radio" id="cost_any" name="cost"
+              value="any" <%= checked_cost('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Cost</strong></div>
+          <% BattleCatsRolls::Filter::Cost.each do |filter, mod| %>
+          <label for="cost_<%= filter %>">
+            <input type="radio" name="cost" id="cost_<%= filter %>"
+              value="<%= filter %>" <%= checked_cost(filter) %>
+              onchange="roll(this)">
+            <%= mod.display %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
+          <label for="production_any">
+            <input type="radio" id="production_any" name="production"
+              value="any" <%= checked_production('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Production</strong></div>
+          <% BattleCatsRolls::Filter::Production.each do |filter, mod| %>
+          <label for="production_<%= filter %>">
+            <input type="radio" name="production" id="production_<%= filter %>"
+              value="<%= filter %>" <%= checked_production(filter) %>
+              onchange="roll(this)">
+            <%= mod.display %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
         <td class="for">
           <label for="for_aspect_any">
             <input type="radio" id="for_aspect_any" name="for_aspect"
@@ -270,17 +456,18 @@
         </td>
         <td class="filter" colspan="3">
           <div><strong>Aspect</strong></div>
-          <% BattleCatsRolls::Filter::Aspect.keys.each do |filter| %>
+          <% BattleCatsRolls::Filter::Aspect.each_key do |filter| %>
           <label for="<%= filter %>">
             <input type="checkbox" name="aspect" id="<%= filter %>"
               value="<%= filter %>" <%= checked_aspect(filter) %>
               onchange="roll(this)">
-            <%= l10n(filter.sub(/^./, &:upcase).tr('_', ' ')) %>
+            <%= display_filter(filter) %>
           </label>
           <% end %>
         </td>
       </tr>
-    </table>
+      <% end %>
+    </tbody></table>
   </div>
 
   <%= header(2,
@@ -290,15 +477,13 @@
 
   <div class="cats_listing">
   <% each_cats_by_rarity(arg[:cats_by_rarity]) do |rarity, cats| %>
-    <%= header(2, BattleCatsRolls::Cat.wiki_rarity_label(rarity)) %>
+    <%= rarity_header(rarity, cats.size) %>
     <div class="cats_by_rarity">
       <% cats.reverse_each do |c| %>
-      <label for="cat-<%= c.id %>">
-        <input type="checkbox" onchange="roll(this)"
-          name="t" id="cat-<%= c.id %>" value="<%= c.id %>"
-          <%= checked_cat(c) %>>
-        <%= link_to_roll(c) %>
-      </label>
+      <input type="checkbox" onchange="roll(this)"
+        name="t" id="cat-<%= c.id %>" value="<%= c.id %>"
+        <%= checked_cat(c) %>>
+      <%= link_to_roll(c) %>
       <% end %>
     </div>
   <% end %>

@@ -5,7 +5,6 @@ require_relative 'crystal_ball'
 require_relative 'gacha_pool'
 require_relative 'gacha'
 require_relative 'owned'
-require_relative 'aws_auth'
 require_relative 'find_cat'
 require_relative 'cat'
 require_relative 'stat'
@@ -52,7 +51,11 @@ module BattleCatsRolls
          gacha.rare, gacha.supa, gacha.uber, gacha.legend,
          gacha.rare_cats.size, gacha.supa_cats.size,
          gacha.uber_cats.size, gacha.legend_cats.size,
-         *request.POST['rolls']].join(' ').squeeze(' ')
+         *seek_rolls].map(&:to_s)
+    end
+
+    def seek_rolls
+      @seek_rolls ||= [*request.POST['rolls']].join(' ').split(' ')
     end
 
     def seek_result key
@@ -67,6 +70,7 @@ module BattleCatsRolls
 
     def prepare_tracks
       gacha.pool.add_future_ubers(ubers) if ubers > 0
+      gacha.position = pos
 
       if last.nonzero?
         gacha.last_roll = Cat.new(id: last)
@@ -92,6 +96,8 @@ module BattleCatsRolls
 
       if pick = request.params_coercion_with_nil('pick', :to_s)
         gacha.finish_picking(cats, pick, guaranteed_rolls)
+      else
+        gacha.mark_next_position(cats)
       end
 
       found_cats =
@@ -136,7 +142,11 @@ module BattleCatsRolls
     end
 
     def tsv_expires_in
-      600
+      3600
+    end
+
+    def jwt_expires_in
+      3599
     end
 
     def throttle_ip_expires_in
@@ -165,6 +175,10 @@ module BattleCatsRolls
 
     def ui_lang
       @ui_lang = if ui.empty? then lang else ui end
+    end
+
+    def pos
+      @pos ||= request.params_coercion_with_nil('pos', :to_s) || '1A'
     end
 
     def version
@@ -274,7 +288,7 @@ module BattleCatsRolls
           1,
           [
             request.params_coercion_with_nil('count', :to_i) || 100,
-            FindCat::Max
+            TrackMaxCount
           ].min
         ].max
     end
@@ -349,16 +363,22 @@ module BattleCatsRolls
       Stat::DefaultLevel
     end
 
-    def exclude_talents
-      return @exclude_talents if instance_variable_defined?(:@exclude_talents)
-
-      @exclude_talents = request.params_coercion_true_or_nil('exclude_talents')
-    end
-
     def hide_wave
       return @hide_wave if instance_variable_defined?(:@hide_wave)
 
       @hide_wave = request.params_coercion_true_or_nil('hide_wave')
+    end
+
+    def advanced_filters
+      return @advanced_filters if instance_variable_defined?(:@advanced_filters)
+
+      @advanced_filters = request.params_coercion_true_or_nil('advanced_filters')
+    end
+
+    def exclude_talents
+      return @exclude_talents if instance_variable_defined?(:@exclude_talents)
+
+      @exclude_talents = request.params_coercion_true_or_nil('exclude_talents')
     end
 
     def sum_no_wave
@@ -544,6 +564,86 @@ module BattleCatsRolls
       @other ||= Array(request.params['other'])
     end
 
+    def dps
+      @dps ||= request.params_coercion_with_nil('dps', :to_s) || default_dps
+    end
+
+    def default_dps
+      @default_dps ||= 'any'
+    end
+
+    def damage
+      @damage ||= request.params_coercion_with_nil('damage', :to_s) ||
+        default_damage
+    end
+
+    def default_damage
+      @default_damage ||= 'any'
+    end
+
+    def health
+      @health ||= request.params_coercion_with_nil('health', :to_s) ||
+        default_health
+    end
+
+    def default_health
+      @default_health ||= 'any'
+    end
+
+    def knockbacks
+      @knockbacks ||= request.params_coercion_with_nil('knockbacks', :to_s) ||
+        default_knockbacks
+    end
+
+    def default_knockbacks
+      @default_knockbacks ||= 'any'
+    end
+
+    def stand
+      @stand ||= request.params_coercion_with_nil('stand', :to_s) ||
+        default_stand
+    end
+
+    def default_stand
+      @default_stand ||= 'any'
+    end
+
+    def reach
+      @reach ||= request.params_coercion_with_nil('reach', :to_s) ||
+        default_reach
+    end
+
+    def default_reach
+      @default_reach ||= 'any'
+    end
+
+    def speed
+      @speed ||= request.params_coercion_with_nil('speed', :to_s) ||
+        default_speed
+    end
+
+    def default_speed
+      @default_speed ||= 'any'
+    end
+
+    def cost
+      @cost ||= request.params_coercion_with_nil('cost', :to_s) ||
+        default_cost
+    end
+
+    def default_cost
+      @default_cost ||= 'any'
+    end
+
+    def production
+      @production ||= request.params_coercion_with_nil('production', :to_s) ||
+        default_production
+    end
+
+    def default_production
+      @default_production ||= 'any'
+    end
+
     def for_aspect
       @for_aspect ||=
         case value = request.params_coercion_with_nil('for_aspect', :to_s)
@@ -563,15 +663,22 @@ module BattleCatsRolls
     end
 
     def uri_to_roll cat
-      uri(query: {seed: cat.slot_fruit.seed, last: cat.id})
+      uri(query: {seed: cat.slot_fruit.seed, last: cat.id, pos: '1A'})
     end
 
     def uri_to_cat cat
       uri(path: "//#{web_host}/cats/#{cat.id}")
     end
 
-    def event_url *args, **options
-      AwsAuth.event_url(lang, *args, base_uri: event_base_uri, **options)
+    def event_url file: 'gatya.tsv',
+      base_uri: "#{request.scheme}://#{seek_host}/seek",
+      kind: ''
+      case lang
+      when 'en', 'tw', 'jp', 'kr'
+        "#{base_uri}/#{lang}#{kind}/#{file}"
+      else
+        raise "Unknown language: #{lang}"
+      end
     end
 
     private
@@ -652,10 +759,6 @@ module BattleCatsRolls
       end
     end
 
-    def event_base_uri
-      "#{request.scheme}://#{seek_host}/seek"
-    end
-
     def query_string query
       query.flat_map do |key, value|
         case value
@@ -671,24 +774,33 @@ module BattleCatsRolls
 
     def default_query query={}, include_filters: false
       keys = %i[
-        seed last event custom rate c_rare c_supa c_uber level lang ui
+        seed pos last event custom rate c_rare c_supa c_uber level lang ui
         version seeker name theme count find
         no_guaranteed force_guaranteed ubers details
-        exclude_talents hide_wave sum_no_wave dps_no_critical
+        advanced_filters exclude_talents sum_no_wave dps_no_critical
+        hide_wave
         o
       ]
 
-      keys.push(
-        :for_against, :against,
-        :for_buff, :buff,
-        :for_resistant, :resistant,
-        :for_range, :range, :area,
-        :for_control, :control,
-        :for_immunity, :immunity,
-        :for_counter, :counter,
-        :for_combat, :combat,
-        :for_other, :other,
-        :for_aspect, :aspect) if include_filters
+      if include_filters
+        keys.push(
+          :for_against, :against,
+          :for_buff, :buff,
+          :for_resistant, :resistant,
+          :for_range, :range, :area,
+          :for_control, :control,
+          :for_immunity, :immunity,
+          :for_counter, :counter,
+          :for_combat, :combat,
+          :for_other, :other)
+
+        if advanced_filters
+          keys.push(
+            :dps, :damage, :health, :knockbacks,
+            :stand, :reach, :speed, :cost, :production,
+            :for_aspect, :aspect)
+        end
+      end
 
       ret = keys.inject({}) do |result, key|
         result[key] = query[key] || __send__(key)
@@ -714,6 +826,7 @@ module BattleCatsRolls
     def cleanup_query query
       query.compact.select do |key, value|
         if (key == :seed && value == 0) ||
+           (key == :pos && value == '1A') ||
            (key == :lang && value == 'en') ||
            (key == :ui && value == '') ||
            (key == :version && value == default_version) ||
@@ -746,6 +859,15 @@ module BattleCatsRolls
            (key == :combat && value == []) ||
            (key == :for_other && value == default_for_other) ||
            (key == :other && value == []) ||
+           (key == :dps && value == default_dps) ||
+           (key == :damage && value == default_damage) ||
+           (key == :health && value == default_health) ||
+           (key == :knockbacks && value == default_knockbacks) ||
+           (key == :stand && value == default_stand) ||
+           (key == :reach && value == default_reach) ||
+           (key == :speed && value == default_speed) ||
+           (key == :cost && value == default_cost) ||
+           (key == :production && value == default_production) ||
            (key == :for_aspect && value == default_for_aspect) ||
            (key == :aspect && value == []) ||
            (key == :event && value == current_event) ||

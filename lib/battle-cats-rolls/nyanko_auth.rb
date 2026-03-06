@@ -22,6 +22,20 @@ module BattleCatsRolls
       end
     end
 
+    def self.request url
+      uri = URI.parse(url)
+      get = Net::HTTP::Get.new(uri)
+
+      # Workaround for weird server cache bug?
+      get.delete('Accept-Encoding')
+
+      http = Net::HTTP.new(uri.hostname, uri.port)
+      http.use_ssl = true if uri.scheme == 'https'
+      http.response_body_encoding = 'UTF-8'
+      # http.set_debug_output($stdout)
+      http.request(get).body
+    end
+
     def generate_inquiry_code
       uri = URI.parse('https://nyanko-backups.ponosgames.com/?action=createAccount&referenceId=')
       request = Net::HTTP::Get.new(uri)

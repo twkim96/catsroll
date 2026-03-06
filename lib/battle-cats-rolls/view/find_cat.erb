@@ -1,6 +1,6 @@
 <% if arg && route.path_info == '/' %>
 <div class="find">
-  <label for="find_select">Find next:</label>
+  <label for="find_select" title="Highlight the cat in the tracks selected here">Find next:</label>
   <select id="find_select" name="find" onchange="roll(this)">
     <option></option>
 
@@ -34,7 +34,7 @@
   </select>
 
   <% if gacha.pool.guaranteed_rolls > 0 %>
-    <label for="no_guaranteed_input">Exclude guaranteed:
+    <label for="no_guaranteed_input" title="Do not show guaranteed. This can be useful when you're trying to find next uber without using guaranteed">Exclude guaranteed:
       <input type="checkbox" id="no_guaranteed_input"
         name="no_guaranteed" value="true"
         <%= checked_no_guaranteed %>
@@ -42,7 +42,7 @@
     </label>
   <% end %>
 
-  <label for="force_guaranteed_input">Simulate guaranteed:</label>
+  <label for="force_guaranteed_input" title="Force show guaranteed even when this gacha banner doesn't have it. This can be useful when you expect there's a guaranteed counterpart for this gacha banner">Simulate guaranteed:</label>
   <select id="force_guaranteed_input" name="force_guaranteed"
     onchange="roll(this)">
     <% [nil, 2, 7, 11, 15].each do |n| %>
@@ -51,7 +51,7 @@
     <% end %>
   </select>
 
-  <label for="add_future_ubers">Add future ubers:</label>
+  <label for="add_future_ubers" title="Add some fake future ubers. This can be useful to guess how ubers will be rotated around when new ubers are added">Add future ubers:</label>
   <select id="add_future_ubers" name="ubers" onchange="roll(this)">
     <% 0.upto(9).each do |n| %>
       <option value="<%= n %>"

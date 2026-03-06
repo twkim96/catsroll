@@ -41,6 +41,8 @@ module BattleCatsRolls
     end
 
     def decode_old base64
+      return [] if base64.empty?
+
       inflate(Base64.urlsafe_decode64(base64)).split(',').map(&:to_i)
     rescue Zlib::Error
       []

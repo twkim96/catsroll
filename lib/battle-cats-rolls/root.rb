@@ -8,4 +8,5 @@ module BattleCatsRolls
   SeekHost = ENV['SEEK_HOST'].freeze
   SeekBind = ENV['SEEK_BIND'].freeze || 9090
   SeekThreads = Integer(ENV['SEEK_THREADS'] || 25)
+  TrackMaxCount = Integer(ENV['TRACK_MAX_COUNT'] || 999)
 end

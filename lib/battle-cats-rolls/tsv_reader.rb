@@ -9,24 +9,6 @@ module BattleCatsRolls
     PoolOffset = 9
     PoolFields = 15
 
-    def self.download url
-      require 'net/http'
-
-      uri = URI.parse(url)
-      get = Net::HTTP::Get.new(uri)
-
-      # Workaround for weird server cache bug?
-      get.delete('Accept-Encoding')
-
-      http = Net::HTTP.new(uri.hostname, uri.port)
-      http.use_ssl = true
-      http.response_body_encoding = 'UTF-8'
-      # http.set_debug_output($stdout)
-      response = http.request(get).body
-
-      new(response)
-    end
-
     def self.read path
       new(File.read(path))
     end
@@ -91,7 +73,7 @@ module BattleCatsRolls
 
     def gacha_option
       @gacha_option ||= parsed_data.drop(1).inject({}) do |result, row|
-        result[Integer(row.first)] = { 'series_id' => Integer(row[-3]) }
+        result[Integer(row.first)] = { 'series_id' => Integer(row[5]) }
         result
       end
     end

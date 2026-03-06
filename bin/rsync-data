@@ -1,5 +1,10 @@
 #!/bin/sh
 
 ruby bin/cleanup-apk.rb
-rsync -avz --rsync-path="sudo -u bcat rsync" data/ godfat.org:~/battle-cats-rolls/data/
+
+for dir in data extract/asset; do
+  rsync -avz --rsync-path="sudo -u bcat rsync" \
+    "$dir/" "godfat.org:battle-cats-rolls/$dir/"
+done
+
 ssh godfat.org sudo battle-cats-rolls/bin/update
