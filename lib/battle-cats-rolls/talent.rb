@@ -449,6 +449,13 @@ module BattleCatsRolls
       end
     end
 
+    class CounterSurge < Talent
+      def initialize(...)
+        super
+        self.ability = Ability::CounterSurge.new
+      end
+    end
+
     class Explosion < Talent
       include TalentUtility
 
