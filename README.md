@@ -254,6 +254,7 @@ Build BCKR data:
 
 ## CONTRIBUTORS:
 
+* @asHOH
 * clam
 * fieryhenry
 * forgothowtoreddid (@reddid)

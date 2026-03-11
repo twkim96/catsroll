@@ -10,6 +10,7 @@ require 'tilt'
 
 require 'cgi'
 require 'erb'
+require 'digest/md5'
 require 'forwardable'
 
 module BattleCatsRolls
@@ -88,7 +89,10 @@ module BattleCatsRolls
         cursor = :navigate
       end
 
-      "#{cursor} #{color_rarity(cat)} #{picked}".chomp(' ')
+      rarity = color_rarity(cat)
+      ownership = :owned if route.owned_set.member?(cat.id)
+
+      [cursor, rarity, *ownership, *picked].join(' ')
     end
 
     def color_rarity cat
@@ -99,8 +103,6 @@ module BattleCatsRolls
         case cat.id
         when route.find
           :found
-        when *route.owned
-          :owned
         when *FindCat.exclusives
           :exclusive
         else
@@ -455,7 +457,7 @@ module BattleCatsRolls
       ticked = route.ticked
 
       if ticked.empty?
-        'checked="checked"' if route.owned.member?(cat.id)
+        'checked="checked"' if route.owned_set.member?(cat.id)
       elsif ticked.member?(cat.id)
         'checked="checked"'
       end
@@ -646,6 +648,11 @@ module BattleCatsRolls
         end
 
       self.class.template(name).render(context, &block)
+    end
+
+    def self.css_digest
+      @css_digest ||= Digest::MD5.file("#{__dir__}/asset/style/tacit.css").
+        hexdigest
     end
 
     def self.template name

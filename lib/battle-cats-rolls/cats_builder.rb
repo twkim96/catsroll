@@ -336,7 +336,7 @@ module BattleCatsRolls
         14 => 'zombie_killer', 59 => 'soul_strike', 12 => 'base_destroyer',
         63 => 'colossus_slayer', 66 => 'sage_slayer', 64 => 'behemoth_slayer',
         17 => 'wave', 62 => 'wave_mini', 56 => 'surge', 65 => 'surge_mini',
-        67 => 'explosion',
+        68 => 'counter_surge', 67 => 'explosion',
         16 => 'extra_money',
         47 => 'immune_knockback', 49 => 'immune_warp',
         45 => 'immune_freeze', 46 => 'immune_slow',
