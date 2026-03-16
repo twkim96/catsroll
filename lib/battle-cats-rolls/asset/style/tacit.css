@@ -352,7 +352,7 @@ body {
     padding: 1px
   }
 }
-form, label, input, input[type="submit"], select, p {
+.form, label, input, input[type="submit"], select, p {
   margin-bottom: 5px;
 }
 label, input, select {
