@@ -429,6 +429,5 @@ h1, h2, h3, h4, h5, h6 {
 .cats_by_rarity { margin-bottom: 18px; }
 #notice { background-color: pink; }
 #seed_input { width: 10em; }
-#ui_select { width: 5em; }
 #count_input, #level_input { width: 3.5em; }
-#rare_input, #supa_input, #uber_input { width: 5em; }
+#rare_input, #supa_input, #uber_input, #ui_select { width: 5em; }
