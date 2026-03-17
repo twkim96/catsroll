@@ -622,7 +622,7 @@ module BattleCatsRolls
     end
 
     def uri_to_bc_stats cat
-      "https://battlecatsstats.com/unit/#{cat.id}/0"
+      "https://battlecatsstats.com/unit/#{cat.id}/#{route.name}"
     end
 
     def uri_to_cat_db cat
