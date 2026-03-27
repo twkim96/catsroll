@@ -288,6 +288,9 @@ void* find_seed_fast(void* args) {
                         arg->seed_begin = begin;
                         arg->seed_end = seed;
                         arg->found_seeds++;
+
+                        if (arg->found_seeds > 1)
+                            return NULL;
                     }
                 }
             }
@@ -335,6 +338,9 @@ void* find_seed_fast(void* args) {
                         arg->seed_begin = begin;
                         arg->seed_end = seed;
                         arg->found_seeds++;
+
+                        if (arg->found_seeds > 1)
+                            return NULL;
                     }
                 }
             }
@@ -352,6 +358,9 @@ void* find_seed_fast(void* args) {
                     arg->seed_begin = begin;
                     arg->seed_end = seed;
                     arg->found_seeds++;
+
+                    if (arg->found_seeds > 1)
+                        return NULL;
                 }
             }
         }
