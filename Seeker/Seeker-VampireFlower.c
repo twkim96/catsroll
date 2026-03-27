@@ -411,6 +411,27 @@ int main(int argc, char* argv[]) {
        return -1;
     }
 
+    LEGEND_CHANCE = 10000 - atoi(argv[5]);
+    UBER_CHANCE = LEGEND_CHANCE - atoi(argv[4]);
+    SUPER_CHANCE = UBER_CHANCE - atoi(argv[3]);
+    RARITY_SIZES[0] = atoi(argv[6]); // number of rare cats on the banner
+    RARITY_SIZES[1] = atoi(argv[7]); // number of super rare cats on the banner
+    RARITY_SIZES[2] = atoi(argv[8]); // number of uber cats on the banner
+    RARITY_SIZES[3] = atoi(argv[9]); // number of legend rare cats on the banner
+
+    USER_NCATS = (argc - 10) / 2; // cats start at argv 10
+    cats = malloc(sizeof(Cat) * USER_NCATS);
+
+    if (!cats) {
+        fprintf(stderr, "malloc error.\n");
+        return 1;
+    }
+
+    for (uint i = 0, j = 10; i < USER_NCATS; i++) {
+        cats[i].rarity = atoi(argv[j++]) - 2;
+        cats[i].slot   = atoi(argv[j++]);
+    }
+
 #ifdef _WIN32
     SYSTEM_INFO sysinfo;
     GetSystemInfo(&sysinfo);
