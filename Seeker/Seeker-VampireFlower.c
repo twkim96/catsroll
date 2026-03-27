@@ -8,13 +8,9 @@ typedef uint32_t uint;
 #ifdef _WIN32
   #include "pthread-win32/pthread.h"
   #include <windows.h>
-  typedef volatile uint atomic_uint; // msvc doesnt implement stdatomic
-  #define atomic_fetch_add(x, v) InterlockedAdd(x, v)
-  #define atomic_store(x, v) InterlockedExchange(x, v)
   #define PROCESS_PRIORITY_HIGH() SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS)
 #else
   #include <pthread.h>
-  #include <stdatomic.h>
   #include <unistd.h> // to query core count
 #define PROCESS_PRIORITY_HIGH() do {} while (0)
 #endif
@@ -31,6 +27,16 @@ typedef uint32_t uint;
 #endif
 
 
+#ifdef __AVX2__
+#include <immintrin.h>
+FORCE_INLINE __m256i xorshift32_8x32(__m256i vector) {
+    vector = _mm256_xor_si256(vector, _mm256_slli_epi32(vector, 13));
+    vector = _mm256_xor_si256(vector, _mm256_srli_epi32(vector, 17));
+    vector = _mm256_xor_si256(vector, _mm256_slli_epi32(vector, 15));
+    return vector;
+}
+#endif
+
 
 typedef enum {
     RARE,
@@ -46,17 +52,19 @@ uint SUPER_CHANCE;
 uint UBER_CHANCE;
 uint LEGEND_CHANCE;
 
-
-// found_seeds is just a way to track how many times seed was written to.
-// if it was written to only once, then we know we found the right match.
-atomic_uint found_seeds;
-atomic_uint seed_begin;
-atomic_uint seed_end;
+uint found_seeds;
+uint seed_begin;
+uint seed_end;
 uint thread_count;
+
+// run 0: search that assumes the first slot is not the result of a duplicate rare
+// run 1: search assumes the first slot is smaller than the shadow pull
+// run 2: search assumes the first slot is greater than the shadow pull
+uint RUN;
 
 typedef struct {
     rarity rarity;
-    uint8_t slot;
+    uint slot;
 } Cat;
 
 uint USER_NCATS;
@@ -100,20 +108,22 @@ static inline uint mod_10000(uint n) {
     return n - (((uint64_t)n * 3518437209) >> 45) * 10000;
 }
 
-// inaccurate first pass
+
 FORCE_INLINE bool simulate_rolls(uint* seed, uint start) {
 
     for (uint j = start; j < USER_NCATS; j++) {
 
-        xorshift32(seed); // dont check if the rarity matches. adding conditions is slow
+        xorshift32(seed);
+
+        // ignore the rarity check. the number of early exits from checking
+        // if the rarity matches is not worth the unpredictable branches
 
         uint slot = xorshift32(seed) % RARITY_SIZES[cats[j].rarity];
 
         if (cats[j].rarity == RARE) {
             if (slot == cats[j-1].slot && cats[j-1].rarity == RARE) { // duplicate rare cat!!!
                 uint newslot = xorshift32(seed) % (RARITY_SIZES[0] - 1);
-                if (newslot >= slot) newslot++;
-                slot = newslot;
+                slot = newslot + (newslot >= slot);
             }
         }
 
@@ -129,6 +139,14 @@ FORCE_INLINE bool verify_seed(uint seed) {
 
     for (uint j = 0; j < USER_NCATS; j++) {
 
+        // first cat is the result of a duplicate rare, ignore it
+        if (RUN != 0 && j == 0) {
+            xorshift32(&seed);
+            xorshift32(&seed);
+            xorshift32(&seed);
+            continue;
+        }
+
         uint temp = mod_10000(xorshift32(&seed));
 
         rarity pulled_rarity = (temp >= SUPER_CHANCE)
@@ -138,15 +156,12 @@ FORCE_INLINE bool verify_seed(uint seed) {
         if (pulled_rarity != cats[j].rarity)
             return false;
 
-        uint cats_in_rarity = RARITY_SIZES[pulled_rarity];
-        uint slot = xorshift32(&seed) % cats_in_rarity;
-
+        uint slot = xorshift32(&seed) % RARITY_SIZES[pulled_rarity];
 
         if (j > 0 && pulled_rarity == RARE) {
             if (slot == cats[j-1].slot && cats[j-1].rarity == RARE) { // duplicate rare cat!!!
                 uint newslot = xorshift32(&seed) % (RARITY_SIZES[0] - 1);
-                if (newslot >= slot) newslot++;
-                slot = newslot;
+                slot = newslot + (newslot >= slot);
             }
         }
 
@@ -166,10 +181,13 @@ typedef struct {
     uint high; // exclusive
     uint start;
     uint end;
+    uint seed_begin;
+    uint seed_end;
+    uint found_seeds;
 } ThreadArgs;
 
 
-FORCE_INLINE void sanitize_range(ThreadArgs* arg) {
+FORCE_INLINE void set_start_and_end(ThreadArgs* arg) {
 
     uint thread_id = arg->thread_id;
     uint low   = arg->low;
@@ -208,8 +226,10 @@ FORCE_INLINE void sanitize_range(ThreadArgs* arg) {
         // this means numbers 7, 25+7, 50+7, 75+7... would pull that same cat
         // we can skip unnecessary values by jumping forward by m each iteration
 
-        uint m = RARITY_SIZES[cats[0].rarity];
-        uint b = cats[0].slot;
+        uint m = RUN == 0 ? RARITY_SIZES[cats[0].rarity]:
+                            RARITY_SIZES[cats[0].rarity] - 1;
+
+        uint b = RUN == 2 ? cats[0].slot - 1 : cats[0].slot;
 
         // if start is not already a multiple of m, move forward
         if (start % m)
@@ -239,13 +259,13 @@ FORCE_INLINE void sanitize_range(ThreadArgs* arg) {
 }
 
 
+void* find_seed_fast(void* args) {
+    ThreadArgs* arg = (ThreadArgs*)args;
 
-void find_seed_fast(ThreadArgs* arg) {
+    // determine the range of values this thread should process
+    set_start_and_end(arg);
 
     if (arg->method) { // rarity algorithm
-
-        // determine the range of values this thread should process
-        sanitize_range(arg);
 
         uint jump = 10000 - (arg->high - arg->low);
 
@@ -253,11 +273,9 @@ void find_seed_fast(ThreadArgs* arg) {
             for (uint to_check = 10000 - jump; (i < arg->end || i == UINT32_MAX) // exclusive, except at UINT32_MAX
                 && (to_check > 0); i++, to_check--) {
 
-                uint seed = i;
+                uint seed = i; // i is already the result of the first PRNG call
 
-                // i is already the result of the first PRNG call
-                uint cats_in_rarity = RARITY_SIZES[cats[0].rarity];
-                uint slot = xorshift32(&seed) % cats_in_rarity;
+                uint slot = xorshift32(&seed) % RARITY_SIZES[cats[0].rarity];
 
                 if (slot != cats[0].slot) continue;
 
@@ -266,13 +284,11 @@ void find_seed_fast(ThreadArgs* arg) {
                 if (simulate_rolls(&seed, 1)) {
 
                     uint begin = reverse_xorshift32(i, 1);
-                    if (!verify_seed(begin)) continue;
-                    atomic_store(&seed_begin, begin);
-                    atomic_store(&seed_end, seed);
-                    atomic_fetch_add(&found_seeds, 1);
-
-                    if (found_seeds > 1) return;
-
+                    if (verify_seed(begin)) {
+                        arg->seed_begin = begin;
+                        arg->seed_end = seed;
+                        arg->found_seeds++;
+                    }
                 }
             }
         }
@@ -280,39 +296,72 @@ void find_seed_fast(ThreadArgs* arg) {
 
     else { // slot algorithm
 
-        sanitize_range(arg);
+        uint m = RUN == 0 ? RARITY_SIZES[cats[0].rarity] :
+                            RARITY_SIZES[cats[0].rarity] - 1;
 
-        uint m = RARITY_SIZES[cats[0].rarity];
+#ifdef __AVX2__
+        __m256i offsets = _mm256_setr_epi32(0, m, m*2, m*3, m*4, m*5, m*6, m*7);
 
+        for (uint64_t i = arg->start; i <= arg->end; i += m*8) {
+
+            // init a batch of 8 seeds to process
+            __m256i base   = _mm256_set1_epi32(i);
+            __m256i vector = _mm256_add_epi32(base, offsets);
+
+            vector = xorshift32_8x32(vector);
+            vector = xorshift32_8x32(vector);
+
+            uint candidates[8];
+            _mm256_storeu_si256((__m256i*)candidates, vector);
+
+            for (uint j = 0; j < 8; j++) {
+
+                uint seed = candidates[j]; // these candidates are the result of 4 prng calls
+
+                uint slot = seed % RARITY_SIZES[cats[1].rarity];
+
+                if (cats[1].rarity == RARE) {
+                    if (slot == cats[0].slot && cats[0].rarity == RARE) { // duplicate rare cat!!!
+                        uint newslot = xorshift32(&seed) % (RARITY_SIZES[0] - 1);
+                        slot = newslot + (newslot >= slot);
+                    }
+                }
+
+                if (slot != cats[1].slot) continue;
+
+                if (simulate_rolls(&seed, 2)) {
+                    uint begin = reverse_xorshift32(candidates[j], 4 + (RUN > 0));
+                    if (verify_seed(begin)) {
+                        arg->seed_begin = begin;
+                        arg->seed_end = seed;
+                        arg->found_seeds++;
+                    }
+                }
+            }
+        }
+#else
         for (uint64_t i = arg->start; i <= arg->end; i += m) {
             uint seed = i;
 
             // take a candidate seed and check if cats[1]->cats[n] match
             if (simulate_rolls(&seed, 1)) {
 
-                uint begin = reverse_xorshift32(i, 2);
-                if (!verify_seed(begin)) continue;
-                atomic_store(&seed_begin, begin);
-                atomic_store(&seed_end, seed);
-                atomic_fetch_add(&found_seeds, 1);
+                uint begin = reverse_xorshift32(i, 2 + (RUN > 0));
 
-                if (found_seeds > 1) return;
-
+                if (verify_seed(begin)) {
+                    arg->seed_begin = begin;
+                    arg->seed_end = seed;
+                    arg->found_seeds++;
+                }
             }
         }
+#endif
     }
-}
-
-// pthread_create only accepts a symbol of void* func(void*)
-void* thread_func(void* arg) {
-    ThreadArgs* args = (ThreadArgs*)arg; // type cast back to something meaningful
-    find_seed_fast(args);
     return NULL;
 }
 
 
-
-// measures how expensive each algorithm is
+// "cost" represents roughly how many candidate seeds that would be checked
 bool determine_fastest_approach(uint rarity_range, uint rarity_count) {
 
     uint rarity_cost = (UINT32_MAX / 10000) * rarity_range;
@@ -322,35 +371,44 @@ bool determine_fastest_approach(uint rarity_range, uint rarity_count) {
 }
 
 
-int main(int argc, char** argv) {
-    
-    if (argc % 2 || argc < 9) {
-        fprintf(stderr, "Incomplete arguments.\n");
-        return 1;
+void run_search_threads(
+    pthread_t* threads,
+    ThreadArgs* args,
+    uint thread_count,
+    bool method,
+    uint low,
+    uint high
+) {
+    for (uint i = 0; i < thread_count; i++) {
+        args[i].method = method;
+        args[i].thread_id = i;
+        args[i].low = low;
+        args[i].high = high;
+        args[i].found_seeds = 0;
+        pthread_create(&threads[i], NULL, find_seed_fast, &args[i]);
     }
 
-    PROCESS_PRIORITY_HIGH();
-
-
-    LEGEND_CHANCE = 10000 - atoi(argv[5]);
-    UBER_CHANCE = LEGEND_CHANCE - atoi(argv[4]);
-    SUPER_CHANCE = UBER_CHANCE - atoi(argv[3]);
-    RARITY_SIZES[0] = atoi(argv[6]); // number of rare cats on the banner
-    RARITY_SIZES[1] = atoi(argv[7]); // number of super rare cats on the banner
-    RARITY_SIZES[2] = atoi(argv[8]); // number of uber cats on the banner
-    RARITY_SIZES[3] = atoi(argv[9]); // number of legend rare cats on the banner
-
-    USER_NCATS = (argc - 10) / 2; // cats start at argv 10
-    cats = malloc(sizeof(Cat) * USER_NCATS);
-
-    if (!cats) {
-        fprintf(stderr, "malloc error.\n");
-        return 1;
+    for (uint i = 0; i < thread_count; i++) {
+        pthread_join(threads[i], NULL);
     }
 
-    for (uint i = 0, j = 10; i < USER_NCATS; i++) {
-        cats[i].rarity = atoi(argv[j++]) - 2;
-        cats[i].slot   = atoi(argv[j++]);
+    found_seeds = 0;
+    // merge thread-local results after all threads are done
+    for (uint i = 0; i < thread_count; i++) {
+        if (args[i].found_seeds > 0 && found_seeds == 0) {
+            seed_begin = args[i].seed_begin;
+            seed_end = args[i].seed_end;
+        }
+        found_seeds += args[i].found_seeds;
+    }
+}
+
+
+int main(int argc, char* argv[]) {
+
+    if (argc % 2 || argc < 12) {
+       printf("bad arguments");
+       return -1;
     }
 
 #ifdef _WIN32
@@ -364,27 +422,23 @@ int main(int argc, char** argv) {
 
     uint low, high; // inclusive, exclusive
     switch (cats[0].rarity) {
-    case RARE:
-        low = 0;
-        high = SUPER_CHANCE;
-        break;
-    case SUPER_RARE:
-        low = SUPER_CHANCE;
-        high = UBER_CHANCE;
-        break;
-    case UBER_RARE:
-        low = UBER_CHANCE;
-        high = LEGEND_CHANCE;
-        break;
-    case LEGEND_RARE:
-        low = LEGEND_CHANCE;
-        high = 10000;
-        break;
-    default:
-        fprintf(stderr, "The first cat is not a valid rarity.\n");
-        return 1;
+        case RARE:
+            low = 0;
+            high = SUPER_CHANCE;
+            break;
+        case SUPER_RARE:
+            low = SUPER_CHANCE;
+            high = UBER_CHANCE;
+            break;
+        case UBER_RARE:
+            low = UBER_CHANCE;
+            high = LEGEND_CHANCE;
+            break;
+        case LEGEND_RARE:
+            low = LEGEND_CHANCE;
+            high = 10000;
+            break;
     }
-
 
     pthread_t* threads = malloc(thread_count * sizeof(pthread_t));
     ThreadArgs* args   = malloc(thread_count * sizeof(ThreadArgs));
@@ -396,18 +450,35 @@ int main(int argc, char** argv) {
 
     bool method = determine_fastest_approach(high - low, RARITY_SIZES[cats[0].rarity]);
 
-    // populate arguments and launch each thread
-    for (uint i = 0; i < thread_count; i++) {
-        args[i].method = method;
-        args[i].thread_id = i;
-        args[i].low = low;
-        args[i].high = high;
-        pthread_create(&threads[i], NULL, thread_func, &args[i]);
-    }
 
-    // wait for all threads to finish
-    for (uint i = 0; i < thread_count; i++) {
-        pthread_join(threads[i], NULL);
+    run_search_threads(threads, args, thread_count, method, low, high);
+
+
+    if (found_seeds != 1 && cats[0].rarity == RARE) { // assume the first cat was the result of a duplicate rare
+
+        if (cats[0].slot == 0) { // run type 2 is conceptually invalid when slot is 0
+            RUN = 1;
+            run_search_threads(threads, args, thread_count, method, low, high);
+        }
+
+        else if  (cats[0].slot == RARITY_SIZES[0]-1) { // run type 1 is invalid with the last slot
+            RUN = 2;
+            run_search_threads(threads, args, thread_count, method, low, high);
+        }
+
+        else {
+            bool prefer_run_1 = cats[0].slot < RARITY_SIZES[0] / 2;
+
+            RUN = prefer_run_1 ? 1 : 2;
+
+            run_search_threads(threads, args, thread_count, method, low, high);
+
+            if (found_seeds != 1) {
+                RUN = prefer_run_1 ? 2 : 1;
+                run_search_threads(threads, args, thread_count, method, low, high);
+            }
+
+        }
     }
 
     if (found_seeds == 0)
