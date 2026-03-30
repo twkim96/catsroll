@@ -54,7 +54,6 @@ textarea {
 }
 label {
   display: inline-block;
-  margin-bottom: 12.6px
 }
 label+* {
   page-break-before: always
@@ -67,7 +66,6 @@ input[type="submit"], input[type="reset"], button {
   color: #191919;
   cursor: pointer;
   display: inline;
-  margin-bottom: 18px;
   margin-right: 7.2px;
   padding: 6.525px 23.4px;
   text-align: center
@@ -89,7 +87,7 @@ input[type="submit"]:hover, button[type="submit"]:hover {
   background: #173454;
   color: #bfbfbf
 }
-input, select, textarea {
+textarea {
   margin-bottom: 18px
 }
 input[type="text"], input[type="password"], input[type="email"], input[type="url"], input[type="phone"], input[type="tel"], input[type="number"], input[type="datetime"], input[type="date"], input[type="month"], input[type="week"], input[type="color"], input[type="time"], input[type="search"], input[type="range"], input[type="file"], input[type="datetime-local"], select, textarea {
@@ -240,9 +238,8 @@ html {
 body {
   background: #f5f5f5;
   color: #1a1919;
-  padding: 36px
 }
-p, ul, ol, dl, blockquote, hr, pre, table, form, fieldset, figure, address {
+ul, ol, dl, blockquote, hr, pre, table, fieldset, figure, address {
   margin-bottom: 29.7px
 }
 section {
@@ -320,9 +317,6 @@ figure img {
   display: block
 }
 @media (max-width: 767px) {
-  body {
-    padding: 18px 0
-  }
   article {
     border: 0;
     padding: 18px
@@ -353,7 +347,12 @@ figure img {
 body {
   padding: 20px;
 }
-form, label, input, input[type="submit"], select, p {
+@media (max-width: 767px) {
+  body {
+    padding: 1px
+  }
+}
+.form, label, input, input[type="submit"], select, p {
   margin-bottom: 5px;
 }
 label, input, select {
@@ -412,6 +411,7 @@ h1, h2, h3, h4, h5, h6 {
     #00000033 15px, #00000033 25px
   );
 }
+#menu { display: flex; }
 .menu { width: 60px; height: 60px; }
 .section { margin-bottom: 15px; }
 .cat_avatar { height: 85px; overflow: hidden; }
@@ -430,4 +430,4 @@ h1, h2, h3, h4, h5, h6 {
 #notice { background-color: pink; }
 #seed_input { width: 10em; }
 #count_input, #level_input { width: 3.5em; }
-#rare_input, #supa_input, #uber_input { width: 5em; }
+#rare_input, #supa_input, #uber_input, #ui_select { width: 5em; }

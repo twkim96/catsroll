@@ -621,6 +621,10 @@ module BattleCatsRolls
       "https://battlecats.miraheze.org/wiki/#{h(en_cat.wiki_entry_name)}"
     end
 
+    def uri_to_bc_stats cat
+      "https://battlecatsstats.com/unit/#{cat.id}/#{route.name}"
+    end
+
     def uri_to_cat_db cat
       "https://battlecats-db.com/unit/#{sprintf('%03d', cat.id)}.html"
     end

@@ -61,6 +61,14 @@ module BattleCatsRolls
           cache.store(key, runner.jwt, expires_in: route.jwt_expires_in)
       end
 
+      def invalid_rolls?
+        route.seek_rolls.empty? || # Ignore empty rolls
+          route.seek_rolls.each_slice(2).any? do |rarity, slot|
+            slot_size = route.seek_slots[rarity.to_i - 2].to_i
+            slot_size <= slot.to_i # Slot higher than possible
+          end
+      end
+
       def throttle_ip
         key = "#{request.path} #{request.ip}"
 
@@ -233,7 +241,7 @@ module BattleCatsRolls
         source = route.seek_source
         key = Digest::SHA1.hexdigest(source.join(' '))
 
-        if cache[key] || route.seek_rolls.empty? # Ignore empty rolls
+        if cache[key] || invalid_rolls?
           found route.seek_result(key)
         else
           throttle_ip do |clear_throttle|

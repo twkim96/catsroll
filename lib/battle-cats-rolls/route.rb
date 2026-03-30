@@ -48,11 +48,16 @@ module BattleCatsRolls
 
     def seek_source
       @seek_source ||=
-        [seeker, version,
-         gacha.rare, gacha.supa, gacha.uber, gacha.legend,
-         gacha.rare_cats.size, gacha.supa_cats.size,
-         gacha.uber_cats.size, gacha.legend_cats.size,
-         *seek_rolls].map(&:to_s)
+        [seeker, version, *seek_rates, *seek_slots, *seek_rolls].map(&:to_s)
+    end
+
+    def seek_rates
+      @seek_rates ||= [gacha.rare, gacha.supa, gacha.uber, gacha.legend]
+    end
+
+    def seek_slots
+      @seek_slots ||= [gacha.rare_cats.size, gacha.supa_cats.size,
+        gacha.uber_cats.size, gacha.legend_cats.size]
     end
 
     def seek_rolls
