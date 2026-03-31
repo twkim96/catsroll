@@ -33077,7 +33077,7 @@ events:
   2026-03-30_943:
     start_on: 2026-03-30
     end_on: 2026-04-01
-    version: '150201'
+    version: '150200'
     name: Conjure spirits with new hero Akechi Mitsuhide! Tap banner for info!
     id: 943
     rare: 6970
@@ -33087,7 +33087,7 @@ events:
   2026-03-30_979:
     start_on: 2026-03-30
     end_on: 2026-04-01
-    version: '150201'
+    version: '150200'
     name: New Conjurer Unit Mighty Morta-Loncha, with Explosive attacks! ★Tap for details!
     id: 979
     rare: 6970
@@ -33097,7 +33097,7 @@ events:
   2026-03-30_986:
     start_on: 2026-03-30
     end_on: 2026-04-01
-    version: '150201'
+    version: '150200'
     name: Mystery creature Mamoluga awaits your summoning! ★ Tap banner for info!
     id: 986
     rare: 6970
