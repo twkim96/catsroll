@@ -4,7 +4,7 @@ stages:
 
 .test:
   stage: test
-  image: ruby:${RUBY_VERSION}-bullseye
+  image: ruby:${RUBY_VERSION}-trixie
   variables:
     GIT_DEPTH: "1"
     GIT_SUBMODULE_STRATEGY: recursive
