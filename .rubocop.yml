@@ -1,5 +1,6 @@
 AllCops:
   DisabledByDefault: true
+  TargetRubyVersion: '3.4'
   Exclude:
     - extract/*
     - task/*
@@ -65,6 +66,12 @@ Layout/SpaceAroundOperators:
 
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
+
+Style/EndlessMethod:
+  Enabled: true
+
+Style/SingleLineMethods:
+  Enabled: true
 
 Style/UnlessElse:
   Enabled: true

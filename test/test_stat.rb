@@ -6,11 +6,11 @@ require 'battle-cats-rolls/route'
 describe BattleCatsRolls::Stat do
   BattleCatsRolls::Route.reload_balls
 
-  def lang; 'en'; end
-  def level; 30; end
-  def index; 0; end
-  def sum_no_wave; nil; end
-  def dps_no_critical; nil; end
+  def lang = 'en'
+  def level = 30
+  def index = 0
+  def sum_no_wave = nil
+  def dps_no_critical = nil
 
   def stat
     @stat ||= BattleCatsRolls::Stat.new(
@@ -21,7 +21,7 @@ describe BattleCatsRolls::Stat do
   end
 
   describe 'cats without triggering effects can trigger effects' do
-    def id; 40; end
+    def id = 40
 
     would 'trigger effects even when it does not have it' do
       attack = stat.attacks.first
@@ -49,45 +49,45 @@ describe BattleCatsRolls::Stat do
     end
 
     describe 'Gacha Cat' do
-      def id; 559; end
-      def level; 50; end
-      def health; 153000; end
+      def id = 559
+      def level = 50
+      def health = 153000
       paste :check_health
     end
 
     describe 'Pogo Cat' do
-      def id; 38; end
-      def level; 130; end
-      def health; 14100; end
+      def id = 38
+      def level = 130
+      def health = 14100
       paste :check_health
     end
 
     describe 'Crazed Titan Cat' do
-      def id; 100; end
-      def level; 30; end
-      def health; 52200; end
+      def id = 100
+      def level = 30
+      def health = 52200
       paste :check_health
     end
 
     describe 'Bahamut Cat' do
-      def id; 26; end
-      def level; 50; end
-      def health; 33000; end
+      def id = 26
+      def level = 50
+      def health = 33000
       paste :check_health
     end
 
     describe 'Bahamut Cat capped at level 50' do
-      def id; 26; end
-      def level; 999; end
-      def health; 33000; end
+      def id = 26
+      def level = 999
+      def health = 33000
       paste :check_health
     end
   end
 
   describe 'DPS accounts critical strike and savage blow' do
     describe 'Kyosaka Nanaho' do
-      def id; 545; end
-      def level; 45; end # This level can test rounding error
+      def id = 545
+      def level = 45 # This level can test rounding error
 
       would 'return correct DPS' do
         attacks = stat.attacks
@@ -99,7 +99,7 @@ describe BattleCatsRolls::Stat do
       end
 
       describe 'but can be disabled' do
-        def dps_no_critical; true; end
+        def dps_no_critical = true
 
         would 'return correct DPS' do
           attacks = stat.attacks
@@ -113,8 +113,8 @@ describe BattleCatsRolls::Stat do
     end
 
     describe 'Lasvoss Reborn' do
-      def id; 520; end
-      def index; 2; end
+      def id = 520
+      def index = 2
 
       def expected_dps
         14688
@@ -133,7 +133,7 @@ describe BattleCatsRolls::Stat do
       paste
 
       describe 'but can be disabled' do
-        def dps_no_critical; true; end
+        def dps_no_critical = true
 
         def expected_dps
           9180
@@ -146,7 +146,7 @@ describe BattleCatsRolls::Stat do
 
   describe 'account wave attacks' do
     describe 'Shampoo' do
-      def id; 600; end
+      def id = 600
 
       def dps
         damage / attack_cycle
@@ -204,7 +204,7 @@ describe BattleCatsRolls::Stat do
 
       copy :discount_wave do
         describe 'no wave DPS' do
-          def sum_no_wave; true; end
+          def sum_no_wave = true
 
           def sum_with_wave sum, wave
             sum - wave * number_of_attacks
@@ -215,20 +215,20 @@ describe BattleCatsRolls::Stat do
       end
 
       describe 'cat form' do
-        def number_of_attacks; 2; end
-        def damage; 4675; end
-        def wave_chance; 0.5; end
+        def number_of_attacks = 2
+        def damage = 4675
+        def wave_chance = 0.5
 
         paste :account_wave
         paste :discount_wave
       end
 
       describe 'human form' do
-        def index; 1; end
+        def index = 1
 
-        def number_of_attacks; 3; end
-        def damage; 9180; end
-        def wave_chance; 1; end
+        def number_of_attacks = 3
+        def damage = 9180
+        def wave_chance = 1
 
         paste :account_wave
         paste :discount_wave
@@ -238,8 +238,8 @@ describe BattleCatsRolls::Stat do
 
   describe 'account surge attacks' do
     describe 'Fabulous Pasalan' do
-      def id; 565; end
-      def index; 2; end
+      def id = 565
+      def index = 2
 
       would 'have correct DPS' do
         attacks = stat.attacks
@@ -254,7 +254,7 @@ describe BattleCatsRolls::Stat do
   end
 
   describe '#max_dps_area' do
-    def index; 1; end
+    def index = 1
 
     copy do
       would 'return correct max DPS area along with mini-wave' do
@@ -263,30 +263,30 @@ describe BattleCatsRolls::Stat do
     end
 
     describe 'Masked Grandmaster Cat' do
-      def id; 353; end
-      def index; 2; end
-      def area; '255'; end
+      def id = 353
+      def index = 2
+      def area = '255'
 
       paste
     end
 
     describe 'Mighty Aegis Garu' do
-      def id; 586; end
-      def area; '-67 ~ 400'; end
+      def id = 586
+      def area = '-67 ~ 400'
 
       paste
     end
 
     describe 'Wedding Chronos' do
-      def id; 662; end
-      def area; '300 ~ 700'; end
+      def id = 662
+      def area = '300 ~ 700'
 
       paste
     end
 
     describe 'King of Destiny Phonoa' do
-      def id; 691; end
-      def area; '590 ~ 600'; end
+      def id = 691
+      def area = '590 ~ 600'
 
       paste
     end
@@ -300,60 +300,60 @@ describe BattleCatsRolls::Stat do
     end
 
     describe 'Cats in the Stroller' do
-      def id; 60; end
-      def index; 3; end
-      def blind_spot; -101; end
+      def id = 60
+      def index = 3
+      def blind_spot = -101
 
       paste
     end
 
     describe 'Supernova Cosmo' do
-      def id; 136; end
-      def index; 3; end
-      def blind_spot; -301; end
+      def id = 136
+      def index = 3
+      def blind_spot = -301
 
       paste
     end
 
     describe 'CAT-10 Gigapult' do
-      def id; 305; end
-      def index; 3; end
-      def blind_spot; 99; end # Would be -68 with wave talent
+      def id = 305
+      def index = 3
+      def blind_spot = 99 # Would be -68 with wave talent
 
       paste
     end
 
     describe 'Mighty Kristul Muu' do
-      def id; 464; end
-      def blind_spot; '-'; end
+      def id = 464
+      def blind_spot = '-'
 
       paste
     end
 
     describe 'Gaia the Creator' do
-      def id; 494; end
-      def blind_spot; 349; end
+      def id = 494
+      def blind_spot = 349
 
       paste
     end
 
     describe 'Chronos the Bride' do
-      def id; 662; end
-      def blind_spot; -68; end
+      def id = 662
+      def blind_spot = -68
 
       paste
     end
 
     describe 'Daybreaker Izanagi' do
-      def id; 732; end
-      def blind_spot; 0; end
+      def id = 732
+      def blind_spot = 0
 
       paste
     end
 
     describe 'Master of Life Dr. Nova' do
-      def id; 772; end
-      def blind_spot; 74; end
+      def id = 772
+      def blind_spot = 74
 
       paste
     end

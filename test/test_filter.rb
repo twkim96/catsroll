@@ -7,8 +7,8 @@ require 'battle-cats-rolls/route'
 describe BattleCatsRolls::Filter do
   BattleCatsRolls::Route.reload_balls
 
-  def ball; BattleCatsRolls::Route.ball_en; end
-  def exclude_talents; false; end
+  def ball = BattleCatsRolls::Route.ball_en
+  def exclude_talents = false
 
   def chain
     @chain ||= BattleCatsRolls::Filter::Chain.new(
@@ -274,7 +274,7 @@ describe BattleCatsRolls::Filter do
   end
 
   describe 'exclude_talents option' do
-    def exclude_talents; true; end
+    def exclude_talents = true
 
     would 'filter native strengthen and exclude talent strengthen' do
       ids = chain.filter!(['strengthen'], 'all',
