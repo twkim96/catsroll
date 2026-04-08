@@ -29,43 +29,29 @@ variables:
     RACK_VERSION: 3.1.16
 
 rubocop:
-  extends:
-    - .base
+  extends: .base
   stage: lint
   before_script:
     - gem install rubocop
   script:
     - rubocop
 
-ruby:3.2:
-  extends:
-    - .test
-  variables:
-    RUBY_VERSION: '3.2'
-
-ruby:3.3:
-  extends:
-    - .test
-  variables:
-    RUBY_VERSION: '3.3'
-
 ruby:3.4:
-  extends:
-    - .test
+  extends: .test
   variables:
     RUBY_VERSION: '3.4'
 
-ruby:3.2-with-specific-rack:
-  extends:
-    - ruby:3.2
-    - .with-specific-rack
-
-ruby:3.3-with-specific-rack:
-  extends:
-    - ruby:3.3
-    - .with-specific-rack
+ruby:4.0:
+  extends: .test
+  variables:
+    RUBY_VERSION: '4.0'
 
 ruby:3.4-with-specific-rack:
   extends:
     - ruby:3.4
+    - .with-specific-rack
+
+ruby:4.0-with-specific-rack:
+  extends:
+    - ruby:4.0
     - .with-specific-rack
