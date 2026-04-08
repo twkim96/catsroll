@@ -92,7 +92,7 @@ module BattleCatsRolls
       end
 
       def display
-        "Only attack specialized enemies or enemy base.<br>\nWhen cursed, only attack the base."
+        "Only attack specialized enemies or enemy base.<br>\nWhen cursed, only attack the base." # rubocop:disable Layout/LineLength
       end
 
       def specialized = true
@@ -334,7 +334,7 @@ module BattleCatsRolls
 
       def display values=display_values
         sprintf(
-          '%{chance} to survive a lethal strike to be knocked back with 1 health',
+          '%{chance} to survive a lethal strike to be knocked back with 1 health', # rubocop:disable Layout/LineLength
           values)
       end
 
@@ -627,7 +627,7 @@ module BattleCatsRolls
 
       def display values=nil, &block
         sprintf(
-          'Deal 250%% and take 60%% damage, and %{chance} to be immune for %{duration}',
+          'Deal 250%% and take 60%% damage, and %{chance} to be immune for %{duration}', # rubocop:disable Layout/LineLength
           values || display_values(&block))
       end
 
@@ -653,7 +653,8 @@ module BattleCatsRolls
 
       def display
         if cat_info
-          %Q{<a href="#{yield.route.uri_to_cat(Cat.new(id: cat_id))}">#{cat_info.dig('desc', 0)}</a>}
+          href = yield.route.uri_to_cat(Cat.new(id: cat_id))
+          %Q{<a href="#{href}">#{cat_info.dig('desc', 0)}</a>}
         else
           'Unknown spirit'
         end
@@ -729,9 +730,11 @@ module BattleCatsRolls
       end
 
       def display values=display_values
+        # rubocop:disable Style/StringLiterals
         sprintf(
           "%{chance} to produce level %{level}" \
             " #{name.downcase} attack within %{area}", values)
+        # rubocop:enable Style/StringLiterals
       end
 
       def display_short
@@ -924,9 +927,7 @@ module BattleCatsRolls
       end.sort_by(&:index)
     end
 
-    def self.build_if_available stat
-    end
-
+    def self.build_if_available stat; end
     def specialized = false
     def effects = false
     def index = __LINE__

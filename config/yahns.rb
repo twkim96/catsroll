@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 
 rack, = Rack::Builder.parse_file(
   File.expand_path("#{__dir__}/../config.ru"))

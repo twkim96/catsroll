@@ -5,13 +5,14 @@ require 'rack'
 module BattleCatsRolls
   class Request < Rack::Request
     # So that t=1&t=2 can be parsed as {"t" => [1, 2]}
-    def parse_query(qs, d='&')
+    def parse_query qs, d='&'
       query_parser.parse_query(qs, d)
     end
 
     # So that t=1&t=2 can be parsed as {"t" => [1, 2]}
     # This removes the normalization and reuse parse_query code
-    def expand_param_pairs(pairs, query_parser=query_parser())
+    # rubocop:disable all
+    def expand_param_pairs(pairs, query_parser = query_parser())
       params = query_parser.make_params
 
       pairs.each do |(k, v)|
@@ -28,6 +29,7 @@ module BattleCatsRolls
 
       return params.to_h
     end
+    # rubocop:enable all
 
     # Rack doesn't memoize this
     def params

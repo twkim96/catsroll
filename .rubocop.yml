@@ -26,6 +26,9 @@ Layout/EmptyLinesAroundClassBody:
 Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
+Layout/HashAlignment:
+  Enabled: false
+
 Layout/LeadingEmptyLines:
   Enabled: false
 
@@ -39,6 +42,9 @@ Layout/LineContinuationSpacing: # new in 1.31
 Layout/LineEndStringConcatenationIndentation: # new in 1.18
   Enabled: true
   EnforcedStyle: indented
+
+Layout/LineLength:
+  Max: 80
 
 Layout/MultilineMethodCallBraceLayout:
   Enabled: false
@@ -67,11 +73,101 @@ Layout/SpaceAroundOperators:
 Layout/SpaceInsideHashLiteralBraces:
   EnforcedStyle: no_space
 
-Style/EndlessMethod:
+Style:
   Enabled: true
 
-Style/SingleLineMethods:
+Style/Alias:
+  EnforcedStyle: prefer_alias_method
+
+Style/AmbiguousEndlessMethodDefinition: # new in 1.68
   Enabled: true
 
-Style/UnlessElse:
+Style/ArgumentsForwarding: # new in 1.1
   Enabled: true
+  UseAnonymousForwarding: false
+
+Style/ArrayIntersect: # new in 1.40
+  Enabled: true
+
+Style/ArrayIntersectWithSingleElement: # new in 1.81
+  Enabled: true
+
+Style/BarePercentLiterals:
+  EnforcedStyle: percent_q
+
+Style/ClassCheck:
+  EnforcedStyle: kind_of?
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/EachWithObject:
+  Enabled: false
+
+Style/EmptyCaseCondition:
+  Enabled: false
+
+Style/FormatString:
+  EnforcedStyle: sprintf
+
+Style/FormatStringToken:
+  EnforcedStyle: template
+  MaxUnannotatedPlaceholdersAllowed: 3
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - Gemfile
+    - Rakefile
+    - bin/*
+    - test/*
+
+Style/GuardClause:
+  Enabled: false
+
+Style/Lambda:
+  EnforcedStyle: lambda
+
+Style/MethodDefParentheses:
+  EnforcedStyle: require_no_parentheses
+
+Style/MultipleComparison:
+  ComparisonsThreshold: 4
+
+Style/MultilineBlockChain:
+  Enabled: false
+
+Style/NumericLiterals:
+  Enabled: false
+
+Style/NumericPredicate:
+  EnforcedStyle: comparison
+  AllowedMethods:
+    - zero?
+
+Style/OneLineConditional:
+  Enabled: false
+
+Style/SoleNestedConditional:
+  AllowModifier: true
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    default: '{}'
+
+Style/RaiseArgs:
+  EnforcedStyle: compact
+
+Style/SpecialGlobalVars:
+  EnforcedStyle: use_builtin_english_names
+
+Style/StructInheritance:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  Enabled: false
+
+Style/TrailingCommaInHashLiteral:
+  Enabled: false

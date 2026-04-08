@@ -84,7 +84,7 @@ module BattleCatsRolls
       result
     end
 
-    def pick cats, sequence, track, guaranteed=false
+    def pick cats, sequence, track, guaranteed=false # rubocop:disable Style/OptionalBooleanParameter
       result = cats.map(&:dup)
 
       if guaranteed

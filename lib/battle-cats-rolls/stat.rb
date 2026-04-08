@@ -12,9 +12,11 @@ module BattleCatsRolls
 
     DefaultLevel = 30
     FPS = 30
+    # rubocop:disable Style/StringLiterals
     EmptyImgSrc = "data:image/svg+xml," \
       "<svg xmlns='http://www.w3.org/2000/svg'" \
       "%20width='1'%20height='1'/>"
+    # rubocop:enable Style/StringLiterals
 
     def inspect
       "#<#{self.class} id=#{id.inspect} name=#{name.inspect}>"

@@ -10,7 +10,8 @@ module BattleCatsRolls
     end
 
     def gacha_option
-      @gacha_option ||= File.binread("#{dir}/DataLocal.pack/GatyaData_Option_SetR.tsv")
+      @gacha_option ||= File.binread(
+        "#{dir}/DataLocal.pack/GatyaData_Option_SetR.tsv")
     end
 
     def unitbuy
@@ -22,7 +23,8 @@ module BattleCatsRolls
     end
 
     def skill_acquisition
-      @skill_acquisition ||= File.binread("#{dir}/DataLocal.pack/SkillAcquisition.csv")
+      @skill_acquisition ||= File.binread(
+        "#{dir}/DataLocal.pack/SkillAcquisition.csv")
     end
 
     def units
@@ -39,8 +41,8 @@ module BattleCatsRolls
 
     def attack_maanims
       @attack_maanims ||= Dir[
-        "#{dir}/ImageData{Local,Server}*.pack/*{#{Provider.forms.join(',')}}02.maanim"].sort.
-        inject({}) do |result, path|
+        "#{dir}/ImageData{Local,Server}*.pack/*{#{Provider.forms.join(',')}}02.maanim"]. # rubocop:disable Layout/LineLength
+        sort.inject({}) do |result, path|
           id, form_index = Provider.extract_id_and_form_from_maanim_path(path)
           (result[id] ||= [])[form_index] = File.binread(path)
           result

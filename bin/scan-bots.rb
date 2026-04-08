@@ -1,5 +1,5 @@
 
-$stdin.read.scan(/^.+?\b([\w\-\.]+bot[\w\-\.]*)/i).group_by(&:first).
+$stdin.read.scan(/^.+?\b([\w\-.]+bot[\w\-.]*)/i).group_by(&:first).
   inject({}) do |result, (name, lines)|
     result[name] = lines.size
     result

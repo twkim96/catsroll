@@ -89,7 +89,7 @@ module BattleCatsRolls
       picked = dig_cats_from(cats, pick)
 
       return unless picked # Users can give arbitrary input # rubocop:disable Layout/EmptyLineAfterGuardClause
-      return unless picked.guaranteed if pick.include?('G')
+      return unless picked.guaranteed if pick.include?('G') # rubocop:disable Style/IfUnlessModifierOfIfUnless, Style/NestedModifier
 
       if pick.include?('X')
         if pick.include?('G')
@@ -334,7 +334,7 @@ module BattleCatsRolls
 
         # checking_cat might not be there for out of range guaranteed
         # do not break the loop because last_roll doesn't have one either
-        if number === checking_cat&.number # String or Regexp matching
+        if number === checking_cat&.number # String or Regexp matching # rubocop:disable Style/CaseEquality
           path.each do |passed_cat|
             passed_cat.picked_label = :picked
           end
@@ -351,7 +351,7 @@ module BattleCatsRolls
 
       (guaranteed_rolls - 1).times.inject(cat) do |rolled, index|
         rolled.picked_label =
-          if step_up && (3 <= index && index < 8)
+          if step_up && 3 <= index && index < 8 # rubocop:disable Style/YodaCondition
             :picked # Try to highlight 3, 5, 7 differently
           else
             :picked_consecutively

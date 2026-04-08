@@ -96,7 +96,7 @@ module BattleCatsRolls
       each_list(dir) do |file|
         puts "#{file}:"
         puts unpacker.decrypt(File.binread(file))
-        puts "---"
+        puts '---'
       end
     end
 
@@ -106,7 +106,7 @@ module BattleCatsRolls
       reader = PackReader.new(lang, "#{app_data_path}/ImageLocal.list")
 
       dir = "#{extract_path}/#{reader.name}.pack"
-      asset = "lib/battle-cats-rolls/asset/image"
+      asset = 'lib/battle-cats-rolls/asset/image'
       FileUtils.mkdir_p(dir)
       FileUtils.mkdir_p(asset)
 
@@ -185,7 +185,7 @@ module BattleCatsRolls
         events = EventsReader.read(event_path)
         ball = CrystalBall.from_cats_builder_and_events(cats_builder, events)
 
-        puts "Writing data..."
+        puts 'Writing data...'
 
         ball.dump("#{Root}/build", lang)
       end
@@ -230,7 +230,7 @@ module BattleCatsRolls
     end
 
     def load_extract
-      puts "Loading from extract..."
+      puts 'Loading from extract...'
 
       require_relative 'extract_provider'
 
@@ -238,7 +238,7 @@ module BattleCatsRolls
     end
 
     def load_pack
-      puts "Loading from pack..."
+      puts 'Loading from pack...'
 
       require_relative 'pack_provider'
 
@@ -289,7 +289,7 @@ module BattleCatsRolls
           if version.include?('.')
             digits = version.split('.')
             suffix = digits[3] || '0'
-            version_id = digits.first(3).map{ |int| sprintf("%02d", int) }.join
+            version_id = digits.first(3).map{ |int| sprintf('%02d', int) }.join
             sprintf('%s_%02d_%02d', version_id, offset, suffix)
           else
             version
@@ -382,7 +382,7 @@ module BattleCatsRolls
       ext = File.extname(root)
 
       if ext.empty?
-        Dir["#{root}/**/*.list"].each do |file|
+        Dir["#{root}/**/*.list"].each do |file| # rubocop:disable Style/ExplicitBlockArgument
           yield(file)
         end
       else
@@ -402,9 +402,7 @@ module BattleCatsRolls
     end
 
     def wget url, path
-      if File.exist?(path)
-        true
-      else
+      File.exist?(path) or begin
         system(
           'wget',
           '--user-agent=Mozilla/5.0 Firefox/145.0',

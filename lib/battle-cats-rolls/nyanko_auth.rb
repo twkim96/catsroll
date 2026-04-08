@@ -40,7 +40,7 @@ module BattleCatsRolls
       uri = URI.parse('https://nyanko-backups.ponosgames.com/?action=createAccount&referenceId=')
       request = Net::HTTP::Get.new(uri)
 
-      perform_request(uri, request).dig('accountId')
+      perform_request(uri, request).dig('accountId') # rubocop:disable Style/SingleArgumentDig
     end
 
     def generate_password

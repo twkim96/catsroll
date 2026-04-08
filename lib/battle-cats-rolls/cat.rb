@@ -42,7 +42,7 @@ module BattleCatsRolls
 
     def pick_title index
       picked_name = pick_name(index)
-      names = info.dig('name').join(' | ').sub(picked_name, "*#{picked_name}")
+      names = info.dig('name').join(' | ').sub(picked_name, "*#{picked_name}") # rubocop:disable Style/SingleArgumentDig
 
       "#{names}\n#{pick_description(index)}"
     end
@@ -56,7 +56,7 @@ module BattleCatsRolls
     end
 
     def img_src index, lang
-      path = sprintf("%s/uni%03d_%s00.png",
+      path = sprintf('%s/uni%03d_%s00.png',
         lang, id - 1, Provider.forms[index])
 
       "/extract/#{path}" if File.exist?("#{Root}/extract/asset/#{path}")

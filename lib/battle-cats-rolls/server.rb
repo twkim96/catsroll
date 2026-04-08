@@ -134,7 +134,7 @@ module BattleCatsRolls
       next if Task.shutting_down
 
       unless `git -C #{Root} status --porcelain -- build`.empty?
-        puts "Reloading balls..."
+        puts 'Reloading balls...'
         Route.reload_balls(true)
       end
     end
@@ -142,9 +142,11 @@ module BattleCatsRolls
 
   def self.monitor_memory
     Task.create(__method__) do
+      # rubocop:disable Style/FormatStringToken
       printf \
         "Memory total: %.2fM, current: %.2fM, CPU: %.2f%%,%s\n",
         *ps, `uptime`[/(?<=users,).+/]
+      # rubocop:enable Style/FormatStringToken
 
       sleep(10)
     end

@@ -32,7 +32,7 @@ module BattleCatsRolls
 
     def memcache logger
       require 'dalli'
-      client = Dalli::Client.new(nil, :expires_in => EXPIRES_IN)
+      client = Dalli::Client.new(nil, {expires_in: EXPIRES_IN})
       File.open(IO::NULL, 'w') do |null|
         Dalli.logger = Logger.new(null)
         client.alive!
@@ -50,7 +50,7 @@ module BattleCatsRolls
       require 'lru_redux'
       logger.info("LRU cache size: #{LRU_SIZE}")
       cache = LruRedux::ThreadSafeCache.new(LRU_SIZE)
-      cache.extend(Module.new{
+      cache.extend(Module.new{ # rubocop:disable Style/BlockDelimiters
         def fetch key # original fetch could deadlock
           self[key] || self[key] = yield
         end
@@ -66,9 +66,9 @@ module BattleCatsRolls
     end
 
     def persistent_hash logger
-      logger.info("Last resort persistent in-memory hash used")
+      logger.info('Last resort persistent in-memory hash used')
       cache = {}
-      cache.extend(Module.new{
+      cache.extend(Module.new{ # rubocop:disable Style/BlockDelimiters
         def store key, value, expires_in: nil
           super(key, value)
         end

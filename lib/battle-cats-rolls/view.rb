@@ -34,7 +34,7 @@ module BattleCatsRolls
     end
 
     def meta_description
-      if picked_stat
+      if picked_stat # rubocop:disable Style/IfUnlessModifier
         h picked_stat.desc.tr("\n", ' ').squeeze(' ')
       end
     end
@@ -69,14 +69,12 @@ module BattleCatsRolls
       end
     end
 
-    def each_attack stat
+    def each_attack stat, &block
       if route.hide_wave
         stat.attacks_raw
       else
         stat.attacks
-      end.each do |attack|
-        yield(attack)
-      end
+      end.each(&block)
     end
 
     def color_label cat, type, rerolled
@@ -216,7 +214,7 @@ module BattleCatsRolls
         when 1
           {suffix: " -&gt; #{next_cat.number}"}
         when nil
-          {prefix: "&lt;?&gt; "}
+          {prefix: '&lt;?&gt; '}
         else
           raise "Unknown track: #{next_cat.track.inspect}"
         end
@@ -580,7 +578,7 @@ module BattleCatsRolls
         result
       end.map do |(start, last, rate)|
         "lv#{start}~#{last}: #{rate}%"
-      end.join(", ")
+      end.join(', ')
     end
 
     def h str

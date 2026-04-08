@@ -20,7 +20,7 @@ module BattleCatsRolls
       CrystalBall.load("#{Root}/build", lang)
     end
 
-    def self.reload_balls force=false
+    def self.reload_balls force=false # rubocop:disable Style/OptionalBooleanParameter
       %w[en tw jp kr].each do |lang|
         if public_send("ball_#{lang}").nil? || force
           public_send("ball_#{lang}=", load_ball(lang))
@@ -88,17 +88,9 @@ module BattleCatsRolls
         gacha.roll_both!(sequence)
       end
 
-      if version == '8.6'
-        gacha.finish_rerolled_links(cats)
-      end
-
-      if last.nonzero?
-        gacha.finish_last_roll(cats.dig(0, 0))
-      end
-
-      if guaranteed_rolls > 0
-        gacha.finish_guaranteed(cats, guaranteed_rolls)
-      end
+      gacha.finish_rerolled_links(cats) if version == '8.6'
+      gacha.finish_last_roll(cats.dig(0, 0)) if last.nonzero?
+      gacha.finish_guaranteed(cats, guaranteed_rolls) if guaranteed_rolls > 0
 
       if pick = request.params_coercion_with_nil('pick', :to_s)
         gacha.finish_picking(cats, pick, guaranteed_rolls)
@@ -200,9 +192,9 @@ module BattleCatsRolls
     def default_version
       case lang
       when 'jp'
-        '8.6'
+        '8.6' # rubocop:disable Style/IdenticalConditionalBranches
       else
-        '8.6'
+        '8.6' # rubocop:disable Style/IdenticalConditionalBranches
       end
     end
 
@@ -392,7 +384,8 @@ module BattleCatsRolls
     def advanced_filters
       return @advanced_filters if instance_variable_defined?(:@advanced_filters)
 
-      @advanced_filters = request.params_coercion_true_or_nil('advanced_filters')
+      @advanced_filters =
+        request.params_coercion_true_or_nil('advanced_filters')
     end
 
     def exclude_talents
@@ -846,6 +839,7 @@ module BattleCatsRolls
     def cleanup_query query
       query.compact.select do |key, value|
         # rubocop:disable Layout/MultilineOperationIndentation
+        # rubocop:disable Style/MultipleComparison
         if (key == :seed && value == 0) ||
            (key == :pos && value == '1A') ||
            (key == :lang && value == 'en') ||
@@ -906,6 +900,8 @@ module BattleCatsRolls
         else
           true
         end
+        # rubocop:enable Style/MultipleComparison
+        # rubocop:enable Layout/MultilineOperationIndentation
       end
     end
   end
