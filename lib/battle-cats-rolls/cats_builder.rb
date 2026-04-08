@@ -64,7 +64,7 @@ module BattleCatsRolls
         if line =~ /\A\d+/
           slots = line.split(',')
           id = slots.pop until slots.empty? || id&.start_with?('-1')
-          result[index] = {'cats' => slots.map { |s| Integer(s) + 1 }}
+          result[index] = {'cats' => slots.map{ |s| Integer(s) + 1 }}
         elsif preserved = preserved_gacha[index]
           result[index] = preserved
         end

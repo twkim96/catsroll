@@ -73,19 +73,19 @@ module BattleCatsRolls
 
     def gacha_option
       @gacha_option ||= parsed_data.drop(1).inject({}) do |result, row|
-        result[Integer(row.first)] = { 'series_id' => Integer(row[5]) }
+        result[Integer(row.first)] = {'series_id' => Integer(row[5])}
         result
       end
     end
 
     def item_or_sale
       @item_or_sale ||= parsed_data.map.with_index do |row, index|
-        { 'index' => index }.merge(
+        {'index' => index}.merge(
           convert_event(read_row(row, self.class.voodoo_fields))
         )
       end.select do |item|
         item['type'] > 0 && item['offset'] > 0
-      end.group_by { |item| item['index'] }.transform_values(&:last)
+      end.group_by{ |item| item['index'] }.transform_values(&:last)
     end
 
     private

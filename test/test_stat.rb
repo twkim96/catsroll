@@ -11,6 +11,7 @@ describe BattleCatsRolls::Stat do
   def index; 0; end
   def sum_no_wave; nil; end
   def dps_no_critical; nil; end
+
   def stat
     @stat ||= BattleCatsRolls::Stat.new(
       id: id, index: index, level: level,

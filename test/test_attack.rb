@@ -8,6 +8,7 @@ describe BattleCatsRolls::Attack do
 
   def lang; 'en'; end
   def index; 0; end
+
   def stat
     @stat ||= BattleCatsRolls::Stat.new(
       id: id, index: index,

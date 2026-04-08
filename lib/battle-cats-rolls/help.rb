@@ -12,7 +12,7 @@ module BattleCatsRolls
     def advance_the_tracks
       @advance_the_tracks ||=
         read_the_tracks.drop(2).
-          map{ |cs| cs.map{ |c| c.new_with(sequence: c.sequence - 2) }}
+          map{ |cs| cs.map{ |c| c.new_with(sequence: c.sequence - 2) }} # rubocop:disable Layout/SpaceInsideBlockBraces
     end
 
     def swap_the_tracks

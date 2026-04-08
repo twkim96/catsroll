@@ -52,6 +52,7 @@ module BattleCatsRolls
   class Ability
     class Specialization < Struct.new(:enemies)
       include AbilityUtility
+
       List = %w[
         red float black angel alien zombie aku relic white metal
       ].freeze
@@ -872,6 +873,7 @@ module BattleCatsRolls
 
     class Immunity < Struct.new(:immunity)
       include AbilityUtility
+
       List = %w[
         bosswave knockback warp freeze slow weaken curse
         wave surge explosion toxic

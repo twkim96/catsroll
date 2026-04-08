@@ -148,7 +148,7 @@ module BattleCatsRolls
 
     def write_events
       write_tsv('gatya.tsv', 'events') do |reader|
-        last_date(reader.gacha.reject { |_, data| data['platinum'] })
+        last_date(reader.gacha.reject{ |_, data| data['platinum'] })
       end
     end
 
@@ -167,7 +167,7 @@ module BattleCatsRolls
 
       tsv = NyankoAuth.request(
         "https://bc-seek.godfat.org/seek/#{lang}/#{file}")
-        # "http://localhost:8080/seek/#{lang}/#{file}")
+        # "http://localhost:8080/seek/#{lang}/#{file}") # rubocop:disable Layout/CommentIndentation
       reader = TsvReader.new(tsv)
 
       file_name = yield(reader)
@@ -289,7 +289,7 @@ module BattleCatsRolls
           if version.include?('.')
             digits = version.split('.')
             suffix = digits[3] || '0'
-            version_id = digits.first(3).map{|int| sprintf("%02d", int)}.join
+            version_id = digits.first(3).map{ |int| sprintf("%02d", int) }.join
             sprintf('%s_%02d_%02d', version_id, offset, suffix)
           else
             version
@@ -391,7 +391,7 @@ module BattleCatsRolls
     end
 
     def last_date items
-      items.sort_by { |_, data| data['end_on'] }.
+      items.sort_by{ |_, data| data['end_on'] }.
         dig(-1, -1, 'end_on').
         strftime('%Y%m%d')
     end
@@ -450,7 +450,7 @@ module BattleCatsRolls
     end
 
     def version_id
-      @version_id ||= version.split('.').map{|int| sprintf('%02d', int)}.join
+      @version_id ||= version.split('.').map{ |int| sprintf('%02d', int) }.join
     end
 
     def jwt

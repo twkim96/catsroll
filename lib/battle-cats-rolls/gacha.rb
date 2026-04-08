@@ -88,7 +88,7 @@ module BattleCatsRolls
     def finish_picking cats, pick, guaranteed_rolls=pool.guaranteed_rolls
       picked = dig_cats_from(cats, pick)
 
-      return unless picked # Users can give arbitrary input
+      return unless picked # Users can give arbitrary input # rubocop:disable Layout/EmptyLineAfterGuardClause
       return unless picked.guaranteed if pick.include?('G')
 
       if pick.include?('X')
@@ -109,7 +109,7 @@ module BattleCatsRolls
     def mark_next_position cats
       if next_position = dig_cats_from(cats, position)
         if last_roll && last_roll.id == next_position.id &&
-          next_position.rerolled # Only rare would have a rerolled cat
+          next_position.rerolled # Only rare would have a rerolled cat # rubocop:disable Layout/MultilineOperationIndentation
           next_position.rerolled.picked_label = :next_position
         else
           next_position.picked_label = :next_position
