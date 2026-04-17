@@ -77,7 +77,8 @@ module BattleCatsRolls
       when 'VampireFlower'
         result = IO.popen([
           "#{Root}/Seeker/Seeker-VampireFlower", *source.drop(1),
-          err: %i[child out]], 'r+') do |io|
+          err: %i[child out]
+        ], 'r+') do |io|
           io.close_write
           io.read
         end.scan(/\d+/).map(&:to_i)
@@ -95,7 +96,7 @@ module BattleCatsRolls
     rescue => error
       logger.warn(
         "Seeking seed failed with" \
-        " #{error.class}:#{error.message} with #{source.join(' ')}")
+          " #{error.class}:#{error.message} with #{source.join(' ')}")
       []
     end
   end

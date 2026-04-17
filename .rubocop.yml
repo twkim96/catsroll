@@ -1,0 +1,77 @@
+AllCops:
+  DisabledByDefault: true
+  TargetRubyVersion: '3.4'
+  Exclude:
+    - extract/*
+    - task/*
+
+Layout:
+  Enabled: true
+
+Layout/ArgumentAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/ArrayAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/DotPosition:
+  EnforcedStyle: trailing
+
+Layout/EmptyLinesAfterModuleInclusion:
+  Enabled: false
+
+Layout/EmptyLinesAroundClassBody:
+  Enabled: false
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: variable
+
+Layout/LeadingEmptyLines:
+  Enabled: false
+
+Layout/LineContinuationLeadingSpace: # new in 1.31
+  Enabled: true
+  EnforcedStyle: leading
+
+Layout/LineContinuationSpacing: # new in 1.31
+  Enabled: true
+
+Layout/LineEndStringConcatenationIndentation: # new in 1.18
+  Enabled: true
+  EnforcedStyle: indented
+
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+Layout/ParameterAlignment:
+  EnforcedStyle: with_fixed_indentation
+
+Layout/SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: no_space
+
+Layout/SpaceBeforeBlockBraces:
+  EnforcedStyle: no_space
+
+Layout/SpaceBeforeBrackets: # new in 1.7
+  Enabled: true
+
+Layout/SpaceAroundOperators:
+  EnforcedStyleForExponentOperator: space
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Style/EndlessMethod:
+  Enabled: true
+
+Style/SingleLineMethods:
+  Enabled: true
+
+Style/UnlessElse:
+  Enabled: true

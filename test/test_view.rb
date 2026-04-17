@@ -28,4 +28,3 @@ describe BattleCatsRolls::View do
     end
   end
 end
-

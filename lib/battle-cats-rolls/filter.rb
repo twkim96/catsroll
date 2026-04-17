@@ -86,8 +86,9 @@ module BattleCatsRolls
 
       def self.match? abilities, stat, threshold: 7500, modifier: Modifier
         modifier[stat.dps_sum.to_i] >= threshold ||
-          stat.attacks_raw.any?{ |attack|
-            modifier[attack.dps.to_i] >= threshold }
+          stat.attacks_raw.any? do |attack|
+            modifier[attack.dps.to_i] >= threshold
+          end
       end
     end
 
@@ -153,8 +154,9 @@ module BattleCatsRolls
 
     module HighSingleBlow
       def self.match? abilities, stat, threshold: 50000, modifier: HighDPS::Modifier
-        stat.attacks_raw.any?{ |attack|
-          modifier[attack.damage.to_i] >= threshold }
+        stat.attacks_raw.any? do |attack|
+          modifier[attack.damage.to_i] >= threshold
+        end
       end
     end
 

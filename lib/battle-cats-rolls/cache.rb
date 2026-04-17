@@ -21,6 +21,7 @@ module BattleCatsRolls
     end
 
     module_function
+
     def default logger
       @cache ||= Cache.pick(logger)
     end

@@ -9,8 +9,8 @@ module BattleCatsRolls
         sprintf('%{chance} for %{duration}', values || display_values(&block))
       end
 
-      def specialized; true; end
-      def effects; true; end
+      def specialized = true
+      def effects = true
 
       private
 
@@ -52,6 +52,7 @@ module BattleCatsRolls
   class Ability
     class Specialization < Struct.new(:enemies)
       include AbilityUtility
+
       List = %w[
         red float black angel alien zombie aku relic white metal
       ].freeze
@@ -76,9 +77,9 @@ module BattleCatsRolls
         enemies
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class AgainstOnly
@@ -94,9 +95,9 @@ module BattleCatsRolls
         "Only attack specialized enemies or enemy base.<br>\nWhen cursed, only attack the base."
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class Strong
@@ -112,9 +113,9 @@ module BattleCatsRolls
         'Deal 150% ~ 180% damage and take 50% ~ 40% damage'
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class MassiveDamage
@@ -130,9 +131,9 @@ module BattleCatsRolls
         'Deal 300% ~ 400% damage'
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class InsaneDamage
@@ -148,9 +149,9 @@ module BattleCatsRolls
         'Deal 500% ~ 600% damage'
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class Resistant
@@ -166,9 +167,9 @@ module BattleCatsRolls
         'Take 25% ~ 20% damage'
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class InsaneResistant
@@ -184,9 +185,9 @@ module BattleCatsRolls
         'Take 16% ~ 14% damage'
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
     end
 
     class Knockback < Struct.new(:chance)
@@ -204,9 +205,9 @@ module BattleCatsRolls
         percent(chance)
       end
 
-      def specialized; true; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = true
+      def index = __LINE__
     end
 
     class Freeze < AbilityUtility::EffectDuration
@@ -220,7 +221,7 @@ module BattleCatsRolls
         'Freeze'
       end
 
-      def index; __LINE__; end
+      def index = __LINE__
     end
 
     class Slow < AbilityUtility::EffectDuration
@@ -234,7 +235,7 @@ module BattleCatsRolls
         'Slow'
       end
 
-      def index; __LINE__; end
+      def index = __LINE__
     end
 
     class Weaken < Struct.new(:chance, :duration, :multiplier)
@@ -257,9 +258,9 @@ module BattleCatsRolls
           values || display_values(&block))
       end
 
-      def specialized; true; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = true
+      def index = __LINE__
 
       private
 
@@ -286,7 +287,7 @@ module BattleCatsRolls
           values || display_values(&block))
       end
 
-      def index; __LINE__; end
+      def index = __LINE__
     end
 
     class Dodge < Struct.new(:chance, :duration)
@@ -308,9 +309,9 @@ module BattleCatsRolls
           values || display_values(&block))
       end
 
-      def specialized; true; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = true
+      def effects = false
+      def index = __LINE__
 
       private
 
@@ -337,9 +338,9 @@ module BattleCatsRolls
           values)
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
 
       private
 
@@ -367,9 +368,9 @@ module BattleCatsRolls
           values)
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
 
       private
 
@@ -395,9 +396,9 @@ module BattleCatsRolls
         "#{percent(chance)} to deal #{percent(modifier + 100)} damage"
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
     end
 
     class CriticalStrike < Struct.new(:chance)
@@ -419,9 +420,9 @@ module BattleCatsRolls
         100
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
     end
 
     class MetalKiller < Struct.new(:percentage)
@@ -439,9 +440,9 @@ module BattleCatsRolls
         "Deal #{percent(percentage)} health to metal enemies"
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
     end
 
     class BreakBarrier < Struct.new(:chance)
@@ -459,9 +460,9 @@ module BattleCatsRolls
         "#{percent(chance)} to break star alien barrier"
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
     end
 
     class BreakShield < Struct.new(:chance)
@@ -479,9 +480,9 @@ module BattleCatsRolls
         "#{percent(chance)} to break aku shield"
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
     end
 
     class ZombieKiller
@@ -497,9 +498,9 @@ module BattleCatsRolls
         'Final blow prevents zombies from reviving'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class SoulStrike
@@ -515,9 +516,9 @@ module BattleCatsRolls
         'It can attack zombie corpses'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class BaseDestroyer
@@ -533,9 +534,9 @@ module BattleCatsRolls
         'Deal 400% damage to enemy base'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class ColossusSlayer
@@ -551,9 +552,9 @@ module BattleCatsRolls
         'Deal 160% damage to and take 70% damage from colossus'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class SageSlayer
@@ -569,9 +570,9 @@ module BattleCatsRolls
         'Deal 120% damage, take 50% damage, trigger 100% effects for sages'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class WitchSlayer
@@ -587,9 +588,9 @@ module BattleCatsRolls
         'Deal 500% damage to and take 10% damage from witches'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class EvaAngelSlayer
@@ -605,9 +606,9 @@ module BattleCatsRolls
         'Deal 500% damage to and take 20% damage from eva angels'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class BehemothSlayer < Struct.new(:chance, :duration)
@@ -630,9 +631,9 @@ module BattleCatsRolls
           values || display_values(&block))
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
 
       private
 
@@ -658,9 +659,9 @@ module BattleCatsRolls
         end
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class Wave < Struct.new(:chance, :level, :mini)
@@ -693,9 +694,9 @@ module BattleCatsRolls
         "#{percent(chance)} #{name.downcase}"
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
 
       private
 
@@ -741,9 +742,9 @@ module BattleCatsRolls
         @area_range ||= start..reach
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
 
       private
 
@@ -774,9 +775,9 @@ module BattleCatsRolls
         'Spawn the same surge with self damage and effects when hit by a surge'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class Explosion < Struct.new(:chance, :range, :mini)
@@ -805,9 +806,9 @@ module BattleCatsRolls
         (range * range_multiplier).floor
       end
 
-      def specialized; false; end
-      def effects; true; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = true
+      def index = __LINE__
 
       private
 
@@ -829,9 +830,9 @@ module BattleCatsRolls
         'Get double money from defeating enemies'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class Metallic
@@ -847,9 +848,9 @@ module BattleCatsRolls
         'Take only 1 damage except from critical strikes'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class Kamikaze
@@ -865,13 +866,14 @@ module BattleCatsRolls
         'It dies from its own attack'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class Immunity < Struct.new(:immunity)
       include AbilityUtility
+
       List = %w[
         bosswave knockback warp freeze slow weaken curse
         wave surge explosion toxic
@@ -893,9 +895,9 @@ module BattleCatsRolls
         immunity
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     class BlockWave
@@ -911,9 +913,9 @@ module BattleCatsRolls
         'Immune to and block wave from reaching further'
       end
 
-      def specialized; false; end
-      def effects; false; end
-      def index; __LINE__; end
+      def specialized = false
+      def effects = false
+      def index = __LINE__
     end
 
     def self.build stat
@@ -925,8 +927,8 @@ module BattleCatsRolls
     def self.build_if_available stat
     end
 
-    def specialized; false; end
-    def effects; false; end
-    def index; __LINE__; end
+    def specialized = false
+    def effects = false
+    def index = __LINE__
   end
 end

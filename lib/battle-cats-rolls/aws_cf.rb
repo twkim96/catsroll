@@ -37,7 +37,7 @@ module BattleCatsRolls
         'Statement' => [{
           'Resource' => url,
           'Condition' => {
-            'DateLessThan' => { 'AWS:EpochTime' => expires.to_i }
+            'DateLessThan' => {'AWS:EpochTime' => expires.to_i}
           }
         }])
     end

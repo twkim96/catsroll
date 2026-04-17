@@ -216,7 +216,7 @@ module BattleCatsRolls
         attacks_raw.flat_map do |atk|
           if atk.effects.any?
             attack_args = {stat: self, damage: atk.damage,
-              trigger_effects: atk.trigger_effects}
+              trigger_effects: atk.trigger_effects} # rubocop:disable Layout/HashAlignment
 
             # Wrap wave in an array to avoid calling `to_a` on WaveAttack
             wave = [WaveAttack.new(**attack_args)] if wave_effect

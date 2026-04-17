@@ -77,7 +77,7 @@ module BattleCatsRolls
     private
 
     def default_slots
-      Hash.new{|h,k|h[k]=[]}
+      Hash.new{ |h, k| h[k] = [] }
     end
   end
 end

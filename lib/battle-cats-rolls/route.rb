@@ -835,6 +835,7 @@ module BattleCatsRolls
 
     def cleanup_query query
       query.compact.select do |key, value|
+        # rubocop:disable Layout/MultilineOperationIndentation
         if (key == :seed && value == 0) ||
            (key == :pos && value == '1A') ||
            (key == :lang && value == 'en') ||

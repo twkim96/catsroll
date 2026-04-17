@@ -13566,7 +13566,6 @@ gacha:
     series_id: 27
     name: Limited unit Netherworld Nymph Lunacia added! ★Tap for details!
     rate: uberfest_legend
-    similarity: 99
   1024:
     cats: [831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
     series_id: 21
@@ -13667,15 +13666,13 @@ gacha:
   1043:
     cats: [851, 755, 650, 619, 449, 497, 339, 159, 126, 125, 74, 73, 72, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 2
-    name: Conjure spirits with new hero Akechi Mitsuhide! Tap banner for info!
+    name: New unit Fuma Kotaro added! Masters of battle join the Cat cause!
     rate: regular
-    similarity: 99
   1044:
     cats: [851, 755, 650, 619, 449, 497, 339, 159, 126, 125, 74, 73, 72, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 2
-    name: Conjure spirits with new hero Akechi Mitsuhide! Tap banner for info!
+    name: New unit Fuma Kotaro added! Masters of battle join the Cat cause!
     rate: regular
-    similarity: 99
   1045:
     cats: [851, 838, 831, 818, 812, 800, 782, 780, 775, 770, 764, 761, 755, 734, 732, 724, 720, 716, 713, 699, 693, 691, 675, 669, 661, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 595, 586, 570, 547, 535, 534, 530, 526, 524, 523, 496, 520, 506, 503, 497, 440, 437, 432, 428, 418, 402, 397, 381, 378, 377, 362, 361, 360, 356, 352, 339, 326, 323, 319, 317, 307, 306, 305, 308, 309, 273, 272, 270, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 19
@@ -13693,13 +13690,11 @@ gacha:
     series_id: 21
     name: Get an Uber Rare Cat!! 100% Uber drop Rate in the PLATINUM CAPSULES!
     rate: platinum
-    similarity: 99
   1048:
     cats: [851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
     series_id: 46
     name: Get a Guaranteed Uber or Legend Rare from the Legend Capsules!
     rate: legend
-    similarity: 99
   1049:
     cats: [449, 450, 451, 452, 456, 462, 464, 479, 482, 494, 545, 784, 713, 764, 72, 107, 86, 526, 138, 262, 259, 800, 825, 726, 656, 720, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 70
@@ -33077,7 +33072,7 @@ events:
   2026-03-30_943:
     start_on: 2026-03-30
     end_on: 2026-04-01
-    version: '150201'
+    version: '150200'
     name: Conjure spirits with new hero Akechi Mitsuhide! Tap banner for info!
     id: 943
     rare: 6970
@@ -33087,7 +33082,7 @@ events:
   2026-03-30_979:
     start_on: 2026-03-30
     end_on: 2026-04-01
-    version: '150201'
+    version: '150200'
     name: New Conjurer Unit Mighty Morta-Loncha, with Explosive attacks! ★Tap for details!
     id: 979
     rare: 6970
@@ -33097,7 +33092,7 @@ events:
   2026-03-30_986:
     start_on: 2026-03-30
     end_on: 2026-04-01
-    version: '150201'
+    version: '150200'
     name: Mystery creature Mamoluga awaits your summoning! ★ Tap banner for info!
     id: 986
     rare: 6970
@@ -33293,3 +33288,146 @@ events:
     supa: 2500
     uber: 500
     legend: 30
+  2026-04-17_1023:
+    start_on: 2026-04-17
+    end_on: 2026-04-20
+    version: '150201'
+    name: Limited unit Netherworld Nymph Lunacia added! ★Tap for details!
+    id: 1023
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-04-17_945:
+    start_on: 2026-04-17
+    end_on: 2026-04-20
+    version: '150201'
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-17_968:
+    start_on: 2026-04-17
+    end_on: 2026-04-27
+    version: '150201'
+    name: White Day Limited Capsules ★ Tap banner for info!
+    id: 968
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-04-20_1004:
+    start_on: 2026-04-20
+    end_on: 2026-04-22
+    version: '150201'
+    name: Conjurer hero Komori joins the fight! ★Tap for details!
+    id: 1004
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-20_942:
+    start_on: 2026-04-20
+    end_on: 2026-04-22
+    version: '150201'
+    name: Conjurer Dynasaurus Cat joins the fight! ★Tap banner for info!
+    id: 942
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-20_968:
+    start_on: 2026-04-20
+    end_on: 2026-04-27
+    version: '150201'
+    name: White Day Limited Capsules ★ Tap banner for info!
+    id: 968
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-04-22_946:
+    start_on: 2026-04-22
+    end_on: 2026-04-24
+    version: '150201'
+    name: Hanasaka Cat with Conjurer evolved form joins! ★Tap banner for info!
+    id: 946
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-04-22_968:
+    start_on: 2026-04-22
+    end_on: 2026-04-27
+    version: '150201'
+    name: White Day Limited Capsules ★ Tap banner for info!
+    id: 968
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-04-22_991:
+    start_on: 2026-04-22
+    end_on: 2026-04-24
+    version: '150201'
+    name: The Almighties, supreme beings of Catkind! ★ Tap banner for info!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-04-24_1044:
+    start_on: 2026-04-24
+    end_on: 2026-04-27
+    version: '150201'
+    name: New unit Fuma Kotaro added! Masters of battle join the Cat cause!
+    id: 1044
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-04-24_1047:
+    start_on: 2026-04-24
+    end_on: 2030-01-01
+    version: '150201'
+    name: Get an Uber Rare Cat!! 100% Uber drop Rate in the PLATINUM CAPSULES!
+    id: 1047
+    rare: 0
+    supa: 0
+    uber: 10000
+    platinum: platinum
+  2026-04-24_1048:
+    start_on: 2026-04-24
+    end_on: 2030-01-01
+    version: '150201'
+    name: Get a Guaranteed Uber or Legend Rare from the Legend Capsules!
+    id: 1048
+    rare: 0
+    supa: 0
+    uber: 9500
+    legend: 500
+    platinum: legend
+  2026-04-24_947:
+    start_on: 2026-04-24
+    end_on: 2026-04-27
+    version: '150201'
+    name: Command mighty Conjurer Mech Patrol Axel! ★Tap banner for info!
+    id: 947
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-04-24_968:
+    start_on: 2026-04-24
+    end_on: 2026-04-27
+    version: '150201'
+    name: White Day Limited Capsules ★ Tap banner for info!
+    id: 968
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true

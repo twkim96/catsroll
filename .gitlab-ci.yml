@@ -1,15 +1,23 @@
 
 stages:
+  - lint
   - test
 
-.test:
-  stage: test
-  image: ruby:${RUBY_VERSION}-bullseye
+variables:
+  RUBY_VERSION: '4.0'
+
+.base:
+  needs: []
+  image: ruby:${RUBY_VERSION}-trixie
   variables:
     GIT_DEPTH: "1"
     GIT_SUBMODULE_STRATEGY: recursive
     GIT_SUBMODULE_PATHS: task
     RUBYOPT: --enable-frozen-string-literal
+
+.test:
+  extends: .base
+  stage: test
   before_script:
     - bundle install --retry=3
     - unset CI # Coverage doesn't work well with frozen literal
@@ -20,35 +28,30 @@ stages:
   variables:
     RACK_VERSION: 3.1.16
 
-ruby:3.2:
-  extends:
-    - .test
-  variables:
-    RUBY_VERSION: '3.2'
-
-ruby:3.3:
-  extends:
-    - .test
-  variables:
-    RUBY_VERSION: '3.3'
+rubocop:
+  extends: .base
+  stage: lint
+  before_script:
+    - gem install rubocop
+  script:
+    - rubocop
 
 ruby:3.4:
-  extends:
-    - .test
+  extends: .test
   variables:
     RUBY_VERSION: '3.4'
 
-ruby:3.2-with-specific-rack:
-  extends:
-    - ruby:3.2
-    - .with-specific-rack
-
-ruby:3.3-with-specific-rack:
-  extends:
-    - ruby:3.3
-    - .with-specific-rack
+ruby:4.0:
+  extends: .test
+  variables:
+    RUBY_VERSION: '4.0'
 
 ruby:3.4-with-specific-rack:
   extends:
     - ruby:3.4
+    - .with-specific-rack
+
+ruby:4.0-with-specific-rack:
+  extends:
+    - ruby:4.0
     - .with-specific-rack

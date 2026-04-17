@@ -6,8 +6,9 @@ require 'battle-cats-rolls/route'
 describe BattleCatsRolls::Attack do
   BattleCatsRolls::Route.reload_balls
 
-  def lang; 'en'; end
-  def index; 0; end
+  def lang = 'en'
+  def index = 0
+
   def stat
     @stat ||= BattleCatsRolls::Stat.new(
       id: id, index: index,
@@ -16,7 +17,7 @@ describe BattleCatsRolls::Attack do
 
   describe '#area_type' do
     describe 'Koneko' do
-      def id; 784; end
+      def id = 784
 
       would 'be Single range for main attack and rest triggered area attack' do
         main, *rest = stat.attacks
