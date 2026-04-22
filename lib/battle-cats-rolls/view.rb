@@ -220,58 +220,32 @@ module BattleCatsRolls
     def link_to_roll cat, text: true, image: false, prefix: nil, suffix: nil
       name = h cat.pick_name(route.name)
       title = h cat.pick_title(route.name)
-      href = cat_link_href(cat)
-      text_link = cat_link_fragment('cat_link_text', href, title, name)
-      stat_link =
-        if cat.slot_fruit && cat.id > 0
-          %Q{<a class="cat_stat_link" href="#{h route.uri_to_cat(cat)}">🐾</a>}
-        end
-      avatar =
-        if image && cat.id > 0
-          unit_image_tag(cat)
-        end
+      stat_uri = h route.uri_to_cat(cat) if cat.id > 0
+      roll_uri = h route.uri_to_roll(cat) if cat.slot_fruit
+      text_roll = roll_tag(roll_uri, title, name) if text
+      stat = %Q{<a href="#{stat_uri}">🐾</a>} if stat_uri
+      content = "#{prefix}#{text_roll}#{stat}#{suffix}"
 
-      if avatar
-        text = "#{prefix}#{text_link if text}#{stat_link}#{suffix}"
-        text_part =
-          if text.empty?
-            text
-          else
-            %Q{<span class="cat_link_body">#{text}</span>}
-          end
-        avatar_part = cat_link_fragment('cat_link_thumb', href, title, avatar)
-
-        %Q{<span class="cat_link">#{avatar_part}#{text_part}</span>}
+      if image && stat_uri
+        image_roll = roll_tag(roll_uri, title, avatar_tag(cat, name))
+        %Q{<span class="cat_link">#{image_roll}#{content}</span>}
       else
-        "#{prefix}#{text_link}#{stat_link}#{suffix}"
+        content
       end
     end
 
-    def cat_link_fragment css_class, href, title, content
+    def roll_tag href, title, content
       if href
-        %Q{<a class="#{css_class}" href="#{href}" title="#{title}">#{content}</a>}
+        %Q{<a href="#{href}" title="#{title}">#{content}</a>}
       else
-        %Q{<span class="#{css_class}" title="#{title}">#{content}</span>}
+        %Q{<span title="#{title}">#{content}</span>}
       end
     end
 
-    def cat_link_href cat
-      if cat.slot_fruit
-        h route.uri_to_roll(cat)
-      elsif cat.id > 0
-        h route.uri_to_cat(cat)
-      end
-    end
-
-    def unit_image_tag cat
-      (@unit_image_tag ||= {})[cat.id] ||= begin
+    def avatar_tag cat, name
+      (@avatar_tag ||= {})[cat.id] ||= begin
         src = h cat.pick_img_src(route.name, route.lang)
-        alt =
-          if route.display == 'image'
-            h cat.pick_name(route.name)
-          else
-            ''
-          end
+        alt = name if route.display == 'image'
 
         <<~HTML
           <span class="cat_track_thumb_clip">
