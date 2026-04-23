@@ -71,7 +71,7 @@ module BattleCatsRolls
     end
 
     def seek
-      logger.info("Seeking seed with #{source.join(' ')}")
+      # logger.info("Seeking seed with #{source.join(' ')}")
 
       case seeker = source.first
       when 'VampireFlower'
