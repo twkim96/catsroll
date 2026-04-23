@@ -35,7 +35,7 @@ module BattleCatsRolls
     def_delegator :request, :path_info
 
     def gacha
-      @gacha ||= Gacha.new(pool, seed, version)
+      @gacha ||= Gacha.new(pool, seed)
     end
 
     def ball
@@ -48,7 +48,7 @@ module BattleCatsRolls
 
     def seek_source
       @seek_source ||=
-        [seeker, version, *seek_rates, *seek_slots, *seek_rolls].map(&:to_s)
+        [seeker, '8.6', *seek_rates, *seek_slots, *seek_rolls].map(&:to_s)
     end
 
     def seek_rates
@@ -67,7 +67,7 @@ module BattleCatsRolls
     def seek_result key
       "/seek/result/#{key}?" \
         "event=#{event}&lang=#{lang}&" \
-        "version=#{version}&seeker=#{seeker}&name=#{name}"
+        "seeker=#{seeker}&name=#{name}"
     end
 
     def show_tracks?
@@ -88,7 +88,7 @@ module BattleCatsRolls
         gacha.roll_both!(sequence)
       end
 
-      gacha.finish_rerolled_links(cats) if version == '8.6'
+      gacha.finish_rerolled_links(cats)
       gacha.finish_last_roll(cats.dig(0, 0)) if last.nonzero?
       gacha.finish_guaranteed(cats, guaranteed_rolls) if guaranteed_rolls > 0
 
@@ -179,25 +179,6 @@ module BattleCatsRolls
       @pos ||= request.params_coercion_with_nil('pos', :to_s) || '1A'
     end
 
-    def version
-      @version ||=
-        case value = request.params_coercion_with_nil('version', :to_s)
-        when '8.6', '8.5', '8.4'
-          value
-        else
-          default_version
-        end
-    end
-
-    def default_version
-      case lang
-      when 'jp'
-        '8.6' # rubocop:disable Style/IdenticalConditionalBranches
-      else
-        '8.6' # rubocop:disable Style/IdenticalConditionalBranches
-      end
-    end
-
     def seeker
       @seeker ||=
         case value = request.params_coercion_with_nil('seeker', :to_s)
@@ -209,13 +190,7 @@ module BattleCatsRolls
     end
 
     def default_seeker
-      @default_seeker ||=
-        case version
-        when '8.6'
-          'VampireFlower'
-        else
-          'godfat'
-        end
+      'VampireFlower'
     end
 
     def name
@@ -676,7 +651,7 @@ module BattleCatsRolls
     end
 
     def uri_to_roll cat
-      uri(query: {seed: cat.slot_fruit.seed, last: cat.id, pos: '1A'})
+      uri(query: {seed: cat.slot_seed, last: cat.id, pos: '1A'})
     end
 
     def uri_to_cat cat
@@ -788,7 +763,7 @@ module BattleCatsRolls
     def default_query query={}, include_filters: false
       keys = %i[
         seed pos last event custom rate c_rare c_supa c_uber level lang ui
-        version seeker name display theme count find
+        seeker name display theme count find
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
         hide_wave
@@ -844,7 +819,6 @@ module BattleCatsRolls
            (key == :pos && value == '1A') ||
            (key == :lang && value == 'en') ||
            (key == :ui && value == '') ||
-           (key == :version && value == default_version) ||
            (key == :seeker && value == default_seeker) ||
            (key == :name && value == 0) ||
            (key == :display && value == 'text') ||

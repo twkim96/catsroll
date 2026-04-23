@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
 require_relative 'cat'
-require_relative 'fruit'
-
 require 'forwardable'
 
 module BattleCatsRolls
-  class Gacha < Struct.new(:pool, :seed, :version,
+  class Gacha < Struct.new(:pool, :seed,
     :last_both, :last_roll, :position)
     extend Forwardable
 
     def_delegators :pool, *%w[rare supa uber legend]
 
-    def initialize gacha_pool, seed, version
-      super(gacha_pool, seed, version, [])
+    def initialize gacha_pool, seed
+      super(gacha_pool, seed, [])
 
       advance_seed!
     end
@@ -29,10 +27,10 @@ module BattleCatsRolls
     end
 
     def roll_both! sequence=nil
-      a_fruit = roll_fruit!
-      b_fruit = roll_fruit
-      a_cat = roll_cat!(a_fruit)
-      b_cat = roll_cat(b_fruit)
+      a_seed = roll_seed!
+      b_seed = seed
+      a_cat = roll_cat!(a_seed)
+      b_cat = roll_cat(b_seed)
       a_cat.track = 0
       b_cat.track = 1
       a_cat.sequence = b_cat.sequence = sequence
@@ -44,7 +42,7 @@ module BattleCatsRolls
     end
 
     def roll!
-      roll_cat!(roll_fruit!)
+      roll_cat!(roll_seed!)
     end
 
     # Existing dupes can cause more dupes, see this for bouncing around:
@@ -133,28 +131,24 @@ module BattleCatsRolls
       end
     end
 
-    def roll_fruit base_seed=seed
-      Fruit.new(base_seed, version)
+    def roll_seed!
+      seed.tap{ advance_seed! }
     end
 
-    def roll_fruit!
-      roll_fruit.tap{ advance_seed! }
-    end
-
-    def roll_cat rarity_fruit
-      score = rarity_fruit.value % GachaPool::Base
+    def roll_cat rarity_seed
+      score = rarity_seed % GachaPool::Base
       rarity = dig_rarity(score)
-      slot_fruit = if block_given? then yield else roll_fruit end
-      cat = new_cat(rarity, slot_fruit)
+      slot_seed = if block_given? then yield else seed end
+      cat = new_cat(rarity, slot_seed)
 
-      cat.rarity_fruit = rarity_fruit
+      cat.rarity_seed = rarity_seed
       cat.score = score
 
       cat
     end
 
-    def roll_cat! rarity_fruit
-      roll_cat(rarity_fruit){ roll_fruit! }
+    def roll_cat! rarity_seed
+      roll_cat(rarity_seed){ roll_seed! }
     end
 
     def dig_rarity score
@@ -172,7 +166,7 @@ module BattleCatsRolls
       end
     end
 
-    def new_cat rarity, slot_fruit, **args
+    def new_cat rarity, slot_seed, **args
       slots = pool.dig_slot(rarity)
 
       if slots.empty? # Cats for this rarity cannot be found
@@ -180,7 +174,7 @@ module BattleCatsRolls
         id = -1
         info = Cat.none
       else
-        slot = slot_fruit.value % slots.size
+        slot = slot_seed % slots.size
         id = slots[slot]
         info = pool.dig_cat(id)
       end
@@ -188,14 +182,14 @@ module BattleCatsRolls
       Cat.new(
         id: id, info: info,
         rarity: rarity,
-        slot_fruit: slot_fruit, slot: slot,
+        slot_seed: slot_seed, slot: slot,
         **args)
     end
 
     def reroll_cat cat
       rarity = cat.rarity
       rerolling_slots = pool.dig_slot(rarity).dup
-      next_seed = cat.slot_fruit.value
+      next_seed = cat.slot_seed
       slot = cat.slot
       id = nil
 
@@ -222,13 +216,13 @@ module BattleCatsRolls
       Cat.new(
         id: id, info: pool.dig_cat(id),
         rarity: rarity, score: cat.score,
-        slot_fruit: roll_fruit(next_seed), slot: slot,
+        slot_seed: next_seed, slot: slot,
         sequence: cat.sequence, track: cat.track, steps: steps,
         extra_label: "#{cat.extra_label}R")
     end
 
     def fill_cat_links cat, last_cat
-      if version == '8.6' && cat.duped?(last_cat)
+      if cat.duped?(last_cat)
         # We need ||= to avoid rerolling the same cat, because it can
         # dupe from both A and B, thus it can be called twice.
         # Given the same cat in the same position, result is the same.
@@ -255,12 +249,12 @@ module BattleCatsRolls
       next_cat = cats.dig(next_index, next_track)
 
       if next_cat
-        guaranteed_slot_fruit =
-          cats.dig(last.sequence - 1, last.track, :rarity_fruit)
+        guaranteed_slot_seed =
+          cats.dig(last.sequence - 1, last.track, :rarity_seed)
 
         rolled_cat.guaranteed =
           new_cat(
-            Cat::Uber, guaranteed_slot_fruit,
+            Cat::Uber, guaranteed_slot_seed,
             sequence: rolled_cat.sequence,
             track: rolled_cat.track,
             next: next_cat,

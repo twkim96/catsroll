@@ -226,7 +226,7 @@ module BattleCatsRolls
       name = h cat.pick_name(route.name)
       title = h cat.pick_title(route.name)
       stat_uri = h route.uri_to_cat(cat) if cat.id > 0
-      roll_uri = h route.uri_to_roll(cat) if cat.slot_fruit
+      roll_uri = h route.uri_to_roll(cat) if cat.slot_seed
       text_roll = roll_tag(roll_uri, title, name) if text
       stat = %Q{<a href="#{stat_uri}">🐾</a>} if stat_uri
       content = "#{prefix}#{text_roll}#{stat}#{suffix}"
@@ -274,10 +274,6 @@ module BattleCatsRolls
 
     def selected_pos pos
       'selected="selected"' if route.pos == pos
-    end
-
-    def selected_version version_name
-      'selected="selected"' if route.version == version_name
     end
 
     def selected_seeker seeker_name
@@ -586,8 +582,7 @@ module BattleCatsRolls
     end
 
     def made10rolls? seeds
-      gacha = Gacha.new(
-        route.gacha.pool, seeds.first, route.version)
+      gacha = Gacha.new(route.gacha.pool, seeds.first)
       gacha.send(:advance_seed!) # Account offset
       9.times.inject(nil){ |last| gacha.roll! } # Only 9 rolls left
 
@@ -608,7 +603,7 @@ module BattleCatsRolls
       HTML
     end
 
-    def seed_tds fruit, cat
+    def seed_tds seed, cat
       return unless show_details
 
       rowspan =
@@ -618,16 +613,8 @@ module BattleCatsRolls
           1
         end
 
-      value =
-        if fruit.seed == fruit.value
-          '-'
-        else
-          fruit.value
-        end
-
       <<~HTML
-        <td rowspan="#{rowspan}">#{fruit.seed}</td>
-        <td rowspan="#{rowspan}">#{value}</td>
+        <td rowspan="#{rowspan}">#{seed}</td>
       HTML
     end
 

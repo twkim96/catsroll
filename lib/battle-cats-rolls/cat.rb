@@ -6,8 +6,8 @@ require_relative 'root'
 module BattleCatsRolls
   class Cat < Struct.new(
     :id, :info,
-    :rarity, :rarity_fruit, :score,
-    :slot, :slot_fruit,
+    :rarity, :rarity_seed, :score,
+    :slot, :slot_seed,
     :sequence, :track, :steps,
     :next, :parent, :rerolled, :guaranteed,
     :rarity_label, :picked_label, :extra_label,
