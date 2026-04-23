@@ -2,8 +2,7 @@
 
 require_relative 'ability'
 require_relative 'attack'
-require_relative 'provider'
-require_relative 'root'
+require_relative 'cat'
 
 module BattleCatsRolls
   class Stat < Struct.new(
@@ -13,32 +12,28 @@ module BattleCatsRolls
 
     DefaultLevel = 30
     FPS = 30
+    EmptyImgSrc = "data:image/svg+xml," \
+      "<svg xmlns='http://www.w3.org/2000/svg'" \
+      "%20width='1'%20height='1'/>"
 
     def inspect
       "#<#{self.class} id=#{id.inspect} name=#{name.inspect}>"
     end
 
     def name
-      info.dig('name', index) || cat&.pick_name(index)
+      info.dig('name', index) || cat.pick_name(index)
     end
 
     def desc
-      info.dig('desc', index) || cat&.pick_description(index)
+      info.dig('desc', index) || cat.pick_description(index)
     end
 
     def img_src lang
-      dir = "#{Root}/extract/asset"
-      path = sprintf("%s/uni%03d_%s00.png",
-        lang, id - 1, Provider.forms[index])
+      cat.img_src(index, lang) || EmptyImgSrc
+    end
 
-      if File.exist?("#{dir}/#{path}")
-        "/extract/#{path}"
-      else
-        # Default dimension on Firefox is 1x1, but nonsense on Safari/Chrome
-        "data:image/svg+xml," \
-          "<svg xmlns='http://www.w3.org/2000/svg'" \
-          "%20width='1'%20height='1'/>"
-      end
+    def cat
+      super || self.cat = Cat.new(id: id, info: info)
     end
 
     def stat

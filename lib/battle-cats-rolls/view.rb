@@ -184,7 +184,9 @@ module BattleCatsRolls
     end
 
     def td_to_cat cat, link_type
-      td(cat, :cat, content: cat && __send__("link_to_#{link_type}", cat))
+      td(cat, :cat, content: cat && __send__("link_to_#{link_type}", cat,
+        text: route.display != 'image',
+        image: route.display != 'text'))
     end
 
     def td cat, type, rowspan: 1, content: nil, rerolled: nil
@@ -198,39 +200,84 @@ module BattleCatsRolls
       HTML
     end
 
-    def link_to_roll cat
+    def link_to_next cat, text: true, image: false
+      next_cat = cat.next
+      affix =
+        case next_cat&.track
+        when 0
+          {prefix: "&lt;- #{next_cat.number} "}
+        when 1
+          {suffix: " -&gt; #{next_cat.number}"}
+        when nil
+          {prefix: "&lt;?&gt; "}
+        else
+          raise "Unknown track: #{next_cat.track.inspect}"
+        end
+
+      link_to_roll(cat, text: text, image: image, **affix)
+    end
+
+    def link_to_roll cat, text: true, image: false, prefix: nil, suffix: nil
       name = h cat.pick_name(route.name)
       title = h cat.pick_title(route.name)
-      show_link_to_stat = cat.id > 0
-
-      if cat.slot_fruit
-        link =
-          %Q{<a href="#{h route.uri_to_roll(cat)}" title="#{title}">#{name}</a>}
-        if show_link_to_stat
-          %Q{#{link}<a href="#{route.uri_to_cat(cat)}">🐾</a>}
-        else
-          link
+      href = cat_link_href(cat)
+      text_link = cat_link_fragment('cat_link_text', href, title, name)
+      stat_link =
+        if cat.slot_fruit && cat.id > 0
+          %Q{<a class="cat_stat_link" href="#{h route.uri_to_cat(cat)}">🐾</a>}
         end
-      elsif show_link_to_stat
-        %Q{<a href="#{route.uri_to_cat(cat)}" title="#{title}">#{name}</a>}
+      avatar =
+        if image && cat.id > 0
+          unit_image_tag(cat)
+        end
+
+      if avatar
+        text = "#{prefix}#{text_link if text}#{stat_link}#{suffix}"
+        text_part =
+          if text.empty?
+            text
+          else
+            %Q{<span class="cat_link_body">#{text}</span>}
+          end
+        avatar_part = cat_link_fragment('cat_link_thumb', href, title, avatar)
+
+        %Q{<span class="cat_link">#{avatar_part}#{text_part}</span>}
       else
-        %Q{<span title="#{title}">#{name}</span>}
+        "#{prefix}#{text_link}#{stat_link}#{suffix}"
       end
     end
 
-    def link_to_next cat
-      cat_link = link_to_roll(cat)
-      next_cat = cat.next
-
-      case next_cat&.track
-      when 0
-        "&lt;- #{next_cat.number} #{cat_link}"
-      when 1
-        "#{cat_link} -&gt; #{next_cat.number}"
-      when nil
-        "&lt;?&gt; #{cat_link}"
+    def cat_link_fragment css_class, href, title, content
+      if href
+        %Q{<a class="#{css_class}" href="#{href}" title="#{title}">#{content}</a>}
       else
-        raise "Unknown track: #{next_cat.track.inspect}"
+        %Q{<span class="#{css_class}" title="#{title}">#{content}</span>}
+      end
+    end
+
+    def cat_link_href cat
+      if cat.slot_fruit
+        h route.uri_to_roll(cat)
+      elsif cat.id > 0
+        h route.uri_to_cat(cat)
+      end
+    end
+
+    def unit_image_tag cat
+      (@unit_image_tag ||= {})[cat.id] ||= begin
+        src = h cat.pick_img_src(route.name, route.lang)
+        alt =
+          if route.display == 'image'
+            h cat.pick_name(route.name)
+          else
+            ''
+          end
+
+        <<~HTML
+          <span class="cat_track_thumb_clip">
+            <img class="cat_track_thumb" src="#{src}" alt="#{alt}"
+              decoding="async"></span>
+        HTML
       end
     end
 
@@ -260,6 +307,10 @@ module BattleCatsRolls
 
     def selected_name name_name
       'selected="selected"' if route.name == name_name
+    end
+
+    def selected_display display_name
+      'selected="selected"' if route.display == display_name
     end
 
     def selected_theme theme_name

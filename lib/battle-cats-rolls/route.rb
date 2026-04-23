@@ -236,6 +236,16 @@ module BattleCatsRolls
         end
     end
 
+    def display
+      @display ||=
+        case value = request.params_coercion_with_nil('display', :to_s)
+        when 'both', 'image'
+          value
+        else
+          'text'
+        end
+    end
+
     def theme
       @theme ||=
         case value = request.params_coercion_with_nil('theme', :to_s)
@@ -785,7 +795,7 @@ module BattleCatsRolls
     def default_query query={}, include_filters: false
       keys = %i[
         seed pos last event custom rate c_rare c_supa c_uber level lang ui
-        version seeker name theme count find
+        version seeker name display theme count find
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
         hide_wave
@@ -843,6 +853,7 @@ module BattleCatsRolls
            (key == :version && value == default_version) ||
            (key == :seeker && value == default_seeker) ||
            (key == :name && value == 0) ||
+           (key == :display && value == 'text') ||
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
            (key == :find && value == 0) ||

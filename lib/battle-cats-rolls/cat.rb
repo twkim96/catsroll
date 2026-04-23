@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative 'provider'
+require_relative 'root'
+
 module BattleCatsRolls
   class Cat < Struct.new(
     :id, :info,
@@ -46,6 +49,17 @@ module BattleCatsRolls
 
     def pick_description index
       info.dig('desc', index) || pick_description(index - 1) if index >= 0
+    end
+
+    def pick_img_src index, lang
+      img_src(index, lang) || pick_img_src(index - 1, lang) if index >= 0
+    end
+
+    def img_src index, lang
+      path = sprintf("%s/uni%03d_%s00.png",
+        lang, id - 1, Provider.forms[index])
+
+      "/extract/#{path}" if File.exist?("#{Root}/extract/asset/#{path}")
     end
 
     def number
