@@ -200,6 +200,13 @@ module BattleCatsRolls
       HTML
     end
 
+    def link_to_cat cat
+      name = h cat.pick_name(route.name)
+      title = h cat.pick_title(route.name)
+      href = h route.uri_to_cat(cat)
+      %Q{<a href="#{href}" title="#{title}">#{name}</a>}
+    end
+
     def link_to_next cat, text: true, image: false
       next_cat = cat.next
       affix =
@@ -507,7 +514,7 @@ module BattleCatsRolls
 
     def show_gacha_slots cats
       cats.map.with_index do |cat, i|
-        "#{i} #{link_to_roll(cat)}"
+        "#{i} #{link_to_cat(cat)}"
       end.join(', ')
     end
 
