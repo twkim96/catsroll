@@ -1,44 +1,17 @@
 
 require 'pork/auto'
+require 'muack'
 require 'battle-cats-rolls/view'
+require 'battle-cats-rolls/route'
+require 'battle-cats-rolls/request'
 
 describe BattleCatsRolls::View do
-  RouteStub = Struct.new(:lang, :name, :display, keyword_init: true) do
-    def uri_to_cat cat
-      "/cats/#{cat.id}"
-    end
-
-    def uri_to_roll cat
-      "/?last=#{cat.id}"
-    end
-  end
-
   def view
-    @view ||= BattleCatsRolls::View.new
+    @view ||= BattleCatsRolls::View.new(route)
   end
 
-  def build_view lang: 'en', name: 0, display: 'both'
-    BattleCatsRolls::View.new(RouteStub.new(lang: lang, name: name, display: display))
-  end
-
-  def build_cat id: 148, names: ['Tin Cat'], desc: ['Desc'], **args
-    BattleCatsRolls::Cat.new({
-      id: id,
-      info: {
-        'name' => names,
-        'desc' => desc
-      },
-      sequence: 10,
-      track: 0
-    }.merge(args))
-  end
-
-  def stub_image_paths cat, *paths
-    cat.define_singleton_method(:img_src) do |index, lang|
-      path = format('/extract/%s/uni%03d_%s00.png',
-        lang, id - 1, BattleCatsRolls::Provider.forms[index])
-      paths.include?(path) ? path : BattleCatsRolls::Stat::EmptyImgSrc
-    end
+  def route
+    @route ||= BattleCatsRolls::Route.new(BattleCatsRolls::Request.new({}))
   end
 
   describe '#growth_rate' do
@@ -62,37 +35,56 @@ describe BattleCatsRolls::View do
     end
   end
 
-  describe '#link_to_roll' do
-    would 'render thumbnail markup beside the unit name when an extracted image exists' do
-      custom_view = build_view(lang: 'en', display: 'image')
-      cat = build_cat
+  describe 'with image display' do
+    include Muack::API
 
-      stub_image_paths(cat, '/extract/en/uni147_f00.png')
+    before{ Muack.reset }
+    after{ Muack.verify }
 
-      html = custom_view.__send__(:link_to_roll, cat, image: true)
-
-      expect(html.include?('class="cat_link"')).eq true
-      expect(html.include?('class="cat_track_thumb_clip"')).eq true
-      expect(html.include?('class="cat_track_thumb"')).eq true
-      expect(html.include?('/extract/en/uni147_f00.png')).eq true
-      expect(html.include?('alt="Tin Cat"')).eq true
-      expect(html.include?('>Tin Cat<')).eq true
+    def cat
+      @cat ||= BattleCatsRolls::Cat.new(id: 148,
+        info: {'name' => ['Tin Cat'], 'desc' => []})
     end
-  end
 
-  describe '#link_to_next' do
-    would 'render the thumbnail before the next-position arrow text' do
-      custom_view = build_view(lang: 'en')
-      cat = build_cat(slot_fruit: Object.new,
-        next: build_cat(id: 149, names: ['Rocker Cat'], sequence: 11, track: 1))
+    before do
+      stub(route).name{ 0 }
+      stub(route).lang{ 'en' }
+      stub(route).display{ 'image' }
+      stub(cat).img_src(0, 'en'){ '/avatar.png' }
+    end
 
-      stub_image_paths(cat, '/extract/en/uni147_f00.png')
+    describe '#link_to_roll' do
+      would 'render correct avatar' do
+        html = view.__send__(:link_to_roll, cat, image: true, text: false)
 
-      html = custom_view.__send__(:link_to_next, cat, image: true)
+        expect(html).include?('class="track_avatar_wrap"')
+        expect(html).include?('class="track_avatar_clip"')
+        expect(html).include?('class="track_avatar"')
+        expect(html).include?('src="/avatar.png"')
+        expect(html).include?(%Q{alt="#{cat.name}"})
+        expect(html).not.include?(">#{cat.name}<")
+      end
 
-      expect(html.include?('class="cat_link"')).eq true
-      expect(html.include?('-&gt; 11B')).eq true
-      expect(html.include?('class="cat_track_thumb"')).eq true
+      would 'call Cat#img_src only once for the same cat' do
+        2.times do
+          view.__send__(:link_to_roll, cat, image: true, text: false)
+        end
+
+        spy(cat).img_src(0, 'en')
+        ok
+      end
+    end
+
+    describe '#link_to_next' do
+      would 'render the image before the next-position arrow' do
+        cat.next = BattleCatsRolls::Cat.new(track: 1, sequence: 11)
+        html = view.__send__(:link_to_next, cat, image: true)
+
+        image = html.index('src="/avatar.png"')
+        arrow = html.index('-&gt; 11B')
+
+        expect(image).lt arrow
+      end
     end
   end
 end

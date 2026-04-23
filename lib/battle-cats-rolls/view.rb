@@ -235,7 +235,7 @@ module BattleCatsRolls
 
       if image && stat_uri
         image_roll = roll_tag(roll_uri, title, avatar_tag(cat, name))
-        %Q{<span class="cat_link">#{image_roll}#{content}</span>}
+        %Q{<span class="track_avatar_wrap">#{image_roll}#{content}</span>}
       else
         content
       end
@@ -252,11 +252,11 @@ module BattleCatsRolls
     def avatar_tag cat, name
       (@avatar_tag ||= {})[cat.id] ||= begin
         src = h cat.pick_img_src(route.name, route.lang)
-        alt = name if route.display == 'image'
+        alt = name if route.display == 'image' # Redundant otherwise
 
-        <<~HTML
-          <span class="cat_track_thumb_clip">
-            <img class="cat_track_thumb" src="#{src}" alt="#{alt}"
+        <<~HTML.strip
+          <span class="track_avatar_clip">
+            <img class="track_avatar" src="#{src}" alt="#{alt}"
               decoding="async"></span>
         HTML
       end
