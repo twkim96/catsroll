@@ -436,6 +436,9 @@ h1, h2, h3, h4, h5, h6 {
   align-items: flex-end;
   gap: 0.2rem;
 }
+.track_avatar_wrap a {
+  flex: none;
+}
 .track_avatar_clip {
   --track_avatar_width: 4.5rem;
   display: inline-flex;
