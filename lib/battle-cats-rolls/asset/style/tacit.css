@@ -427,6 +427,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .filter { text-align: left; padding-left: 5px; }
 .cats_by_rarity { margin-bottom: 18px; }
+.cat { vertical-align: bottom; }
 #notice { background-color: pink; }
 #seed_input { width: 10em; }
 #count_input, #level_input { width: 3.5em; }
@@ -435,9 +436,6 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   align-items: flex-end;
   gap: 0.2rem;
-}
-.track_avatar_wrap a {
-  flex: none;
 }
 .track_avatar_clip {
   --track_avatar_width: 4.5rem;

@@ -228,8 +228,8 @@ module BattleCatsRolls
       stat_uri = h route.uri_to_cat(cat) if cat.id > 0
       roll_uri = h route.uri_to_roll(cat) if cat.slot_seed
       text_roll = roll_tag(roll_uri, title, name) if text
-      stat = %Q{<a href="#{stat_uri}">🐾</a>} if stat_uri
-      content = "#{prefix}#{text_roll}#{stat}#{suffix}"
+      stat = %Q{ <a href="#{stat_uri}">🐾</a>} if stat_uri
+      content = "<span>#{prefix}#{text_roll}#{stat}#{suffix}</span>"
 
       if image && stat_uri
         image_roll = roll_tag(roll_uri, title, avatar_tag(cat, name))
