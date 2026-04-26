@@ -26,6 +26,8 @@ module BattleCatsRolls
     end
 
     def decode code
+      return [] unless code[/\A[0-9A-Za-z]+\z/]
+
       int = from_radix(code)
 
       return [] if int.zero?
