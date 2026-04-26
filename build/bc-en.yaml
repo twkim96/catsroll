@@ -13726,13 +13726,11 @@ gacha:
     series_id: 19
     name: New unit Squire Luno added! ★Uber Rare drop rate UP!
     rate: uberfest_legend
-    similarity: 99
   1046:
     cats: [851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 27
     name: Limited unit Netherworld Nymph Lunacia added! ★Tap for details!
     rate: uberfest_legend
-    similarity: 99
   1047:
     cats: [851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
     series_id: 21
@@ -13746,8 +13744,7 @@ gacha:
   1049:
     cats: [449, 450, 451, 452, 456, 462, 464, 479, 482, 494, 545, 784, 713, 764, 72, 107, 86, 526, 138, 262, 259, 800, 825, 726, 656, 720, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 70
-    name: Limited Uber Rare unit Koneko added! 100M DL Special Capsules!
-    similarity: 68
+    name: Limited Uber Rare unit Koneko added! 111M DL Special Capsules!
   1050:
     cats: [841, 842, 843, 844, 845, 846, 847, 848, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 74
@@ -33525,3 +33522,244 @@ events:
     supa: 2500
     uber: 500
     guaranteed: true
+  2026-04-27_1015:
+    start_on: 2026-04-27
+    end_on: 2026-04-29
+    version: '150300'
+    name: New unit Sorceress Sidmi added! Spooky beauties from beyond!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-27_1021:
+    start_on: 2026-04-27
+    end_on: 2026-04-29
+    version: '150300'
+    name: New unit Raclesa the Lioness added! Cosmic cuties, here to crush your enemies!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-27_880:
+    start_on: 2026-04-27
+    end_on: 2026-05-11
+    version: '150300'
+    name: Limited Edition Spring Cats ★ Check info for more details!
+    id: 880
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-04-29_979:
+    start_on: 2026-04-29
+    end_on: 2026-05-01
+    version: '150300'
+    name: New Conjurer Unit Mighty Morta-Loncha, with Explosive attacks! ★Tap for details!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-29_986:
+    start_on: 2026-04-29
+    end_on: 2026-05-01
+    version: '150300'
+    name: Mystery creature Mamoluga awaits your summoning! ★ Tap banner for info!
+    id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-01_1045:
+    start_on: 2026-05-01
+    end_on: 2026-05-04
+    version: '150300'
+    name: New unit Squire Luno added! ★Uber Rare drop rate UP!
+    id: 1045
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-05-01_880:
+    start_on: 2026-05-01
+    end_on: 2026-05-11
+    version: '150300'
+    name: Limited Edition Spring Cats ★ Check info for more details!
+    id: 880
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-05-01_947:
+    start_on: 2026-05-01
+    end_on: 2026-05-04
+    version: '150300'
+    name: Command mighty Conjurer Mech Patrol Axel! ★Tap banner for info!
+    id: 947
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-04_880:
+    start_on: 2026-05-04
+    end_on: 2026-05-11
+    version: '150300'
+    name: Limited Edition Spring Cats ★ Check info for more details!
+    id: 880
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-05-04_945:
+    start_on: 2026-05-04
+    end_on: 2026-05-06
+    version: '150300'
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-04_991:
+    start_on: 2026-05-04
+    end_on: 2026-05-06
+    version: '150300'
+    name: The Almighties, supreme beings of Catkind! ★ Tap banner for info!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-06_1004:
+    start_on: 2026-05-06
+    end_on: 2026-05-08
+    version: '150300'
+    name: Conjurer hero Komori joins the fight! ★Tap for details!
+    id: 1004
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-05-06_880:
+    start_on: 2026-05-06
+    end_on: 2026-05-11
+    version: '150300'
+    name: Limited Edition Spring Cats ★ Check info for more details!
+    id: 880
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-05-06_942:
+    start_on: 2026-05-06
+    end_on: 2026-05-08
+    version: '150300'
+    name: Conjurer Dynasaurus Cat joins the fight! ★Tap banner for info!
+    id: 942
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-05-08_1015:
+    start_on: 2026-05-08
+    end_on: 2026-05-11
+    version: '150300'
+    name: New unit Sorceress Sidmi added! Spooky beauties from beyond!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-05-08_1021:
+    start_on: 2026-05-08
+    end_on: 2026-05-11
+    version: '150300'
+    name: New unit Raclesa the Lioness added! Cosmic cuties, here to crush your enemies!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-05-11_1043:
+    start_on: 2026-05-11
+    end_on: 2026-05-13
+    version: '150300'
+    name: New unit Fuma Kotaro added! Masters of battle join the Cat cause!
+    id: 1043
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-11_1049:
+    start_on: 2026-05-11
+    end_on: 2026-06-01
+    version: '150300'
+    name: Limited Uber Rare unit Koneko added! 111M DL Special Capsules!
+    id: 1049
+    rare: 6930
+    supa: 2500
+    uber: 500
+    legend: 70
+  2026-05-11_946:
+    start_on: 2026-05-11
+    end_on: 2026-05-13
+    version: '150300'
+    name: Hanasaka Cat with Conjurer evolved form joins! ★Tap banner for info!
+    id: 946
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-13_979:
+    start_on: 2026-05-13
+    end_on: 2026-05-15
+    version: '150300'
+    name: New Conjurer Unit Mighty Morta-Loncha, with Explosive attacks! ★Tap for details!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-13_986:
+    start_on: 2026-05-13
+    end_on: 2026-05-15
+    version: '150300'
+    name: Mystery creature Mamoluga awaits your summoning! ★ Tap banner for info!
+    id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-15_1046:
+    start_on: 2026-05-15
+    end_on: 2026-05-18
+    version: '150300'
+    name: Limited unit Netherworld Nymph Lunacia added! ★Tap for details!
+    id: 1046
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-05-15_1049:
+    start_on: 2026-05-15
+    end_on: 2026-06-01
+    version: '150300'
+    name: Limited Uber Rare unit Koneko added! 111M DL Special Capsules!
+    id: 1049
+    rare: 6930
+    supa: 2500
+    uber: 500
+    legend: 70
+  2026-05-15_945:
+    start_on: 2026-05-15
+    end_on: 2026-05-18
+    version: '150300'
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
