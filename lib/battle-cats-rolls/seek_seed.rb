@@ -77,7 +77,7 @@ module BattleCatsRolls
       when 'VampireFlower'
         result = IO.popen([
           "#{Root}/Seeker/Seeker-VampireFlower", *source.drop(1),
-          err: %i[child out]
+          err: %i[child out] # rubocop:disable Style/HashAsLastArrayItem
         ], 'r+') do |io|
           io.close_write
           io.read
@@ -93,10 +93,12 @@ module BattleCatsRolls
       else
         []
       end
-    rescue => error
+    rescue StandardError => error
+      # rubocop:disable Style/StringLiterals
       logger.warn(
         "Seeking seed failed with" \
           " #{error.class}:#{error.message} with #{source.join(' ')}")
+      # rubocop:enable Style/StringLiterals
       []
     end
   end

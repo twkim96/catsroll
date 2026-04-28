@@ -188,7 +188,8 @@ module BattleCatsRolls
 
     module ExtremelyHighEffectiveSingleBlow
       def self.match? abilities, stat
-        HighEffectiveDPS.match?(abilities, stat, filter: ExtremelyHighSingleBlow)
+        HighEffectiveDPS.match?(
+          abilities, stat, filter: ExtremelyHighSingleBlow)
       end
     end
 
@@ -480,7 +481,7 @@ module BattleCatsRolls
       'very_high' => VeryHighDPS,
       'very_high_effectively' => VeryHighEffectiveDPS,
       'extremely_high_effectively' => ExtremelyHighEffectiveDPS,
-    }
+    }.freeze
 
     Damage = {
       'high' => HighSingleBlow,

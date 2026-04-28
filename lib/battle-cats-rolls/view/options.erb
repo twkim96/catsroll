@@ -8,19 +8,8 @@
     <option value="kr" <%= selected_lang('kr') %>>BCKR</option>
   </select>
 
-  <% if route.path_info.match?(%r{\A/(?:seek)?\z}) %>
-  <label for="version_select" title="Seed tracking version">Version:</label>
-  <select id="version_select" name="version" onchange="roll(this)">
-    <option value="8.6" <%= selected_version('8.6') %>>8.6+</option>
-    <option value="8.5" <%= selected_version('8.5') %>>8.5</option>
-    <option value="8.4" <%= selected_version('8.4') %>>8.4</option>
-  </select>
-  <% else %>
-  <%= hidden_inputs('version') %>
-  <% end %>
-
   <% if route.path_info != '/logs' %>
-  <label for="name_select" title="Evolution form used to display the cat's names">Name:</label>
+  <label for="name_select" title="Evolution form used for cat names and images">Form:</label>
   <select id="name_select" name="name" onchange="roll(this)">
     <option value="0" <%= selected_name(0) %>>Base</option>
     <option value="1" <%= selected_name(1) %>>Evolved</option>
@@ -29,6 +18,17 @@
   </select>
   <% else %>
   <%= hidden_inputs('name') %>
+  <% end %>
+
+  <% if route.path_info == '/' %>
+  <label for="display_select" title="How to show predicted cats in the track table">Display:</label>
+  <select id="display_select" name="display" onchange="roll(this)">
+    <option value="text" <%= selected_display('text') %>>Text</option>
+    <option value="image" <%= selected_display('image') %>>Image</option>
+    <option value="both" <%= selected_display('both') %>>Both</option>
+  </select>
+  <% else %>
+  <%= hidden_inputs('display') %>
   <% end %>
 
   <label for="ui_select" title="Default UI language will match the app region. You can pick a different language, too">UI language:</label>
@@ -68,7 +68,7 @@
   <% end %>
 </div>
 <% else %>
-<%= hidden_inputs('lang', 'version', 'name',
+<%= hidden_inputs('lang', 'name',
   'advanced_filters', 'hide_wave', 'exclude_talents',
   'sum_no_wave', 'dps_no_critical', 'level') %>
 <% end %>

@@ -90,7 +90,8 @@ module BattleCatsRolls
       end
 
       def display
-        values = values_range(data.dig('minmax', 0), show: yield.method(:stat_time))
+        values = values_range(data.dig('minmax', 0),
+          show: yield.method(:stat_time))
 
         "#{highlight('Production cooldown')} by #{values} by #{level} levels"
       end
@@ -190,7 +191,8 @@ module BattleCatsRolls
       end
 
       def display_improve
-        values = values_range(data.dig('minmax', 0), show: yield.method(:stat_time))
+        values = values_range(data.dig('minmax', 0),
+          show: yield.method(:stat_time))
 
         if level
           "Improve duration by #{values} by #{level} levels"
@@ -565,11 +567,11 @@ module BattleCatsRolls
     end
 
     def level
-      data.dig('max_level')
+      data.dig('max_level') # rubocop:disable Style/SingleArgumentDig
     end
 
     def ultra?
-      !!data.dig('ultra')
+      !!data.dig('ultra') # rubocop:disable Style/SingleArgumentDig
     end
 
     def min n=0

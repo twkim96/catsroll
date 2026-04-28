@@ -1,10 +1,13 @@
 # frozen_string_literal: true
 
+require_relative 'provider'
+require_relative 'root'
+
 module BattleCatsRolls
   class Cat < Struct.new(
     :id, :info,
-    :rarity, :rarity_fruit, :score,
-    :slot, :slot_fruit,
+    :rarity, :rarity_seed, :score,
+    :slot, :slot_seed,
     :sequence, :track, :steps,
     :next, :parent, :rerolled, :guaranteed,
     :rarity_label, :picked_label, :extra_label,
@@ -39,13 +42,24 @@ module BattleCatsRolls
 
     def pick_title index
       picked_name = pick_name(index)
-      names = info.dig('name').join(' | ').sub(picked_name, "*#{picked_name}")
+      names = info.dig('name').join(' | ').sub(picked_name, "*#{picked_name}") # rubocop:disable Style/SingleArgumentDig
 
       "#{names}\n#{pick_description(index)}"
     end
 
     def pick_description index
       info.dig('desc', index) || pick_description(index - 1) if index >= 0
+    end
+
+    def pick_img_src index, lang
+      img_src(index, lang) || pick_img_src(index - 1, lang) if index >= 0
+    end
+
+    def img_src index, lang
+      path = sprintf('%s/uni%03d_%s00.png',
+        lang, id - 1, Provider.forms[index])
+
+      "/extract/#{path}" if File.exist?("#{Root}/extract/asset/#{path}")
     end
 
     def number

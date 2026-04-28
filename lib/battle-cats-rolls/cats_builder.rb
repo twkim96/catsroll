@@ -169,7 +169,7 @@ module BattleCatsRolls
         when Array
           value.empty?
         else
-          case key
+          case key # rubocop:disable Style/ConditionalAssignment
           when 'MAXLv'
             value <= 1
           else
@@ -228,7 +228,7 @@ module BattleCatsRolls
           if values.any?
             stat = Hash[fields.each_key.map(&:to_s).zip(values)].
               delete_if do |name, value|
-                !/\A\-?\d+/.match?(value) || value.start_with?('0')
+                !/\A-?\d+/.match?(value) || value.start_with?('0')
               end.transform_values(&:to_i)
 
             if stat['conjure']

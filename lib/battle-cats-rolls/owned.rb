@@ -26,6 +26,8 @@ module BattleCatsRolls
     end
 
     def decode code
+      return [] unless code[/\A[0-9A-Za-z]+\z/]
+
       int = from_radix(code)
 
       return [] if int.zero?
@@ -63,9 +65,10 @@ module BattleCatsRolls
     end
 
     def from_radix str, digits=DIGITS
-      str.each_char.reverse_each.with_index.inject(0) do |result, (digit, index)|
-        result + digits.index(digit) * digits.size ** index
-      end
+      str.each_char.reverse_each.with_index.
+        inject(0) do |result, (digit, index)|
+          result + digits.index(digit) * digits.size ** index
+        end
     end
 
     def to_digits int, digits

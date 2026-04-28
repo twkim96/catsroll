@@ -34,7 +34,7 @@ module BattleCatsRolls
     end
 
     def meta_description
-      if picked_stat
+      if picked_stat # rubocop:disable Style/IfUnlessModifier
         h picked_stat.desc.tr("\n", ' ').squeeze(' ')
       end
     end
@@ -69,14 +69,12 @@ module BattleCatsRolls
       end
     end
 
-    def each_attack stat
+    def each_attack stat, &block
       if route.hide_wave
         stat.attacks_raw
       else
         stat.attacks
-      end.each do |attack|
-        yield(attack)
-      end
+      end.each(&block)
     end
 
     def color_label cat, type, rerolled
@@ -184,7 +182,9 @@ module BattleCatsRolls
     end
 
     def td_to_cat cat, link_type
-      td(cat, :cat, content: cat && __send__("link_to_#{link_type}", cat))
+      td(cat, :cat, content: cat && __send__("link_to_#{link_type}", cat,
+        text: route.display != 'image',
+        image: route.display != 'text'))
     end
 
     def td cat, type, rowspan: 1, content: nil, rerolled: nil
@@ -198,39 +198,65 @@ module BattleCatsRolls
       HTML
     end
 
-    def link_to_roll cat
+    def link_to_cat cat
       name = h cat.pick_name(route.name)
       title = h cat.pick_title(route.name)
-      show_link_to_stat = cat.id > 0
+      href = h route.uri_to_cat(cat)
+      %Q{<a href="#{href}" title="#{title}">#{name}</a>}
+    end
 
-      if cat.slot_fruit
-        link =
-          %Q{<a href="#{h route.uri_to_roll(cat)}" title="#{title}">#{name}</a>}
-        if show_link_to_stat
-          %Q{#{link}<a href="#{route.uri_to_cat(cat)}">🐾</a>}
+    def link_to_next cat, text: true, image: false
+      next_cat = cat.next
+      affix =
+        case next_cat&.track
+        when 0
+          {prefix: "&lt;- #{next_cat.number} "}
+        when 1
+          {suffix: " -&gt; #{next_cat.number}"}
+        when nil
+          {prefix: '&lt;?&gt; '}
         else
-          link
+          raise "Unknown track: #{next_cat.track.inspect}"
         end
-      elsif show_link_to_stat
-        %Q{<a href="#{route.uri_to_cat(cat)}" title="#{title}">#{name}</a>}
+
+      link_to_roll(cat, text: text, image: image, **affix)
+    end
+
+    def link_to_roll cat, text: true, image: false, prefix: nil, suffix: nil
+      name = h cat.pick_name(route.name)
+      title = h cat.pick_title(route.name)
+      stat_uri = h route.uri_to_cat(cat) if cat.id > 0
+      roll_uri = h route.uri_to_roll(cat) if cat.slot_seed
+      text_roll = roll_tag(roll_uri, title, name) if text
+      stat = %Q{ <a href="#{stat_uri}">🐾</a>} if stat_uri
+      content = "<span>#{prefix}#{text_roll}#{stat}#{suffix}</span>"
+
+      if image && stat_uri
+        image_roll = roll_tag(roll_uri, title, avatar_tag(cat, name))
+        %Q{<span class="track_avatar_wrap">#{image_roll}#{content}</span>}
       else
-        %Q{<span title="#{title}">#{name}</span>}
+        content
       end
     end
 
-    def link_to_next cat
-      cat_link = link_to_roll(cat)
-      next_cat = cat.next
-
-      case next_cat&.track
-      when 0
-        "&lt;- #{next_cat.number} #{cat_link}"
-      when 1
-        "#{cat_link} -&gt; #{next_cat.number}"
-      when nil
-        "&lt;?&gt; #{cat_link}"
+    def roll_tag href, title, content
+      if href
+        %Q{<a href="#{href}" title="#{title}">#{content}</a>}
       else
-        raise "Unknown track: #{next_cat.track.inspect}"
+        %Q{<span title="#{title}">#{content}</span>}
+      end
+    end
+
+    def avatar_tag cat, name
+      (@avatar_tag ||= {})[cat.id] ||= begin
+        src = h cat.pick_img_src(route.name, route.lang)
+        alt = name if route.display == 'image' # Redundant otherwise
+
+        <<~HTML.strip
+          <span class="track_avatar_clip">
+            <img class="track_avatar" src="#{src}" alt="#{alt}"
+              decoding="async"></span>
+        HTML
       end
     end
 
@@ -250,16 +276,16 @@ module BattleCatsRolls
       'selected="selected"' if route.pos == pos
     end
 
-    def selected_version version_name
-      'selected="selected"' if route.version == version_name
-    end
-
     def selected_seeker seeker_name
       'selected="selected"' if route.seeker == seeker_name
     end
 
     def selected_name name_name
       'selected="selected"' if route.name == name_name
+    end
+
+    def selected_display display_name
+      'selected="selected"' if route.display == display_name
     end
 
     def selected_theme theme_name
@@ -482,7 +508,7 @@ module BattleCatsRolls
 
     def show_gacha_slots cats
       cats.map.with_index do |cat, i|
-        "#{i} #{link_to_roll(cat)}"
+        "#{i} #{link_to_cat(cat)}"
       end.join(', ')
     end
 
@@ -548,7 +574,7 @@ module BattleCatsRolls
         result
       end.map do |(start, last, rate)|
         "lv#{start}~#{last}: #{rate}%"
-      end.join(", ")
+      end.join(', ')
     end
 
     def h str
@@ -556,8 +582,7 @@ module BattleCatsRolls
     end
 
     def made10rolls? seeds
-      gacha = Gacha.new(
-        route.gacha.pool, seeds.first, route.version)
+      gacha = Gacha.new(route.gacha.pool, seeds.first)
       gacha.send(:advance_seed!) # Account offset
       9.times.inject(nil){ |last| gacha.roll! } # Only 9 rolls left
 
@@ -578,7 +603,7 @@ module BattleCatsRolls
       HTML
     end
 
-    def seed_tds fruit, cat
+    def seed_tds seed, cat
       return unless show_details
 
       rowspan =
@@ -588,16 +613,8 @@ module BattleCatsRolls
           1
         end
 
-      value =
-        if fruit.seed == fruit.value
-          '-'
-        else
-          fruit.value
-        end
-
       <<~HTML
-        <td rowspan="#{rowspan}">#{fruit.seed}</td>
-        <td rowspan="#{rowspan}">#{value}</td>
+        <td rowspan="#{rowspan}">#{seed}</td>
       HTML
     end
 

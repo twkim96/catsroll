@@ -130,7 +130,7 @@ module BattleCatsRolls
         # * VUnitServer.list
         # * UnitServer_100600_00_en.list
         # We prioritize [version, prefix] put it in the last in the list
-        File.basename(path).match(/([A-Z]?)#{name}Server((?:_.+)?)/)[1..-1].
+        File.basename(path).match(/([A-Z]?)#{name}Server((?:_.+)?)/)[1..].
           reverse
       end << "#{dir}/#{name}Local.list" # Lastly the local one
 

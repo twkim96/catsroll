@@ -24,7 +24,7 @@ module BattleCatsRolls
 
     def lookup_cat_data
       @lookup_cat_data ||= [[
-        fake_cat(319, 'Miko Mitama', 1, 0, slot_fruit: Fruit.new(1)),
+        fake_cat(319, 'Miko Mitama', 1, 0),
         fake_cat(-1, 'Cat', 1, 1)
       ]]
     end
@@ -84,7 +84,7 @@ module BattleCatsRolls
       result
     end
 
-    def pick cats, sequence, track, guaranteed=false
+    def pick cats, sequence, track, guaranteed=false # rubocop:disable Style/OptionalBooleanParameter
       result = cats.map(&:dup)
 
       if guaranteed

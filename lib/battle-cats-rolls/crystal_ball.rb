@@ -101,7 +101,7 @@ module BattleCatsRolls
         return event if similarity_in_percentage == 100
 
         event.merge('similarity' => similarity_in_percentage, 'index' => index)
-      end.sort do |a, b|
+      end.min do |a, b|
         # Stable reverse sort
         case result = b['similarity'] <=> a['similarity']
         when 0
@@ -110,7 +110,7 @@ module BattleCatsRolls
         else
           result
         end
-      end.first
+      end
     end
 
     def self.find_gacha_rate event
@@ -123,9 +123,12 @@ module BattleCatsRolls
       @predefined_rates ||= {
         'predicted' => {name: 'Predicted'},
         'regular' => {name: 'Regular', rate: [6970, 2500, 500]},
-        'no_legend' => {name: 'Regular without legend', rate: [7000, 2500, 500]},
-        'uberfest_legend' => {name: 'Uberfest / Epicfest with legend', rate: [6470, 2600, 900]},
-        'uberfest' => {name: 'Uberfest / Epicfest without legend', rate: [6500, 2600, 900]},
+        'no_legend' => {name: 'Regular without legend',
+          rate: [7000, 2500, 500]},
+        'uberfest_legend' => {name: 'Uberfest / Epicfest with legend',
+          rate: [6470, 2600, 900]},
+        'uberfest' => {name: 'Uberfest / Epicfest without legend',
+          rate: [6500, 2600, 900]},
         'dynastyfest' => {name: 'Dynasty Fest', rate: [6770, 2500, 700]},
         'royalfest' => {name: 'Royal Fest', rate: [6940, 2500, 500]},
         'superfest' => {name: 'Superfest', rate: [6500, 2500, 1000]},
@@ -189,10 +192,8 @@ module BattleCatsRolls
       prefix_cat = cats[prefix_id]
       suffix_cat = cats[suffix_id] if prefix_id != suffix_id
 
-      prefix = Cat.new(info: prefix_cat).
-        pick_name(name_index) if prefix_cat
-      suffix = Cat.new(info: suffix_cat).
-        pick_name(name_index) if suffix_cat
+      prefix = Cat.new(info: prefix_cat).pick_name(name_index) if prefix_cat
+      suffix = Cat.new(info: suffix_cat).pick_name(name_index) if suffix_cat
 
       hint = [*prefix, *suffix].join(', ')
 

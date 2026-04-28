@@ -4,9 +4,6 @@
       <th title="Label for this position">No.</th>
       <% if show_details %>
         <th title="The seed used to determine this row">Seed</th>
-        <th title="The transformed value used to determine this row. This is only used in version 8.4 and prior">Value</th>
-      <% end %>
-      <% if show_details %>
         <th title="Score determines the rarity. Slot determines which cat it is amongst the same rarity">Score, slot</th>
       <% else %>
         <th title="Expected cat">Result</th>
@@ -20,7 +17,6 @@
       <th>Alt. guaranteed</th>
       <% if show_details %>
         <th>Seed</th>
-        <th>Value</th>
       <% end %>
       <th>Alt. No.</th>
     </tr>
@@ -28,15 +24,15 @@
     <% each_ab_cat do |prev_b, (a, b)| %>
       <tr>
         <%= number_td(a, prev_b) %>
-        <%= seed_tds(a.rarity_fruit, prev_b) %>
+        <%= seed_tds(a.rarity_seed, prev_b) %>
         <%= score_tds(a, prev_b) %>
 
         <% if prev_b %>
         <%= cat_tds(prev_b) %>
-        <%= seed_tds(prev_b.slot_fruit, prev_b) %>
+        <%= seed_tds(prev_b.slot_seed, prev_b) %>
         <% else %>
         <% if show_details %>
-        <td colspan="5">
+        <td colspan="4">
         <% else %>
         <td colspan="3">
         <% end %>
@@ -50,12 +46,12 @@
       <% end %>
 
       <tr>
-        <%= seed_tds(a.slot_fruit, a) %>
+        <%= seed_tds(a.slot_seed, a) %>
         <%= cat_tds(a) %>
 
         <%= score_tds(b, a) %>
 
-        <%= seed_tds(b.rarity_fruit, a) %>
+        <%= seed_tds(b.rarity_seed, a) %>
         <%= number_td(b, a) %>
       </tr>
 
@@ -66,14 +62,14 @@
 
     <tr>
       <% if show_details %>
-        <td colspan="5"></td>
+        <td colspan="4"></td>
       <% else %>
         <td colspan="3"></td>
       <% end %>
 
       <% last_b = arg.dig(:cats, -1, -1) %>
       <%= cat_tds(last_b) %>
-      <%= seed_tds(last_b.slot_fruit, last_b) %>
+      <%= seed_tds(last_b.slot_seed, last_b) %>
     </tr>
   </tbody></table>
 </div>

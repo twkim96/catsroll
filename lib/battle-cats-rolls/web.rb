@@ -172,9 +172,11 @@ module BattleCatsRolls
         # Resistant uses the same condition from buff, and
         # OR will be filtered with buffs together, so we only filter
         # in the case that it's AND, where it's ignored from buff.
-        chain.filter!(route.resistant, route.for_buff,
-          Filter::Resistant) if route.for_resistant == 'and'
+        if route.for_resistant == 'and'
+          chain.filter!(route.resistant, route.for_buff, Filter::Resistant)
+        end
 
+        # rubocop:disable Layout/LineLength
         chain.filter!(route.range, route.for_range, Filter::Range)
         chain.filter!([route.area], 'any', Filter::Area) if route.area != 'any'
         chain.filter!(route.control, route.for_control, Filter::Control)
@@ -192,6 +194,7 @@ module BattleCatsRolls
         chain.filter!([route.cost], 'any', Filter::Cost) if route.cost != 'any'
         chain.filter!([route.production], 'any', Filter::Production) if route.production != 'any'
         chain.filter!(route.aspect, route.for_aspect, Filter::Aspect)
+        # rubocop:enable Layout/LineLength
 
         render :cats, cats: chain.cats,
           cats_by_rarity: CrystalBall.group_by_rarity(chain.cats)
@@ -216,7 +219,7 @@ module BattleCatsRolls
 
       (%w[/en /tw /jp /kr] << '').each do |prefix|
         %w[gatya.tsv item.tsv sale.tsv].each do |file|
-          lang = prefix[1..-1] || 'jp'
+          lang = prefix[1..] || 'jp'
 
           get "/seek#{prefix}/#{file}" do
             headers 'Content-Type' => 'text/plain; charset=utf-8'

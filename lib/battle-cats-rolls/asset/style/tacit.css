@@ -427,7 +427,30 @@ h1, h2, h3, h4, h5, h6 {
 }
 .filter { text-align: left; padding-left: 5px; }
 .cats_by_rarity { margin-bottom: 18px; }
+.cat { vertical-align: bottom; }
 #notice { background-color: pink; }
 #seed_input { width: 10em; }
 #count_input, #level_input { width: 3.5em; }
 #rare_input, #supa_input, #uber_input, #ui_select { width: 5em; }
+.track_avatar_wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+.track_avatar_clip {
+  --track_avatar_width: 4.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--track_avatar_width);
+  height: calc(var(--track_avatar_width) * 85 / 110);
+  overflow: hidden;
+  vertical-align: bottom;
+}
+.track_avatar {
+  /* Assets are 128x128 with opaque bounds 110x85 and margins L9 T21 R9 B22. */
+  width: calc(var(--track_avatar_width) * 128 / 110);
+  height: calc(var(--track_avatar_width) * 128 / 110);
+  max-width: none;
+  object-fit: contain;
+}
