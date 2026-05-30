@@ -4779,6 +4779,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      against_relic: {}
+      wave:
+        max_level: 10
+        minmax: [[2, 20], [3, 3]]
+      immune_curse: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   364:
     name: [遠坂 凛, 遠坂 凛CC]
     desc: ["Fate/stay night [HF]から参戦！\nアーチャーを召喚し聖杯戦争に挑む\nたまにエイリアンとゾンビをふっとばす(範囲攻撃)\nトオサカリン", "Fate/stay night [HF]から参戦！\n衛宮士郎の同級生で、冬木の管理者・遠坂の継承者\nたまにエイリアンとゾンビをふっとばす(範囲攻撃)\nトオサカリンシーシー"]
@@ -5586,6 +5598,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      weaken:
+        max_level: 10
+        minmax: [[50, 50], [39, 120], [50, 50]]
+      immune_toxic: {}
+      resistant_curse:
+        max_level: 10
+        minmax: [[16, 70]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   458:
     name: [ネコ士郎, 魔術師見習いネコ士郎]
     desc: ["正義の味方を目指す少年に憧れるネコ\nまずは英霊召喚しようと、ずっと部屋にこもっている\n黒い敵にめっぽう強い\nネコシロウ", "未だ英霊を呼べていないネコ\n初心にかえり、夜回りをするため外に出てみた\n黒い敵にめっぽう強い\nマジュツシミナライネコシロウ"]
@@ -5938,9 +5964,9 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   497:
-    name: [成田甲斐, 武神・成田甲斐, 豪炎姫の武神・成田甲斐]
-    desc: ["伝説の武具「にゃんこ薙刀」の呪いと引き換えに\n何者にも屈しない肉体へと変貌した戦国の姫。ゾンビと\n黒い敵の動きを必ず遅くし、たまに渾身の一撃を放つ\nナリタカイ", "伝説の武具「にゃんこ薙刀」の呪いと調和し\n立ちはだかる敵を一掃する戦国の美姫。ゾンビと\n黒い敵の動きを必ず遅くし、たまに渾身の一撃を放つ\nブシンナリタカイ", "武具の呪いを昇華し、動乱の天下に太平を\nもたらす凛々しき武神。ゾンビと黒い敵の\n動きを必ず遅くし、たまに渾身の一撃を放つ\nゴウエンキノブシンナリタカイ"]
-    stat: [{health: 2400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1200, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 3200, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 6400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 25, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 110}]
+    name: [成田甲斐, 武神・成田甲斐, 豪炎姫の武神・成田甲斐, 煉獄無双・成田甲斐]
+    desc: ["伝説の武具「にゃんこ薙刀」の呪いと引き換えに\n何者にも屈しない肉体へと変貌した戦国の姫。ゾンビと\n黒い敵の動きを必ず遅くし、たまに渾身の一撃を放つ\nナリタカイ", "伝説の武具「にゃんこ薙刀」の呪いと調和し\n立ちはだかる敵を一掃する戦国の美姫。ゾンビと\n黒い敵の動きを必ず遅くし、たまに渾身の一撃を放つ\nブシンナリタカイ", "武具の呪いを昇華し、動乱の天下に太平を\nもたらす凛々しき武神。ゾンビと黒い敵の\n動きを必ず遅くし、たまに渾身の一撃を放つ\nゴウエンキノブシンナリタカイ", "天下太平の守護に不退転の覚悟で臨む軍神。燃え滾る\n猛火で近寄る者を全て焼き尽くす。ゾンビと黒い敵の\n動きを必ず遅くし、たまに爆波と渾身の一撃を放つ\nレンゴクムソウナリタカイ"]
+    stat: [{health: 2400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1200, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 3200, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 6400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 25, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 110}, {health: 7200, knockbacks: 2, speed: 10, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 455, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 30, savage_blow_modifier: 200, zombie_killer: 1, sage_slayer: 1, explosion_chance: 50, explosion_range: 1820, attack_duration: 110}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -6325,6 +6351,14 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      against_black:
+        ultra: 1
+      strengthen:
+        max_level: 10
+        minmax: [[99, 99], [10, 100]]
+        ultra: 1
+      immune_explosion:
+        ultra: 1
   535:
     name: [冥界神ハデス, デスハーデス, Gデスハーデス]
     desc: ["亡者が行きつく冥府を統べる偉大なる神\n魂の神器「審判の鎌」で邪悪なる者を断罪する\n毒撃とワープを無効にする(範囲攻撃)\nメイカイシンハデス", "罪深き命を闇に引きずり込む冥界の神\n処刑の神器「審判の神鎌」ですべての業を浄化する\n毒撃とワープを無効にする(範囲攻撃)", "罪深き命を常闇へいざなう冥界の大いなる神\n創造の果実を刈り、すべての業を救済する\n毒撃とワープを無効にする(範囲攻撃)"]
@@ -7502,8 +7536,8 @@ cats:
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N201」と小さく刻まれているように見えるが…\nフルビタタマゴ", "悪のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\nごくたまに悪魔の動きを一瞬止める\nアクノタマゴ", "霊のトラブルに最短30分で駆けつける悪魔祓いネコ\n強烈なニンニク臭で頑固な霊も即退治する\n超獣特効を持ち、たまに悪魔の動きを一瞬止める"]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_aku: 1, freeze_chance: 1, freeze_duration: 90}, {health: 660, knockbacks: 3, speed: 20, cost: 350, production_cooldown: 250, range: 220, width: 320, damage_0: 120, attack_time_0: 31, trigger_effects_0: 1, against_aku: 1, freeze_chance: 30, freeze_duration: 90, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 70}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   667:
     name: [ナイトビーチリリン, ナイトビーチリリンπ]
     desc: ["夜のビーチで魅惑のオーラを放つクレイジー美女\n特製カクテルを提供し実験台にふさわしい逸材を探す\n属性を持たない敵とエイリアンにめっぽう強い(範囲攻撃)", "夜のビーチで恋の駆け引きを楽しむクレイジー美女\n安易に近付く者は特製調合のカクテルでノックダウン\n属性を持たない敵とエイリアンにめっぽう強い(範囲攻撃)\nナイトビーチリリンパイ"]
@@ -7567,6 +7601,23 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      slow:
+        max_level: 10
+        minmax: [[3, 30]]
+      increase_speed:
+        max_level: 10
+        minmax: [[1, 10]]
+      resistant_freeze:
+        max_level: 10
+        minmax: [[16, 70]]
+      soul_strike: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   676:
     name: ['古びたタマゴ:N105', '青いタマゴ:N105', ネコスマッシュ]
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N105」と小さく刻まれているように見えるが…\nフルビタタマゴ", "青いボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\nごくたまにエイリアンをふっとばす\nアオイタマゴ", "厳しい練習に耐えながらエース選手の座を狙うネコ\n得意の必殺スマッシュで邪魔なライバルは一撃ＫＯ\nたまにエイリアンをふっとばし、超獣特効を持つ"]
@@ -7838,8 +7889,8 @@ cats:
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N203」と小さく刻まれているように見えるが…\nフルビタタマゴ", "紫色のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\nごくたまにゾンビの動きを遅くする\nムラサキノタマゴ", "子供達を楽しませることが大好きなサーカス団員\nドッキリでお客さんの心臓を止めた恐怖の経歴を持つ\n超獣特効を持ち、たまにゾンビの動きを遅くする"]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_zombie: 1, slow_chance: 1, slow_duration: 90}, {health: 610, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 270, attack_cooldown: 41, range: 300, width: 320, damage_0: 129, attack_time_0: 15, trigger_effects_0: 1, against_zombie: 1, slow_chance: 30, slow_duration: 90, zombie_killer: 1, soul_strike: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 37}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   715:
     name: [波打ち際の冒険家カンナ, 大海原のダイバーカンナ]
     desc: ["異世界から海のお宝をゲットしにやってきた冒険家\n伝説の沈没船に近づくため、まずはバタ足の練習\n浮きとエイリアンに超ダメージを与え、烈波を放つ\nナミウチギワノボウケンカカンナ", "伝説の秘宝を求め七つの海を越えるうち\n生命溢れる海こそが宝物だと気づいた冒険家\n浮きとエイリアンに超ダメージを与え、烈波を放つ\nオオウナバラノダイバーカンナ"]
@@ -8146,8 +8197,8 @@ cats:
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N205」と小さく刻まれているように見えるが…\nフルビタタマゴ", "紫色のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\nゾンビと悪魔にめっぽう強い\nムラサキノタマゴ", "6月に挙式をあげる幸せな花嫁。病める時も\n健やかなる時も、共に歩めず結婚式は66回目\nゾンビと悪魔にめっぽう強く、超獣特効を持つ\nネコハナヨメ"]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_zombie: 1, against_aku: 1, strong: 1}, {health: 900, knockbacks: 1, speed: 10, cost: 250, production_cooldown: 230, attack_cooldown: 30, range: 180, width: 320, damage_0: 200, attack_time_0: 15, trigger_effects_0: 1, against_zombie: 1, against_aku: 1, strong: 1, zombie_killer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 36}]
     rarity: 1
-    max_level: 60
-    growth: [20, 20, 20, 20, 20, 20]
+    max_level: 65
+    growth: [20, 20, 20, 20, 20, 20, 10]
   759:
     name: [謎の傭兵トリクシー, 復讐の傭兵トリクシー]
     desc: ["陽電子刀MURANYASAで敵を圧倒する謎の傭兵\n神速の刃で属性を持たない敵とエイリアンと古代種に\nめっぽう強く、たまに動きを一瞬止める(範囲攻撃)\nナゾノヨウヘイトリクシー", "仲間の裏切りで10年間昏睡状態に陥っていた傭兵\n復讐に燃える刃で属性を持たない敵とエイリアンと\n古代種にめっぽう強く、たまに動きを一瞬止める\nフクシュウノヨウヘイトリクシー"]
@@ -8869,6 +8920,41 @@ cats:
     rarity: 4
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
+  862:
+    name: [嵐竜機ヴォルネード, 嵐竜機王ヴォルネード]
+    desc: ["天空より飛来し、すべてを吹き飛ばした伝説の古代兵器\n圧倒的な破壊力で敵を攻撃する(遠方範囲攻撃)\n赤い敵と悪魔に超ダメージを与え、必ず動きを遅くする\nランリュウキヴォルネード", "リミッターを解除し、終末の嵐を呼び起こす古代兵器\n圧倒的な破壊力で敵を攻撃する(遠方範囲攻撃)\n赤い敵と悪魔に超ダメージを与え、必ず動きを遅くする\nランリュウキオウヴォルネード"]
+    stat: [{health: 5000, knockbacks: 4, speed: 14, cost: 3700, production_cooldown: 2300, attack_cooldown: 90, range: 455, width: 320, area_effect: 1, damage_0: 1850, long_range_0: 275, long_range_offset_0: 400, attack_time_0: 51, trigger_effects_0: 1, against_red: 1, against_aku: 1, massive_damage: 1, slow_chance: 100, slow_duration: 60, immune_surge: 1, attack_duration: 100}, {health: 6000, knockbacks: 4, speed: 14, cost: 3700, production_cooldown: 2300, attack_cooldown: 90, range: 455, width: 320, area_effect: 1, damage_0: 2250, long_range_0: 275, long_range_offset_0: 400, attack_time_0: 51, trigger_effects_0: 1, against_red: 1, against_aku: 1, massive_damage: 1, slow_chance: 100, slow_duration: 60, immune_surge: 1, attack_duration: 100}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  863:
+    name: [婚礼・服部半蔵, 新郎・服部半蔵]
+    desc: ["過酷な任務から一時離れ、婚礼の儀に臨む忍\n隙を狙う敵の急襲に備えて警戒は怠らない\n赤い敵とゾンビに超ダメージを与え、動きを遅くする\nコンレイハットリハンゾウ", "運命の伴侶を守り抜くことを心に決めた忍\n不滅の誓いを胸に幸福を阻む者を最速で討つ\n赤い敵とゾンビに超ダメージを与え、動きを遅くする\nシンロウハットリハンゾウ"]
+    stat: [{health: 2800, knockbacks: 4, speed: 9, cost: 3300, production_cooldown: 2300, attack_cooldown: 45, range: 450, width: 320, area_effect: 1, damage_0: 700, attack_time_0: 8, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, slow_chance: 100, slow_duration: 30, zombie_killer: 1, immune_freeze: 1, immune_toxic: 1, attack_duration: 70}, {health: 3300, knockbacks: 4, speed: 9, cost: 3300, production_cooldown: 2300, attack_cooldown: 45, range: 450, width: 320, area_effect: 1, damage_0: 950, attack_time_0: 8, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, slow_chance: 100, slow_duration: 60, zombie_killer: 1, immune_freeze: 1, immune_toxic: 1, attack_duration: 70}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  864:
+    name: [透明にゃんこ, ネコ花婿]
+    desc: ["自作の透明薬で姿を消すことに成功したネコ\n最近はファッションに凝ってる\n天使とゾンビに超ダメージを与える\nトウメイニャンコ", "結婚式の直前に真実の愛を追い求めて姿を消した新郎\nその後、彼の姿を見たものは誰もいない\n天使とゾンビに超ダメージを与える\nネコハナムコ"]
+    stat: [{health: 620, knockbacks: 3, speed: 12, cost: 480, production_cooldown: 300, attack_cooldown: 70, range: 300, width: 320, area_effect: 1, damage_0: 360, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 70}, {health: 780, knockbacks: 3, speed: 12, cost: 480, production_cooldown: 300, attack_cooldown: 70, range: 300, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 70}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  865:
+    name: [衛宮 士郎, 衛宮 士郎CC]
+    desc: ["Fate/stay night [HF]から参戦！\n間桐桜を守るために聖杯戦争で戦う少年\n必ず波動を放つ(範囲攻撃)\nエミヤシロウ", "Fate/stay night [HF]から参戦！\n左腕を失うが、アーチャーの腕を受け継いだ\n必ず波動を放つ(範囲攻撃)\nエミヤシロウシーシー"]
+    stat: [{health: 3200, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 2400, attack_time_0: 154, trigger_effects_0: 1, damage_1: 2400, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}, {health: 4000, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 3000, attack_time_0: 154, trigger_effects_0: 1, damage_1: 3000, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  866:
+    name: [真アサシン, 真アサシンCC]
+    desc: ["Fate/stay night [HF]から参戦！\n間桐臓硯が召喚した暗殺者の英霊\n浮きとエイリアンの動きを一瞬止め、攻撃力を下げる\nシンアサシン", "Fate/stay night [HF]から参戦！\n己が望みを叶えるため、暗躍を重ねる\n浮きとエイリアンの動きを一瞬止め、攻撃力を下げる\nシンアサシンシーシー"]
+    stat: [{health: 1360, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 480, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}, {health: 1700, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 600, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14510,8 +14596,7 @@ gacha:
   1051:
     cats: [860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 586, 570, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 273, 272, 270, 262, 260, 259, 258, 241, 227, 213, 204, 197, 196, 195, 178, 172, 171, 170, 169, 160, 159, 144, 139, 138, 137, 136, 135, 126, 125, 108, 107, 106, 88, 87, 86, 85, 84, 77, 76, 74, 73, 72, 60, 58, 45, 44, 43, 35, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 42
-    name: 限定超激レアキャラクター「冥護の天女ルナーシャ」参戦！★詳細はバナーをタップ!!
-    similarity: 96
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」参戦！★詳細はバナーをタップ!!
   1052:
     cats: [125, 626, 503, 361, 60, 87, 323, 227, 724, 307, 608, 759, 436, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 35
@@ -14520,15 +14605,13 @@ gacha:
   1053:
     cats: [159, 241, 352, 656, 618, 84, 526, 635, 440, 595, 831, 811, 485, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 39
-    name: 新キャラ「エージェント・スタール」参戦の13周年特別ガチャ！★詳細はバナーをタップ!!
+    name: "「エージェント・スタール」登場！13と1/2周年の特別ガチャ！★詳細はバナーをタップ!!"
     rate: no_legend
-    similarity: 70
   1054:
     cats: [449, 464, 482, 494, 138, 360, 650, 775, 655, 689, 695, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 67
-    name: 13周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
+    name: 13と1/2周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
     rate: regular
-    similarity: 86
   1055:
     cats: [331, 332, 275, 276, 355, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 71
@@ -14537,21 +14620,65 @@ gacha:
   1056:
     cats: [860, 851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 27
-    name: 限定超激レアキャラクター「冥護の天女ルナーシャ」参戦！★詳細はバナーをタップ!!
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」登場！★詳細はバナーをタップ!!
     rate: uberfest_legend
-    similarity: 99
   1057:
     cats: [860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
     series_id: 21
     name: 超激レアのキャラクターが必ず１体手に入る「プラチナガチャ」！
     rate: platinum
-    similarity: 99
   1058:
     cats: [860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
     series_id: 46
     name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
     rate: legend
+  1059:
+    cats: [862, 761, 661, 621, 506, 451, 397, 178, 88, 87, 86, 85, 84, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 4
+    name: 召喚能力を持つキャラクター「砲龍ガンドロス」参戦！★詳細はバナーをタップ!!
+    rate: regular
     similarity: 99
+  1060:
+    cats: [862, 761, 661, 621, 506, 451, 397, 178, 88, 87, 86, 85, 84, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 4
+    name: 召喚能力を持つキャラクター「砲龍ガンドロス」参戦！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 99
+  1061:
+    cats: [862, 851, 838, 831, 818, 812, 800, 782, 780, 775, 770, 764, 761, 755, 734, 732, 724, 720, 716, 713, 699, 693, 691, 675, 669, 661, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 595, 586, 570, 547, 535, 534, 530, 526, 524, 523, 496, 520, 506, 503, 497, 440, 437, 432, 428, 418, 402, 397, 381, 378, 377, 362, 361, 360, 356, 352, 339, 326, 323, 319, 317, 307, 306, 305, 308, 309, 273, 272, 270, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 19
+    name: 限定キャラ「幼騎士ルーノ」参戦！★超激レア出現率アップの「超ネコ祭」開催中!!
+    rate: uberfest_legend
+    similarity: 99
+  1062:
+    cats: [862, 860, 851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 27
+    name: 限定超激レアキャラクター「冥護の天女ルナーシャ」登場！★詳細はバナーをタップ!!
+    rate: uberfest_legend
+    similarity: 99
+  1063:
+    cats: [862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 21
+    name: 超激レアのキャラクターが必ず１体手に入る「プラチナガチャ」！
+    rate: platinum
+    similarity: 99
+  1064:
+    cats: [862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 46
+    name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
+    rate: legend
+    similarity: 99
+  1065:
+    cats: [863, 757, 712, 662, 661, 359, 73, 630, 637, 663, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 53
+    name: 新キャラ追加！ジューンブライド期間限定のハッピーなガチャ！★詳細はバナーをタップ!!
+    rate: no_legend
+    similarity: 96
+  1066:
+    cats: [865, 866, 363, 364, 365, 366, 367, 368, 369, 457, 461, 461, 461, 461, 461, 461, 371, 371, 371, 372, 372, 372, 373, 373, 373, 459, 459, 459, 460, 460, 460, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 34
+    name: 新たな超激レア「衛宮士郎」「真アサシン」参戦！★コラボガチャの詳細はバナーをタップ!!
+    rate: no_legend
 events:
   2018-09-15_320:
     start_on: 2018-09-15
@@ -33907,6 +34034,454 @@ events:
     version: '150300'
     name: 進化後に召喚能力を持つキャラクター「マモルガ」登場！★詳細はバナーをタップ!!
     id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-28_1051:
+    start_on: 2026-04-28
+    end_on: 2026-05-07
+    version: '150300'
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」参戦！★詳細はバナーをタップ!!
+    id: 1051
+    rare: 6470
+    supa: 2500
+    uber: 1000
+    legend: 30
+  2026-04-28_1057:
+    start_on: 2026-04-28
+    end_on: 2030-01-01
+    version: '150300'
+    name: 超激レアのキャラクターが必ず１体手に入る「プラチナガチャ」！
+    id: 1057
+    rare: 0
+    supa: 0
+    uber: 10000
+    platinum: platinum
+  2026-04-28_1058:
+    start_on: 2026-04-28
+    end_on: 2030-01-01
+    version: '150300'
+    name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
+    id: 1058
+    rare: 0
+    supa: 0
+    uber: 9500
+    legend: 500
+    platinum: legend
+  2026-04-28_947:
+    start_on: 2026-04-28
+    end_on: 2026-05-01
+    version: '150300'
+    name: 召喚能力を持つキャラクター「特命機動アクセル」登場！★詳細はバナーをタップ!!
+    id: 947
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-04-28_991:
+    start_on: 2026-04-28
+    end_on: 2026-05-01
+    version: '150300'
+    name: 波動攻撃と召喚能力を持つ「韋駄天スカンダ」登場！★詳細はバナーをタップ!!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-01_1051:
+    start_on: 2026-05-01
+    end_on: 2026-05-07
+    version: '150300'
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」参戦！★詳細はバナーをタップ!!
+    id: 1051
+    rare: 6470
+    supa: 2500
+    uber: 1000
+    legend: 30
+  2026-05-01_945:
+    start_on: 2026-05-01
+    end_on: 2026-05-03
+    version: '150300'
+    name: 召喚能力を持つキャラクター「砲龍ガンドロス」登場！★詳細はバナーをタップ!!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-01_946:
+    start_on: 2026-05-01
+    end_on: 2026-05-03
+    version: '150300'
+    name: 進化後に召喚能力を持つキャラクター「花咲かじいさん」登場！★詳細はバナーをタップ!!
+    id: 946
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-03_1004:
+    start_on: 2026-05-03
+    end_on: 2026-05-05
+    version: '150300'
+    name: 進化後に召喚能力を持つ「樹の精霊コモリ」登場！★詳細はバナーをタップ!!
+    id: 1004
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-03_942:
+    start_on: 2026-05-03
+    end_on: 2026-05-05
+    version: '150300'
+    name: 召喚能力を持つキャラクター「ネコダイナザウルス」登場！★詳細はバナーをタップ!!
+    id: 942
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-05_1015:
+    start_on: 2026-05-05
+    end_on: 2026-05-07
+    version: '150300'
+    name: 召喚能力を持つキャラクター「魔導師シドミ」登場！★詳細はバナーをタップ!!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-05_979:
+    start_on: 2026-05-05
+    end_on: 2026-05-07
+    version: '150300'
+    name: 爆波攻撃と召喚能力を持つ「曲射砲台ランチャーズ」登場！★詳細はバナーをタップ!!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-07_1043:
+    start_on: 2026-05-07
+    end_on: 2026-05-09
+    version: '150300'
+    name: 爆波攻撃を持つキャラクター「風魔小太郎」登場！★詳細はバナーをタップ!!
+    id: 1043
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-07_1054:
+    start_on: 2026-05-07
+    end_on: 2026-05-09
+    version: '150300'
+    name: 13と1/2周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
+    id: 1054
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-07_986:
+    start_on: 2026-05-07
+    end_on: 2026-05-09
+    version: '150300'
+    name: 進化後に召喚能力を持つキャラクター「マモルガ」登場！★詳細はバナーをタップ!!
+    id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-09_1021:
+    start_on: 2026-05-09
+    end_on: 2026-05-11
+    version: '150300'
+    name: 浮いてる敵にめっぽう強いキャラ「獅子番長ラクレス」登場！★詳細はバナーをタップ!!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-09_1053:
+    start_on: 2026-05-09
+    end_on: 2026-05-13
+    version: '150300'
+    name: "「エージェント・スタール」登場！13と1/2周年の特別ガチャ！★詳細はバナーをタップ!!"
+    id: 1053
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-05-09_991:
+    start_on: 2026-05-09
+    end_on: 2026-05-11
+    version: '150300'
+    name: 波動攻撃と召喚能力を持つ「韋駄天スカンダ」登場！★詳細はバナーをタップ!!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-11_945:
+    start_on: 2026-05-11
+    end_on: 2026-05-13
+    version: '150300'
+    name: 召喚能力を持つキャラクター「砲龍ガンドロス」登場！★詳細はバナーをタップ!!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-11_947:
+    start_on: 2026-05-11
+    end_on: 2026-05-13
+    version: '150300'
+    name: 召喚能力を持つキャラクター「特命機動アクセル」登場！★詳細はバナーをタップ!!
+    id: 947
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-13_1004:
+    start_on: 2026-05-13
+    end_on: 2026-05-15
+    version: '150300'
+    name: 進化後に召喚能力を持つ「樹の精霊コモリ」登場！★詳細はバナーをタップ!!
+    id: 1004
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-13_1030:
+    start_on: 2026-05-13
+    end_on: 2026-05-15
+    version: '150300'
+    name: 13と1/2周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
+    id: 1030
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-13_946:
+    start_on: 2026-05-13
+    end_on: 2026-05-15
+    version: '150300'
+    name: 進化後に召喚能力を持つキャラクター「花咲かじいさん」登場！★詳細はバナーをタップ!!
+    id: 946
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-15_939:
+    start_on: 2026-05-15
+    end_on: 2026-05-18
+    version: '150300'
+    name: バスターズガチャのキャラが一堂に集結!!★超激レア出現率アップの「バスターズ祭」!!
+    id: 939
+    rare: 6800
+    supa: 2500
+    uber: 700
+  2026-05-15_942:
+    start_on: 2026-05-15
+    end_on: 2026-05-18
+    version: '150300'
+    name: 召喚能力を持つキャラクター「ネコダイナザウルス」登場！★詳細はバナーをタップ!!
+    id: 942
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-16_1056:
+    start_on: 2026-05-16
+    end_on: 2026-05-22
+    version: '150300'
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」登場！★詳細はバナーをタップ!!
+    id: 1056
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-05-18_1015:
+    start_on: 2026-05-18
+    end_on: 2026-05-20
+    version: '150300'
+    name: 召喚能力を持つキャラクター「魔導師シドミ」登場！★詳細はバナーをタップ!!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-18_979:
+    start_on: 2026-05-18
+    end_on: 2026-05-20
+    version: '150300'
+    name: 爆波攻撃と召喚能力を持つ「曲射砲台ランチャーズ」登場！★詳細はバナーをタップ!!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-20_1043:
+    start_on: 2026-05-20
+    end_on: 2026-05-22
+    version: '150300'
+    name: 爆波攻撃を持つキャラクター「風魔小太郎」登場！★詳細はバナーをタップ!!
+    id: 1043
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-20_986:
+    start_on: 2026-05-20
+    end_on: 2026-05-22
+    version: '150300'
+    name: 進化後に召喚能力を持つキャラクター「マモルガ」登場！★詳細はバナーをタップ!!
+    id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-22_452:
+    start_on: 2026-05-22
+    end_on: 2026-05-24
+    version: '150300'
+    name: 浮いてる敵に対して強力効果の「エアバスターズ」！★おまけアップイベント開催中!!
+    id: 452
+    rare: 7000
+    supa: 2500
+    uber: 500
+    step_up: true
+  2026-05-22_696:
+    start_on: 2026-05-22
+    end_on: 2026-05-24
+    version: '150300'
+    name: 赤い敵対策はお任せ！限定キャラも登場する特別版！★おまけアップイベント開催中!!
+    id: 696
+    rare: 7000
+    supa: 2500
+    uber: 500
+    step_up: true
+  2026-05-22_906:
+    start_on: 2026-05-22
+    end_on: 2026-05-24
+    version: '150300'
+    name: メタルな敵に効果絶大！限定キャラも登場の特別版！★おまけアップイベント開催中!!
+    id: 906
+    rare: 7000
+    supa: 2500
+    uber: 500
+    step_up: true
+  2026-05-24_523:
+    start_on: 2026-05-24
+    end_on: 2026-05-27
+    version: '150300'
+    name: 敵の波動攻撃に強いキャラが揃う「波動バスターズ」！★おまけアップイベント開催中!!
+    id: 523
+    rare: 7000
+    supa: 2500
+    uber: 500
+    step_up: true
+  2026-05-24_772:
+    start_on: 2026-05-24
+    end_on: 2026-05-27
+    version: '150300'
+    name: 超生命体に強いキャラクターが揃う特別なガチャ！★おまけアップイベント開催中!!
+    id: 772
+    rare: 7000
+    supa: 2500
+    uber: 500
+    step_up: true
+  2026-05-27_1012:
+    start_on: 2026-05-27
+    end_on: 2026-05-29
+    version: '150300'
+    name: 季節キャラクターが一堂に集結!!★超激レア出現率アップの「超国王祭」!!
+    id: 1012
+    rare: 6770
+    supa: 2500
+    uber: 700
+    legend: 30
+  2026-05-27_1021:
+    start_on: 2026-05-27
+    end_on: 2026-05-29
+    version: '150300'
+    name: 浮いてる敵にめっぽう強いキャラ「獅子番長ラクレス」登場！★詳細はバナーをタップ!!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-27_991:
+    start_on: 2026-05-27
+    end_on: 2026-05-29
+    version: '150300'
+    name: 波動攻撃と召喚能力を持つ「韋駄天スカンダ」登場！★詳細はバナーをタップ!!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-05-29_1066:
+    start_on: 2026-05-29
+    end_on: 2026-06-15
+    version: '150400'
+    name: 新たな超激レア「衛宮士郎」「真アサシン」参戦！★コラボガチャの詳細はバナーをタップ!!
+    id: 1066
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-05-29_945:
+    start_on: 2026-05-29
+    end_on: 2026-06-01
+    version: '150400'
+    name: 召喚能力を持つキャラクター「砲龍ガンドロス」登場！★詳細はバナーをタップ!!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-01_1045:
+    start_on: 2026-06-01
+    end_on: 2026-06-04
+    version: '150400'
+    name: 限定キャラ「幼騎士ルーノ」登場！★超激レア出現率アップの「超ネコ祭」開催中!!
+    id: 1045
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-06-01_946:
+    start_on: 2026-06-01
+    end_on: 2026-06-04
+    version: '150400'
+    name: 進化後に召喚能力を持つキャラクター「花咲かじいさん」登場！★詳細はバナーをタップ!!
+    id: 946
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-04_942:
+    start_on: 2026-06-04
+    end_on: 2026-06-06
+    version: '150400'
+    name: 召喚能力を持つキャラクター「ネコダイナザウルス」登場！★詳細はバナーをタップ!!
+    id: 942
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-06_979:
+    start_on: 2026-06-06
+    end_on: 2026-06-08
+    version: '150400'
+    name: 爆波攻撃と召喚能力を持つ「曲射砲台ランチャーズ」登場！★詳細はバナーをタップ!!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-08_1015:
+    start_on: 2026-06-08
+    end_on: 2026-06-10
+    version: '150400'
+    name: 召喚能力を持つキャラクター「魔導師シドミ」登場！★詳細はバナーをタップ!!
+    id: 1015
     rare: 6970
     supa: 2500
     uber: 500
