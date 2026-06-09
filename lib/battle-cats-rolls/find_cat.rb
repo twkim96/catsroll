@@ -38,6 +38,7 @@ module BattleCatsRolls
         788, # "Netherworld Nymph Lunacia",
         811, # "Agent Staal",
         838, # "Squire Luno",
+        860, # "Lone Moon Lunos",
       ].freeze
     end
 
