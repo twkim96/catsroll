@@ -677,6 +677,11 @@ module BattleCatsRolls
         hexdigest
     end
 
+    def self.recent_seeds_digest
+      @recent_seeds_digest ||=
+        Digest::MD5.file("#{__dir__}/asset/recent-seeds.js").hexdigest
+    end
+
     def self.template name
       (@template ||= {})[name.to_s] ||=
         Tilt.new("#{__dir__}/view/#{name}.erb", trim: '-')
