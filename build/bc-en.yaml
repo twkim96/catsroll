@@ -34045,6 +34045,15 @@ events:
     supa: 2500
     uber: 500
     legend: 30
+  2026-06-11_974:
+    start_on: 2026-06-11
+    end_on: 2026-06-19
+    version: '150401'
+    name: A chance to earn special units! ★Tap for details!
+    id: 974
+    rare: 6800
+    supa: 2500
+    uber: 700
   2026-06-12_942:
     start_on: 2026-06-12
     end_on: 2026-06-15
