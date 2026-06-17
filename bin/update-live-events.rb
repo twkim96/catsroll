@@ -19,7 +19,9 @@ module BattleCatsRolls
     DEFAULT_REPO = File.expand_path('..', __dir__)
     USER_AGENT = 'catsroll-live-events-updater/1.0'
 
-    Options = Struct.new(:repo, :lang, :url, :dry_run, :commit, :push_remotes, keyword_init: true)
+    Options = Struct.new(
+      :repo, :langs, :url, :dry_run, :commit, :push_remotes,
+      keyword_init: true)
 
     def self.main argv
       options = parse_options(argv)
@@ -29,7 +31,7 @@ module BattleCatsRolls
     def self.parse_options argv
       options = Options.new(
         repo: ENV.fetch('CATSROLL_REPO', DEFAULT_REPO),
-        lang: ENV.fetch('CATSROLL_LANG', DEFAULT_LANG),
+        langs: ENV.fetch('CATSROLL_LANG', DEFAULT_LANG).split(/[,\s]+/),
         url: ENV['CATSROLL_TSV_URL'],
         dry_run: false,
         commit: false,
@@ -56,14 +58,14 @@ module BattleCatsRolls
       end
 
       rest = parser.parse(argv)
-      options.lang = rest.fetch(0, options.lang)
+      options.langs = rest unless rest.empty?
       options
     end
 
     def initialize options
       @repo = File.expand_path(options.repo)
-      @lang = options.lang
-      @url = options.url || "https://bc-seek.godfat.org/seek/#{@lang}/gatya.tsv"
+      @langs = options.langs
+      @url = options.url
       @dry_run = options.dry_run
       @commit = options.commit
       @push_remotes = options.push_remotes
@@ -72,23 +74,12 @@ module BattleCatsRolls
 
     def run
       validate_repo!
+      fail!('--url can only be used with a single lang') if @url && @langs.size != 1
 
       puts "[info] repo: #{@repo}"
-      puts "[info] lang: #{@lang}"
-      puts "[info] url: #{@url}"
+      puts "[info] langs: #{@langs.join(', ')}"
 
-      tsv = download_tsv
-      reader = TsvReader.new(tsv)
-      live_events = reader.gacha
-      fail!('downloaded TSV has no rare gacha events') if live_events.empty?
-
-      tsv_path = event_tsv_path(live_events)
-      puts "[info] live events: #{live_events.size}"
-      write_text(tsv_path, tsv)
-
-      build_path = File.join(@repo, 'build', "bc-#{@lang}.yaml")
-      data = load_build_yaml(build_path)
-      merge_events(build_path, data, live_events)
+      @langs.each(&method(:update_lang))
       commit_and_push
 
       0
@@ -99,25 +90,45 @@ module BattleCatsRolls
 
     private
 
+    def update_lang lang
+      url = @url || "https://bc-seek.godfat.org/seek/#{lang}/gatya.tsv"
+
+      puts "[info] lang: #{lang}"
+      puts "[info] url: #{url}"
+
+      tsv = download_tsv(url)
+      reader = TsvReader.new(tsv)
+      live_events = reader.gacha
+      fail!('downloaded TSV has no rare gacha events') if live_events.empty?
+
+      tsv_path = event_tsv_path(lang, live_events)
+      puts "[info] live events: #{live_events.size}"
+      write_text(tsv_path, tsv)
+
+      build_path = File.join(@repo, 'build', "bc-#{lang}.yaml")
+      data = load_build_yaml(build_path)
+      merge_events(build_path, data, live_events)
+    end
+
     def validate_repo!
       fail!("repo not found: #{@repo}") unless Dir.exist?(@repo)
       fail!("not a catsroll repo: #{@repo}") unless File.exist?(File.join(@repo, 'lib', 'battle-cats-rolls', 'tsv_reader.rb'))
     end
 
-    def download_tsv
-      data = URI.open(@url, 'User-Agent' => USER_AGENT, &:read)
+    def download_tsv url
+      data = URI.open(url, 'User-Agent' => USER_AGENT, &:read)
       unless data.include?("[start]\n") && data.include?("[end]\n")
         fail!('downloaded data does not look like gatya.tsv')
       end
       data
     end
 
-    def event_tsv_path live_events
+    def event_tsv_path lang, live_events
       dated_events = live_events.reject{ |_, event| event['platinum'] }
       dated_events = live_events if dated_events.empty?
       latest = dated_events.max_by{ |_, event| event.fetch('end_on') }
       date = latest.fetch(1).fetch('end_on').strftime('%Y%m%d')
-      File.join(@repo, 'data', @lang, 'events', "#{date}.tsv")
+      File.join(@repo, 'data', lang, 'events', "#{date}.tsv")
     end
 
     def load_build_yaml path
@@ -177,7 +188,7 @@ module BattleCatsRolls
         if git_success?(['diff', '--cached', '--quiet', '--', *tracked_paths])
           puts '[info] no TSV/build changes to commit'
         else
-          run_git(['commit', '-m', "data: update #{@lang} live events"])
+          run_git(['commit', '-m', "data: update #{@langs.join('/')} live events"])
         end
       end
 
