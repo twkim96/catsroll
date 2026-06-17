@@ -35,6 +35,17 @@ module BattleCatsRolls
       end
     end
 
+    def self.deep_dup data
+      case data
+      when Hash
+        data.transform_values{ |value| deep_dup(value) }
+      when Array
+        data.map{ |value| deep_dup(value) }
+      else
+        data
+      end
+    end
+
     def self.attach_gacha_series_id gacha, gacha_option
       require_relative 'tsv_reader'
       option = TsvReader.new(gacha_option).gacha_option
@@ -162,6 +173,17 @@ module BattleCatsRolls
 
     def cats
       data['cats']
+    end
+
+    def with_cat_names_from source
+      data = self.class.deep_dup(self.data)
+
+      data['cats'].each do |id, info|
+        names = source.cats.dig(id, 'name')
+        info['name'] = names if names && !names.empty?
+      end
+
+      self.class.new(self.class.deep_freeze(data))
     end
 
     def each_custom_gacha name_index

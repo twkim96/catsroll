@@ -26,6 +26,8 @@ module BattleCatsRolls
           public_send("ball_#{lang}=", load_ball(lang))
         end
       end
+
+      self.ball_jp = ball_jp.with_cat_names_from(ball_kr)
     end
 
     singleton_class.attr_accessor :ball_en, :ball_tw, :ball_jp, :ball_kr
