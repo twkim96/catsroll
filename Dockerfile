@@ -29,8 +29,9 @@ RUN ./Seeker/bin/build-VampireFlower.sh
 # 7. 설정 파일 에러 방지용 빈 파일 생성
 RUN touch .env
 
-# 8. Hugging Face 포트(7860) 설정
-ENV WEB_BIND="0.0.0.0:7860"
+# 8. Hugging Face 포트(7860) 및 무료 티어용 트랙 표시 제한 설정
+ENV WEB_BIND="0.0.0.0:7860" \
+    TRACK_MAX_COUNT=500
 EXPOSE 7860
 
 # 9. 서버 실행
