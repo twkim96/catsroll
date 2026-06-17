@@ -27,7 +27,8 @@ module BattleCatsRolls
         end
       end
 
-      self.ball_jp = ball_jp.with_cat_names_from(ball_kr)
+      self.ball_jp =
+        ball_jp.with_cat_names_from(ball_kr).with_event_names_from(ball_kr)
     end
 
     singleton_class.attr_accessor :ball_en, :ball_tw, :ball_jp, :ball_kr
