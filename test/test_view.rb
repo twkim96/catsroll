@@ -6,6 +6,8 @@ require 'battle-cats-rolls/route'
 require 'battle-cats-rolls/request'
 
 describe BattleCatsRolls::View do
+  BattleCatsRolls::Route.reload_balls
+
   def view
     @view ||= BattleCatsRolls::View.new(route)
   end
@@ -85,6 +87,31 @@ describe BattleCatsRolls::View do
 
         expect(image).lt arrow
       end
+    end
+  end
+
+  describe '#td' do
+    def cat
+      BattleCatsRolls::Cat.new(
+        id: 1,
+        info: {'name' => ['Cat'], 'desc' => ['Cat']},
+        rarity_seed: 123,
+        slot_seed: 456)
+    end
+
+    would 'render expanded-result seed data for cat cells' do
+      html = view.__send__(:td, cat, :cat, content: 'Cat')
+
+      expect(html).include?('data-expand-kind="roll"')
+      expect(html).include?('data-expand-rarity-seed="123"')
+      expect(html).include?('data-expand-slot-seed="456"')
+    end
+
+    would 'render guaranteed kind for guaranteed cat cells' do
+      guaranteed = cat.new_with(extra_label: 'G')
+      html = view.__send__(:td, guaranteed, :cat, content: 'Cat')
+
+      expect(html).include?('data-expand-kind="guaranteed"')
     end
   end
 end

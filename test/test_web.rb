@@ -1,6 +1,8 @@
 
 require 'pork/auto'
 require 'battle-cats-rolls/web'
+require 'json'
+require 'rack/mock'
 
 describe BattleCatsRolls::Web do
   web = BattleCatsRolls::Web.new
@@ -24,5 +26,28 @@ describe BattleCatsRolls::Web do
 
   would 'respond 200 for a non-existing cat' do
     expect_status_200('/cats/9999')
+  end
+
+  would 'respond with one expanded track result' do
+    event = BattleCatsRolls::Route.ball_en.events.keys.first
+    response = Rack::MockRequest.new(web).get(
+      "/expand/result?event=#{event}&rarity_seed=1&slot_seed=2")
+    data = JSON.parse(response.body)
+
+    expect(response.status).eq 200
+    expect(data['available']).eq true
+    expect(data['name']).kind_of? String
+    expect(data['rarity']).kind_of? String
+  end
+
+  would 'respond with expanded events for another language' do
+    response = Rack::MockRequest.new(web).get('/expand/events?lang=jp')
+    data = JSON.parse(response.body)
+
+    expect(response.status).eq 200
+    expect(data['lang']).eq 'jp'
+    expect(data['events']).any?
+    expect(data['events'].first['event']).kind_of? String
+    expect(data['events'].first['label']).kind_of? String
   end
 end

@@ -192,10 +192,24 @@ module BattleCatsRolls
         <td
           rowspan="#{rowspan}"
           class="#{type} #{color_label(cat, type, rerolled)}"
+          #{expand_data_attrs(cat, type)}
           #{onclick_pick(cat, type)}>
           #{content}
         </td>
       HTML
+    end
+
+    def expand_data_attrs cat, type
+      return unless type == :cat && cat&.slot_seed
+
+      attrs = {
+        'data-expand-kind' => cat.extra_label.to_s.include?('G') ?
+          'guaranteed' : 'roll',
+        'data-expand-slot-seed' => cat.slot_seed
+      }
+      attrs['data-expand-rarity-seed'] = cat.rarity_seed if cat.rarity_seed
+
+      attrs.map{ |key, value| %Q{#{key}="#{h(value.to_s)}"} }.join(' ')
     end
 
     def link_to_cat cat
@@ -680,6 +694,11 @@ module BattleCatsRolls
     def self.recent_seeds_digest
       @recent_seeds_digest ||=
         Digest::MD5.file("#{__dir__}/asset/recent-seeds.js").hexdigest
+    end
+
+    def self.track_compare_digest
+      @track_compare_digest ||=
+        Digest::MD5.file("#{__dir__}/asset/track-compare.js").hexdigest
     end
 
     def self.template name

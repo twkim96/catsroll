@@ -213,6 +213,22 @@ module BattleCatsRolls
       end
     end
 
+    get '/expand/result' do
+      headers 'Content-Type' => 'application/json; charset=utf-8'
+
+      result = route.expanded_result
+      if result
+        body JSON.dump(result)
+      else
+        not_found JSON.dump(available: false)
+      end
+    end
+
+    get '/expand/events' do
+      headers 'Content-Type' => 'application/json; charset=utf-8'
+      body JSON.dump(lang: route.lang, events: route.expanded_events)
+    end
+
     class Seek
       include Jellyfish
       controller_include NormalizedPath, Imp
