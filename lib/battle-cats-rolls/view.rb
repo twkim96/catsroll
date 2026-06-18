@@ -200,7 +200,7 @@ module BattleCatsRolls
     end
 
     def expand_data_attrs cat, type
-      return unless [:cat, :score].include?(type) && cat&.slot_seed
+      return unless type == :score && cat&.slot_seed
 
       attrs = {
         'data-expand-kind' => cat.extra_label.to_s.include?('G') ?
