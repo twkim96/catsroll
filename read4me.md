@@ -32,7 +32,8 @@ Major files added or changed from upstream:
   - Used by the external control server button flow.
 - `Dockerfile`
   - Hugging Face oriented runtime setup.
-  - Sets `TRACK_MAX_COUNT=500`.
+  - Sets `TRACK_MAX_COUNT=300`.
+  - Sets `EXPAND_COMPARE=0` so expanded comparison stays disabled by default.
 - `lib/battle-cats-rolls/asset/recent-seeds.js`
   - Client-side recent seed panel.
 - `lib/battle-cats-rolls/asset/track-compare.js`
@@ -80,8 +81,8 @@ Relevant commit:
 
 Purpose:
 
-- Default `TRACK_MAX_COUNT` is lowered to `500` for Hugging Face free tier safety.
-- Upstream default in `lib/battle-cats-rolls/root.rb` is still `999`; local Docker/service config sets `500`.
+- Default `TRACK_MAX_COUNT` is lowered to `300` for Hugging Face free tier safety.
+- Upstream default in `lib/battle-cats-rolls/root.rb` is still `999`; local Docker/service config sets `300`.
 
 ### 3. JP page Korean character names and event-name matching
 
@@ -142,13 +143,25 @@ Core files:
 - `lib/battle-cats-rolls/route.rb`
 - `lib/battle-cats-rolls/view.rb`
 - `lib/battle-cats-rolls/view/layout.erb`
+- `lib/battle-cats-rolls/root.rb`
+
+Server support toggle:
+
+- `BattleCatsRolls::ExpandCompareSupported` is controlled by `EXPAND_COMPARE`.
+- Default is disabled. Enable only with `EXPAND_COMPARE=1`, `true`, `yes`, or `on`.
+- Docker and systemd config currently set `EXPAND_COMPARE=0`.
+- When disabled:
+  - `layout.erb` does not load `track-compare.js`.
+  - `/expand/events` returns `supported:false` and an empty event list.
+  - `/expand/result` returns `supported:false, available:false`.
+  - No expanded comparison calculation runs, which protects the server under load.
 
 Endpoints:
 
 - `GET /expand/events?lang=kr|jp`
-  - Returns selectable recent event list.
+  - Returns selectable recent event list only when `EXPAND_COMPARE` is enabled.
 - `GET /expand/result?...`
-  - Returns one expanded comparison result for a cell.
+  - Returns one expanded comparison result for a cell only when `EXPAND_COMPARE` is enabled.
 
 Current UI behavior:
 
@@ -220,7 +233,7 @@ Conflict risk:
 - Expanded compare should use `score` cells, not `cat` cells.
   - `score` cells already occupy the upper/blank half of the track table in normal display mode.
   - This avoids fighting the vertical layout of cat names.
-- Do not auto-load all 500 rows.
+- Do not auto-load all rows.
   - Only high-value visible/near-visible rows are auto-loaded.
   - Manual click remains available for all rows.
 - Do not translate unmatched event names.

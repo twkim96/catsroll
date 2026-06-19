@@ -9,4 +9,6 @@ module BattleCatsRolls
   SeekBind = ENV['SEEK_BIND'].freeze || 9090
   SeekThreads = Integer(ENV['SEEK_THREADS'] || 25)
   TrackMaxCount = Integer(ENV['TRACK_MAX_COUNT'] || 999)
+  ExpandCompareSupported = /\A(?:1|true|yes|on)\z/i.match?(
+    ENV['EXPAND_COMPARE'].to_s)
 end

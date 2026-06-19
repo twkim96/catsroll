@@ -28,26 +28,24 @@ describe BattleCatsRolls::Web do
     expect_status_200('/cats/9999')
   end
 
-  would 'respond with one expanded track result' do
+  would 'skip expanded track result when unsupported' do
     event = BattleCatsRolls::Route.ball_en.events.keys.first
     response = Rack::MockRequest.new(web).get(
       "/expand/result?event=#{event}&rarity_seed=1&slot_seed=2")
     data = JSON.parse(response.body)
 
     expect(response.status).eq 200
-    expect(data['available']).eq true
-    expect(data['name']).kind_of? String
-    expect(data['rarity']).kind_of? String
+    expect(data['supported']).eq false
+    expect(data['available']).eq false
   end
 
-  would 'respond with expanded events for another language' do
+  would 'skip expanded events when unsupported' do
     response = Rack::MockRequest.new(web).get('/expand/events?lang=jp')
     data = JSON.parse(response.body)
 
     expect(response.status).eq 200
+    expect(data['supported']).eq false
     expect(data['lang']).eq 'jp'
-    expect(data['events']).any?
-    expect(data['events'].first['event']).kind_of? String
-    expect(data['events'].first['label']).kind_of? String
+    expect(data['events']).eq []
   end
 end

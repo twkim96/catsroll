@@ -216,17 +216,26 @@ module BattleCatsRolls
     get '/expand/result' do
       headers 'Content-Type' => 'application/json; charset=utf-8'
 
-      result = route.expanded_result
-      if result
-        body JSON.dump(result)
+      if !ExpandCompareSupported
+        body JSON.dump(supported: false, available: false)
       else
-        not_found JSON.dump(available: false)
+        result = route.expanded_result
+        if result
+          body JSON.dump(result)
+        else
+          not_found JSON.dump(available: false)
+        end
       end
     end
 
     get '/expand/events' do
       headers 'Content-Type' => 'application/json; charset=utf-8'
-      body JSON.dump(lang: route.lang, events: route.expanded_events)
+
+      if !ExpandCompareSupported
+        body JSON.dump(supported: false, lang: route.lang, events: [])
+      else
+        body JSON.dump(lang: route.lang, events: route.expanded_events)
+      end
     end
 
     class Seek
