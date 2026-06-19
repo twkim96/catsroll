@@ -61,6 +61,18 @@
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }
       <% end %>
+      #seed_views_today {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        padding: 2px 6px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, .9);
+        color: #555;
+        font-size: 12px;
+        line-height: 1.2;
+      }
     </style>
     <script>
       function roll(element) {
@@ -73,6 +85,9 @@
     </script>
   </head>
   <body>
+    <% if seed_views_today.to_i > 0 %>
+    <div id="seed_views_today">today: <%= seed_views_today %></div>
+    <% end %>
     <div id="menu">
       <a href="<%= route.uri %>" title="Home / Permalink">
         <img class="menu" src="/asset/image/treasure.png" alt="Treasure"></a>

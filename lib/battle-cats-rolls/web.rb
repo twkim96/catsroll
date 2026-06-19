@@ -3,6 +3,7 @@
 require_relative 'route'
 require_relative 'request'
 require_relative 'seek_seed'
+require_relative 'seed_view_counter'
 require_relative 'cache'
 require_relative 'aws_cf'
 require_relative 'runner'
@@ -91,8 +92,11 @@ module BattleCatsRolls
         end
       end
 
-      def render name, arg=nil
-        View.new(route, arg).render(name)
+      def render name, arg=nil, **kwargs
+        seed_views_today = kwargs.delete(:seed_views_today)
+        arg ||= kwargs unless kwargs.empty?
+        seed_views_today ||= SeedViewCounter.count(cache)
+        View.new(route, arg, seed_views_today).render(name)
       end
     end
 
@@ -105,9 +109,11 @@ module BattleCatsRolls
       if request.fullpath.sub(/&pick=[^&]+\z/, '') != canonical_uri
         found canonical_uri
       elsif route.show_tracks?
+        seed_views_today = SeedViewCounter.increment(cache)
         cats, found_cats = route.prepare_tracks
 
-        render :index, cats: cats, found_cats: found_cats, details: true
+        render :index, {cats: cats, found_cats: found_cats, details: true},
+          seed_views_today: seed_views_today
       else
         render :index
       end

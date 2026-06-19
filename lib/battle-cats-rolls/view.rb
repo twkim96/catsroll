@@ -14,7 +14,7 @@ require 'digest/md5'
 require 'forwardable'
 
 module BattleCatsRolls
-  class View < Struct.new(:route, :arg)
+  class View < Struct.new(:route, :arg, :seed_views_today)
     extend Forwardable
 
     def_delegator :route, :gacha
