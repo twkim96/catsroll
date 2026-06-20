@@ -124,6 +124,23 @@ describe BattleCatsRolls::SeedViewCounter do
     expect(data[:days].first[:count]).eq 2
   end
 
+  would 'keep lower ranked events for view filtering' do
+    10.times do |index|
+      BattleCatsRolls::SeedViewCounter.increment(cache,
+        Time.local(2026, 6, 20, 3, 4, 5), lang: 'en',
+        event: "old_#{index}")
+    end
+    BattleCatsRolls::SeedViewCounter.increment(cache,
+      Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+      event: '2026-06-22_1043')
+
+    data = BattleCatsRolls::SeedViewCounter.snapshot(
+      Time.local(2026, 6, 20, 3, 30, 0))
+
+    expect(data[:events].size).eq 11
+    expect(data[:events].any?{ |row| row[:lang] == 'kr' }).eq true
+  end
+
   would 'prune rolling buckets and daily breakdowns on flush' do
     Dir.mktmpdir do |dir|
       path = "#{dir}/seed_views.json"

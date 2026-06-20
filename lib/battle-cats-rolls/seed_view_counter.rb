@@ -254,7 +254,7 @@ module BattleCatsRolls
     end
 
     def ranked_events hash
-      hash.sort_by{ |key, count| [-count, key] }.first(10).map do |key, count|
+      hash.sort_by{ |key, count| [-count, key] }.map do |key, count|
         lang, event = key.split('|', 2)
         {lang: lang, event: event, count: count}
       end

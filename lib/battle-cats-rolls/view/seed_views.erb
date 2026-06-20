@@ -2,16 +2,15 @@
 
 <style>
   .seed-view-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    align-items: flex-start;
+    max-width: 70rem;
   }
   .seed-view-region {
-    width: 14rem;
+    width: auto;
+    max-width: 36rem;
   }
   .seed-view-event {
-    max-width: 56rem;
+    width: 100%;
+    max-width: 70rem;
   }
   .seed-view-event-name {
     font-size: 15px;
@@ -61,61 +60,60 @@
 <% max_hour = [recent_hours.map{ |point| point[:count] }.max.to_i, 1].max %>
 
 <div class="seed-view-grid">
-  <div>
-    <%= header(2, '지역별 검색', 'regions') %>
-    <table class="seed-view-region">
+  <%= header(2, '지역별 검색', 'regions') %>
+  <table class="seed-view-region">
+    <% if arg[:langs].empty? %>
+      <tbody>
+        <tr>
+          <td>No data yet.</td>
+        </tr>
+      </tbody>
+    <% else %>
       <thead>
         <tr>
-          <th>Region</th>
-          <th>Views</th>
+          <% arg[:langs].each do |row| %>
+            <th><%= seed_view_region_label(row[:key]) %></th>
+          <% end %>
         </tr>
       </thead>
       <tbody>
-        <% arg[:langs].each do |row| %>
-          <tr>
-            <td><%= seed_view_region_label(row[:key]) %></td>
+        <tr>
+          <% arg[:langs].each do |row| %>
             <td><%= row[:count] %></td>
-          </tr>
-        <% end %>
-        <% if arg[:langs].empty? %>
-          <tr>
-            <td colspan="2">No data yet.</td>
-          </tr>
-        <% end %>
+          <% end %>
+        </tr>
       </tbody>
-    </table>
-  </div>
+    <% end %>
+  </table>
 
-  <div>
-    <%= header(2, '이벤트 Top 10', 'events') %>
-    <table class="seed-view-event">
-      <thead>
+  <%= header(2, '이벤트 Top 10', 'events') %>
+  <table class="seed-view-event">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Region</th>
+        <th>Event</th>
+        <th>Views</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% top_events.each.with_index(1) do |row, rank| %>
         <tr>
-          <th>Rank</th>
-          <th>Region</th>
-          <th>Event</th>
-          <th>Views</th>
+          <td><%= rank %></td>
+          <td><%= seed_view_region_label(row[:lang]) %></td>
+          <td class="seed-view-event-name">
+            <%= seed_view_event_name(row[:lang], row[:event]) %>
+          </td>
+          <td><%= row[:count] %></td>
         </tr>
-      </thead>
-      <tbody>
-        <% top_events.each.with_index(1) do |row, rank| %>
-          <tr>
-            <td><%= rank %></td>
-            <td><%= seed_view_region_label(row[:lang]) %></td>
-            <td class="seed-view-event-name">
-              <%= seed_view_event_name(row[:lang], row[:event]) %>
-            </td>
-            <td><%= row[:count] %></td>
-          </tr>
-        <% end %>
-        <% if top_events.empty? %>
-          <tr>
-            <td colspan="4">No data yet.</td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+      <% end %>
+      <% if top_events.empty? %>
+        <tr>
+          <td colspan="4">No data yet.</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 </div>
 
 <%= header(2, '최근 24시간 (15분 단위)', 'recent-24h') %>
