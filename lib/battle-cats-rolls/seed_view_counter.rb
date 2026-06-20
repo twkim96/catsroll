@@ -9,13 +9,15 @@ module BattleCatsRolls
     PREFIX = 'seed_views'.freeze
     STATS_PATH = '/data/seed_views.json'
     FLUSH_INTERVAL = 15 * 60
+    QUARTER_RETENTION = 26 * 60 * 60
+    HOUR_RETENTION = 8 * 24 * 60 * 60
     @mutex = Mutex.new
     @stats = {
       'days' => {},
       'hours' => {},
       'quarters' => {},
-      'langs' => {},
-      'events' => {}
+      'langs_by_day' => {},
+      'events_by_day' => {}
     }
     @loaded = false
 
@@ -32,10 +34,12 @@ module BattleCatsRolls
         @stats['hours'][hour_key(now)] = @stats['hours'][hour_key(now)].to_i + 1
         quarter = quarter_key(now)
         @stats['quarters'][quarter] = @stats['quarters'][quarter].to_i + 1
-        @stats['langs'][lang] = @stats['langs'][lang].to_i + 1 if lang
+        day_langs = nested_hash(@stats['langs_by_day'], date)
+        day_events = nested_hash(@stats['events_by_day'], date)
+        day_langs[lang] = day_langs[lang].to_i + 1 if lang
         if lang && event
           event_key = [lang, event].join('|')
-          @stats['events'][event_key] = @stats['events'][event_key].to_i + 1
+          day_events[event_key] = day_events[event_key].to_i + 1
         end
         @stats['days'][date]
       end
@@ -92,8 +96,10 @@ module BattleCatsRolls
             'days' => integer_hash(data['days']),
             'hours' => integer_hash(data['hours']),
             'quarters' => integer_hash(data['quarters']),
-            'langs' => integer_hash(data['langs']),
-            'events' => integer_hash(data['events'])
+            'langs_by_day' =>
+              nested_integer_hash(data['langs_by_day'] || migrate_day(data['langs'])),
+            'events_by_day' =>
+              nested_integer_hash(data['events_by_day'] || migrate_day(data['events']))
           }
         end
 
@@ -107,14 +113,17 @@ module BattleCatsRolls
       load!(path)
       return false unless persistable?(path)
 
+      now = Time.now
       data = @mutex.synchronize do
+        prune!(now)
+
         {
-          'updated_at' => Time.now.utc.iso8601,
+          'updated_at' => now.utc.iso8601,
           'days' => @stats['days'].sort.to_h,
           'hours' => @stats['hours'].sort.to_h,
           'quarters' => @stats['quarters'].sort.to_h,
-          'langs' => @stats['langs'].sort.to_h,
-          'events' => @stats['events'].sort.to_h
+          'langs_by_day' => sort_nested_hash(@stats['langs_by_day']),
+          'events_by_day' => sort_nested_hash(@stats['events_by_day'])
         }
       end
       tmp = "#{path}.#{$$}.tmp"
@@ -157,11 +166,13 @@ module BattleCatsRolls
       now = parse_time(now)
 
       @mutex.synchronize do
+        today = date_key(now)
+
         {
           recent_quarters: recent_quarters(now, @stats['quarters']),
           recent_hours: recent_hours(now, @stats['hours']),
-          langs: ranked_hash(@stats['langs']),
-          events: ranked_events(@stats['events']),
+          langs: ranked_hash(@stats['langs_by_day'][today] || {}),
+          events: ranked_events(@stats['events_by_day'][today] || {}),
           days: @stats['days'].sort.reverse.map do |date, count|
             {label: date, count: count}
           end
@@ -193,6 +204,24 @@ module BattleCatsRolls
 
     def integer_hash hash
       (hash || {}).transform_values(&:to_i)
+    end
+
+    def nested_integer_hash hash
+      (hash || {}).transform_values{ |value| integer_hash(value) }
+    end
+
+    def nested_hash hash, key
+      hash[key] ||= {}
+    end
+
+    def migrate_day hash
+      return {} unless hash
+
+      {Date.today.strftime('%Y-%m-%d') => hash}
+    end
+
+    def sort_nested_hash hash
+      hash.sort.to_h.transform_values{ |value| value.sort.to_h }
     end
 
     def ranked_hash hash
@@ -233,6 +262,18 @@ module BattleCatsRolls
           count: hours[key].to_i
         }
       end
+    end
+
+    def prune! now
+      prune_time_hash!(@stats['quarters'], quarter_key(now - QUARTER_RETENTION))
+      prune_time_hash!(@stats['hours'], hour_key(now - HOUR_RETENTION))
+      today = date_key(now)
+      @stats['langs_by_day'].select!{ |date, _| date == today }
+      @stats['events_by_day'].select!{ |date, _| date == today }
+    end
+
+    def prune_time_hash! hash, cutoff
+      hash.delete_if{ |key, _| key < cutoff }
     end
 
     def persistable? path

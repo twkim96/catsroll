@@ -7,8 +7,8 @@ require 'tmpdir'
 describe BattleCatsRolls::SeedViewCounter do
   before do
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@stats,
-      {'days' => {}, 'hours' => {}, 'quarters' => {}, 'langs' => {},
-       'events' => {}})
+      {'days' => {}, 'hours' => {}, 'quarters' => {}, 'langs_by_day' => {},
+       'events_by_day' => {}})
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@loaded, false)
     @cache = nil
   end
@@ -55,8 +55,9 @@ describe BattleCatsRolls::SeedViewCounter do
       expect(data.dig('days', '2026-06-20')).eq 2
       expect(data.dig('hours', '2026-06-20T03')).eq 2
       expect(data.dig('quarters', '2026-06-20T03:00')).eq 2
-      expect(data.dig('langs', 'kr')).eq 2
-      expect(data.dig('events', 'kr|2026-06-22_1043')).eq 2
+      expect(data.dig('langs_by_day', '2026-06-20', 'kr')).eq 2
+      expect(data.dig('events_by_day', '2026-06-20',
+        'kr|2026-06-22_1043')).eq 2
     end
   end
 
@@ -92,5 +93,35 @@ describe BattleCatsRolls::SeedViewCounter do
     expect(data[:langs].map{ |row| row[:key] }).eq %w[jp kr]
     expect(data[:events].first[:event]).eq '2026-06-22_1043'
     expect(data[:days].first[:count]).eq 2
+  end
+
+  would 'prune rolling buckets and daily breakdowns on flush' do
+    Dir.mktmpdir do |dir|
+      path = "#{dir}/seed_views.json"
+      File.write(path, JSON.dump(
+        'days' => {'2026-06-18' => 1, '2026-06-20' => 2},
+        'hours' => {'2026-06-01T00' => 1, '2026-06-20T03' => 2},
+        'quarters' => {'2026-06-01T00:00' => 1, '2026-06-20T03:00' => 2},
+        'langs_by_day' => {
+          '2026-06-19' => {'jp' => 1},
+          '2026-06-20' => {'kr' => 2}
+        },
+        'events_by_day' => {
+          '2026-06-19' => {'jp|old' => 1},
+          '2026-06-20' => {'kr|new' => 2}
+        }))
+      BattleCatsRolls::SeedViewCounter.load!(path)
+      BattleCatsRolls::SeedViewCounter.__send__(:prune!,
+        Time.local(2026, 6, 20, 3, 30, 0))
+      BattleCatsRolls::SeedViewCounter.flush(path)
+
+      data = JSON.parse(File.read(path))
+
+      expect(data['hours'].key?('2026-06-01T00')).eq false
+      expect(data['quarters'].key?('2026-06-01T00:00')).eq false
+      expect(data['langs_by_day'].keys).eq ['2026-06-20']
+      expect(data['events_by_day'].keys).eq ['2026-06-20']
+      expect(data['days'].key?('2026-06-18')).eq true
+    end
   end
 end
