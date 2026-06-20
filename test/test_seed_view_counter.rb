@@ -74,6 +74,35 @@ describe BattleCatsRolls::SeedViewCounter do
     end
   end
 
+  would 'merge a late stats file with memory counts' do
+    Dir.mktmpdir do |dir|
+      path = "#{dir}/seed_views.json"
+
+      expect(BattleCatsRolls::SeedViewCounter.load!(path)).eq false
+      BattleCatsRolls::SeedViewCounter.increment(cache,
+        Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+        event: '2026-06-22_1043')
+      File.write(path, JSON.dump(
+        'days' => {'2026-06-20' => 7},
+        'hours' => {'2026-06-20T03' => 5},
+        'quarters' => {'2026-06-20T03:00' => 5},
+        'langs_by_day' => {'2026-06-20' => {'kr' => 5}},
+        'events_by_day' => {'2026-06-20' => {
+          'kr|2026-06-22_1043' => 5
+        }}))
+
+      expect(BattleCatsRolls::SeedViewCounter.load!(path)).eq true
+      data = BattleCatsRolls::SeedViewCounter.snapshot(
+        Time.local(2026, 6, 20, 3, 15, 0))
+
+      expect(BattleCatsRolls::SeedViewCounter.count(cache, date)).eq 8
+      expect(data[:recent_hours][-1][:count]).eq 6
+      expect(data[:recent_quarters][-2][:count]).eq 6
+      expect(data[:langs].first[:count]).eq 6
+      expect(data[:events].first[:count]).eq 6
+    end
+  end
+
   would 'return recent chart data' do
     BattleCatsRolls::SeedViewCounter.increment(cache,
       Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',

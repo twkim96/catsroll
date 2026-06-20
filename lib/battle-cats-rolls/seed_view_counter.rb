@@ -85,28 +85,19 @@ module BattleCatsRolls
     end
 
     def load! path=stats_path
-      return if @loaded
+      return true if @loaded
+      return false unless File.exist?(path)
 
       @mutex.synchronize do
-        return if @loaded
+        return true if @loaded
+        return false unless File.exist?(path)
 
-        if File.exist?(path)
-          data = JSON.parse(File.read(path))
-          @stats = {
-            'days' => integer_hash(data['days']),
-            'hours' => integer_hash(data['hours']),
-            'quarters' => integer_hash(data['quarters']),
-            'langs_by_day' =>
-              nested_integer_hash(data['langs_by_day'] || migrate_day(data['langs'])),
-            'events_by_day' =>
-              nested_integer_hash(data['events_by_day'] || migrate_day(data['events']))
-          }
-        end
-
-        @loaded = true
-      rescue JSON::ParserError, SystemCallError
+        merge_stats!(normalize_stats(JSON.parse(File.read(path))))
         @loaded = true
       end
+      true
+    rescue JSON::ParserError, SystemCallError
+      false
     end
 
     def flush path=stats_path
@@ -199,6 +190,38 @@ module BattleCatsRolls
         Time.local(value.year, value.month, value.day)
       else
         Time.parse(value.to_s)
+      end
+    end
+
+    def normalize_stats data
+      {
+        'days' => integer_hash(data['days']),
+        'hours' => integer_hash(data['hours']),
+        'quarters' => integer_hash(data['quarters']),
+        'langs_by_day' =>
+          nested_integer_hash(data['langs_by_day'] || migrate_day(data['langs'])),
+        'events_by_day' =>
+          nested_integer_hash(data['events_by_day'] || migrate_day(data['events']))
+      }
+    end
+
+    def merge_stats! stats
+      merge_hash!(@stats['days'], stats['days'])
+      merge_hash!(@stats['hours'], stats['hours'])
+      merge_hash!(@stats['quarters'], stats['quarters'])
+      merge_nested_hash!(@stats['langs_by_day'], stats['langs_by_day'])
+      merge_nested_hash!(@stats['events_by_day'], stats['events_by_day'])
+    end
+
+    def merge_hash! target, source
+      source.each do |key, value|
+        target[key] = target[key].to_i + value.to_i
+      end
+    end
+
+    def merge_nested_hash! target, source
+      source.each do |key, value|
+        merge_hash!(nested_hash(target, key), value)
       end
     end
 
