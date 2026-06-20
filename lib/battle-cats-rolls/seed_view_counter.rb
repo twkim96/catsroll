@@ -10,7 +10,7 @@ module BattleCatsRolls
     STATS_PATH = '/data/seed_views.json'
     FLUSH_INTERVAL = 15 * 60
     @mutex = Mutex.new
-    @stats = {'days' => {}, 'hours' => {}}
+    @stats = {'days' => {}, 'hours' => {}, 'quarters' => {}}
     @loaded = false
 
     module_function
@@ -24,6 +24,8 @@ module BattleCatsRolls
       total = @mutex.synchronize do
         @stats['days'][date] = @stats['days'][date].to_i + 1
         @stats['hours'][hour_key(now)] = @stats['hours'][hour_key(now)].to_i + 1
+        quarter = quarter_key(now)
+        @stats['quarters'][quarter] = @stats['quarters'][quarter].to_i + 1
         @stats['days'][date]
       end
 
@@ -77,7 +79,8 @@ module BattleCatsRolls
           data = JSON.parse(File.read(path))
           @stats = {
             'days' => integer_hash(data['days']),
-            'hours' => integer_hash(data['hours'])
+            'hours' => integer_hash(data['hours']),
+            'quarters' => integer_hash(data['quarters'])
           }
         end
 
@@ -95,7 +98,8 @@ module BattleCatsRolls
         {
           'updated_at' => Time.now.utc.iso8601,
           'days' => @stats['days'].sort.to_h,
-          'hours' => @stats['hours'].sort.to_h
+          'hours' => @stats['hours'].sort.to_h,
+          'quarters' => @stats['quarters'].sort.to_h
         }
       end
       tmp = "#{path}.#{$$}.tmp"
@@ -126,6 +130,28 @@ module BattleCatsRolls
       time.strftime('%Y-%m-%dT%H')
     end
 
+    def quarter_key value
+      time = parse_time(value)
+      minute = time.min - (time.min % 15)
+      Time.local(time.year, time.month, time.day, time.hour, minute).
+        strftime('%Y-%m-%dT%H:%M')
+    end
+
+    def snapshot now=Time.now
+      load!
+      now = parse_time(now)
+
+      @mutex.synchronize do
+        {
+          recent_quarters: recent_quarters(now, @stats['quarters']),
+          recent_hours: recent_hours(now, @stats['hours']),
+          days: @stats['days'].sort.reverse.map do |date, count|
+            {label: date, count: count}
+          end
+        }
+      end
+    end
+
     def parse_date value
       case value
       when Date
@@ -150,6 +176,33 @@ module BattleCatsRolls
 
     def integer_hash hash
       (hash || {}).transform_values(&:to_i)
+    end
+
+    def recent_quarters now, quarters
+      start = Time.parse(quarter_key(now)) - (95 * 15 * 60)
+
+      96.times.map do |index|
+        time = start + (index * 15 * 60)
+        key = time.strftime('%Y-%m-%dT%H:%M')
+        {
+          label: time.strftime('%m-%d %H:%M'),
+          count: quarters[key].to_i
+        }
+      end
+    end
+
+    def recent_hours now, hours
+      start = Time.local(now.year, now.month, now.day, now.hour) -
+        (167 * 60 * 60)
+
+      168.times.map do |index|
+        time = start + (index * 60 * 60)
+        key = time.strftime('%Y-%m-%dT%H')
+        {
+          label: time.strftime('%m-%d %H:00'),
+          count: hours[key].to_i
+        }
+      end
     end
 
     def persistable? path

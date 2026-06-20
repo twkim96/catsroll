@@ -7,7 +7,7 @@ require 'tmpdir'
 describe BattleCatsRolls::SeedViewCounter do
   before do
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@stats,
-      {'days' => {}, 'hours' => {}})
+      {'days' => {}, 'hours' => {}, 'quarters' => {}})
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@loaded, false)
     @cache = nil
   end
@@ -51,6 +51,7 @@ describe BattleCatsRolls::SeedViewCounter do
 
       expect(data.dig('days', '2026-06-20')).eq 2
       expect(data.dig('hours', '2026-06-20T03')).eq 2
+      expect(data.dig('quarters', '2026-06-20T03:00')).eq 2
     end
   end
 
@@ -65,5 +66,22 @@ describe BattleCatsRolls::SeedViewCounter do
 
       expect(BattleCatsRolls::SeedViewCounter.count(cache, date)).eq 7
     end
+  end
+
+  would 'return recent chart data' do
+    BattleCatsRolls::SeedViewCounter.increment(cache,
+      Time.local(2026, 6, 20, 3, 4, 5))
+    BattleCatsRolls::SeedViewCounter.increment(cache,
+      Time.local(2026, 6, 20, 3, 16, 0))
+
+    data = BattleCatsRolls::SeedViewCounter.snapshot(
+      Time.local(2026, 6, 20, 3, 30, 0))
+
+    expect(data[:recent_quarters].size).eq 96
+    expect(data[:recent_hours].size).eq 168
+    expect(data[:recent_quarters][-3][:count]).eq 1
+    expect(data[:recent_quarters][-2][:count]).eq 1
+    expect(data[:recent_hours][-1][:count]).eq 2
+    expect(data[:days].first[:count]).eq 2
   end
 end

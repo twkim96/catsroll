@@ -14,7 +14,7 @@ describe BattleCatsRolls::Web do
     expect(status).eq 200
   end
 
-  %w[/ /cats /help /logs].each do |path|
+  %w[/ /cats /help /logs /seed-views].each do |path|
     would "respond 200 for #{path}" do
       expect_status_200(path)
     end

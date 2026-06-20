@@ -73,6 +73,13 @@
         font-size: 12px;
         line-height: 1.2;
       }
+      #seed_views_today a {
+        color: #555;
+        text-decoration: none;
+      }
+      #seed_views_today a:hover {
+        text-decoration: underline;
+      }
     </style>
     <script>
       function roll(element) {
@@ -86,7 +93,9 @@
   </head>
   <body>
     <% if seed_views_today.to_i > 0 %>
-    <div id="seed_views_today">today: <%= seed_views_today %></div>
+    <div id="seed_views_today">
+      <a href="<%= route.uri(path: '/seed-views') %>">today: <%= seed_views_today %></a>
+    </div>
     <% end %>
     <div id="menu">
       <a href="<%= route.uri %>" title="Home / Permalink">

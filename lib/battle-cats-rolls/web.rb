@@ -219,6 +219,12 @@ module BattleCatsRolls
       end
     end
 
+    get '/seed-views' do
+      with_canonical_uri('/seed-views') do
+        render :seed_views, SeedViewCounter.snapshot
+      end
+    end
+
     get '/expand/result' do
       headers 'Content-Type' => 'application/json; charset=utf-8'
 
