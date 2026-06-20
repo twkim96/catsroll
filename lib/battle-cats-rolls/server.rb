@@ -75,9 +75,11 @@ module BattleCatsRolls
 
     @shutdown = false
 
+    persist_seed_view_stats
     auto_update_event_data if ENV['AUTO_UPDATE_EVENT_DATA']
     monitor_memory if ENV['MONITOR_MEMORY']
 
+    Kernel.at_exit(&SeedViewCounter.method(:flush))
     Kernel.at_exit(&Task.method(:shutdown))
     Kernel.at_exit(&SeekSeed::Pool.method(:shutdown))
   end
@@ -149,6 +151,18 @@ module BattleCatsRolls
       # rubocop:enable Style/FormatStringToken
 
       sleep(10)
+    end
+  end
+
+  def self.persist_seed_view_stats
+    SeedViewCounter.load!
+
+    Task.create(__method__) do
+      sleep(SeedViewCounter.flush_interval)
+
+      next if Task.shutting_down
+
+      SeedViewCounter.flush
     end
   end
 
