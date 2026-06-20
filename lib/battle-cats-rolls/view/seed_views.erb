@@ -13,6 +13,9 @@
   .seed-view-event {
     max-width: 56rem;
   }
+  .seed-view-event-name {
+    font-size: 15px;
+  }
   .seed-view-line-chart {
     display: block;
     width: 100%;
@@ -51,6 +54,9 @@
 
 <% recent_quarters = arg[:recent_quarters] %>
 <% recent_hours = arg[:recent_hours] %>
+<% top_events = arg[:events].select{ |row|
+  %w[jp kr].include?(row[:lang])
+}.first(10) %>
 <% max_quarter = [recent_quarters.map{ |point| point[:count] }.max.to_i, 1].max %>
 <% max_hour = [recent_hours.map{ |point| point[:count] }.max.to_i, 1].max %>
 
@@ -92,15 +98,17 @@
         </tr>
       </thead>
       <tbody>
-        <% arg[:events].each.with_index(1) do |row, rank| %>
+        <% top_events.each.with_index(1) do |row, rank| %>
           <tr>
             <td><%= rank %></td>
             <td><%= seed_view_region_label(row[:lang]) %></td>
-            <td><%= seed_view_event_name(row[:lang], row[:event]) %></td>
+            <td class="seed-view-event-name">
+              <%= seed_view_event_name(row[:lang], row[:event]) %>
+            </td>
             <td><%= row[:count] %></td>
           </tr>
         <% end %>
-        <% if arg[:events].empty? %>
+        <% if top_events.empty? %>
           <tr>
             <td colspan="4">No data yet.</td>
           </tr>
