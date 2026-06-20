@@ -595,6 +595,77 @@ module BattleCatsRolls
       CGI.escape_html(str)
     end
 
+    def seed_view_line_chart points
+      width = 960
+      height = 260
+      pad_x = 32
+      pad_y = 24
+      plot_width = width - (pad_x * 2)
+      plot_height = height - (pad_y * 2)
+      max = [points.map{ |point| point[:count] }.max.to_i, 1].max
+      step = plot_width.to_f / [points.size - 1, 1].max
+      coords = points.map.with_index do |point, index|
+        x = pad_x + (index * step)
+        y = pad_y + plot_height -
+          (point[:count].to_f / max * plot_height)
+        [point, x, y]
+      end
+      polyline = coords.map{ |_point, x, y| "#{x.round(2)},#{y.round(2)}" }.
+        join(' ')
+
+      <<~HTML
+        <svg class="seed-view-line-chart" viewBox="0 0 #{width} #{height}"
+          role="img" aria-label="Seed view line chart">
+          <line class="seed-view-axis" x1="#{pad_x}" y1="#{height - pad_y}"
+            x2="#{width - pad_x}" y2="#{height - pad_y}"></line>
+          <polyline class="seed-view-line" points="#{polyline}"></polyline>
+          #{seed_view_point_tags(coords)}
+        </svg>
+      HTML
+    end
+
+    def seed_view_point_tags coords
+      coords.map do |point, x, y|
+        count = point[:count]
+        label = h point[:label]
+        text =
+          if count.positive?
+            <<~HTML
+              <text class="seed-view-point-label" x="#{x.round(2)}"
+                y="#{[y - 7, 9].max.round(2)}">#{count}</text>
+            HTML
+          end
+
+        <<~HTML
+          <g>
+            <title>#{label}: #{count}</title>
+            <circle class="seed-view-point" cx="#{x.round(2)}"
+              cy="#{y.round(2)}" r="2"></circle>
+            #{text}
+          </g>
+        HTML
+      end.join
+    end
+
+    def seed_view_region_label lang
+      h lang.to_s.upcase
+    end
+
+    def seed_view_event_name lang, event
+      ball = Route.public_send("ball_#{lang}")
+      info = ball.events[event]
+
+      h(
+        if info
+          "#{info['start_on']} ~ #{info['end_on']}: #{info['name']}"
+        else
+          event.to_s
+        end
+      )
+    rescue NoMethodError
+      h event.to_s
+    end
+
     def made10rolls? seeds
       gacha = Gacha.new(route.gacha.pool, seeds.first)
       gacha.send(:advance_seed!) # Account offset

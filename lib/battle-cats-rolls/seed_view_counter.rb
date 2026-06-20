@@ -10,12 +10,18 @@ module BattleCatsRolls
     STATS_PATH = '/data/seed_views.json'
     FLUSH_INTERVAL = 15 * 60
     @mutex = Mutex.new
-    @stats = {'days' => {}, 'hours' => {}, 'quarters' => {}}
+    @stats = {
+      'days' => {},
+      'hours' => {},
+      'quarters' => {},
+      'langs' => {},
+      'events' => {}
+    }
     @loaded = false
 
     module_function
 
-    def increment cache, now=Time.now
+    def increment cache, now=Time.now, lang: nil, event: nil
       load!
       date = date_key(now)
       key = key(date)
@@ -26,6 +32,11 @@ module BattleCatsRolls
         @stats['hours'][hour_key(now)] = @stats['hours'][hour_key(now)].to_i + 1
         quarter = quarter_key(now)
         @stats['quarters'][quarter] = @stats['quarters'][quarter].to_i + 1
+        @stats['langs'][lang] = @stats['langs'][lang].to_i + 1 if lang
+        if lang && event
+          event_key = [lang, event].join('|')
+          @stats['events'][event_key] = @stats['events'][event_key].to_i + 1
+        end
         @stats['days'][date]
       end
 
@@ -80,7 +91,9 @@ module BattleCatsRolls
           @stats = {
             'days' => integer_hash(data['days']),
             'hours' => integer_hash(data['hours']),
-            'quarters' => integer_hash(data['quarters'])
+            'quarters' => integer_hash(data['quarters']),
+            'langs' => integer_hash(data['langs']),
+            'events' => integer_hash(data['events'])
           }
         end
 
@@ -99,7 +112,9 @@ module BattleCatsRolls
           'updated_at' => Time.now.utc.iso8601,
           'days' => @stats['days'].sort.to_h,
           'hours' => @stats['hours'].sort.to_h,
-          'quarters' => @stats['quarters'].sort.to_h
+          'quarters' => @stats['quarters'].sort.to_h,
+          'langs' => @stats['langs'].sort.to_h,
+          'events' => @stats['events'].sort.to_h
         }
       end
       tmp = "#{path}.#{$$}.tmp"
@@ -145,6 +160,8 @@ module BattleCatsRolls
         {
           recent_quarters: recent_quarters(now, @stats['quarters']),
           recent_hours: recent_hours(now, @stats['hours']),
+          langs: ranked_hash(@stats['langs']),
+          events: ranked_events(@stats['events']),
           days: @stats['days'].sort.reverse.map do |date, count|
             {label: date, count: count}
           end
@@ -176,6 +193,19 @@ module BattleCatsRolls
 
     def integer_hash hash
       (hash || {}).transform_values(&:to_i)
+    end
+
+    def ranked_hash hash
+      hash.sort_by{ |key, count| [-count, key] }.map do |key, count|
+        {key: key, count: count}
+      end
+    end
+
+    def ranked_events hash
+      hash.sort_by{ |key, count| [-count, key] }.first(10).map do |key, count|
+        lang, event = key.split('|', 2)
+        {lang: lang, event: event, count: count}
+      end
     end
 
     def recent_quarters now, quarters

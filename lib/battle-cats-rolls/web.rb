@@ -109,7 +109,8 @@ module BattleCatsRolls
       if request.fullpath.sub(/&pick=[^&]+\z/, '') != canonical_uri
         found canonical_uri
       elsif route.show_tracks?
-        seed_views_today = SeedViewCounter.increment(cache)
+        seed_views_today =
+          SeedViewCounter.increment(cache, lang: route.lang, event: route.event)
         cats, found_cats = route.prepare_tracks
 
         render :index, {cats: cats, found_cats: found_cats, details: true},

@@ -7,7 +7,8 @@ require 'tmpdir'
 describe BattleCatsRolls::SeedViewCounter do
   before do
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@stats,
-      {'days' => {}, 'hours' => {}, 'quarters' => {}})
+      {'days' => {}, 'hours' => {}, 'quarters' => {}, 'langs' => {},
+       'events' => {}})
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@loaded, false)
     @cache = nil
   end
@@ -42,9 +43,11 @@ describe BattleCatsRolls::SeedViewCounter do
     Dir.mktmpdir do |dir|
       path = "#{dir}/seed_views.json"
       BattleCatsRolls::SeedViewCounter.increment(cache,
-        Time.local(2026, 6, 20, 3, 4, 5))
+        Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+        event: '2026-06-22_1043')
       BattleCatsRolls::SeedViewCounter.increment(cache,
-        Time.local(2026, 6, 20, 3, 10, 0))
+        Time.local(2026, 6, 20, 3, 10, 0), lang: 'kr',
+        event: '2026-06-22_1043')
       BattleCatsRolls::SeedViewCounter.flush(path)
 
       data = JSON.parse(File.read(path))
@@ -52,6 +55,8 @@ describe BattleCatsRolls::SeedViewCounter do
       expect(data.dig('days', '2026-06-20')).eq 2
       expect(data.dig('hours', '2026-06-20T03')).eq 2
       expect(data.dig('quarters', '2026-06-20T03:00')).eq 2
+      expect(data.dig('langs', 'kr')).eq 2
+      expect(data.dig('events', 'kr|2026-06-22_1043')).eq 2
     end
   end
 
@@ -70,9 +75,11 @@ describe BattleCatsRolls::SeedViewCounter do
 
   would 'return recent chart data' do
     BattleCatsRolls::SeedViewCounter.increment(cache,
-      Time.local(2026, 6, 20, 3, 4, 5))
+      Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+      event: '2026-06-22_1043')
     BattleCatsRolls::SeedViewCounter.increment(cache,
-      Time.local(2026, 6, 20, 3, 16, 0))
+      Time.local(2026, 6, 20, 3, 16, 0), lang: 'jp',
+      event: '2026-06-22_1043')
 
     data = BattleCatsRolls::SeedViewCounter.snapshot(
       Time.local(2026, 6, 20, 3, 30, 0))
@@ -82,6 +89,8 @@ describe BattleCatsRolls::SeedViewCounter do
     expect(data[:recent_quarters][-3][:count]).eq 1
     expect(data[:recent_quarters][-2][:count]).eq 1
     expect(data[:recent_hours][-1][:count]).eq 2
+    expect(data[:langs].map{ |row| row[:key] }).eq %w[jp kr]
+    expect(data[:events].first[:event]).eq '2026-06-22_1043'
     expect(data[:days].first[:count]).eq 2
   end
 end
