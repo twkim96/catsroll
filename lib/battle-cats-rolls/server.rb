@@ -80,7 +80,6 @@ module BattleCatsRolls
     monitor_memory if ENV['MONITOR_MEMORY']
 
     Kernel.at_exit(&SeedViewCounter.method(:flush))
-    Kernel.at_exit(&EnSeedProbe.method(:flush))
     Kernel.at_exit(&Task.method(:shutdown))
     Kernel.at_exit(&SeekSeed::Pool.method(:shutdown))
   end
@@ -164,7 +163,6 @@ module BattleCatsRolls
       next if Task.shutting_down
 
       SeedViewCounter.flush
-      EnSeedProbe.flush
     end
   end
 

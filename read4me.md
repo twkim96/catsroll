@@ -45,8 +45,6 @@ Major files added or changed from upstream:
   - Extra expand-result logic and JP/KR localization setup.
 - `lib/battle-cats-rolls/seed_view_counter.rb`
   - In-memory seed view counters, compact JSON persistence, and pruning.
-- `lib/battle-cats-rolls/en_seed_probe.rb`
-  - Temporary EN seed-result request probe, flushed to JSONL for analysis.
 - `lib/battle-cats-rolls/web.rb`
   - Adds JSON endpoints for expanded comparison.
   - Counts seed result page renders and serves `/seed-views`.
@@ -59,7 +57,6 @@ Major files added or changed from upstream:
   - Renders the seed view stats page.
 - Tests touched:
   - `test/test_crystal_ball.rb`
-  - `test/test_en_seed_probe.rb`
   - `test/test_seed_view_counter.rb`
   - `test/test_view.rb`
   - `test/test_web.rb`
@@ -156,7 +153,6 @@ Relevant commits:
 Core files:
 
 - `lib/battle-cats-rolls/seed_view_counter.rb`
-- `lib/battle-cats-rolls/en_seed_probe.rb`
 - `lib/battle-cats-rolls/web.rb`
 - `lib/battle-cats-rolls/server.rb`
 - `lib/battle-cats-rolls/view.rb`
@@ -223,14 +219,6 @@ Operational notes:
 - Do not switch to per-request file writes unless load and locking are reconsidered.
 - Hugging Face should have the storage bucket mounted read/write at `/data`; without it, stats still work in memory but persistence fails.
 - Day/hour/quarter buckets use fixed Korean time, `+09:00`, regardless of the server's local timezone.
-- Temporary EN probe:
-  - `EnSeedProbe` records only EN seed result requests in memory.
-  - It appends JSONL to `/data/en_seed_probe.jsonl` on the same 15-minute flush loop.
-  - Override path with `EN_SEED_PROBE_PATH`.
-  - IP is stored only as a short SHA1 hash.
-  - Remove by deleting `en_seed_probe.rb`, `test/test_en_seed_probe.rb`,
-    the `require_relative 'en_seed_probe'` line, the `EnSeedProbe.capture`
-    call in `web.rb`, and the two `EnSeedProbe.flush` calls in `server.rb`.
 
 Conflict risk:
 

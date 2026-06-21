@@ -4,7 +4,6 @@ require_relative 'route'
 require_relative 'request'
 require_relative 'seek_seed'
 require_relative 'seed_view_counter'
-require_relative 'en_seed_probe'
 require_relative 'cache'
 require_relative 'aws_cf'
 require_relative 'runner'
@@ -112,7 +111,6 @@ module BattleCatsRolls
       elsif route.show_tracks?
         seed_views_today =
           SeedViewCounter.increment(cache, lang: route.lang, event: route.event)
-        EnSeedProbe.capture(route, request)
         cats, found_cats = route.prepare_tracks
 
         render :index, {cats: cats, found_cats: found_cats, details: true},
