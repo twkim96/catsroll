@@ -595,37 +595,72 @@ module BattleCatsRolls
       CGI.escape_html(str)
     end
 
-    def seed_view_line_chart points
+    def seed_view_line_chart points, axis_every: 1, axis_label: :time
       width = 960
-      height = 260
+      height = 290
       pad_x = 32
-      pad_y = 24
+      pad_top = 24
+      pad_bottom = 54
       plot_width = width - (pad_x * 2)
-      plot_height = height - (pad_y * 2)
+      plot_height = height - pad_top - pad_bottom
       max = [points.map{ |point| point[:count] }.max.to_i, 1].max
       step = plot_width.to_f / [points.size - 1, 1].max
       coords = points.map.with_index do |point, index|
         x = pad_x + (index * step)
-        y = pad_y + plot_height -
+        y = pad_top + plot_height -
           (point[:count].to_f / max * plot_height)
-        [point, x, y]
+        [point, x, y, index]
       end
       polyline = coords.map{ |_point, x, y| "#{x.round(2)},#{y.round(2)}" }.
         join(' ')
+      axis_y = height - pad_bottom
 
       <<~HTML
         <svg class="seed-view-line-chart" viewBox="0 0 #{width} #{height}"
           role="img" aria-label="Seed view line chart">
-          <line class="seed-view-axis" x1="#{pad_x}" y1="#{height - pad_y}"
-            x2="#{width - pad_x}" y2="#{height - pad_y}"></line>
+          <line class="seed-view-axis" x1="#{pad_x}" y1="#{axis_y}"
+            x2="#{width - pad_x}" y2="#{axis_y}"></line>
+          #{seed_view_axis_tags(coords, axis_y, axis_every, axis_label)}
           <polyline class="seed-view-line" points="#{polyline}"></polyline>
           #{seed_view_point_tags(coords)}
         </svg>
       HTML
     end
 
+    def seed_view_axis_tags coords, axis_y, axis_every, axis_label
+      axis_every = [axis_every.to_i, 1].max
+      coords.each_with_object([]) do |(point, x, _y, index), result|
+        next unless (index % axis_every).zero?
+
+        label = h point[:label]
+        result << <<~HTML
+          <g>
+            <title>#{label}: #{point[:count]}</title>
+            <line class="seed-view-axis-tick" x1="#{x.round(2)}" y1="#{axis_y}"
+              x2="#{x.round(2)}" y2="#{axis_y + 4}"></line>
+            <text class="seed-view-axis-label"
+              transform="translate(#{x.round(2)} #{axis_y + 28}) rotate(-45)">
+              #{seed_view_axis_label(point[:label], axis_label)}
+            </text>
+          </g>
+        HTML
+      end.join
+    end
+
+    def seed_view_axis_label label, axis_label
+      label = label.to_s
+      h(
+        case axis_label
+        when :date
+          label.split.first || label
+        else
+          label.sub(/\A\d{2}-\d{2} /, '')
+        end
+      )
+    end
+
     def seed_view_point_tags coords
-      coords.map do |point, x, y|
+      coords.map do |point, x, y, _index|
         count = point[:count]
         label = h point[:label]
         text =

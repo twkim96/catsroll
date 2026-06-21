@@ -40,6 +40,15 @@
     stroke-dasharray: 6 3;
     stroke-width: 2;
   }
+  .seed-view-axis-tick {
+    stroke: #bbb;
+    stroke-width: 1;
+  }
+  .seed-view-axis-label {
+    fill: #666;
+    font-size: 7px;
+    text-anchor: end;
+  }
   .seed-view-point {
     fill: #3168a8;
   }
@@ -127,14 +136,14 @@
   Total: <%= recent_quarters.sum{ |point| point[:count] } %>,
   Max: <%= max_quarter %>
 </p>
-<%= seed_view_line_chart(recent_quarters) %>
+<%= seed_view_line_chart(recent_quarters, axis_every: 4, axis_label: :time) %>
 
 <%= header(2, '최근 7일 (1시간 단위)', 'recent-7d') %>
 <p class="seed-view-summary">
   Total: <%= recent_hours.sum{ |point| point[:count] } %>,
   Max: <%= max_hour %>
 </p>
-<%= seed_view_line_chart(recent_hours) %>
+<%= seed_view_line_chart(recent_hours, axis_every: 24, axis_label: :date) %>
 
 <%= header(2, '일별 접속자수', 'daily') %>
 <table class="seed-view-days">

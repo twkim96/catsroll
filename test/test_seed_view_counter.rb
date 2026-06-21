@@ -25,6 +25,10 @@ describe BattleCatsRolls::SeedViewCounter do
     Date.new(2026, 6, 20)
   end
 
+  def kst year, month, day, hour=0, min=0, sec=0
+    Time.new(year, month, day, hour, min, sec, '+09:00')
+  end
+
   would 'count seed views per day' do
     expect(BattleCatsRolls::SeedViewCounter.count(cache, date)).eq 0
 
@@ -39,16 +43,36 @@ describe BattleCatsRolls::SeedViewCounter do
     expect(BattleCatsRolls::SeedViewCounter.count(cache, date + 1)).eq 0
   end
 
+  would 'bucket utc times by korean date' do
+    BattleCatsRolls::SeedViewCounter.increment(cache,
+      Time.utc(2026, 6, 20, 14, 59, 59), lang: 'kr', event: 'before')
+    BattleCatsRolls::SeedViewCounter.increment(cache,
+      Time.utc(2026, 6, 20, 15, 0, 0), lang: 'kr', event: 'after')
+
+    data = BattleCatsRolls::SeedViewCounter.snapshot(
+      Time.utc(2026, 6, 20, 15, 0, 0))
+
+    expect(BattleCatsRolls::SeedViewCounter.count(cache,
+      Date.new(2026, 6, 20))).eq 1
+    expect(BattleCatsRolls::SeedViewCounter.count(cache,
+      Date.new(2026, 6, 21))).eq 1
+    expect(data[:recent_hours][-1][:label]).eq '06-21 00:00'
+    expect(data[:recent_hours][-1][:count]).eq 1
+    expect(data[:recent_quarters][-1][:label]).eq '06-21 00:00'
+    expect(data[:recent_quarters][-1][:count]).eq 1
+    expect(data[:events].first[:event]).eq 'after'
+  end
+
   would 'flush day and hour counts to json' do
     Dir.mktmpdir do |dir|
       path = "#{dir}/seed_views.json"
       BattleCatsRolls::SeedViewCounter.increment(cache,
-        Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+        kst(2026, 6, 20, 3, 4, 5), lang: 'kr',
         event: '2026-06-22_1043')
       BattleCatsRolls::SeedViewCounter.increment(cache,
-        Time.local(2026, 6, 20, 3, 10, 0), lang: 'kr',
+        kst(2026, 6, 20, 3, 10, 0), lang: 'kr',
         event: '2026-06-22_1043')
-      BattleCatsRolls::SeedViewCounter.flush(path)
+      BattleCatsRolls::SeedViewCounter.flush(path, kst(2026, 6, 20, 3, 30, 0))
 
       data = JSON.parse(File.read(path))
 
@@ -80,7 +104,7 @@ describe BattleCatsRolls::SeedViewCounter do
 
       expect(BattleCatsRolls::SeedViewCounter.load!(path)).eq false
       BattleCatsRolls::SeedViewCounter.increment(cache,
-        Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+        kst(2026, 6, 20, 3, 4, 5), lang: 'kr',
         event: '2026-06-22_1043')
       File.write(path, JSON.dump(
         'days' => {'2026-06-20' => 7},
@@ -93,7 +117,7 @@ describe BattleCatsRolls::SeedViewCounter do
 
       expect(BattleCatsRolls::SeedViewCounter.load!(path)).eq true
       data = BattleCatsRolls::SeedViewCounter.snapshot(
-        Time.local(2026, 6, 20, 3, 15, 0))
+        kst(2026, 6, 20, 3, 15, 0))
 
       expect(BattleCatsRolls::SeedViewCounter.count(cache, date)).eq 8
       expect(data[:recent_hours][-1][:count]).eq 6
@@ -105,14 +129,14 @@ describe BattleCatsRolls::SeedViewCounter do
 
   would 'return recent chart data' do
     BattleCatsRolls::SeedViewCounter.increment(cache,
-      Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+      kst(2026, 6, 20, 3, 4, 5), lang: 'kr',
       event: '2026-06-22_1043')
     BattleCatsRolls::SeedViewCounter.increment(cache,
-      Time.local(2026, 6, 20, 3, 16, 0), lang: 'jp',
+      kst(2026, 6, 20, 3, 16, 0), lang: 'jp',
       event: '2026-06-22_1043')
 
     data = BattleCatsRolls::SeedViewCounter.snapshot(
-      Time.local(2026, 6, 20, 3, 30, 0))
+      kst(2026, 6, 20, 3, 30, 0))
 
     expect(data[:recent_quarters].size).eq 96
     expect(data[:recent_hours].size).eq 168
@@ -127,15 +151,15 @@ describe BattleCatsRolls::SeedViewCounter do
   would 'keep lower ranked events for view filtering' do
     10.times do |index|
       BattleCatsRolls::SeedViewCounter.increment(cache,
-        Time.local(2026, 6, 20, 3, 4, 5), lang: 'en',
+        kst(2026, 6, 20, 3, 4, 5), lang: 'en',
         event: "old_#{index}")
     end
     BattleCatsRolls::SeedViewCounter.increment(cache,
-      Time.local(2026, 6, 20, 3, 4, 5), lang: 'kr',
+      kst(2026, 6, 20, 3, 4, 5), lang: 'kr',
       event: '2026-06-22_1043')
 
     data = BattleCatsRolls::SeedViewCounter.snapshot(
-      Time.local(2026, 6, 20, 3, 30, 0))
+      kst(2026, 6, 20, 3, 30, 0))
 
     expect(data[:events].size).eq 11
     expect(data[:events].any?{ |row| row[:lang] == 'kr' }).eq true
@@ -158,8 +182,8 @@ describe BattleCatsRolls::SeedViewCounter do
         }))
       BattleCatsRolls::SeedViewCounter.load!(path)
       BattleCatsRolls::SeedViewCounter.__send__(:prune!,
-        Time.local(2026, 6, 20, 3, 30, 0))
-      BattleCatsRolls::SeedViewCounter.flush(path)
+        kst(2026, 6, 20, 3, 30, 0))
+      BattleCatsRolls::SeedViewCounter.flush(path, kst(2026, 6, 20, 3, 30, 0))
 
       data = JSON.parse(File.read(path))
 

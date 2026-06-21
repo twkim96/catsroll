@@ -23,6 +23,7 @@ Main local goals:
 - Improve KR user experience:
   - Korean names for JP character pools where KR data can be matched.
   - Recently used seed panel.
+  - Lightweight seed-view analytics with a `today:` link and stats page.
   - Optional expanded event comparison in the track table.
 
 Major files added or changed from upstream:
@@ -42,14 +43,24 @@ Major files added or changed from upstream:
   - JP names/events can be localized from KR when matchable.
 - `lib/battle-cats-rolls/route.rb`
   - Extra expand-result logic and JP/KR localization setup.
+- `lib/battle-cats-rolls/seed_view_counter.rb`
+  - In-memory seed view counters, compact JSON persistence, and pruning.
+- `lib/battle-cats-rolls/en_seed_probe.rb`
+  - Temporary EN seed-result request probe, flushed to JSONL for analysis.
 - `lib/battle-cats-rolls/web.rb`
   - Adds JSON endpoints for expanded comparison.
+  - Counts seed result page renders and serves `/seed-views`.
 - `lib/battle-cats-rolls/view.rb`
-  - Adds asset digests and data attributes on `score` cells for compare rows.
+  - Adds asset digests, compare-row data attributes, and seed stats helpers.
 - `lib/battle-cats-rolls/view/layout.erb`
   - Loads `recent-seeds.js` and `track-compare.js`.
+  - Shows the top-right `today:` seed view stats link.
+- `lib/battle-cats-rolls/view/seed_views.erb`
+  - Renders the seed view stats page.
 - Tests touched:
   - `test/test_crystal_ball.rb`
+  - `test/test_en_seed_probe.rb`
+  - `test/test_seed_view_counter.rb`
   - `test/test_view.rb`
   - `test/test_web.rb`
 
@@ -127,7 +138,106 @@ Conflict risk:
 
 - Low unless upstream adds its own recent-seed JS or changes layout script loading.
 
-### 5. Expanded event comparison
+### 5. Seed view stats
+
+Relevant commits:
+
+- `bf451f0 feat: show daily seed view count`
+- `4fbb4f4 feat: persist seed view stats`
+- `6d85491 feat: add seed view stats page`
+- `4d9c18d feat: refine seed view stats`
+- `9ed7531 feat: prune seed view stats`
+- `911504f fix: retry seed stats loading`
+- `041cc95 tweak: expand seed event stats`
+- `9b40579 tweak: widen seed region stats`
+- `b225246 tweak: label seed event stats`
+- `0624664 tweak: refine seed event stats`
+
+Core files:
+
+- `lib/battle-cats-rolls/seed_view_counter.rb`
+- `lib/battle-cats-rolls/en_seed_probe.rb`
+- `lib/battle-cats-rolls/web.rb`
+- `lib/battle-cats-rolls/server.rb`
+- `lib/battle-cats-rolls/view.rb`
+- `lib/battle-cats-rolls/view/layout.erb`
+- `lib/battle-cats-rolls/view/seed_views.erb`
+- `test/test_seed_view_counter.rb`
+
+Behavior:
+
+- A valid seed track page render increments the counter once.
+- Refreshing a seed result page increments once again.
+- Bots are not filtered. All counted seed result renders are included.
+- The top-right corner shows `today: N` when today's count is positive.
+- Clicking `today: N` opens `/seed-views`.
+
+Storage:
+
+- Counts are updated in memory during requests.
+- The server flushes stats every 15 minutes.
+- Default path is `/data/seed_views.json`, for the Hugging Face Storage Bucket mounted at `/data`.
+- Override path with `SEED_VIEW_STATS_PATH`.
+- Override flush interval with `SEED_VIEW_STATS_FLUSH_INTERVAL`.
+- `server.rb` loads stats during warmup, starts the periodic flush thread, and flushes again at process exit.
+- If `/data/seed_views.json` is not visible at boot, `load!` returns false and retries later.
+- If the file appears after in-memory counts already exist, persisted values are merged with current memory values.
+
+JSON shape:
+
+```json
+{
+  "updated_at": "...",
+  "days": {"YYYY-MM-DD": 123},
+  "hours": {"YYYY-MM-DDTHH": 45},
+  "quarters": {"YYYY-MM-DDTHH:MM": 12},
+  "langs_by_day": {"YYYY-MM-DD": {"kr": 10, "jp": 2, "en": 5}},
+  "events_by_day": {"YYYY-MM-DD": {"kr|2026-06-22_1043": 8}}
+}
+```
+
+Pruning:
+
+- `days` is kept indefinitely for daily history.
+- `quarters` is kept for about 26 hours, enough for the last-24h chart plus margin.
+- `hours` is kept for about 8 days, enough for the last-7d chart plus margin.
+- `langs_by_day` and `events_by_day` keep only today's date on flush.
+- Older pre-day schema keys `langs` and `events` are migrated into today's bucket when loaded.
+
+Stats page:
+
+- Region table is shown first as a wide horizontal table.
+- Event title is `이벤트 Top 10 (KR/JP)`.
+- Event Top 10 excludes EN at render time, so EN does not consume top slots.
+- Region counts still include EN.
+- Event JSON stores compact `lang|event_id` keys. Long event names are resolved at render time from loaded event data.
+- Recent 24h chart uses 96 fifteen-minute buckets.
+- Recent 7d chart uses 168 one-hour buckets.
+- Charts are SVG line graphs with small numeric labels on positive points.
+- Chart x-axes show sparse time labels: hourly labels for 24h, daily labels for 7d.
+- Daily table lists all retained day totals.
+
+Operational notes:
+
+- This is not SQLite. It is in-memory counters plus periodic JSON writes.
+- Do not switch to per-request file writes unless load and locking are reconsidered.
+- Hugging Face should have the storage bucket mounted read/write at `/data`; without it, stats still work in memory but persistence fails.
+- Day/hour/quarter buckets use fixed Korean time, `+09:00`, regardless of the server's local timezone.
+- Temporary EN probe:
+  - `EnSeedProbe` records only EN seed result requests in memory.
+  - It appends JSONL to `/data/en_seed_probe.jsonl` on the same 15-minute flush loop.
+  - Override path with `EN_SEED_PROBE_PATH`.
+  - IP is stored only as a short SHA1 hash.
+  - Remove by deleting `en_seed_probe.rb`, `test/test_en_seed_probe.rb`,
+    the `require_relative 'en_seed_probe'` line, the `EnSeedProbe.capture`
+    call in `web.rb`, and the two `EnSeedProbe.flush` calls in `server.rb`.
+
+Conflict risk:
+
+- Medium in `web.rb`, `server.rb`, `view.rb`, and `layout.erb`.
+- Low/medium in `seed_view_counter.rb`, because it is local-only but important for persistence.
+
+### 6. Expanded event comparison
 
 Relevant main commits:
 
@@ -238,6 +348,13 @@ Conflict risk:
   - Manual click remains available for all rows.
 - Do not translate unmatched event names.
   - Conservative match only; otherwise keep original.
+- Seed view stats avoid request-time file writes.
+  - Requests update memory only.
+  - JSON persistence is batched by the periodic flush thread.
+- Seed event stats store compact event ids, not long event labels.
+  - Labels are resolved at render time from current event data.
+- Seed stats keep EN visible in region counts but hide EN from the event Top 10.
+  - This keeps bot-heavy EN traffic visible without letting it fill the KR/JP event table.
 
 ## Common commands
 
@@ -270,6 +387,7 @@ Useful checks:
 
 ```sh
 node --check lib/battle-cats-rolls/asset/track-compare.js
+env LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ruby -Ilib test/test_seed_view_counter.rb
 env LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ruby -Ilib -S rake test
 ```
 
@@ -293,9 +411,12 @@ If `git pull upstream/master` conflicts:
    - `lib/battle-cats-rolls/asset/track-compare.js`
    - `lib/battle-cats-rolls/view.rb`
    - `lib/battle-cats-rolls/web.rb`
+   - `lib/battle-cats-rolls/server.rb`
    - `lib/battle-cats-rolls/route.rb`
+   - `lib/battle-cats-rolls/seed_view_counter.rb`
    - `lib/battle-cats-rolls/crystal_ball.rb`
    - `lib/battle-cats-rolls/view/layout.erb`
+   - `lib/battle-cats-rolls/view/seed_views.erb`
 3. Event TSV/data conflicts are usually safe to resolve by comparing actual data freshness.
 4. Do not revert user/local features just because upstream lacks them.
 5. If UI compare breaks, first verify current intended structure:

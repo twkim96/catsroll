@@ -11,6 +11,7 @@ module BattleCatsRolls
     FLUSH_INTERVAL = 15 * 60
     QUARTER_RETENTION = 26 * 60 * 60
     HOUR_RETENTION = 8 * 24 * 60 * 60
+    TIME_ZONE = '+09:00'
     @mutex = Mutex.new
     @stats = {
       'days' => {},
@@ -68,9 +69,9 @@ module BattleCatsRolls
       end
     end
 
-    def count cache, date=Date.today
+    def count cache, date=nil
       load!
-      date = date_key(date)
+      date = date ? date_key(date) : date_key(Time.now)
       [cache[key(date)].to_i, @stats.dig('days', date).to_i].max
     end
 
@@ -80,7 +81,8 @@ module BattleCatsRolls
 
     def seconds_until_tomorrow date
       date = parse_date(date)
-      tomorrow = Time.local(date.year, date.month, date.day) + 86_400
+      tomorrow = Time.new(date.year, date.month, date.day, 0, 0, 0, TIME_ZONE) +
+        86_400
       [(tomorrow - Time.now).ceil, 60].max
     end
 
@@ -100,11 +102,11 @@ module BattleCatsRolls
       false
     end
 
-    def flush path=stats_path
+    def flush path=stats_path, now=Time.now
       load!(path)
       return false unless persistable?(path)
 
-      now = Time.now
+      now = kst_time(now)
       data = @mutex.synchronize do
         prune!(now)
 
@@ -137,24 +139,31 @@ module BattleCatsRolls
     end
 
     def date_key value
-      parse_date(value).strftime('%Y-%m-%d')
+      case value
+      when Time, DateTime
+        kst_time(value).strftime('%Y-%m-%d')
+      when Date
+        value.strftime('%Y-%m-%d')
+      else
+        kst_time(value).strftime('%Y-%m-%d')
+      end
     end
 
     def hour_key value
-      time = parse_time(value)
+      time = kst_time(value)
       time.strftime('%Y-%m-%dT%H')
     end
 
     def quarter_key value
-      time = parse_time(value)
+      time = kst_time(value)
       minute = time.min - (time.min % 15)
-      Time.local(time.year, time.month, time.day, time.hour, minute).
+      Time.new(time.year, time.month, time.day, time.hour, minute, 0, TIME_ZONE).
         strftime('%Y-%m-%dT%H:%M')
     end
 
     def snapshot now=Time.now
       load!
-      now = parse_time(now)
+      now = kst_time(now)
 
       @mutex.synchronize do
         today = date_key(now)
@@ -186,11 +195,17 @@ module BattleCatsRolls
       case value
       when Time
         value
+      when DateTime
+        Time.parse(value.to_s)
       when Date
-        Time.local(value.year, value.month, value.day)
+        Time.new(value.year, value.month, value.day, 0, 0, 0, TIME_ZONE)
       else
         Time.parse(value.to_s)
       end
+    end
+
+    def kst_time value
+      parse_time(value).getlocal(TIME_ZONE)
     end
 
     def normalize_stats data
@@ -240,7 +255,7 @@ module BattleCatsRolls
     def migrate_day hash
       return {} unless hash
 
-      {Date.today.strftime('%Y-%m-%d') => hash}
+      {date_key(Time.now) => hash}
     end
 
     def sort_nested_hash hash
@@ -261,7 +276,10 @@ module BattleCatsRolls
     end
 
     def recent_quarters now, quarters
-      start = Time.parse(quarter_key(now)) - (95 * 15 * 60)
+      now = kst_time(now)
+      minute = now.min - (now.min % 15)
+      start = Time.new(now.year, now.month, now.day, now.hour, minute, 0,
+        TIME_ZONE) - (95 * 15 * 60)
 
       96.times.map do |index|
         time = start + (index * 15 * 60)
@@ -274,7 +292,8 @@ module BattleCatsRolls
     end
 
     def recent_hours now, hours
-      start = Time.local(now.year, now.month, now.day, now.hour) -
+      now = kst_time(now)
+      start = Time.new(now.year, now.month, now.day, now.hour, 0, 0, TIME_ZONE) -
         (167 * 60 * 60)
 
       168.times.map do |index|
