@@ -42,7 +42,7 @@ Environment = WEB_THREADS=5
 Environment = SEEK_HOST=bc-seek.godfat.org
 Environment = SEEK_BIND=127.0.0.1:13600
 Environment = SEEK_THREADS=25
-Environment = TRACK_MAX_COUNT=300
+Environment = TRACK_MAX_COUNT=500
 Environment = EXPAND_COMPARE=0
 KillSignal = SIGQUIT
 User = bcat
