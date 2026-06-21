@@ -30,9 +30,11 @@ module BattleCatsRolls
       youtube.com
     ])
     DisallowedDomains = Regexp.new("\\b#{disallowed_domains}\\b")
+    DisallowedUserAgents = /meta-webindexer/i
 
     get // do
-      if DisallowedDomains.match?(request.referrer)
+      if DisallowedDomains.match?(request.referrer) ||
+         DisallowedUserAgents.match?(request.user_agent.to_s)
         not_found
       else
         cascade

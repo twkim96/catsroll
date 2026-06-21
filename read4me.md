@@ -91,6 +91,17 @@ Purpose:
 
 - Default `TRACK_MAX_COUNT` is lowered to `300` for Hugging Face free tier safety.
 - Upstream default in `lib/battle-cats-rolls/root.rb` is still `999`; local Docker/service config sets `300`.
+- `server.rb` blocks `meta-webindexer` by User-Agent before app routing.
+  - EN probe logs showed 167 seed-result requests in about 15 minutes, all from
+    `meta-webindexer/1.1`, all with implicit default `count=100`.
+  - Blocking here avoids seed calculation work, unlike merely hiding stats logs.
+
+Future load option:
+
+- If non-Meta bots later hit implicit EN seed URLs, consider lowering default
+  count only when both `lang` and `count` params are absent.
+- Avoid lowering the global default count unless necessary; it affects ordinary
+  users more directly.
 
 ### 3. JP page Korean character names and event-name matching
 
