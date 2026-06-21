@@ -57,6 +57,14 @@
       .owned.legend { background: linear-gradient(to right, darkviolet 10%, azure 10%); }
       <% end %>
       .legend a, .legend { color: #d8a56f; }
+      .found_cats li {
+        overflow-x: auto;
+        scrollbar-width: none;
+        white-space: nowrap;
+      }
+      .found_cats li::-webkit-scrollbar {
+        display: none;
+      }
       <% unless show_details %>
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }
