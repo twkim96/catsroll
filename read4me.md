@@ -41,6 +41,8 @@ Major files added or changed from upstream:
   - Client-side expanded event comparison UI and auto-loading.
 - `lib/battle-cats-rolls/crystal_ball.rb`
   - JP names/events can be localized from KR when matchable.
+- `lib/battle-cats-rolls/find_cat.rb`
+  - Found cats show every displayed position within `count`.
 - `lib/battle-cats-rolls/route.rb`
   - Extra expand-result logic and JP/KR localization setup.
 - `lib/battle-cats-rolls/seed_view_counter.rb`
@@ -57,6 +59,7 @@ Major files added or changed from upstream:
   - Renders the seed view stats page.
 - Tests touched:
   - `test/test_crystal_ball.rb`
+  - `test/test_find_cat.rb`
   - `test/test_seed_view_counter.rb`
   - `test/test_view.rb`
   - `test/test_web.rb`
@@ -146,7 +149,30 @@ Conflict risk:
 
 - Low unless upstream adds its own recent-seed JS or changes layout script loading.
 
-### 5. Seed view stats
+### 5. Found cats multiple positions
+
+Core files:
+
+- `lib/battle-cats-rolls/find_cat.rb`
+- `lib/battle-cats-rolls/view/found_cats.erb`
+- `test/test_find_cat.rb`
+
+Behavior:
+
+- Found cats still use the existing supplemental search up to
+  `FindCat::Max` for the nearest position outside the displayed table.
+- Within the already-rendered `count` range, all positions for the same cat
+  are collected and displayed as comma-separated numbers.
+- Supplemental positions outside `count` remain first-hit only, avoiding a
+  hidden 999-wide occurrence scan for small `count` requests.
+- The cat link still points to the first found occurrence.
+
+Conflict risk:
+
+- Medium in `find_cat.rb` if upstream changes search result shape.
+- Low in `found_cats.erb`; it still reads `cat.number`.
+
+### 6. Seed view stats
 
 Relevant commits:
 
@@ -236,7 +262,7 @@ Conflict risk:
 - Medium in `web.rb`, `server.rb`, `view.rb`, and `layout.erb`.
 - Low/medium in `seed_view_counter.rb`, because it is local-only but important for persistence.
 
-### 6. Expanded event comparison
+### 7. Expanded event comparison
 
 Relevant main commits:
 
