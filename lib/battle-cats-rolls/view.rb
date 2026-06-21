@@ -145,6 +145,23 @@ module BattleCatsRolls
       "#{route.uri(query: {pos: pos, last: last})}#N#{cat.number}"
     end
 
+    def found_cat_numbers cat
+      numbers = cat.respond_to?(:numbers) ? cat.numbers : [cat.number]
+      numbers.map{ |number| found_cat_number_link(number) }.join(', ')
+    end
+
+    def found_cat_number_link number
+      anchor = number.to_s.gsub(/[RGX]/, '')
+      sequence = anchor.to_i
+      label = h(number.to_s)
+
+      if sequence.between?(1, route.count)
+        %Q{<a href="#N#{h(anchor)}">#{label}</a>}
+      else
+        label
+      end
+    end
+
     def uri_for_backtrack steps
       route.uri(query: {
         seed: route.gacha.backtrack_seed(route.seed, steps),

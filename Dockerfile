@@ -31,7 +31,7 @@ RUN touch .env
 
 # 8. Hugging Face 포트(7860) 및 무료 티어용 트랙 표시 제한 설정
 ENV WEB_BIND="0.0.0.0:7860" \
-    TRACK_MAX_COUNT=999 \
+    TRACK_MAX_COUNT=500 \
     EXPAND_COMPARE=0
 EXPOSE 7860
 

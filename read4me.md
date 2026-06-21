@@ -33,7 +33,7 @@ Major files added or changed from upstream:
   - Used by the external control server button flow.
 - `Dockerfile`
   - Hugging Face oriented runtime setup.
-  - Sets `TRACK_MAX_COUNT=999`.
+  - Sets `TRACK_MAX_COUNT=500`.
   - Sets `EXPAND_COMPARE=0` so expanded comparison stays disabled by default.
 - `lib/battle-cats-rolls/asset/recent-seeds.js`
   - Client-side recent seed panel.
@@ -92,8 +92,10 @@ Relevant commit:
 
 Purpose:
 
-- `TRACK_MAX_COUNT` is set to `999`, matching the upstream default.
-- Upstream default in `lib/battle-cats-rolls/root.rb` is also `999`.
+- `TRACK_MAX_COUNT` is set to `500` for Hugging Face free tier safety.
+- Upstream default in `lib/battle-cats-rolls/root.rb` is still `999`.
+- The count input does not set a browser `max`; values above the cap submit
+  normally and are clamped server-side.
 - `server.rb` blocks `meta-webindexer` by User-Agent before app routing.
   - EN probe logs showed 167 seed-result requests in about 15 minutes, all from
     `meta-webindexer/1.1`, all with implicit default `count=100`.
@@ -166,6 +168,8 @@ Behavior:
 - Supplemental positions outside `count` remain first-hit only, avoiding a
   hidden 999-wide occurrence scan for small `count` requests.
 - The cat link still points to the first found occurrence.
+- Position labels inside the displayed `count` range link to the table row
+  anchor, e.g. `#N3A`.
 
 Conflict risk:
 

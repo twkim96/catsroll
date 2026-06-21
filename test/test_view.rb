@@ -114,4 +114,23 @@ describe BattleCatsRolls::View do
       expect(html).include?('data-expand-kind="guaranteed"')
     end
   end
+
+  describe '#found_cat_numbers' do
+    def found_view
+      request = BattleCatsRolls::Request.new('QUERY_STRING' => 'count=10')
+      BattleCatsRolls::View.new(BattleCatsRolls::Route.new(request))
+    end
+
+    would 'link displayed positions and leave supplemental positions plain' do
+      cat = BattleCatsRolls::FindCat::Found.new(
+        cat: BattleCatsRolls::Cat.new(id: 1),
+        numbers: %w[3A 4BG 142B])
+      html = found_view.__send__(:found_cat_numbers, cat)
+
+      expect(html).include?('<a href="#N3A">3A</a>')
+      expect(html).include?('<a href="#N4B">4BG</a>')
+      expect(html).include?('142B')
+      expect(html).not.include?('#N142B')
+    end
+  end
 end
