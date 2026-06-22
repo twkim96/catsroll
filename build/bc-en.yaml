@@ -1614,7 +1614,7 @@ cats:
         ultra: 1
   108:
     name: [Coppermine, 'Coppermine, type κ', Divine Coppermine κ]
-    desc: ["Magicial beauty powered by her staff\nReleases beams of light (Area Attack)\nMight freeze floating enemies.", "Doesn't smile that often. (Area Attack)\nIn front of cats, however.. different story.\nMight stop floating enemies.", "What can you do for her that her favorite\nCat doesn't already? Come back in 100\nyears, kid. Might stop Floating (Area Attack)"]
+    desc: ["Magical stunner with a empowering magic staff.\nHer blasts of radiant light smash bad guys to bits!\nMight Freeze Floating enemies with Area attacks.", "Rarely cracks a smile for anyone.\nWhen with the Cats, however.. different story.\nMight Freeze Floating enemies with Area attacks.", "What can you offer this cosmic heroine that\nspending a quiet day with a favorite Cat doesn't?\nMight Freeze Floating enemies with Area attack."]
     stat: [{health: 1270, knockbacks: 3, speed: 7, cost: 2480, production_cooldown: 1120, attack_cooldown: 45, range: 335, width: 320, area_effect: 1, damage_0: 1060, attack_time_0: 100, against_float: 1, freeze_chance: 50, freeze_duration: 140, attack_duration: 165}, {health: 1960, knockbacks: 3, speed: 7, cost: 2480, production_cooldown: 1120, attack_cooldown: 45, range: 335, width: 320, area_effect: 1, damage_0: 1520, attack_time_0: 100, against_float: 1, freeze_chance: 50, freeze_duration: 140, attack_duration: 165}, {health: 2650, knockbacks: 3, speed: 7, cost: 2480, production_cooldown: 1120, attack_cooldown: 45, range: 410, width: 320, area_effect: 1, damage_0: 1980, attack_time_0: 100, against_float: 1, freeze_chance: 75, freeze_duration: 140, immune_freeze: 1, attack_duration: 165}]
     rarity: 4
     max_level: 130
@@ -2242,7 +2242,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   159:
     name: [Uesugi Kenshin, Wargod Kenshin, Immortal Kenshin, Hellrider Kenshin]
-    desc: ["Transformed into a dragon through the cursed\nmagic of the Nyanko Engine. (Area attack)\nStrong + 100% Knockback against Dark.", "Deciding to fully fuse with the Nyanko Engine,\nthe great general gave in to darkness. (Area att.)\nStrong + 100% Knockback against Dark.", "Totally consumed by corruption. The only emotion\nremaining is the will to destruction. (Area Attacks)\nStrong + 100% Knockback against Dark.", "Erupts with a burning passion for slaughter. Nothing is\nleft in her wake after her charge into battle. Strong vs.\nDark, Area attacks have Knockback and Mini-Waves."]
+    desc: ["Transformed into a dragon through the cursed\nmagic of the Nyanko Engine. (Area attack)\nStrong/100% Knockback vs. Dark with Area attack.", "Deciding to fully fuse with the Nyanko Engine,\nthe great general gave in to darkness. (Area att.)\nStrong/100% Knockback vs. Dark with Area attack.", "Totally consumed by corruption. The only emotion\nremaining is the will to cause destruction.\nStrong/100% Knockback vs. Dark with Area attack.", "Erupts with a burning passion for slaughter. Nothing is\nleft in her wake after her charge into battle. Strong vs.\nDark, Area attacks have Knockback and Mini-Waves."]
     stat: [{health: 2780, knockbacks: 3, speed: 13, cost: 3650, production_cooldown: 2300, attack_cooldown: 55, range: 405, width: 320, area_effect: 1, damage_0: 955, attack_time_0: 36, trigger_effects_0: 1, against_black: 1, strong: 1, knockback_chance: 100, attack_duration: 87}, {health: 3340, knockbacks: 3, speed: 13, cost: 3650, production_cooldown: 2300, attack_cooldown: 55, range: 405, width: 320, area_effect: 1, damage_0: 1622, attack_time_0: 36, trigger_effects_0: 1, against_black: 1, strong: 1, knockback_chance: 100, attack_duration: 87}, {health: 4460, knockbacks: 3, speed: 18, cost: 3650, production_cooldown: 2300, attack_cooldown: 47, range: 405, width: 320, area_effect: 1, damage_0: 1622, attack_time_0: 36, trigger_effects_0: 1, against_black: 1, strong: 1, knockback_chance: 100, attack_duration: 87}, {health: 5000, knockbacks: 3, speed: 18, cost: 3650, production_cooldown: 2100, attack_cooldown: 47, range: 445, width: 320, area_effect: 1, damage_0: 1622, attack_time_0: 36, trigger_effects_0: 1, against_black: 1, strong: 1, knockback_chance: 100, wave_level: 4, wave_mini: 100, attack_duration: 87}]
     rarity: 4
     max_level: 130
@@ -2260,7 +2260,7 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   160:
-    name: [Kalisa, 'Kalisa, type χ', Divine Kalisa]
+    name: [Kalisa, 'Kalisa, type χ', Divine Kalisa χ]
     desc: ["Almost obliterated her school on the first\nday of class with her sword's dark magic.\nMassive damage against Angels. (Area Attack)", "Banished her principal to the netherworld at the\ngraduation ceremony. Things never change.\nMassive damage against Angels. (Area Attack)", "All of the nice boys who confess their love to her\nsoon find themselves \"graduated\" to the next world.\nMassive damage against Angels. (Area Attack)"]
     stat: [{health: 1520, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 325, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 40, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 325, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 40, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 355, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 40, against_angel: 1, massive_damage: 1, attack_duration: 150}]
     rarity: 4
@@ -2512,8 +2512,8 @@ cats:
     desc: ["Mr. Ninja!!Fever joins the fight!\nLeaps gracefully from planet to planet dicing up aliens.\nMassive damage to Alien enemies (Area Attack)", "A kunoichi from \"Mr. Ninja!!Fever\"!\nAs bright and beautiful as her peerless swordplay.\nMassive damage to Alien enemies (Area Attack)"]
     stat: [{health: 350, knockbacks: 2, speed: 28, cost: 660, production_cooldown: 650, attack_cooldown: 70, range: 440, width: 320, area_effect: 1, damage_0: 60, attack_time_0: 10, trigger_effects_0: 1, against_alien: 1, massive_damage: 1, attack_duration: 55}, {health: 350, knockbacks: 2, speed: 28, cost: 660, production_cooldown: 650, attack_cooldown: 70, range: 440, width: 320, area_effect: 1, damage_0: 60, attack_time_0: 10, trigger_effects_0: 1, against_alien: 1, massive_damage: 1, attack_duration: 55}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   186:
     name: [Hearscht, Hearscht CC, Revolutionary Hearscht CC]
     desc: ["Joining the fight from Merc Storia! Silver\nbeast with a blunt and logical attitude.\nMight Critical Attack, Tough vs Metal.", "Joining the fight from Merc Storia!\nA beguiling and handsome lady beast.\nMight Critical Attack, Tough vs Metal.", "Joining the fight from Merc Storia!\nPartisan fencer with radical fashion sense.\nMight Critical Attack, Tough vs Metal."]
@@ -3023,7 +3023,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   240:
     name: [Sniper the Recruit, Sniper the Heavy, Sniper the Deadeye]
-    desc: ["Before the battlefield, boot camp. Only given\na potato gun, so don't expect TOO much\nknockback from his super long-distance attack.", "A grim assassin who never fails a contract.\nStill uses potato guns for the extra challenge.\nLong distance attack Knockbacks and Slows non-metal.", "Free agent sniper, 31 years old, who bought all\ntheir equipment secondhand off of Daveslist.\nLong distance attack Knockbacks and Slows non-metal."]
+    desc: ["Before the battlefield, boot camp. Only given\na potato gun, so don't expect TOO much\nknockback from his super long-distance attack.", "A grim assassin who never fails a contract.\nStill uses potato guns for the extra challenge.\nLong-range attacks Knockback non-Metal.", "Free agent sniper, 31 years old, who bought all\ntheir equipment secondhand off of Daveslist.\nLong distance attack Knockbacks and Slows non-metal."]
     stat: [{health: 100, knockbacks: 1, speed: 2, cost: 600, production_cooldown: 2500, attack_cooldown: 150, range: 1000, width: 320, damage_0: 10, attack_time_0: 22, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, knockback_chance: 100, attack_duration: 36}, {health: 125, knockbacks: 1, speed: 2, cost: 600, production_cooldown: 2500, attack_cooldown: 150, range: 1000, width: 320, damage_0: 20, attack_time_0: 22, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, knockback_chance: 100, attack_duration: 36}, {health: 125, knockbacks: 1, speed: 2, cost: 600, production_cooldown: 2500, attack_cooldown: 100, range: 1200, width: 320, damage_0: 20, attack_time_0: 22, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, knockback_chance: 100, slow_chance: 100, slow_duration: 90, attack_duration: 36}]
     rarity: 3
     max_level: 120
@@ -3385,7 +3385,7 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   275:
-    name: [Tropical Kalisa, 'Tropical Kalisa, type X']
+    name: [Tropical Kalisa, 'Tropical Kalisa, type χ']
     desc: ["Spends lazy summer days cursing couples on\nthe beach from the deck of her vacation house.\nMassive area damage to Red enemies.", "Slipped into the netherworld when she was two, but\nsummer days almost make her feel human again.\nMassive area damage to Red enemies."]
     stat: [{health: 1520, knockbacks: 5, speed: 27, cost: 2600, production_cooldown: 1100, range: 340, width: 320, area_effect: 1, damage_0: 1250, attack_time_0: 37, against_red: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2600, production_cooldown: 1100, range: 340, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 37, against_red: 1, massive_damage: 1, attack_duration: 150}]
     rarity: 4
@@ -3849,7 +3849,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   319:
     name: [Miko Mitama, Mitama the Oracle]
-    desc: ["Chosen as a holy servant by the God of Cats,\ninfinite power lies hidden within her. Strong defense \nvs. all enemies with traits. (Long Range/Area Atk)", "Dressed in bridal gowns, she appears to the blessed\nas a sign of Cat God's favor. Her groom's identity is\nunknown... Strong vs all traits, 100% chance to Slow."]
+    desc: ["Chosen as a holy servant by the God of Cats,\ninfinite power lies hidden within her. Tough\nvs. enemies with traits. (Long Range/Area)", "Dressed in bridal gowns, she appears to the blessed\nas a sign of Cat God's favor. Her groom's identity is\nunknown. Tough vs. enemies with traits, 100% chance to Slow."]
     stat: [{health: 500, knockbacks: 8, speed: 8, cost: 500, production_cooldown: 360, range: 250, width: 320, area_effect: 1, damage_0: 500, long_range_0: 200, long_range_offset_0: 200, attack_time_0: 15, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_metal: 1, resistant: 1, immune_knockback: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, immune_wave: 1, attack_duration: 150}, {health: 1750, knockbacks: 15, speed: 6, cost: 3500, production_cooldown: 2500, range: 350, width: 320, area_effect: 1, damage_0: 1250, long_range_0: 250, long_range_offset_0: 400, attack_time_0: 15, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_metal: 1, resistant: 1, slow_chance: 100, slow_duration: 100, immune_knockback: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, immune_wave: 1, attack_duration: 150}]
     rarity: 4
     max_level: 130
@@ -4387,6 +4387,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      against_relic: {}
+      wave:
+        max_level: 10
+        minmax: [[2, 20], [3, 3]]
+      immune_curse: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   364:
     name: [Rin Tohsaka, Rin Tohsaka CC]
     desc: ["Joining the fight from Fate/stay night [HF]! Seeks \nthe Holy Grail with her summoned Archer. Chance \nto knockback Aliens/Zombies, with Area Attack!", "Joining the fight from Fate/stay night [HF]! Classmate \nof Shirou, heir to the Tohsaka lineage. Chance \nto knockback Aliens/Zombies, with Area Attack!"]
@@ -4476,8 +4488,8 @@ cats:
     desc: ["An invaluable collectors item!\nOnly 9 billion were produced!", "A memorial item imbued with Cat\ngratitude. Every third Coin Cat earns\nyou... another Coin Cat."]
     stat: [{health: 100, knockbacks: 3, speed: 9, cost: 50, production_cooldown: 75, attack_cooldown: 17, range: 140, width: 320, damage_0: 8, attack_time_0: 4, trigger_effects_0: 1, attack_duration: 23}, {health: 100, knockbacks: 3, speed: 9, cost: 50, production_cooldown: 75, attack_cooldown: 17, range: 140, width: 320, damage_0: 8, attack_time_0: 4, trigger_effects_0: 1, attack_duration: 23}]
     rarity: 1
-    max_level: 90
-    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10]
+    max_level: 95
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10]
   377:
     name: [Rover Cat, Rover Cat Mk II, Catellite]
     desc: ["The first Cat probe produced by NYASA.\nBuilt to resist extraterrestrial attacks, with\nWarp Blocking and Strong against Aliens.", "Cutting edge NYASA Cat probe. Transmission\npower is so advanced that it even gets the dirty \nchannels. Strong vs Aliens, with Warp Blocking.", "Experimental NYASA satellite made for remote\nobservation of areas as far as the corner store.\nStrong vs Aliens, with Warp Blocking."]
@@ -5131,6 +5143,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      weaken:
+        max_level: 10
+        minmax: [[50, 50], [39, 120], [50, 50]]
+      immune_toxic: {}
+      resistant_curse:
+        max_level: 10
+        minmax: [[16, 70]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   458:
     name: [Shirou the Cat, Novice Mage Shirou Cat]
     desc: ["A Cat who strives to be a defender of justice.\nSpent months in his room trying to summon\na Heroic Spirit. Strong vs. Dark enemies.", "Still hasn't succeeded at Heroic Spirit\nsummoning. Now leaves his room sometimes\nto do night patrols. Strong vs. Dark enemies."]
@@ -5419,9 +5445,9 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   497:
-    name: [Narita Kaihime, Wargod Kaihime, Immortal Kaihime]
-    desc: ["This stunning warrior has been blessed with\nan invincible blade and a resolute body.\nSlows Dark/Zombies, might strike Savage blows.", "Incomparable beauty who mercilessly destroys\nfoes while maintaining perfect composure in battle.\nSlows Dark/Zombies, might strike Savage blows.", "This dignified heroine has withstood the corruption\nof the cursed weapons and seeks only to bring peace.\n100% Slow vs Dark/Zombies, chance of Savage blows."]
-    stat: [{health: 2400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1200, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 3200, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 6400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 25, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 110}]
+    name: [Narita Kaihime, Wargod Kaihime, Immortal Kaihime, Cleansing Flame Kaihime]
+    desc: ["This stunning warrior has been blessed with\nan invincible blade and a resolute body.\nSlows Dark/Zombies, might strike Savage blows.", "Incomparable beauty who mercilessly destroys\nfoes while maintaining perfect composure in battle.\nSlows Dark/Zombies, might strike Savage blows.", "This dignified heroine has withstood the corruption\nof the cursed weapons and seeks only to bring peace.\n100% Slow vs Dark/Zombies, chance of Savage blows.", "Unyielding warden of the realm's peace\nincinerating any villain who dares approach.\nSlows Dark/Zombies, chance of Savage blows and Explosions."]
+    stat: [{health: 2400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1200, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 3200, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 15, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 100}, {health: 6400, knockbacks: 2, speed: 5, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 440, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 25, savage_blow_modifier: 200, zombie_killer: 1, attack_duration: 110}, {health: 7200, knockbacks: 2, speed: 10, cost: 3500, production_cooldown: 2200, attack_cooldown: 53, range: 455, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 54, trigger_effects_0: 1, against_black: 1, against_zombie: 1, slow_chance: 100, slow_duration: 75, savage_blow_chance: 30, savage_blow_modifier: 200, zombie_killer: 1, sage_slayer: 1, explosion_chance: 50, explosion_range: 1820, attack_duration: 110}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -5785,6 +5811,14 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      against_black:
+        ultra: 1
+      strengthen:
+        max_level: 10
+        minmax: [[99, 99], [10, 100]]
+        ultra: 1
+      immune_explosion:
+        ultra: 1
   535:
     name: [Hades the Punisher, Hades the Deathdealer, Almighty Hades]
     desc: ["Supreme overlord and judge of the dead.\nCondemns evil souls with his infernal scythe.\nImmune to Toxic & Warp (Area Attack)", "Ruler of the underworld who reaps the spirits\nof sinners, bringing them to their ultimate fate.\nImmune to Toxic & Warp (Area Attack)", "Ruler of the nether realms, who uses the fruit of\ncreation to draw the sinful dead to his kingdom.\nImmune to Toxic & Warp (Area Attack)"]
@@ -6805,7 +6839,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   656:
     name: [Bliza, Blizana, Blizarena]
-    desc: ["An ice specter from edge of the cosmos,\nresiding on an eternally frozen planet.\nMight Slow Aliens/Zombies.", "Commanding frost that freezes all matter around\nit, this spirit shatters Barriers with vicious icicles.\nColossus Slayer, tough vs & 100% Slows Aliens & Zombies.", "Freezes scorching hot stars to their very core.\nHer absolute-zero pillars of ice pierce Barriers.\nColossus Slayer, Tough vs/100% Slows Aliens/Zombies."]
+    desc: ["An ice specter from edge of the cosmos,\nresiding on an eternally frozen planet.\nMight Slow Aliens & Zombies.", "Commanding frost that freezes all matter around\nit, this spirit shatters Barriers with vicious icicles.\nColossus Slayer, Tough vs. / 100% Slows Aliens & Zombies.", "Freezes scorching hot stars to their very core.\nVoid-cold icicles pierce Barriers.\nColossus Slayer, Tough vs. / 100% Slows Aliens & Zombies."]
     stat: [{health: 1210, knockbacks: 3, speed: 12, cost: 750, production_cooldown: 390, attack_cooldown: 84, range: 250, width: 320, area_effect: 1, damage_0: 180, long_range_0: 250, long_range_offset_0: -500, attack_time_0: 60, damage_1: 180, long_range_1: 350, long_range_offset_1: -700, attack_time_1: 70, damage_2: 360, long_range_2: 450, long_range_offset_2: -900, attack_time_2: 80, trigger_effects_2: 1, against_alien: 1, against_zombie: 1, slow_chance: 50, slow_duration: 90, zombie_killer: 1, colossus_slayer: 1, immune_warp: 1, immune_slow: 1, attack_duration: 135}, {health: 2920, knockbacks: 3, speed: 12, cost: 2420, production_cooldown: 1330, attack_cooldown: 84, range: 350, width: 320, area_effect: 1, damage_0: 480, long_range_0: 350, long_range_offset_0: -700, attack_time_0: 60, damage_1: 480, long_range_1: 450, long_range_offset_1: -900, attack_time_1: 70, damage_2: 960, long_range_2: 550, long_range_offset_2: -1100, attack_time_2: 80, trigger_effects_2: 1, against_alien: 1, against_zombie: 1, resistant: 1, slow_chance: 100, slow_duration: 90, break_barrier_chance: 100, zombie_killer: 1, colossus_slayer: 1, immune_warp: 1, immune_slow: 1, attack_duration: 135}, {health: 4380, knockbacks: 3, speed: 12, cost: 2420, production_cooldown: 1330, attack_cooldown: 84, range: 350, width: 320, area_effect: 1, damage_0: 500, long_range_0: 350, long_range_offset_0: -700, attack_time_0: 60, damage_1: 500, long_range_1: 450, long_range_offset_1: -900, attack_time_1: 70, damage_2: 1000, long_range_2: 550, long_range_offset_2: -1100, attack_time_2: 80, trigger_effects_2: 1, against_alien: 1, against_zombie: 1, resistant: 1, slow_chance: 100, slow_duration: 120, break_barrier_chance: 100, zombie_killer: 1, colossus_slayer: 1, immune_warp: 1, immune_slow: 1, immune_toxic: 1, attack_duration: 163}]
     rarity: 4
     max_level: 130
@@ -6878,8 +6912,8 @@ cats:
     desc: ["A mysterious lifeform that takes the form of an egg.\nDirt clings to its surface after many years, and\nerosion reveals the words N201 carved into it...", "A mysterious lifeform that takes the form of a dark egg.\nThere appears to be faint signs of life inside.\nHas a small chance to Freeze Aku enemies.", "Exorcise any paranormal activity in 30 mins. or less!\nEven the most stubborn spirit can't resist its garlic stench.\nBehemoth Slayer, small chance to Freeze Aku enemies."]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_aku: 1, freeze_chance: 1, freeze_duration: 90}, {health: 660, knockbacks: 3, speed: 20, cost: 350, production_cooldown: 250, range: 220, width: 320, damage_0: 120, attack_time_0: 31, trigger_effects_0: 1, against_aku: 1, freeze_chance: 30, freeze_duration: 90, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 70}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   667:
     name: [Night Beach Lilin, Night Beach Lilinπ]
     desc: ["Beauty with an aura of crazy. Stalks beaches for fun.\nLures in victims for experimentation with cocktails.\nStrong against Traitless and Aliens (Area Attack)", "Beauty stalking beaches for a chance at true love.\nPoisons unknowing victims with mixed cocktails.\nStrong against Traitless and Aliens (Area Attack)"]
@@ -6943,6 +6977,23 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      slow:
+        max_level: 10
+        minmax: [[3, 30]]
+      increase_speed:
+        max_level: 10
+        minmax: [[1, 10]]
+      resistant_freeze:
+        max_level: 10
+        minmax: [[16, 70]]
+      soul_strike: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   676:
     name: ['Ancient Egg: N105', 'Teal Egg: N105', Racquet Cat]
     desc: ["A mysterious lifeform that takes the form of an egg.\nDirt clings to its surface after many years, and\nerosion reveals the words N105 carved into it...", "A mysterious lifeform that takes the form of a blue egg.\nThere appears to be faint signs of life inside.\nSometimes deals Knockback to Aliens.", "Endures strict training with the aim of becoming the best.\nBeats rivals with her special technique: Super Smash.\nMight Knockback Aliens, Behemoth Slayer."]
@@ -7186,8 +7237,8 @@ cats:
     desc: ["An otherworldly artifact in the shape of an egg,\ncoated in the grime of countless centuries.\nA small inscription reads \"N203\".", "A mysterious lifeform that takes the form of a purple egg.\nSigns of life appear to be coming from the inside.\nHas a small chance to Slow Zombies.", "A circus performer who enjoys spreading fun to kids.\nHas a record of shocking patrons to a near heart attack.\nBehemoth Slayer, might Slow Zombies."]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_zombie: 1, slow_chance: 1, slow_duration: 90}, {health: 610, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 270, attack_cooldown: 41, range: 300, width: 320, damage_0: 129, attack_time_0: 15, trigger_effects_0: 1, against_zombie: 1, slow_chance: 30, slow_duration: 90, zombie_killer: 1, soul_strike: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 37}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   715:
     name: [Coastal Explorer Kanna, Deep-Diver Kanna]
     desc: ["Adventurer from another world in search of sea treasures!\nTaking swim lessons hoping to dive to legendary wrecks.\nMassive damage to Floating/Aliens, with Surge Attack.", "Scouring the Seven Seas in search of treasure,\nrealized that the ocean's life is more precious than gold.\nMassive damage to Floating/Aliens, with Surge Attack."]
@@ -7277,8 +7328,8 @@ cats:
     desc: ["Avid collector of strange medals scattered about the land.\nScours online auction sites for rare finds at rock-bottom\nprices. Unleashes Surges with 100% chance to Slow.", "Spent so much of the royal coffers trying to find every\nSmall Medal that he was overthrown and exiled.\nUnleashes Surges with 100% chance to Slow."]
     stat: [{health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}, {health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}]
     rarity: 1
-    max_level: 60
-    growth: [20, 20, 20, 20, 20, 20]
+    max_level: 65
+    growth: [20, 20, 20, 20, 20, 20, 10]
   728:
     name: [SOL DAE ROKKER, SOL DAE ROKKER CC]
     desc: ["Recruited from the Metal Slug series!\nA mysterious being that guards ruins atop a tower.\nOmnistrikes deal Massive dmg to Red, Angels, Aliens.", "Recruited from the Metal Slug series!\nIncinerates intruders with white-hot flames.\nOmnistrikes deal Massive dmg to Red, Angels, Aliens."]
@@ -7350,7 +7401,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   738:
-    name: [Floral Kalisa, 'Floral Kalisa, type X']
+    name: [Floral Kalisa, 'Floral Kalisa, type χ']
     desc: ["Superpowered schoolgirl who destroyed half the town\nwhile still drowsy from a nap in the spring sunshine.\nArea atk. deals Massive damage to Zombies.", "Unseen by other egg hunters, this terror of the \nspring festival smashes any hidden egg she finds.\nArea attacks deal Massive damage to Zombies."]
     stat: [{health: 1520, knockbacks: 5, speed: 32, cost: 2750, production_cooldown: 1100, range: 340, width: 320, area_effect: 1, damage_0: 1250, attack_time_0: 37, trigger_effects_0: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 32, cost: 2750, production_cooldown: 1100, range: 340, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 37, trigger_effects_0: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, immune_slow: 1, immune_curse: 1, attack_duration: 150}]
     rarity: 4
@@ -7494,8 +7545,8 @@ cats:
     desc: ["Otherworldly artifact in the shape of an egg,\ncoated in the grime of countless centuries.\nA small inscription reads \"N205\".", "Mysterious lifeform that takes the form of a purple egg.\nSigns of life appear to be coming from the inside.\nStrong against Zombies and Aku.", "Joyous bride set to be married in June. Has made\nvows to love through sickness and in health 66 times.\nStrong against Zombies and Aku, Behemoth Slayer."]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_zombie: 1, against_aku: 1, strong: 1}, {health: 900, knockbacks: 1, speed: 10, cost: 250, production_cooldown: 230, attack_cooldown: 30, range: 180, width: 320, damage_0: 200, attack_time_0: 15, trigger_effects_0: 1, against_zombie: 1, against_aku: 1, strong: 1, zombie_killer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 36}]
     rarity: 1
-    max_level: 60
-    growth: [20, 20, 20, 20, 20, 20]
+    max_level: 65
+    growth: [20, 20, 20, 20, 20, 20, 10]
   759:
     name: [Trixi the Merc, Trixi the Revenant]
     desc: ["Notorious sword-for-hire wielding a Muranyasa \ncharged blade, known to be Strong vs Relics, Alien\nand Traitless, and with Area Attacks that might Freeze.", "Betrayed by her crew and left in a coma for 10 years,\nnow hellbent on revenge. Strong vs Relics, Alien\nand Traitless, with Area Attacks that might Freeze."]
@@ -7532,7 +7583,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   765:
-    name: ["(765?)"]
+    name: ['765_1']
     desc: ['Spirit: Deals Knockback to enemies.']
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -7979,6 +8030,48 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  832:
+    name: [Scarf Cat, Red Nyanko Ranger]
+    desc: ["Fiery leader of the Nyanko Rangers.\nTheir burning passion saves a fortune on heating bills.\nArea Attacks deal Massive damage to Aku.", "Awaken, Cat Soul! Transform!\nTheir mighty Nyanblade cuts evil in two.\nArea Attacks deal Massive damage to Aku."]
+    stat: [{health: 850, knockbacks: 2, speed: 19, cost: 600, production_cooldown: 480, range: 295, width: 320, area_effect: 1, damage_0: 70, attack_time_0: 12, trigger_effects_0: 1, against_aku: 1, massive_damage: 1, attack_duration: 23}, {health: 950, knockbacks: 2, speed: 19, cost: 600, production_cooldown: 480, range: 295, width: 320, area_effect: 1, damage_0: 83, attack_time_0: 12, trigger_effects_0: 1, against_aku: 1, massive_damage: 1, attack_duration: 23}]
+    rarity: 1
+    max_level: 70
+    growth: [20, 20, 20, 20, 20, 20, 10]
+  833:
+    name: [Fedora Cat, Blue Nyanko Ranger]
+    desc: ["The brains of the Nyanko Rangers.\nChooses battle plans for the coolest possible victory.\nArea Attacks deal Massive damage to Red.", "Awaken, Tiger Soul! Transform!\nThe Blue Blaster's bullets pierce the darkness.\nArea Attacks deal Massive damage to Red."]
+    stat: [{health: 800, knockbacks: 2, speed: 15, cost: 700, production_cooldown: 500, attack_cooldown: 65, range: 360, width: 320, area_effect: 1, damage_0: 400, attack_time_0: 13, trigger_effects_0: 1, against_red: 1, massive_damage: 1, attack_duration: 40}, {health: 1000, knockbacks: 2, speed: 15, cost: 700, production_cooldown: 500, attack_cooldown: 65, range: 360, width: 320, area_effect: 1, damage_0: 460, attack_time_0: 13, trigger_effects_0: 1, against_red: 1, massive_damage: 1, attack_duration: 38}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  834:
+    name: [Helmet Cat, Yellow Nyanko Ranger]
+    desc: ["The tireless heavy-hitter of the Nyanko Rangers.\nNobody has never seen them take a catnap.\nTough vs. Dark enemies (Omnistrike)", "Awaken, Lion Soul! Transform!\nThe Beast Hammer crushes evildoers into dust.\nTough vs. Dark enemies (Omnistrike)"]
+    stat: [{health: 1900, knockbacks: 2, speed: 8, cost: 1100, production_cooldown: 350, attack_cooldown: 80, range: 140, width: 320, area_effect: 1, damage_0: 335, long_range_0: 190, long_range_offset_0: -290, attack_time_0: 19, trigger_effects_0: 1, against_black: 1, resistant: 1, attack_duration: 41}, {health: 2100, knockbacks: 2, speed: 8, cost: 1100, production_cooldown: 350, attack_cooldown: 80, range: 140, width: 320, area_effect: 1, damage_0: 435, long_range_0: 190, long_range_offset_0: -290, attack_time_0: 19, trigger_effects_0: 1, against_black: 1, resistant: 1, attack_duration: 41}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  835:
+    name: [Goggles Cat, Green Nyanko Ranger]
+    desc: ["The Nyanko Rangers' reliable mechanic.\nAdded too many mods to the Rangers' gear to recall.\nArea Attacks Freeze Red/Dark enemies.", "Awaken, Panther Soul! Transform!\nThe Emerald Spear pierces through all obstacles.\nArea Attacks Freeze Red/Dark enemies."]
+    stat: [{health: 500, knockbacks: 4, speed: 6, cost: 800, production_cooldown: 450, attack_cooldown: 48, range: 350, width: 320, area_effect: 1, damage_0: 170, attack_time_0: 25, trigger_effects_0: 1, against_red: 1, against_black: 1, freeze_chance: 100, freeze_duration: 60, attack_duration: 65}, {health: 600, knockbacks: 4, speed: 6, cost: 800, production_cooldown: 450, attack_cooldown: 48, range: 350, width: 320, area_effect: 1, damage_0: 200, attack_time_0: 25, trigger_effects_0: 1, against_red: 1, against_black: 1, freeze_chance: 100, freeze_duration: 60, attack_duration: 65}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  836:
+    name: [Ribbon Cat, Pink Nyanko Ranger]
+    desc: ["The cutest of the Nyanko Rangers.\nDuty calls, but needs 2 hours for makeup first.\nLong-Range Area Attacks Weaken Red/Dark/Aku.", "Awaken, Serval Soul! Transform!\nThe Momo Ribbon's punishment comes sealed with a kiss!\nLong-Range Area Attacks Weaken Red/Dark/Aku."]
+    stat: [{health: 450, knockbacks: 3, speed: 11, cost: 600, production_cooldown: 500, attack_cooldown: 45, range: 270, width: 320, area_effect: 1, damage_0: 150, long_range_0: 170, long_range_offset_0: 350, attack_time_0: 28, trigger_effects_0: 1, against_red: 1, against_black: 1, against_aku: 1, weaken_chance: 100, weaken_duration: 60, weaken_multiplier: 50, attack_duration: 90}, {health: 550, knockbacks: 3, speed: 11, cost: 600, production_cooldown: 500, attack_cooldown: 45, range: 270, width: 320, area_effect: 1, damage_0: 200, long_range_0: 170, long_range_offset_0: 350, attack_time_0: 28, trigger_effects_0: 1, against_red: 1, against_black: 1, against_aku: 1, weaken_chance: 100, weaken_duration: 60, weaken_multiplier: 50, attack_duration: 90}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  837:
+    name: [Giga-Nyan Rex, Giga-Nyan Prime DX]
+    desc: ["Built with cutting-edge Ranger science, this \ntitan is formed only when Cat moods coincide.\nStrong vs./Slows Red/Dark/Aku with Explosions.", "Five wishes unite to awaken one ultimate mech: \nGiga-Nyan Prime DX, activate!\nStrong vs./Slows Red/Dark/Aku with Explosions."]
+    stat: [{health: 1900, knockbacks: 2, speed: 6, cost: 3000, production_cooldown: 2000, attack_cooldown: 245, range: 450, width: 320, area_effect: 1, damage_0: 1300, attack_time_0: 106, trigger_effects_0: 1, against_red: 1, against_black: 1, against_aku: 1, strong: 1, slow_chance: 100, slow_duration: 60, savage_blow_chance: 15, savage_blow_modifier: 200, explosion_chance: 100, explosion_range: 1800, immune_weaken: 1, immune_surge: 1, immune_explosion: 1, attack_duration: 205}, {health: 2200, knockbacks: 2, speed: 6, cost: 3000, production_cooldown: 2000, attack_cooldown: 245, range: 450, width: 320, area_effect: 1, damage_0: 1600, attack_time_0: 106, trigger_effects_0: 1, against_red: 1, against_black: 1, against_aku: 1, strong: 1, slow_chance: 100, slow_duration: 60, savage_blow_chance: 15, savage_blow_modifier: 200, explosion_chance: 100, explosion_range: 1800, immune_weaken: 1, immune_surge: 1, immune_explosion: 1, attack_duration: 205}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
   838:
     name: [Squire Luno, Lunos the Luminous]
     desc: ["Youth with dreams of chivalry. His true destiny is\nunknown. Conjurer, Tough vs., Omnistrikes may \nKnockback Dark/Angels/Aku/Relics.", "Knight bearing the people's hopes. Conjurer, Tough\nvs., 100% Knockback, may deal a Savage Blow to\nDark/Angels/Aku/Relics with Omnistrikes."]
@@ -8124,6 +8217,27 @@ cats:
     desc: ['Spirit: Wave attack, Zombie Killer, Double Bounty.']
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, zombie_killer: 1, wave_chance: 100, wave_level: 6, extra_money: 1, kamikaze: 2, attack_duration: 85}]
     rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  862:
+    name: [Vornado, Tempest King Vornado]
+    desc: ["An ancient celestial wyrm who descends to\ndevastate the mortal realms with merciless gales.\nMassive damage to Red/Aku with 100% Slow (Long-Range/Area).", "With limiters released, calls forth doomsday with\nan unstoppable typhoon to obliterate enemy ranks.\nMassive damage to Red/Aku with 100% Slow (Long-Range/Area)."]
+    stat: [{health: 5000, knockbacks: 4, speed: 14, cost: 3700, production_cooldown: 2300, attack_cooldown: 90, range: 455, width: 320, area_effect: 1, damage_0: 1850, long_range_0: 275, long_range_offset_0: 400, attack_time_0: 51, trigger_effects_0: 1, against_red: 1, against_aku: 1, massive_damage: 1, slow_chance: 100, slow_duration: 60, immune_surge: 1, attack_duration: 100}, {health: 6000, knockbacks: 4, speed: 14, cost: 3700, production_cooldown: 2300, attack_cooldown: 90, range: 455, width: 320, area_effect: 1, damage_0: 2250, long_range_0: 275, long_range_offset_0: 400, attack_time_0: 51, trigger_effects_0: 1, against_red: 1, against_aku: 1, massive_damage: 1, slow_chance: 100, slow_duration: 60, immune_surge: 1, attack_duration: 100}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  863:
+    name: [Hanzo the Betrothed, Hanzo the Groom]
+    desc: ["Even one married to duty may find himself at the\nwedding altar, on alert against the threat of crashers.\nMassive damage vs. Red/Zombies with 100% Slow.", "Ready to cut down in a heartbeat any who dare \nobject to his vows to defend his bride-to-be.\nMassive damage vs. Red/Zombies with 100% Slow."]
+    stat: [{health: 2800, knockbacks: 4, speed: 9, cost: 3300, production_cooldown: 2300, attack_cooldown: 45, range: 450, width: 320, area_effect: 1, damage_0: 700, attack_time_0: 8, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, slow_chance: 100, slow_duration: 30, zombie_killer: 1, immune_freeze: 1, immune_toxic: 1, attack_duration: 70}, {health: 3300, knockbacks: 4, speed: 9, cost: 3300, production_cooldown: 2300, attack_cooldown: 45, range: 450, width: 320, area_effect: 1, damage_0: 950, attack_time_0: 8, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, slow_chance: 100, slow_duration: 60, zombie_killer: 1, immune_freeze: 1, immune_toxic: 1, attack_duration: 70}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  864:
+    name: [The Invisible Cat, Groom Cat]
+    desc: ["Vanished from sight after quaffing a homemade potion.\nAnd just after developing interest in high fashion too!\nMassive damage vs. Angels/Zombies.", "Groom who \"disappeared\" at the altar to pursue\ntrue love, and hasn't been seen by any since!\nMassive damage vs. Angels/Zombies."]
+    stat: [{health: 620, knockbacks: 3, speed: 12, cost: 480, production_cooldown: 300, attack_cooldown: 70, range: 300, width: 320, area_effect: 1, damage_0: 360, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 70}, {health: 780, knockbacks: 3, speed: 12, cost: 480, production_cooldown: 300, attack_cooldown: 70, range: 300, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 70}]
+    rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
 gacha:
@@ -13794,6 +13908,48 @@ gacha:
     name: Get a Guaranteed Uber or Legend Rare from the Legend Capsules!
     rate: legend
     similarity: 99
+  1059:
+    cats: [862, 761, 661, 621, 506, 451, 397, 178, 88, 87, 86, 85, 84, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 4
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    rate: regular
+    similarity: 99
+  1060:
+    cats: [862, 761, 661, 621, 506, 451, 397, 178, 88, 87, 86, 85, 84, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 4
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    rate: regular
+    similarity: 99
+  1061:
+    cats: [862, 851, 838, 831, 818, 812, 800, 782, 780, 775, 770, 764, 761, 755, 734, 732, 724, 720, 716, 713, 699, 693, 691, 675, 669, 661, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 595, 586, 570, 547, 535, 534, 530, 526, 524, 523, 496, 520, 506, 503, 497, 440, 437, 432, 428, 418, 402, 397, 381, 378, 377, 362, 361, 360, 356, 352, 339, 326, 323, 319, 317, 307, 306, 305, 308, 309, 273, 272, 270, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 19
+    name: New unit Squire Luno added! ★Uber Rare drop rate UP!
+    rate: uberfest_legend
+    similarity: 99
+  1062:
+    cats: [862, 860, 851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 27
+    name: Limited unit Netherworld Nymph Lunacia added! ★Tap for details!
+    rate: uberfest_legend
+    similarity: 99
+  1063:
+    cats: [862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 21
+    name: Get an Uber Rare Cat!! 100% Uber drop Rate in the PLATINUM CAPSULES!
+    rate: platinum
+    similarity: 99
+  1064:
+    cats: [862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 46
+    name: Get a Guaranteed Uber or Legend Rare from the Legend Capsules!
+    rate: legend
+    similarity: 99
+  1065:
+    cats: [863, 757, 712, 662, 661, 359, 73, 630, 637, 663, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 53
+    name: New units added to June Bride Capsules ★ Tap banner for info!
+    rate: no_legend
+    similarity: 96
 events:
   2018-06-06_245:
     start_on: 2018-06-06
