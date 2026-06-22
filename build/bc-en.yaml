@@ -13758,15 +13758,13 @@ gacha:
   1052:
     cats: [125, 626, 503, 361, 60, 87, 323, 227, 724, 307, 608, 759, 436, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 35
-    name: Lunar New Year Capsules full of popular units! Tap the banner for details!
+    name: Trixi joins the 13th anniversary Capsules! ★Check banner for details!
     rate: no_legend
-    similarity: 70
   1053:
     cats: [159, 241, 352, 656, 618, 84, 526, 635, 440, 595, 831, 811, 485, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 39
-    name: New Heroes appear to celebrate 6 Years! ★ Tap banner for info!
+    name: Agent Staal joins the 13th anniversary Capsules! ★Check banner for details!
     rate: no_legend
-    similarity: 71
   1054:
     cats: [449, 464, 482, 494, 138, 360, 650, 775, 655, 689, 695, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 67
@@ -34110,6 +34108,124 @@ events:
     version: '150300'
     name: Mystery creature Mamoluga awaits your summoning! ★ Tap banner for info!
     id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-19_1015:
+    start_on: 2026-06-19
+    end_on: 2026-06-22
+    version: '150400'
+    name: New unit Sorceress Sidmi added! Spooky beauties from beyond!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-19_1046:
+    start_on: 2026-06-19
+    end_on: 2026-06-22
+    version: '150400'
+    name: Limited unit Netherworld Nymph Lunacia added! ★Tap for details!
+    id: 1046
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-06-19_945:
+    start_on: 2026-06-19
+    end_on: 2026-06-22
+    version: '150400'
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-22_1021:
+    start_on: 2026-06-22
+    end_on: 2026-06-24
+    version: '150400'
+    name: New unit Raclesa the Lioness  added! Cosmic cuties, here to crush your enemies!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-22_1028:
+    start_on: 2026-06-22
+    end_on: 2026-06-26
+    version: '150400'
+    name: '13 Year Celebration: Ultra Selection! ★ Tap banner for info!'
+    id: 1028
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-22_1043:
+    start_on: 2026-06-22
+    end_on: 2026-06-24
+    version: '150400'
+    name: New unit Fuma Kotaro added! Masters of battle join the Cat cause!
+    id: 1043
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-24_942:
+    start_on: 2026-06-24
+    end_on: 2026-06-26
+    version: '150400'
+    name: Conjurer Dynasaurus Cat joins the fight! ★Tap banner for info!
+    id: 942
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-24_946:
+    start_on: 2026-06-24
+    end_on: 2026-06-26
+    version: '150400'
+    name: Hanasaka Cat with Conjurer evolved form joins! ★Tap banner for info!
+    id: 946
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-26_1052:
+    start_on: 2026-06-26
+    end_on: 2026-07-03
+    version: '150400'
+    name: Trixi joins the 13th anniversary Capsules! ★Check banner for details!
+    id: 1052
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-06-26_1053:
+    start_on: 2026-06-26
+    end_on: 2026-07-03
+    version: '150400'
+    name: Agent Staal joins the 13th anniversary Capsules! ★Check banner for details!
+    id: 1053
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-06-26_991:
+    start_on: 2026-06-26
+    end_on: 2026-06-30
+    version: '150400'
+    name: The Almighties, supreme beings of Catkind! ★ Tap banner for info!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-06-30_1004:
+    start_on: 2026-06-30
+    end_on: 2026-07-03
+    version: '150400'
+    name: Conjurer hero Komori joins the fight! ★Tap for details!
+    id: 1004
     rare: 6970
     supa: 2500
     uber: 500
