@@ -9,6 +9,8 @@ module BattleCatsRolls
     :animation_readers, :unit_image_readers)
 
     def initialize lang, dir
+      # We sort by lowest priority to highest priority. Local is highest.
+      # We also reverse traverse and skip when it's already written.
       local_readers = %w[DataLocal.list resLocal.list].
         map do |list|
           PackReader.new(lang, "#{dir}/#{list}")

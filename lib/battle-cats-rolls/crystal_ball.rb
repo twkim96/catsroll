@@ -48,7 +48,7 @@ module BattleCatsRolls
 
     def self.attach_gacha_series_id gacha, gacha_option
       require_relative 'tsv_reader'
-      option = TsvReader.new(gacha_option).gacha_option
+      option = TsvReader.new(gacha_option).gacha_option.slice(*gacha.keys)
       gacha.merge(option){ |_, a, b| a.merge(b) }
     end
 
