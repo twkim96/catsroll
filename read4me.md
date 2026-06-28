@@ -60,6 +60,7 @@ Major files added or changed from upstream:
 - Tests touched:
   - `test/test_crystal_ball.rb`
   - `test/test_find_cat.rb`
+  - `test/test_server.rb`
   - `test/test_seed_view_counter.rb`
   - `test/test_view.rb`
   - `test/test_web.rb`
@@ -81,14 +82,39 @@ Purpose:
 Operational note:
 
 - The external control server under `../terminal` has buttons for update/deploy flows.
+- `KR/JP TSV 업데이트 확인` runs the updater once with `--check`.
+  - It downloads and parses the live KR/JP TSV files, compares parsed events
+    with local build data, and prints `update available` or `up to date` for
+    each language in the action console.
+  - It does not write files, commit, push, or rebuild Hugging Face.
+- `KR/JP TSV 업데이트 + 배포` remains the separate write/commit/push action.
 - If event TSV files are unchanged, normal git commit/push should have nothing meaningful to upload.
 - Official upstream later adding the same TSV usually should not conflict if contents match. If not identical, conflict is possible in the TSV file only.
 
+If upstream GitLab stops updating:
+
+1. Keep using `KR/JP TSV 업데이트 확인`, then the separate update/deploy
+   action for ordinary schedule changes.
+2. Treat `missing gacha pools for ids` as an app-data problem, not a TSV
+   problem. Update regional app data with `bin/build.rb jp` / `kr` and inspect
+   `Runner` versions in `lib/battle-cats-rolls/runner.rb`.
+3. If `bc-seek.godfat.org` disappears, fetch PONOS directly using the existing
+   `NyankoAuth.event_url`, JWT, and `Web#request_tsv` path. Keep
+   `INQUIRY_CODE` and `PASSWORD` outside git.
+4. If downloads fail after a game update, check app versions and PONOS auth
+   first; if parsing fails, inspect `nyanko_auth.rb` and `tsv_reader.rb`.
+5. If generated tracks disagree with the game despite current data, investigate
+   `gacha.rb` and the Seeker engine for a game-rule/PRNG change.
+6. Preserve working event/build snapshots before changing auth, parsers, or
+   tracking logic. Do not combine emergency data refreshes with broad refactors.
+
 ### 2. Hugging Face load cap
 
-Relevant commit:
+Relevant commits:
 
 - `5c113d7 config: cap track count on hf`
+- `f870d3f config: restore track max count`
+- `674293c fix: block meta webindexer`
 
 Purpose:
 
@@ -133,6 +159,7 @@ Relevant commits:
 - `a010d90 feat: remember recent seeds`
 - `7ad2bfc tweak: limit recent seeds panel`
 - `9b1a4c4 feat: pin recent seed`
+- `3936e56 feat: add recent seeds top shortcut`
 
 File:
 
@@ -146,12 +173,22 @@ Behavior:
 - Long-press can pin one seed.
 - Pinned seed stays at top, is light gray, and is not dropped from the list.
 - Long-press pinned again or pin another seed to unpin/switch.
+- A centered circular up-arrow icon sits above the panel label.
+- Clicking the icon jumps immediately to the top of the page without a
+  smooth-scroll animation.
+- The icon remains a semantic `button` with a Korean tooltip and ARIA label.
 
 Conflict risk:
 
 - Low unless upstream adds its own recent-seed JS or changes layout script loading.
 
 ### 5. Found cats multiple positions
+
+Relevant commits:
+
+- `bc5bd0f feat: show repeated found cat positions`
+- `8cff88e feat: link found cat positions`
+- `91f5dac style: keep found cats on one line`
 
 Core files:
 
@@ -170,6 +207,8 @@ Behavior:
 - The cat link still points to the first found occurrence.
 - Position labels inside the displayed `count` range link to the table row
   anchor, e.g. `#N3A`.
+- Each Found cats entry stays on one line on desktop and mobile.
+- Long entries can scroll horizontally, but the scrollbar is hidden.
 
 Conflict risk:
 
@@ -190,6 +229,9 @@ Relevant commits:
 - `9b40579 tweak: widen seed region stats`
 - `b225246 tweak: label seed event stats`
 - `0624664 tweak: refine seed event stats`
+- `182bc36 feat: refine seed view stats`
+- `7185cf8 chore: remove en seed probe`
+- `674293c fix: block meta webindexer`
 
 Core files:
 
@@ -205,7 +247,8 @@ Behavior:
 
 - A valid seed track page render increments the counter once.
 - Refreshing a seed result page increments once again.
-- Bots are not filtered. All counted seed result renders are included.
+- `meta-webindexer` requests are rejected before app routing and are not counted.
+- Other bots are not specially filtered; any seed result page they render is counted.
 - The top-right corner shows `today: N` when today's count is positive.
 - Clicking `today: N` opens `/seed-views`.
 
@@ -226,6 +269,8 @@ JSON shape:
 {
   "updated_at": "...",
   "days": {"YYYY-MM-DD": 123},
+  "weeks": {"YYYY-MM-DD": 456},
+  "months": {"YYYY-MM": 789},
   "hours": {"YYYY-MM-DDTHH": 45},
   "quarters": {"YYYY-MM-DDTHH:MM": 12},
   "langs_by_day": {"YYYY-MM-DD": {"kr": 10, "jp": 2, "en": 5}},
@@ -233,12 +278,15 @@ JSON shape:
 }
 ```
 
-Pruning:
+Period buckets:
 
-- `days` is kept indefinitely for daily history.
+- `days` keeps the latest 7 Korean-date daily totals.
+- `weeks` keeps the latest 7 Korean-calendar weeks. Week keys are Monday dates and labels render as `6.22~6.28`.
+- `months` keeps the latest 7 Korean-calendar month totals and labels render as `6월`.
 - `quarters` is kept for about 26 hours, enough for the last-24h chart plus margin.
 - `hours` is kept for about 8 days, enough for the last-7d chart plus margin.
 - `langs_by_day` and `events_by_day` keep only today's date on flush.
+- Older stats files with only `days` are migrated into `weeks` and `months` when loaded.
 - Older pre-day schema keys `langs` and `events` are migrated into today's bucket when loaded.
 
 Stats page:
@@ -252,7 +300,7 @@ Stats page:
 - Recent 7d chart uses 168 one-hour buckets.
 - Charts are SVG line graphs with small numeric labels on positive points.
 - Chart x-axes show sparse time labels: hourly labels for 24h, daily labels for 7d.
-- Daily table lists all retained day totals.
+- Period table shows day/week/month totals side by side with 7 rows.
 
 Operational notes:
 
@@ -415,6 +463,7 @@ git push hf main
 Useful checks:
 
 ```sh
+node --check lib/battle-cats-rolls/asset/recent-seeds.js
 node --check lib/battle-cats-rolls/asset/track-compare.js
 env LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ruby -Ilib test/test_seed_view_counter.rb
 env LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ruby -Ilib -S rake test
@@ -459,4 +508,5 @@ If `git pull upstream/master` conflicts:
 These have appeared during work and should not be blindly committed unless user asks:
 
 - `.DS_Store`
+- `doc/windows-local-live-events.md`
 - `mymy.md`

@@ -20,7 +20,7 @@ module BattleCatsRolls
     USER_AGENT = 'catsroll-live-events-updater/1.0'
 
     Options = Struct.new(
-      :repo, :langs, :url, :dry_run, :commit, :push_remotes,
+      :repo, :langs, :url, :dry_run, :check, :commit, :push_remotes,
       keyword_init: true)
 
     def self.main argv
@@ -34,6 +34,7 @@ module BattleCatsRolls
         langs: ENV.fetch('CATSROLL_LANG', DEFAULT_LANG).split(/[,\s]+/),
         url: ENV['CATSROLL_TSV_URL'],
         dry_run: false,
+        check: false,
         commit: false,
         push_remotes: []
       )
@@ -48,6 +49,10 @@ module BattleCatsRolls
         end
         opts.on('--dry-run', 'download and parse without writing files') do
           options.dry_run = true
+        end
+        opts.on('--check', 'report available updates without writing files') do
+          options.dry_run = true
+          options.check = true
         end
         opts.on('--commit', 'commit updated live event files') do
           options.commit = true
@@ -67,6 +72,7 @@ module BattleCatsRolls
       @langs = options.langs
       @url = options.url
       @dry_run = options.dry_run
+      @check = options.check
       @commit = options.commit
       @push_remotes = options.push_remotes
       @written_paths = []
@@ -107,7 +113,12 @@ module BattleCatsRolls
 
       build_path = File.join(@repo, 'build', "bc-#{lang}.yaml")
       data = load_build_yaml(build_path)
-      merge_events(build_path, data, live_events)
+      changes = merge_events(build_path, data, live_events)
+
+      if @check
+        status = changes.values.any?(&:positive?) ? 'update available' : 'up to date'
+        puts "[result] #{lang.upcase}: #{status}"
+      end
     end
 
     def validate_repo!
@@ -153,16 +164,19 @@ module BattleCatsRolls
       write_text(build_path, BattleCatsRolls::CrystalBall.new(data).dump_yaml)
 
       puts "[info] build events: #{old_size} -> #{data['events'].size}"
-      puts "[info] added events: #{added}, changed events: #{changed - added}"
+      changed -= added
+      puts "[info] added events: #{added}, changed events: #{changed}"
       if missing_gacha.any?
         warn "[warn] missing gacha pools for ids: #{missing_gacha.join(', ')}"
         warn '[warn] those events can appear in the list but cannot roll until app data is updated'
       end
+
+      {added: added, changed: changed}
     end
 
     def write_text path, text
       if @dry_run
-        puts "[dry-run] would write #{relative(path)}"
+        puts "[dry-run] would write #{relative(path)}" unless @check
         return
       end
 

@@ -2,9 +2,11 @@
 *.list
 *.apk
 *.zip
+.DS_Store
 /data/**/app/*.tsv
 /extract
 /.env
 /.pem
 /Gemfile.lock
 /.bundle/config
+/doc/windows-local-live-events.md

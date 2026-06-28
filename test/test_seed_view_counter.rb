@@ -147,7 +147,7 @@ describe BattleCatsRolls::SeedViewCounter do
     expect(data[:recent_hours][-1][:count]).eq 2
     expect(data[:langs].map{ |row| row[:key] }).eq %w[jp kr]
     expect(data[:events].first[:event]).eq '2026-06-22_1043'
-    expect(data[:days].first[:count]).eq 2
+    expect(data[:days].first).eq({label: '6.20', count: 2})
     expect(data[:weeks].first).eq({label: '6.15~6.21', count: 2})
     expect(data[:months].first).eq({label: '6월', count: 2})
   end

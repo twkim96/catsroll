@@ -313,7 +313,7 @@ module BattleCatsRolls
 
     def recent_days days
       days.sort.last(DAY_RETENTION).reverse.map do |date, count|
-        {label: date, count: count}
+        {label: day_label(date), count: count}
       end
     end
 
@@ -348,6 +348,11 @@ module BattleCatsRolls
       monday = Date.parse(week)
       sunday = monday + 6
       "#{monday.month}.#{monday.day}~#{sunday.month}.#{sunday.day}"
+    end
+
+    def day_label day
+      date = Date.parse(day)
+      "#{date.month}.#{date.day}"
     end
 
     def month_label month
