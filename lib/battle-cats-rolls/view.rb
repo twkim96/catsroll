@@ -258,12 +258,13 @@ module BattleCatsRolls
       title = h cat.pick_title(route.name)
       stat_uri = h route.uri_to_cat(cat) if cat.id > 0
       roll_uri = h route.uri_to_roll(cat) if cat.slot_seed
-      text_roll = roll_tag(roll_uri, title, name) if text
+      avatar = avatar_tag(cat, name) if image && stat_uri
+      text_roll = roll_tag(roll_uri, title, name) if text || !avatar
       stat = %Q{ <a href="#{stat_uri}">🐾</a>} if stat_uri
       content = "<span>#{prefix}#{text_roll}#{stat}#{suffix}</span>"
 
-      if image && stat_uri
-        image_roll = roll_tag(roll_uri, title, avatar_tag(cat, name))
+      if avatar
+        image_roll = roll_tag(roll_uri, title, avatar)
         %Q{<span class="track_avatar_wrap">#{image_roll}#{content}</span>}
       else
         content
@@ -279,15 +280,21 @@ module BattleCatsRolls
     end
 
     def avatar_tag cat, name
-      (@avatar_tag ||= {})[cat.id] ||= begin
-        src = h cat.pick_img_src(route.name, route.lang)
-        alt = name if route.display == 'image' # Redundant otherwise
+      @avatar_tag ||= {}
+      return @avatar_tag[cat.id] if @avatar_tag.key?(cat.id)
 
-        <<~HTML.strip
-          <span class="track_avatar_clip">
-            <img class="track_avatar" src="#{src}" alt="#{alt}"
-              decoding="async"></span>
-        HTML
+      @avatar_tag[cat.id] = begin
+        src = cat.pick_img_src(route.name, route.lang)
+        if src
+          src = h src
+          alt = name if route.display == 'image' # Redundant otherwise
+
+          <<~HTML.strip
+            <span class="track_avatar_clip">
+              <img class="track_avatar" src="#{src}" alt="#{alt}"
+                decoding="async"></span>
+          HTML
+        end
       end
     end
 

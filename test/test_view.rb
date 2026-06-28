@@ -75,6 +75,18 @@ describe BattleCatsRolls::View do
         spy(cat).img_src(0, 'en')
         ok
       end
+
+      would 'fall back to text when avatar is unavailable' do
+        missing = BattleCatsRolls::Cat.new(id: 149,
+          info: {'name' => ['Missing Cat'], 'desc' => []})
+        stub(missing).img_src(0, 'en'){ nil }
+
+        html = view.__send__(:link_to_roll, missing, image: true, text: false)
+
+        expect(html).not.include?('class="track_avatar_wrap"')
+        expect(html).not.include?('class="track_avatar"')
+        expect(html).include?('>Missing Cat<')
+      end
     end
 
     describe '#link_to_next' do
