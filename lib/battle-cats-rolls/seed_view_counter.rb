@@ -11,10 +11,15 @@ module BattleCatsRolls
     FLUSH_INTERVAL = 15 * 60
     QUARTER_RETENTION = 26 * 60 * 60
     HOUR_RETENTION = 8 * 24 * 60 * 60
+    DAY_RETENTION = 7
+    WEEK_RETENTION = 7
+    MONTH_RETENTION = 7
     TIME_ZONE = '+09:00'
     @mutex = Mutex.new
     @stats = {
       'days' => {},
+      'weeks' => {},
+      'months' => {},
       'hours' => {},
       'quarters' => {},
       'langs_by_day' => {},
@@ -32,6 +37,8 @@ module BattleCatsRolls
 
       total = @mutex.synchronize do
         @stats['days'][date] = @stats['days'][date].to_i + 1
+        @stats['weeks'][week_key(now)] = @stats['weeks'][week_key(now)].to_i + 1
+        @stats['months'][month_key(now)] = @stats['months'][month_key(now)].to_i + 1
         @stats['hours'][hour_key(now)] = @stats['hours'][hour_key(now)].to_i + 1
         quarter = quarter_key(now)
         @stats['quarters'][quarter] = @stats['quarters'][quarter].to_i + 1
@@ -113,6 +120,8 @@ module BattleCatsRolls
         {
           'updated_at' => now.utc.iso8601,
           'days' => @stats['days'].sort.to_h,
+          'weeks' => @stats['weeks'].sort.to_h,
+          'months' => @stats['months'].sort.to_h,
           'hours' => @stats['hours'].sort.to_h,
           'quarters' => @stats['quarters'].sort.to_h,
           'langs_by_day' => sort_nested_hash(@stats['langs_by_day']),
@@ -154,6 +163,16 @@ module BattleCatsRolls
       time.strftime('%Y-%m-%dT%H')
     end
 
+    def week_key value
+      date = period_date(value)
+      monday = date - (date.cwday - 1)
+      monday.strftime('%Y-%m-%d')
+    end
+
+    def month_key value
+      period_date(value).strftime('%Y-%m')
+    end
+
     def quarter_key value
       time = kst_time(value)
       minute = time.min - (time.min % 15)
@@ -173,9 +192,9 @@ module BattleCatsRolls
           recent_hours: recent_hours(now, @stats['hours']),
           langs: ranked_hash(@stats['langs_by_day'][today] || {}),
           events: ranked_events(@stats['events_by_day'][today] || {}),
-          days: @stats['days'].sort.reverse.map do |date, count|
-            {label: date, count: count}
-          end
+          days: recent_days(@stats['days']),
+          weeks: recent_weeks(@stats['weeks']),
+          months: recent_months(@stats['months'])
         }
       end
     end
@@ -208,9 +227,24 @@ module BattleCatsRolls
       parse_time(value).getlocal(TIME_ZONE)
     end
 
+    def period_date value
+      case value
+      when Time, DateTime
+        parse_date(date_key(value))
+      when Date
+        value
+      else
+        Date.parse(value.to_s[0, 10])
+      end
+    end
+
     def normalize_stats data
+      days = integer_hash(data['days'])
+
       {
-        'days' => integer_hash(data['days']),
+        'days' => days,
+        'weeks' => integer_hash(data['weeks'] || aggregate_weeks(days)),
+        'months' => integer_hash(data['months'] || aggregate_months(days)),
         'hours' => integer_hash(data['hours']),
         'quarters' => integer_hash(data['quarters']),
         'langs_by_day' =>
@@ -222,6 +256,8 @@ module BattleCatsRolls
 
     def merge_stats! stats
       merge_hash!(@stats['days'], stats['days'])
+      merge_hash!(@stats['weeks'], stats['weeks'])
+      merge_hash!(@stats['months'], stats['months'])
       merge_hash!(@stats['hours'], stats['hours'])
       merge_hash!(@stats['quarters'], stats['quarters'])
       merge_nested_hash!(@stats['langs_by_day'], stats['langs_by_day'])
@@ -275,6 +311,50 @@ module BattleCatsRolls
       end
     end
 
+    def recent_days days
+      days.sort.last(DAY_RETENTION).reverse.map do |date, count|
+        {label: date, count: count}
+      end
+    end
+
+    def recent_weeks weeks
+      weeks.sort.last(WEEK_RETENTION).reverse.map do |date, count|
+        {label: week_label(date), count: count}
+      end
+    end
+
+    def recent_months months
+      months.sort.last(MONTH_RETENTION).reverse.map do |month, count|
+        {label: month_label(month), count: count}
+      end
+    end
+
+    def aggregate_weeks days
+      aggregate_period(days){ |date| week_key(date) }
+    end
+
+    def aggregate_months days
+      aggregate_period(days){ |date| month_key(date) }
+    end
+
+    def aggregate_period days
+      days.each_with_object({}) do |(date, count), result|
+        key = yield(date)
+        result[key] = result[key].to_i + count.to_i
+      end
+    end
+
+    def week_label week
+      monday = Date.parse(week)
+      sunday = monday + 6
+      "#{monday.month}.#{monday.day}~#{sunday.month}.#{sunday.day}"
+    end
+
+    def month_label month
+      date = Date.strptime("#{month}-01", '%Y-%m-%d')
+      "#{date.month}월"
+    end
+
     def recent_quarters now, quarters
       now = kst_time(now)
       minute = now.min - (now.min % 15)
@@ -309,6 +389,9 @@ module BattleCatsRolls
     def prune! now
       prune_time_hash!(@stats['quarters'], quarter_key(now - QUARTER_RETENTION))
       prune_time_hash!(@stats['hours'], hour_key(now - HOUR_RETENTION))
+      prune_recent_hash!(@stats['days'], DAY_RETENTION)
+      prune_recent_hash!(@stats['weeks'], WEEK_RETENTION)
+      prune_recent_hash!(@stats['months'], MONTH_RETENTION)
       today = date_key(now)
       @stats['langs_by_day'].select!{ |date, _| date == today }
       @stats['events_by_day'].select!{ |date, _| date == today }
@@ -316,6 +399,11 @@ module BattleCatsRolls
 
     def prune_time_hash! hash, cutoff
       hash.delete_if{ |key, _| key < cutoff }
+    end
+
+    def prune_recent_hash! hash, retention
+      keep = hash.keys.sort.last(retention)
+      hash.select!{ |key, _| keep.include?(key) }
     end
 
     def persistable? path

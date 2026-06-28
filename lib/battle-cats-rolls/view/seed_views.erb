@@ -61,8 +61,9 @@
     margin: .5rem 0;
     color: #555;
   }
-  .seed-view-days {
-    max-width: 24rem;
+  .seed-view-periods {
+    max-width: 50rem;
+    table-layout: fixed;
   }
 </style>
 
@@ -145,24 +146,37 @@
 </p>
 <%= seed_view_line_chart(recent_hours, axis_every: 24, axis_label: :date) %>
 
-<%= header(2, '일별 접속자수', 'daily') %>
-<table class="seed-view-days">
+<%= header(2, '접속자수 요약', 'periods') %>
+<table class="seed-view-periods">
   <thead>
     <tr>
-      <th>Date</th>
+      <th>Day</th>
+      <th>Views</th>
+      <th>Week</th>
+      <th>Views</th>
+      <th>Month</th>
       <th>Views</th>
     </tr>
   </thead>
   <tbody>
-    <% arg[:days].each do |day| %>
+    <% periods_empty = arg[:days].empty? && arg[:weeks].empty? && arg[:months].empty? %>
+    <% rows = periods_empty ? 0 : 7 %>
+    <% rows.times do |index| %>
+      <% day = arg[:days][index] %>
+      <% week = arg[:weeks][index] %>
+      <% month = arg[:months][index] %>
       <tr>
-        <td><%= day[:label] %></td>
-        <td><%= day[:count] %></td>
+        <td><%= day && day[:label] %></td>
+        <td><%= day && day[:count] %></td>
+        <td><%= week && week[:label] %></td>
+        <td><%= week && week[:count] %></td>
+        <td><%= month && month[:label] %></td>
+        <td><%= month && month[:count] %></td>
       </tr>
     <% end %>
-    <% if arg[:days].empty? %>
+    <% if periods_empty %>
       <tr>
-        <td colspan="2">No data yet.</td>
+        <td colspan="6">No data yet.</td>
       </tr>
     <% end %>
   </tbody>

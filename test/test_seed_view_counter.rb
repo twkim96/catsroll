@@ -7,8 +7,8 @@ require 'tmpdir'
 describe BattleCatsRolls::SeedViewCounter do
   before do
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@stats,
-      {'days' => {}, 'hours' => {}, 'quarters' => {}, 'langs_by_day' => {},
-       'events_by_day' => {}})
+      {'days' => {}, 'weeks' => {}, 'months' => {}, 'hours' => {},
+       'quarters' => {}, 'langs_by_day' => {}, 'events_by_day' => {}})
     BattleCatsRolls::SeedViewCounter.instance_variable_set(:@loaded, false)
     @cache = nil
   end
@@ -77,6 +77,8 @@ describe BattleCatsRolls::SeedViewCounter do
       data = JSON.parse(File.read(path))
 
       expect(data.dig('days', '2026-06-20')).eq 2
+      expect(data.dig('weeks', '2026-06-15')).eq 2
+      expect(data.dig('months', '2026-06')).eq 2
       expect(data.dig('hours', '2026-06-20T03')).eq 2
       expect(data.dig('quarters', '2026-06-20T03:00')).eq 2
       expect(data.dig('langs_by_day', '2026-06-20', 'kr')).eq 2
@@ -146,6 +148,34 @@ describe BattleCatsRolls::SeedViewCounter do
     expect(data[:langs].map{ |row| row[:key] }).eq %w[jp kr]
     expect(data[:events].first[:event]).eq '2026-06-22_1043'
     expect(data[:days].first[:count]).eq 2
+    expect(data[:weeks].first).eq({label: '6.15~6.21', count: 2})
+    expect(data[:months].first).eq({label: '6월', count: 2})
+  end
+
+  would 'migrate existing day counts into weekly and monthly counts' do
+    Dir.mktmpdir do |dir|
+      path = "#{dir}/seed_views.json"
+      File.write(path, JSON.dump(
+        'days' => {
+          '2026-05-31' => 3,
+          '2026-06-01' => 5,
+          '2026-06-28' => 7
+        }))
+
+      BattleCatsRolls::SeedViewCounter.load!(path)
+      data = BattleCatsRolls::SeedViewCounter.snapshot(
+        kst(2026, 6, 28, 3, 30, 0))
+
+      expect(data[:weeks]).eq [
+        {label: '6.22~6.28', count: 7},
+        {label: '6.1~6.7', count: 5},
+        {label: '5.25~5.31', count: 3}
+      ]
+      expect(data[:months]).eq [
+        {label: '6월', count: 12},
+        {label: '5월', count: 3}
+      ]
+    end
   end
 
   would 'keep lower ranked events for view filtering' do
@@ -169,7 +199,39 @@ describe BattleCatsRolls::SeedViewCounter do
     Dir.mktmpdir do |dir|
       path = "#{dir}/seed_views.json"
       File.write(path, JSON.dump(
-        'days' => {'2026-06-18' => 1, '2026-06-20' => 2},
+        'days' => {
+          '2026-06-12' => 1,
+          '2026-06-13' => 1,
+          '2026-06-14' => 1,
+          '2026-06-15' => 1,
+          '2026-06-16' => 1,
+          '2026-06-17' => 1,
+          '2026-06-18' => 1,
+          '2026-06-19' => 1,
+          '2026-06-20' => 2
+        },
+        'weeks' => {
+          '2026-04-20' => 1,
+          '2026-04-27' => 1,
+          '2026-05-04' => 1,
+          '2026-05-11' => 1,
+          '2026-05-18' => 1,
+          '2026-05-25' => 1,
+          '2026-06-01' => 1,
+          '2026-06-08' => 3,
+          '2026-06-15' => 7
+        },
+        'months' => {
+          '2025-10' => 1,
+          '2025-11' => 1,
+          '2025-12' => 1,
+          '2026-01' => 1,
+          '2026-02' => 1,
+          '2026-03' => 1,
+          '2026-04' => 1,
+          '2026-05' => 1,
+          '2026-06' => 10
+        },
         'hours' => {'2026-06-01T00' => 1, '2026-06-20T03' => 2},
         'quarters' => {'2026-06-01T00:00' => 1, '2026-06-20T03:00' => 2},
         'langs_by_day' => {
@@ -189,9 +251,35 @@ describe BattleCatsRolls::SeedViewCounter do
 
       expect(data['hours'].key?('2026-06-01T00')).eq false
       expect(data['quarters'].key?('2026-06-01T00:00')).eq false
+      expect(data['days'].keys).eq [
+        '2026-06-14',
+        '2026-06-15',
+        '2026-06-16',
+        '2026-06-17',
+        '2026-06-18',
+        '2026-06-19',
+        '2026-06-20'
+      ]
+      expect(data['weeks'].keys).eq [
+        '2026-05-04',
+        '2026-05-11',
+        '2026-05-18',
+        '2026-05-25',
+        '2026-06-01',
+        '2026-06-08',
+        '2026-06-15'
+      ]
+      expect(data['months'].keys).eq [
+        '2025-12',
+        '2026-01',
+        '2026-02',
+        '2026-03',
+        '2026-04',
+        '2026-05',
+        '2026-06'
+      ]
       expect(data['langs_by_day'].keys).eq ['2026-06-20']
       expect(data['events_by_day'].keys).eq ['2026-06-20']
-      expect(data['days'].key?('2026-06-18')).eq true
     end
   end
 end
