@@ -19,13 +19,21 @@ module BattleCatsRolls
     end
   end
 
+  class AugmentModule < Module
+    attr_reader :talent
+
+    def initialize new_talent
+      super()
+      @talent = new_talent
+    end
+  end
+
   class Talent < Struct.new(:key, :data, :ability)
     class IncreaseHealth < Talent
       include TalentUtility
 
       def augment_module
-        talent = self
-        Module.new do
+        AugmentModule.new(talent = self) do
           define_method(:health_raw) do
             super() * (1 + (talent.max / 100.0))
           end
@@ -45,8 +53,7 @@ module BattleCatsRolls
       include TalentUtility
 
       def augment_module
-        talent = self
-        Module.new do
+        AugmentModule.new(talent = self) do
           define_method(:damage_raw) do |n=0|
             result = super(n)
             result * (1 + (talent.max / 100.0)) if result

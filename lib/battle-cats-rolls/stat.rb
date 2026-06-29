@@ -50,6 +50,13 @@ module BattleCatsRolls
       index == 2 || index == 3
     end
 
+    def augmenting_talent from
+      (@augmenting_talent ||= {}).fetch(from) do
+        owner = method(from).owner
+        owner.talent if owner != self.class
+      end
+    end
+
     def level
       super || DefaultLevel
     end

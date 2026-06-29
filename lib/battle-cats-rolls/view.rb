@@ -586,6 +586,20 @@ module BattleCatsRolls
       end
     end
 
+    def stat_augmented stat, from, value
+      if stat.talent? && talent = stat.augmenting_talent(from)
+        style = if talent.ultra?
+          'augmented_ultra'
+        else
+          'augmented_regular'
+        end
+
+        %Q{<span class="augmented #{style}">#{value}</span>}
+      else
+        value
+      end
+    end
+
     def growth_rate growth
       return unless growth
 
