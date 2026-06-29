@@ -110,6 +110,9 @@ Style/EachWithObject:
 Style/EmptyCaseCondition:
   Enabled: false
 
+Style/EmptyMethod:
+  Enabled: false
+
 Style/FormatString:
   EnforcedStyle: sprintf
 
