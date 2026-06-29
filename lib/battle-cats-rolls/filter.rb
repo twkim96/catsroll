@@ -85,9 +85,9 @@ module BattleCatsRolls
       Modifier = :itself.to_proc
 
       def self.match? abilities, stat, threshold: 7500, modifier: Modifier
-        modifier[stat.dps_sum.to_i] >= threshold ||
+        modifier[stat.dps_sum.to_f].round >= threshold ||
           stat.attacks_raw.any? do |attack|
-            modifier[attack.dps.to_i] >= threshold
+            modifier[attack.dps.to_f].round >= threshold
           end
       end
     end
