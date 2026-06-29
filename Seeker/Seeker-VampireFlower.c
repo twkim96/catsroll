@@ -27,17 +27,6 @@ typedef uint32_t uint;
 #endif
 
 
-#ifdef __AVX2__
-#include <immintrin.h>
-FORCE_INLINE __m256i xorshift32_8x32(__m256i vector) {
-    vector = _mm256_xor_si256(vector, _mm256_slli_epi32(vector, 13));
-    vector = _mm256_xor_si256(vector, _mm256_srli_epi32(vector, 17));
-    vector = _mm256_xor_si256(vector, _mm256_slli_epi32(vector, 15));
-    return vector;
-}
-#endif
-
-
 typedef enum {
     RARE,
     SUPER_RARE,
@@ -302,50 +291,6 @@ void* find_seed_fast(void* args) {
         uint m = RUN == 0 ? RARITY_SIZES[cats[0].rarity] :
                             RARITY_SIZES[cats[0].rarity] - 1;
 
-#ifdef __AVX2__
-        __m256i offsets = _mm256_setr_epi32(0, m, m*2, m*3, m*4, m*5, m*6, m*7);
-
-        for (uint64_t i = arg->start; i <= arg->end; i += m*8) {
-
-            // init a batch of 8 seeds to process
-            __m256i base   = _mm256_set1_epi32(i);
-            __m256i vector = _mm256_add_epi32(base, offsets);
-
-            vector = xorshift32_8x32(vector);
-            vector = xorshift32_8x32(vector);
-
-            uint candidates[8];
-            _mm256_storeu_si256((__m256i*)candidates, vector);
-
-            for (uint j = 0; j < 8; j++) {
-
-                uint seed = candidates[j]; // these candidates are the result of 4 prng calls
-
-                uint slot = seed % RARITY_SIZES[cats[1].rarity];
-
-                if (cats[1].rarity == RARE) {
-                    if (slot == cats[0].slot && cats[0].rarity == RARE) { // duplicate rare cat!!!
-                        uint newslot = xorshift32(&seed) % (RARITY_SIZES[0] - 1);
-                        slot = newslot + (newslot >= slot);
-                    }
-                }
-
-                if (slot != cats[1].slot) continue;
-
-                if (simulate_rolls(&seed, 2)) {
-                    uint begin = reverse_xorshift32(candidates[j], 4 + (RUN > 0));
-                    if (verify_seed(begin)) {
-                        arg->seed_begin = begin;
-                        arg->seed_end = seed;
-                        arg->found_seeds++;
-
-                        if (arg->found_seeds > 1)
-                            return NULL;
-                    }
-                }
-            }
-        }
-#else
         for (uint64_t i = arg->start; i <= arg->end; i += m) {
             uint seed = i;
 
@@ -364,7 +309,6 @@ void* find_seed_fast(void* args) {
                 }
             }
         }
-#endif
     }
     return NULL;
 }
