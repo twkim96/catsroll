@@ -10,20 +10,20 @@ module BattleCatsRolls
       def filter! selected, all_or_any, filter_table
         return if selected.empty?
 
-        cats.select! do |id, cat|
-          indicies = cat['stat'].map.with_index do |raw_stat, index|
+        cats.select! do |id, info|
+          indicies = info['stat'].map.with_index do |raw_stat, index|
             if matched = matched_stats[id]
               next unless matched[index]
             end
 
-            abilities = expand_stat(cat, raw_stat, index)
+            abilities = expand_stat(info, raw_stat, index)
             index if selected.public_send("#{all_or_any}?") do |item|
               case filter = filter_table[item]
               when String, NilClass
                 abilities[filter] || abilities[item]
               else
                 filter.match?(abilities,
-                  Stat.new(id: id, info: cat, index: index,
+                  Stat.new(id: id, info: info, index: index,
                     level: level,
                     exclude_talents: exclude_talents,
                     sum_no_wave: sum_no_wave,
@@ -43,12 +43,12 @@ module BattleCatsRolls
         @matched_stats ||= {}
       end
 
-      def expand_stat cat, raw_stat, index
+      def expand_stat info, raw_stat, index
         if exclude_talents || index < 2 # 2 is true form, 3 is ultra form
           raw_stat
         else
-          raw_stat.merge(cat['talent'] || {}).merge(
-            (cat['talent_against'] || []).inject({}) do |result, against|
+          raw_stat.merge(info['talent'] || {}).merge(
+            (info['talent_against'] || []).inject({}) do |result, against|
               result["against_#{against}"] = true
               result
             end
