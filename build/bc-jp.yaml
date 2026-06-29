@@ -2527,6 +2527,23 @@ cats:
     rarity: 3
     max_level: 120
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
+    talent_against: [red, float, black, metal, angel, alien, zombie, relic, white, aku]
+    talent:
+      weaken:
+        max_level: 10
+        minmax: [[30, 30], [9, 90], [50, 50]]
+      freeze:
+        max_level: 10
+        minmax: [[30, 30], [9, 90]]
+      slow:
+        max_level: 10
+        minmax: [[30, 30], [9, 90]]
+      knockback:
+        max_level: 10
+        minmax: [[3, 30]]
+      curse:
+        max_level: 10
+        minmax: [[30, 30], [9, 90]]
   175:
     name: [マンボ王, 生ける伝説, 太平洋の主]
     desc: ["生きろ！マンボウ！から参戦！\nもうすぐ世界最大になるマンボウ\nその風貌には王たる威厳が感じられる(範囲攻撃)\nマンボオウ", "大きくなる運命を背負いそれを成し遂げたマンボウ\nハードだったこの魚生、一片の悔いは無い…\n断末魔の叫びが海原にとどろく(範囲攻撃)\nイケルデンセツ", "一番大きい体には一番大きい海が良く似合う\nいつ起こるか分からない突然の死。だからこそ\n今を精一杯生き、情熱を燃やして輝く(範囲攻撃)\nタイヘイヨウノヌシ"]
@@ -4401,6 +4418,16 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      sage_slayer:
+        ultra: 1
+      reduce_attack_cooldown:
+        max_level: 10
+        minmax: [[8, 35]]
+        ultra: 1
+      slow:
+        max_level: 10
+        minmax: [[100, 100], [24, 60]]
+        ultra: 1
   338:
     name: [プリンセスケリ姫号, プリンセスケリ姫号CC, プレミアムケリ姫号CC]
     desc: ["宝船で遊覧中のケリ姫とネコ達\n上空からでもスイーツは見逃さない\n敵を倒したときにお金を多くもらえる(範囲攻撃)\nプリンセスケリヒメゴウ", "もっとリッチな宝船で遊覧中のケリ姫と金ネコ達\n上空からでもイケメンは絶対見逃さない\n敵を倒したときにお金を多くもらえる(範囲攻撃)\nプリンセスケリヒメゴウシーシー", "プレミアムな宝船で遊覧中のケリ姫と金ネコ達\nついにイケメンを発見し現場に急行中\n敵を倒したときにお金を多くもらえる(範囲攻撃)\nプレミアムケリヒメゴウシーシー"]
@@ -4489,8 +4516,8 @@ cats:
     desc: ["日頃のご愛顧に感謝を込めるネコ\n持ち主にささやかな福を招くという\n敵を倒したときにお金を多くもらえる", "みなさまの愛で立派に育ったネコ\nお礼に満腹の幸せをお届け\n敵を倒したときにお金を多くもらえる\nネコマネキコトブキ"]
     stat: [{health: 450, knockbacks: 3, speed: 8, cost: 360, production_cooldown: 320, attack_cooldown: 35, range: 200, width: 320, damage_0: 99, attack_time_0: 34, trigger_effects_0: 1, extra_money: 1, attack_duration: 48}, {health: 450, knockbacks: 3, speed: 8, cost: 360, production_cooldown: 320, attack_cooldown: 35, range: 200, width: 320, damage_0: 99, attack_time_0: 34, trigger_effects_0: 1, extra_money: 1, attack_duration: 48}]
     rarity: 1
-    max_level: 90
-    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10]
+    max_level: 95
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10]
   344:
     name: [なめネコ, ネコなめ]
     desc: ["雨上がりの日に出会って意気投合したなめとネコ\n粘り強い勝負が得意だが塩には弱い\n敵の動きを一瞬遅くする(範囲攻撃)", "更なる高みを目指すため、乗り手を交替したなめとネコ\n先行逃げ切りが得意だがやっぱり塩には弱い\n敵の動きを一瞬遅くする(範囲攻撃)"]
@@ -4880,7 +4907,7 @@ cats:
     desc: ["感謝の気持ちを込めて発行された記念のネコ\n９０００億万枚限定生産品\n　\nキネンネコ", "感謝の気持ちを込めて発行された記念のネコの中に\n３枚に１枚の確率で混ざっているレアコイン\n３枚集めると記念ネコと交換可\nキネンネコビルダー"]
     stat: [{health: 100, knockbacks: 3, speed: 9, cost: 50, production_cooldown: 75, attack_cooldown: 17, range: 140, width: 320, damage_0: 8, attack_time_0: 4, trigger_effects_0: 1, attack_duration: 23}, {health: 100, knockbacks: 3, speed: 9, cost: 50, production_cooldown: 75, attack_cooldown: 17, range: 140, width: 320, damage_0: 8, attack_time_0: 4, trigger_effects_0: 1, attack_duration: 23}]
     rarity: 1
-    max_level: 95
+    max_level: 100
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10]
   377:
     name: [ネコ探査機, ネコサーチMkⅡ, ネコサテライト]
@@ -5235,9 +5262,9 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   418:
-    name: [温泉天国テルマエ, 地底戦隊グランドン, 超地底戦隊グランドン]
-    desc: ["世界に名だたる移動式のテルマエ\nこの世のすべての源泉を求めて旅路を行く(全方位攻撃)\nゾンビにめっぽう強く、必ず動きを一瞬止める\nオンセンテンゴクテルマエ", "地底侵略をたくらむ魔の手から平和を守る組織\n個性豊かなメカを操り悪の組織を粉砕する(全方位攻撃)\nゾンビにめっぽう強く、必ず動きを一瞬止める\nチテイセンタイグランドン", "地底から地上の平和を守る正義の組織\n噴き上げるマグマと共に悪を粉砕する(全方位攻撃)\nゾンビにめっぽう強く、必ず動きを一瞬止める\nチョウチテイセンタイグランドン"]
-    stat: [{health: 5000, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 700, long_range_0: 425, long_range_offset_0: -1100, attack_time_0: 59, trigger_effects_0: 1, damage_1: 700, attack_time_1: 75, trigger_effects_1: 1, damage_2: 700, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 30, zombie_killer: 1, attack_duration: 195}, {health: 5000, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 700, long_range_0: 425, long_range_offset_0: -1100, attack_time_0: 59, trigger_effects_0: 1, damage_1: 700, attack_time_1: 75, trigger_effects_1: 1, damage_2: 700, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 30, zombie_killer: 1, attack_duration: 195}, {health: 5000, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 770, long_range_0: 425, long_range_offset_0: -1100, attack_time_0: 59, trigger_effects_0: 1, damage_1: 770, attack_time_1: 75, trigger_effects_1: 1, damage_2: 770, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 30, zombie_killer: 1, attack_duration: 195}]
+    name: [温泉天国テルマエ, 地底戦隊グランドン, 超地底戦隊グランドン, 極地底戦隊グランドン]
+    desc: ["世界に名だたる移動式のテルマエ\nこの世のすべての源泉を求めて旅路を行く(全方位攻撃)\nゾンビにめっぽう強く、必ず動きを一瞬止める\nオンセンテンゴクテルマエ", "地底侵略をたくらむ魔の手から平和を守る組織\n個性豊かなメカを操り悪の組織を粉砕する(全方位攻撃)\nゾンビにめっぽう強く、必ず動きを一瞬止める\nチテイセンタイグランドン", "地底から地上の平和を守る正義の組織\n噴き上げるマグマと共に悪を粉砕する(全方位攻撃)\nゾンビにめっぽう強く、必ず動きを一瞬止める\nチョウチテイセンタイグランドン", "地底の最深部から世界を守る絶対無敵の組織\nマントルから噴き出す正義の魂で悪を根元から絶つ(全方位)\nゾンビと古代種にめっぽう強く、必ず動きを一瞬止める\nゴクチテイセンタイグランドン"]
+    stat: [{health: 5000, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 700, long_range_0: 425, long_range_offset_0: -1100, attack_time_0: 59, trigger_effects_0: 1, damage_1: 700, attack_time_1: 75, trigger_effects_1: 1, damage_2: 700, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 30, zombie_killer: 1, attack_duration: 195}, {health: 5000, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 700, long_range_0: 425, long_range_offset_0: -1100, attack_time_0: 59, trigger_effects_0: 1, damage_1: 700, attack_time_1: 75, trigger_effects_1: 1, damage_2: 700, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 30, zombie_killer: 1, attack_duration: 195}, {health: 5000, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 770, long_range_0: 425, long_range_offset_0: -1100, attack_time_0: 59, trigger_effects_0: 1, damage_1: 770, attack_time_1: 75, trigger_effects_1: 1, damage_2: 770, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 30, zombie_killer: 1, attack_duration: 195}, {health: 7500, knockbacks: 5, speed: 4, cost: 3100, production_cooldown: 2750, range: 425, width: 320, area_effect: 1, damage_0: 850, long_range_0: 475, long_range_offset_0: -1200, attack_time_0: 59, trigger_effects_0: 1, damage_1: 850, attack_time_1: 75, trigger_effects_1: 1, damage_2: 850, attack_time_2: 123, trigger_effects_2: 1, against_zombie: 1, against_relic: 1, strong: 1, freeze_chance: 100, freeze_duration: 50, zombie_killer: 1, immune_toxic: 1, attack_duration: 195}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -6095,9 +6122,9 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   508:
-    name: [スーパーにゃん, ジャイにゃん]
-    desc: ["謎のマントで空を飛ぶヒーロー気取りのただのネコ\n一人暮らしを夢見てレジ打ちバイトに明け暮れている\n属性を持たない敵の攻撃力を下げ、波動を打ち消す", "ポテチの食べすぎでマッチョ化した空飛ぶネコ\n将来の夢は歌手で毎日、公園で歌の練習を欠かさない\n属性を持たない敵の攻撃力を下げ、波動を打ち消す"]
-    stat: [{health: 1800, knockbacks: 10, speed: 60, cost: 480, production_cooldown: 450, range: 140, width: 320, damage_0: 200, attack_time_0: 1, trigger_effects_0: 1, against_white: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, block_wave: 1, attack_duration: 150}, {health: 1800, knockbacks: 10, speed: 60, cost: 480, production_cooldown: 450, range: 140, width: 320, damage_0: 200, attack_time_0: 1, trigger_effects_0: 1, against_white: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, block_wave: 1, attack_duration: 150}]
+    name: [スーパーにゃん, ジャイにゃん, アイアンにゃん]
+    desc: ["謎のマントで空を飛ぶヒーロー気取りのただのネコ\n一人暮らしを夢見てレジ打ちバイトに明け暮れている\n属性を持たない敵の攻撃力を下げ、波動を打ち消す", "ポテチの食べすぎでマッチョ化した空飛ぶネコ\n将来の夢は歌手で毎日、公園で歌の練習を欠かさない\n属性を持たない敵の攻撃力を下げ、波動を打ち消す", "鉄分を大量に摂取して鋼の肉体を手に入れたネコ\n休日はヘヴィメタシンガーとして活躍中。属性を持たない敵に\n打たれ強く、必ず攻撃力を下げ、波動を打ち消す"]
+    stat: [{health: 1800, knockbacks: 10, speed: 60, cost: 480, production_cooldown: 450, range: 140, width: 320, damage_0: 200, attack_time_0: 1, trigger_effects_0: 1, against_white: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, block_wave: 1, attack_duration: 150}, {health: 1800, knockbacks: 10, speed: 60, cost: 480, production_cooldown: 450, range: 140, width: 320, damage_0: 200, attack_time_0: 1, trigger_effects_0: 1, against_white: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, block_wave: 1, attack_duration: 150}, {health: 1800, knockbacks: 10, speed: 80, cost: 480, production_cooldown: 450, range: 140, width: 320, damage_0: 200, attack_time_0: 1, trigger_effects_0: 1, against_white: 1, resistant: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, immune_curse: 1, block_wave: 1, immune_surge: 1, attack_duration: 150}]
     rarity: 2
     max_level: 50
     growth: [20, 20, 20, 20, 20]
@@ -7035,15 +7062,15 @@ cats:
     desc: ["クヌギの木から出る樹液に集まる習性を持ち\nふつうの虫取り網では捕まえられない幻のネコ\n赤い敵と黒い敵にめっぽう強い", "大きな一本の角を持つ真夏の王者\n虫相撲大会では無戦無勝の負けなしを誇る\n赤い敵と黒い敵にめっぽう強い"]
     stat: [{health: 600, knockbacks: 2, speed: 7, cost: 360, production_cooldown: 205, attack_cooldown: 20, range: 140, width: 320, damage_0: 120, attack_time_0: 8, trigger_effects_0: 1, against_red: 1, against_black: 1, strong: 1, immune_freeze: 1, attack_duration: 17}, {health: 750, knockbacks: 2, speed: 7, cost: 360, production_cooldown: 205, attack_cooldown: 20, range: 140, width: 320, damage_0: 150, attack_time_0: 8, trigger_effects_0: 1, against_red: 1, against_black: 1, strong: 1, immune_freeze: 1, attack_duration: 17}]
     rarity: 1
-    max_level: 90
-    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10]
+    max_level: 95
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10]
   617:
     name: [クワガタネコ, キングクワガタネコ]
     desc: ["砂糖水とスイカの皮に集まる習性を持ち\n捕まえるには特別な虫取り網が必要なネコ\n浮いてる敵とエイリアンにめっぽう強い", "鈍くボディを光らせる真夏の覇者\n好戦的な気性のせいで虫相撲ではいつも場外乱闘\n浮いてる敵とエイリアンにめっぽう強い"]
     stat: [{health: 600, knockbacks: 3, speed: 15, cost: 360, production_cooldown: 205, attack_cooldown: 20, range: 140, width: 320, damage_0: 120, attack_time_0: 8, trigger_effects_0: 1, against_float: 1, against_alien: 1, strong: 1, immune_slow: 1, attack_duration: 17}, {health: 750, knockbacks: 3, speed: 15, cost: 360, production_cooldown: 205, attack_cooldown: 20, range: 140, width: 320, damage_0: 150, attack_time_0: 8, trigger_effects_0: 1, against_float: 1, against_alien: 1, strong: 1, immune_slow: 1, attack_duration: 17}]
     rarity: 1
-    max_level: 90
-    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10]
+    max_level: 95
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10]
   618:
     name: [召喚少年サトル, 悪魔召喚サトル, デビルハンターサトル]
     desc: ["世界の救世主になるため悪魔と契約した少年\n強い正義の心で呼び出した召喚獣を自在に操る\n必ず悪魔の動きを遅くする(遠方範囲攻撃)\nショウカンショウネンサトル", "世界の救世主を目指して戦う悪魔使いの少年\n悪魔契約の代償「闇の心」を正義感で抑え込む\n必ず悪魔の動きを遅くする(遠方範囲攻撃)\nアクマショウカンサトル", "悪魔の王を従え世界の頂点に君臨した少年\nネコたちを守るサトルの戦いはこれから始まる！\n必ず悪魔をふっとばして動きを遅くする(遠方範囲攻撃)"]
@@ -7426,6 +7453,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      wave_mini:
+        max_level: 10
+        minmax: [[5, 50], [3, 3]]
+      immune_weaken: {}
+      resistant_curse:
+        max_level: 10
+        minmax: [[16, 70]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   651:
     name: [幼馴染にゃん子, 彼女にゃん子]
     desc: ["隣の家に住む品行方正、成績優秀な幼馴染ネコ\n「高嶺のネコ」としてみんなから憧れられている\n属性を持たない敵に超ダメージを与える(範囲攻撃)\nオサナナジミニャンコ", "休日に公園へお出かけする美少女ネコ\n手作りのマタタビサンドは全男子ネコを魅了する\n属性を持たない敵に超ダメージを与える(範囲攻撃)\nカノジョニャンコ"]
@@ -7571,8 +7612,8 @@ cats:
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N202」と小さく刻まれているように見えるが…\nフルビタタマゴ", "赤いボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\nごくたまに赤、エイリアンの攻撃力を下げる\nアカイタマゴ", "お尻の光で恋を育む夏の風物詩ネコ\n綺麗な川にしか住めない潔癖症。超獣特効を持ち\nたまに赤、エイリアンの攻撃力を下げる(範囲攻撃)"]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_red: 1, against_alien: 1, weaken_chance: 1, weaken_duration: 90, weaken_multiplier: 50}, {health: 750, knockbacks: 1, speed: 10, cost: 300, production_cooldown: 205, attack_cooldown: 18, range: 210, width: 320, area_effect: 1, damage_0: 66, attack_time_0: 25, trigger_effects_0: 1, against_red: 1, against_alien: 1, weaken_chance: 50, weaken_duration: 90, weaken_multiplier: 50, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 57}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   672:
     name: [早乙女らんま(レオタード), 早乙女らんま(チアガール)]
     desc: ["『らんま1/2』より参戦！レオタードに身を包み\n華麗なクラブさばきで新体操の勝負に挑む\n黒い敵と天使の動きを必ず一瞬止める(遠方範囲攻撃)\nサオトメランマ", "『らんま1/2』より参戦！純粋な格闘勝負だけでなく\nチアリーディングでも熱いバトルを繰り広げる\n黒い敵と天使の動きを必ず一瞬止める(遠方範囲攻撃)\nサオトメランマ"]
@@ -7969,9 +8010,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   726:
-    name: [忍者娘トモエ, 食道楽忍者トモエ]
-    desc: ["異世界からやってきた絶命系忍者娘。隠れ身の術中でも\n大好物のメロンパンがないとお腹が鳴ってすぐに見つかる\nたまに属性を持たない敵と悪魔の動きを止める\nニンジャムスメトモエ", "隙間ひとつあればどこにでも潜入できる忍者娘\n前金代わりのメロンパンを抱えて迷いなく任務を遂行\nたまに属性を持たない敵と悪魔の動きを止める\nショクドウラクニンジャトモエ"]
-    stat: [{health: 3000, knockbacks: 4, speed: 22, cost: 2800, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 810, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 540, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_aku: 1, against_white: 1, freeze_chance: 30, freeze_duration: 90, immune_surge: 1, attack_duration: 89}, {health: 4800, knockbacks: 4, speed: 22, cost: 2800, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1440, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 720, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_aku: 1, against_white: 1, freeze_chance: 50, freeze_duration: 90, immune_surge: 1, attack_duration: 89}]
+    name: [忍者娘トモエ, 食道楽忍者トモエ, 美食極楽忍者トモエ]
+    desc: ["異世界からやってきた絶命系忍者娘。隠れ身の術中でも\n大好物のメロンパンがないとお腹が鳴ってすぐに見つかる\nたまに属性を持たない敵と悪魔の動きを止める\nニンジャムスメトモエ", "隙間ひとつあればどこにでも潜入できる忍者娘\n前金代わりのメロンパンを抱えて迷いなく任務を遂行\nたまに属性を持たない敵と悪魔の動きを止める\nショクドウラクニンジャトモエ", "自ら旗揚げした激甘党の首領を務める忍者\nどんな依頼も引き受けるが報酬はスイーツ前払い\n属性を持たない敵と悪魔にめっぽう強く、たまに動きを止める\nビショクゴクラクニンジャトモエ"]
+    stat: [{health: 3000, knockbacks: 4, speed: 22, cost: 2800, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 810, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 540, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_aku: 1, against_white: 1, freeze_chance: 30, freeze_duration: 90, immune_surge: 1, attack_duration: 89}, {health: 4800, knockbacks: 4, speed: 22, cost: 2800, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1440, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 720, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_aku: 1, against_white: 1, freeze_chance: 50, freeze_duration: 90, immune_surge: 1, attack_duration: 89}, {health: 4800, knockbacks: 4, speed: 22, cost: 2800, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1600, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 800, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_aku: 1, against_white: 1, strong: 1, freeze_chance: 50, freeze_duration: 150, immune_surge: 1, attack_duration: 89}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -8652,8 +8693,8 @@ cats:
     desc: ["数々の事業を成功させた実績を持つと噂のビジネスマン\n利益計算と立ち回りの早さで右に出る者はいない\nメタルキラーを持ち、たまにメタルな敵を遅くする", "お金儲けのためなら手段を選ばないと噂のビジネスマン\n損得勘定と変わり身の早さで右に出る者はいない\nメタルキラーを持ち、たまにメタルな敵を遅くする"]
     stat: [{health: 580, knockbacks: 3, speed: 16, cost: 460, production_cooldown: 400, attack_cooldown: 33, range: 250, width: 320, damage_0: 90, attack_time_0: 18, trigger_effects_0: 1, against_metal: 1, slow_chance: 30, slow_duration: 60, metal_killer: 10, extra_money: 1, attack_duration: 45}, {health: 720, knockbacks: 3, speed: 16, cost: 460, production_cooldown: 400, attack_cooldown: 33, range: 250, width: 320, damage_0: 115, attack_time_0: 18, trigger_effects_0: 1, against_metal: 1, slow_chance: 30, slow_duration: 60, metal_killer: 10, extra_money: 1, attack_duration: 45}]
     rarity: 1
-    max_level: 60
-    growth: [20, 20, 20, 20, 20, 20]
+    max_level: 65
+    growth: [20, 20, 20, 20, 20, 20, 10]
   824:
     name: [ネコ店長＆ネコ店員, ネコ店長＆ネコ店員CC]
     desc: ["にゃんこ大商店から参戦！いつかは自分の店をもちたい\n雇われ店長と、優秀だけどうっかりもののアルバイト店員\nメタルな敵に打たれ強く、たまに動きを一瞬止める\nネコテンチョウアンドネコテンイン", "にゃんこ大商店から参戦！二人とも住み込みで働きながら\nオーナーが発注した売れそうにない商品に頭を悩ませている\nメタルな敵に打たれ強く、必ず動きを一瞬止める\nネコテンチョウアンドネコテンインシーシー"]
@@ -8955,6 +8996,41 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  867:
+    name: [パックマン, パックマンネコ]
+    desc: ["「パックマン」から参戦！いつも元気でハッピー\nなんでもパクパクと食べるのが大好き！\n赤い敵とゾンビに打たれ強い\nパックマン", "いつも元気でハッピーな黄色くてまるい体のネコ\nネコカンばかりパクパクと食べるのが大好き！\n赤い敵とゾンビに打たれ強い\nパックマンネコ"]
+    stat: [{health: 2400, knockbacks: 2, speed: 28, cost: 820, production_cooldown: 300, range: 100, width: 320, damage_0: 28, attack_time_0: 5, trigger_effects_0: 1, against_red: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, attack_duration: 8}, {health: 2400, knockbacks: 2, speed: 28, cost: 820, production_cooldown: 300, range: 100, width: 320, damage_0: 28, attack_time_0: 5, trigger_effects_0: 1, against_red: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, attack_duration: 8}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  868:
+    name: [ネコブリンキー, ネコブリンキーCC]
+    desc: ["すばやいブリンキーになりきる被り物をしたネコ\n見た目は変わっても移動速度はそのまま\nたまにエイリアンの攻撃を無効化する\nネコブリンキー", "ブリンキーの速さに憧れて筋肉を鍛えたネコ\n腕を振ると前よりすばやくなった気がする\nたまにエイリアンの攻撃を無効化する\nネコブリンキーシーシー"]
+    stat: [{health: 200, knockbacks: 3, speed: 10, cost: 70, production_cooldown: 110, attack_cooldown: 15, range: 130, width: 320, damage_0: 8, attack_time_0: 8, trigger_effects_0: 1, against_alien: 1, dodge_chance: 10, dodge_duration: 60, attack_duration: 17}, {health: 200, knockbacks: 3, speed: 10, cost: 70, production_cooldown: 110, attack_cooldown: 15, range: 130, width: 320, damage_0: 8, attack_time_0: 8, trigger_effects_0: 1, against_alien: 1, dodge_chance: 10, dodge_duration: 60, attack_duration: 15}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  869:
+    name: [ネコインキー, ネコインキーCC]
+    desc: ["シャイなインキーの被り物をしたタンクネコ\n近付かれるとおじぎで目線をそらす\n爆波によるダメージを無効にする\nネコインキー", "行動が読めないインキーに憧れるネコカベ\n気まぐれで立ったり倒れたりする\n爆波によるダメージを無効にする\nネコインキーシーシー"]
+    stat: [{health: 600, knockbacks: 1, speed: 8, cost: 150, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 4, attack_time_0: 8, trigger_effects_0: 1, immune_explosion: 1, attack_duration: 15}, {health: 600, knockbacks: 1, speed: 8, cost: 150, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 4, attack_time_0: 8, trigger_effects_0: 1, immune_explosion: 1, attack_duration: 15}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  870:
+    name: [鉄腕！東雲寺あかね, それいけ！東雲寺あかね]
+    desc: ["誰も使いこなせずにいたパワードスーツに偶然適合した少女\n放課後は町の平和活動に協力している(範囲攻撃)\n赤い敵と黒い敵しか攻撃できないがたまに攻撃を無効化する\nテツワントウウンジアカネ", "メイド喫茶のバイト中に戦いに巻き込まれてしまった少女\n強化されたパワードスーツで悪党共は強制退店(範囲攻撃)\n赤い敵と黒い敵しか攻撃できないがたまに攻撃を無効化する\nソレイケトウウンジアカネ"]
+    stat: [{health: 10400, knockbacks: 2, speed: 7, cost: 3300, production_cooldown: 1600, attack_cooldown: 81, range: 415, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 88, trigger_effects_0: 1, against_red: 1, against_black: 1, against_only: 1, freeze_chance: 50, freeze_duration: 120, dodge_chance: 60, dodge_duration: 30, immune_knockback: 1, attack_duration: 155}, {health: 13000, knockbacks: 2, speed: 7, cost: 3300, production_cooldown: 1600, attack_cooldown: 81, range: 415, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 88, trigger_effects_0: 1, against_red: 1, against_black: 1, against_only: 1, freeze_chance: 50, freeze_duration: 120, dodge_chance: 60, dodge_duration: 30, immune_knockback: 1, attack_duration: 155}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  871:
+    name: ['古びたタマゴ:N207', '黒いタマゴ:N207', 成金ネコ]
+    desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N207」と小さく刻まれているように見えるが…\nフルビタタマゴ", "黒いボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\nごくたまに黒い敵と天使の攻撃力を下げる\nクロイタマゴ", "仕事で大成功しこの世の夏を謳歌するネコ。全事業を\nビジネスパートナーに丸投げし更なる高みを目指す\nたまに黒い敵と天使の攻撃力を下げ、小波動を放つ\nナリキンネコ"]
+    stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_black: 1, against_angel: 1, weaken_chance: 1, weaken_duration: 120, weaken_multiplier: 50}, {health: 670, knockbacks: 2, speed: 8, cost: 400, production_cooldown: 310, attack_cooldown: 40, range: 280, width: 320, area_effect: 1, damage_0: 120, attack_time_0: 25, trigger_effects_0: 1, against_black: 1, against_angel: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, wave_level: 2, wave_mini: 50, attack_duration: 74}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14673,6 +14749,48 @@ gacha:
     series_id: 34
     name: 新たな超激レア「衛宮士郎」「真アサシン」参戦！★コラボガチャの詳細はバナーをタップ!!
     rate: no_legend
+  1067:
+    cats: [870, 764, 669, 618, 520, 456, 428, 144, 60, 58, 45, 44, 43, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 1
+    name: 召喚能力を持つキャラクター「ネコダイナザウルス」参戦！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 99
+  1068:
+    cats: [870, 764, 669, 618, 520, 456, 428, 144, 60, 58, 45, 44, 43, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 1
+    name: 召喚能力を持つキャラクター「ネコダイナザウルス」参戦！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 99
+  1069:
+    cats: [870, 862, 851, 838, 831, 818, 812, 800, 782, 780, 775, 770, 764, 761, 755, 734, 732, 724, 720, 716, 713, 699, 693, 691, 675, 669, 661, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 595, 586, 570, 547, 535, 534, 530, 526, 524, 523, 496, 520, 506, 503, 497, 440, 437, 432, 428, 418, 402, 397, 381, 378, 377, 362, 361, 360, 356, 352, 339, 326, 323, 319, 317, 307, 306, 305, 308, 309, 273, 272, 270, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 19
+    name: 限定キャラ「幼騎士ルーノ」参戦！★超激レア出現率アップの「超ネコ祭」開催中!!
+    rate: uberfest_legend
+    similarity: 99
+  1070:
+    cats: [870, 862, 860, 851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 27
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」登場！★詳細はバナーをタップ!!
+    rate: uberfest_legend
+    similarity: 99
+  1071:
+    cats: [870, 862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 21
+    name: 超激レアのキャラクターが必ず１体手に入る「プラチナガチャ」！
+    rate: platinum
+    similarity: 99
+  1072:
+    cats: [870, 862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 46
+    name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
+    rate: legend
+    similarity: 99
+  1073:
+    cats: [276, 355, 439, 564, 667, 821, 646, 668, 685, 277, 277, 277, 566, 566, 566, 567, 567, 567, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 64
+    name: 新キャラ登場！開放的な夏限定のキャラクターをGET！★詳細はバナーをタップ!!
+    rate: no_legend
+    similarity: 96
 events:
   2018-09-15_320:
     start_on: 2018-09-15
