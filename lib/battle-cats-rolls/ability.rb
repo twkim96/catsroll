@@ -305,7 +305,7 @@ module BattleCatsRolls
 
       def display values=nil, &block
         sprintf(
-          '%{chance} to become invulnerable for %{duration}',
+          '%{chance} to become invulnerable when hit for %{duration}',
           values || display_values(&block))
       end
 
