@@ -73,6 +73,14 @@ module BattleCatsRolls
     class IncreaseSpeed < Talent
       include TalentUtility
 
+      def augment_module
+        AugmentModule.new(talent = self) do
+          define_method(:speed) do
+            super() + talent.max
+          end
+        end
+      end
+
       def name
         'Increase'
       end
@@ -88,6 +96,14 @@ module BattleCatsRolls
     class ReduceCost < Talent
       include TalentUtility
 
+      def augment_module
+        AugmentModule.new(talent = self) do
+          define_method(:production_cost) do
+            super() - talent.max
+          end
+        end
+      end
+
       def name
         'Reduce'
       end
@@ -96,8 +112,6 @@ module BattleCatsRolls
         "#{highlight('Cost')} by #{min} ~ #{highlight(max)} by #{level} levels"
       end
 
-      private
-
       def min
         (super * chapter2_cost_multiplier).round
       end
@@ -105,6 +119,8 @@ module BattleCatsRolls
       def max
         (super * chapter2_cost_multiplier).round
       end
+
+      private
 
       def chapter2_cost_multiplier
         1.5

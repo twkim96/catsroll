@@ -586,7 +586,7 @@ module BattleCatsRolls
       end
     end
 
-    def stat_augmented stat, from, value
+    def stat_augmented stat, from, value=stat.public_send(from)
       if stat.talent? && talent = stat.augmenting_talent(from)
         style = if talent.ultra?
           'augmented_ultra'

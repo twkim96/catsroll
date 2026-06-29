@@ -16,11 +16,11 @@
     <td><%= l10n('Knockback times') %></td>
     <td><%= stat.knockbacks %></td>
     <td><%= l10n('Speed') %></td>
-    <td><%= stat_speed(stat.speed) %></td>
+    <td><%= stat_augmented(stat, :speed, stat_speed(stat.speed)) %></td>
   </tr>
   <tr class="border_middle">
     <td><%= l10n('Production cost') %></td>
-    <td><%= stat.production_cost %></td>
+    <td><%= stat_augmented(stat, :production_cost) %></td>
     <td><%= l10n('Production cooldown') %></td>
     <td><%= stat_time stat.production_cooldown %></td>
     <td><%= l10n('Attack cooldown') %></td>
@@ -47,11 +47,11 @@
   <% if stat.attacks.size > 1 %>
   <tr class="border_middle">
     <td><%= l10n('DPS sum') %></td>
-    <td><%= stat_int(stat.dps_sum) %></td>
+    <td><%= stat_augmented(stat, :damage_raw, stat_int(stat.dps_sum)) %></td>
     <td><%= l10n('Max DPS area') %></td>
     <td><%= stat_range stat.max_dps_area %></td>
     <td><%= l10n('Damage sum') %></td>
-    <td><%= stat.damage_sum %></td>
+    <td><%= stat_augmented(stat, :damage_raw, stat.damage_sum) %></td>
   </tr>
   <% end %>
   <% each_attack(stat) do |attack| %>

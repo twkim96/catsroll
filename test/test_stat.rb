@@ -1,6 +1,7 @@
 
 require 'pork/auto'
 require 'battle-cats-rolls/stat'
+require 'battle-cats-rolls/talent'
 require 'battle-cats-rolls/route'
 
 describe BattleCatsRolls::Stat do
@@ -11,13 +12,30 @@ describe BattleCatsRolls::Stat do
   def index = 0
   def sum_no_wave = nil
   def dps_no_critical = nil
+  def exclude_talents = true
 
   def stat
-    @stat ||= BattleCatsRolls::Stat.new(
+    @stat ||= if exclude_talents
+      build_stat
+    else
+      BattleCatsRolls::Talent.augment(talents, build_stat)
+    end
+  end
+
+  def talents
+    @talents ||= BattleCatsRolls::Talent.build(info)
+  end
+
+  def info
+    @info ||= BattleCatsRolls::Route.public_send("ball_#{lang}").cats[id]
+  end
+
+  def build_stat
+    BattleCatsRolls::Stat.new(
       id: id, index: index, level: level,
       sum_no_wave: sum_no_wave,
       dps_no_critical: dps_no_critical,
-      info: BattleCatsRolls::Route.public_send("ball_#{lang}").cats[id])
+      info: info)
   end
 
   describe 'cats without triggering effects can trigger effects' do
@@ -42,45 +60,63 @@ describe BattleCatsRolls::Stat do
   end
 
   describe 'correct health by correct level multiplier' do
-    copy :check_health do
+    copy do
       would 'be correct' do
-        expect(stat.health).eq health
+        expect(stat.health).eq expected_health
       end
     end
 
     describe 'Gacha Cat' do
       def id = 559
       def level = 50
-      def health = 153000
-      paste :check_health
+      def expected_health = 153000
+
+      paste
     end
 
     describe 'Pogo Cat' do
       def id = 38
       def level = 130
-      def health = 14100
-      paste :check_health
+      def expected_health = 14100
+
+      paste
+
+      describe 'with talents' do
+        def exclude_talents = false
+
+        paste
+
+        describe 'Jiangshi Cat' do
+          def index = 2
+          def expected_health = 22560
+
+          paste
+        end
+      end
     end
 
     describe 'Crazed Titan Cat' do
       def id = 100
       def level = 30
-      def health = 52200
-      paste :check_health
+      def expected_health = 52200
+
+      paste
     end
 
     describe 'Bahamut Cat' do
       def id = 26
       def level = 50
-      def health = 33000
-      paste :check_health
+      def expected_health = 33000
+
+      paste
     end
 
     describe 'Bahamut Cat capped at level 50' do
       def id = 26
       def level = 999
-      def health = 33000
-      paste :check_health
+      def expected_health = 33000
+
+      paste
     end
   end
 
@@ -115,10 +151,7 @@ describe BattleCatsRolls::Stat do
     describe 'Lasvoss Reborn' do
       def id = 520
       def index = 2
-
-      def expected_dps
-        14688
-      end
+      def expected_dps = 14688
 
       copy do
         would 'return correct DPS' do
@@ -134,10 +167,21 @@ describe BattleCatsRolls::Stat do
 
       describe 'but can be disabled' do
         def dps_no_critical = true
+        def expected_dps = 9180
 
-        def expected_dps
-          9180
+        paste
+
+        describe 'with talents' do
+          def exclude_talents = false
+          def expected_dps =  11016
+
+          paste
         end
+      end
+
+      describe 'with talents' do
+        def exclude_talents = false
+        def expected_dps = 17625.6
 
         paste
       end
@@ -249,6 +293,73 @@ describe BattleCatsRolls::Stat do
 
         expect(stat.attacks.map(&:dps).map(&:round)).eq \
           all_dps.map(&:round)
+      end
+    end
+  end
+
+  describe 'augmenting with talents' do
+    def index = 2
+    def exclude_talents = false
+
+    describe 'Can Can Cat' do
+      def id = 33
+
+      would 'have augmented attributes' do
+        expect(stat.speed).eq 21
+      end
+
+      copy do
+        would 'not have augmented attributes' do
+          expect(stat.speed).eq 11
+        end
+      end
+
+      describe 'with base form' do
+        def index = 0
+        paste
+      end
+
+      describe 'with evolved form' do
+        def index = 1
+        paste
+      end
+    end
+
+    describe 'The Grey Fox' do
+      def id = 213
+
+      would 'have augmented attributes' do
+        expect(stat.health).eq 58752
+        expect(stat.damage_sum).eq 40392
+        expect(stat.production_cost).eq 4725
+      end
+
+      describe 'with ultra form' do
+        def index = 3
+
+        would 'have augmented attributes' do
+          expect(stat.health).eq 81600
+          expect(stat.damage_sum).eq 59160
+          expect(stat.production_cost).eq 4725
+        end
+      end
+
+      copy do
+        would 'not have augmented attributes' do
+          expect(stat.health).eq 48960
+          expect(stat.damage_sum).eq 33660
+          expect(stat.production_cost).eq 5325
+        end
+      end
+
+      describe 'with base form' do
+        def index = 0
+        paste
+      end
+
+      describe 'with evolved form' do
+        def index = 1
+        paste
       end
     end
   end
