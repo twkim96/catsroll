@@ -428,7 +428,7 @@ int main(int argc, char* argv[]) {
     run_search_threads(threads, args, thread_count, method, low, high);
 
 
-    if (found_seeds != 1 && cats[0].rarity == RARE) { // assume the first cat was the result of a duplicate rare
+    if (found_seeds == 0 && cats[0].rarity == RARE) { // assume the first cat was the result of a duplicate rare
 
         if (cats[0].slot == 0) { // run type 2 is conceptually invalid when slot is 0
             RUN = 1;
@@ -447,7 +447,7 @@ int main(int argc, char* argv[]) {
 
             run_search_threads(threads, args, thread_count, method, low, high);
 
-            if (found_seeds != 1) {
+            if (found_seeds == 0) {
                 RUN = prefer_run_1 ? 2 : 1;
                 run_search_threads(threads, args, thread_count, method, low, high);
             }
