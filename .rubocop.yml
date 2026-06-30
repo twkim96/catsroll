@@ -110,6 +110,9 @@ Style/EachWithObject:
 Style/EmptyCaseCondition:
   Enabled: false
 
+Style/EmptyMethod:
+  Enabled: false
+
 Style/FormatString:
   EnforcedStyle: sprintf
 
@@ -137,6 +140,9 @@ Style/MultipleComparison:
   ComparisonsThreshold: 4
 
 Style/MultilineBlockChain:
+  Enabled: false
+
+Style/Next:
   Enabled: false
 
 Style/NumericLiterals:
