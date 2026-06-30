@@ -193,6 +193,22 @@ JS는 32-bit 비트연산이라 그대로 옮기되 비교/나머지는 `>>> 0`(
   렌더 후 `syncForm`으로 seed/pos/last/count/event/find/ubers 갱신.
 - **SW 검은 화면**: install precache 누락 → 위 "오프라인" 참고.
 
+### 코드리뷰 반영 (추가 수정)
+- **compute=client 직접 링크 빈 화면**: 새 브라우저(localStorage off)에서 `?compute=client`
+  링크는 서버가 표를 스킵하는데 클라도 안 그렸음 → `enabled()`가 URL의 `compute=client`도
+  활성으로 취급.
+- **SW ignoreSearch 오염**: 모든 요청에 ignoreSearch 폴백을 써서 오프라인 `/track.json?event=A`가
+  B를 반환할 수 있었음 → ignoreSearch는 `/asset/*` 정적 자산에만 적용.
+- **SHELL 오염**: 어떤 navigation이든 SHELL로 저장 → `/cats/...` 방문 뒤 오프라인 셸이 cats
+  페이지가 될 수 있었음 → SHELL 갱신은 pathname `/`일 때만.
+- **guaranteed 파라미터 누락**: `force_guaranteed`/`no_guaranteed`를 엔진에 안 넘겨 서버와
+  guaranteed/found_cats가 갈렸음 → `guaranteedRolls = force_guaranteed || pool`, `guaranteed
+  = !no_guaranteed` 전달.
+- **custom 확률 누락**: custom gacha의 `rate/c_rare/c_supa/c_uber`가 `/track.json` URL/캐시
+  키에서 빠져 기본 확률로 렌더됐음 → 네 값을 `TrackData.load`/URL/cache key에 포함.
+- **[캐시 제거] stale**: SW 캐시만 지우고 `TrackData` 메모리/sessionStorage는 남았음 →
+  `TrackData.clear()`로 `track|` 키와 메모리도 비움.
+
 ## 남은 부가 항목 (선택)
 - 메인 페이지 상단 `information.erb`(배너 정보 패널)는 클라 렌더 미포함(메인 트랙 표·found_cats는 완전 일치).
 - recent-seeds 패널 링크(#content 밖)는 가로채지 않음 → 클릭 시 전체 내비게이션.
