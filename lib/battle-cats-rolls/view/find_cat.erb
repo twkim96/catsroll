@@ -1,4 +1,4 @@
-<% if arg && route.path_info == '/' %>
+<% if (arg || route.compute_client?) && route.path_info == '/' %>
 <div class="find">
   <label for="find_select" title="Highlight the cat in the tracks selected here">Find next:</label>
   <select id="find_select" name="find" onchange="roll(this)">
@@ -58,6 +58,14 @@
         <%= selected_ubers(n) %>><%= n %></option>
     <% end %>
   </select>
+
+  <span id="client-compute" class="client-compute">
+    <label title="Compute and render the tracks in your browser instead of on the server">
+      <input type="checkbox" id="client-compute-toggle"> 내 기기 연산
+    </label>
+    <span id="client-compute-status"></span>
+    <a href="#" id="client-compute-clear" title="Unregister the offline service worker and clear its cache">[캐시 제거]</a>
+  </span>
 </div>
 <% else %>
 <%= hidden_inputs('find', 'no_guaranteed', 'force_guaranteed', 'ubers') %>
