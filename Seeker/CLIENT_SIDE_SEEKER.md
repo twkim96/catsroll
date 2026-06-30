@@ -9,7 +9,7 @@
 | 기능 | 방향 | 위치 | 연산 성격 | 상태 |
 |---|---|---|---|---|
 | **A. 시드 찾기 (Seeker)** | 롤(뽑은 캐트들) → 시드 | `/seek` | 2^32 브루트포스 → **WASM** | ✅ 완료 |
-| **B. 트랙 렌더 (Tracker)** | 시드 → 배열(트랙) | `/?seed=...&event=...&lang=...` | 정방향 시뮬레이션 → **순수 JS** | ⏳ 계획 (본 목표) |
+| **B. 트랙 렌더 (Tracker)** | 시드 → 배열(트랙) | `/?seed=...&event=...&lang=...` | 정방향 시뮬레이션 → **순수 JS** | ✅ 구현 완료 (라이브 테스트 대기) |
 
 - A는 "내가 뽑은 캐트들로 내 시드를 알아내기". 브루트포스라 WASM이 필요했다.
 - B는 "시드를 넣으면 그 시드로 뽑히는 캐트 순서(트랙)를 예측하기". 메인 페이지가 하는 일.
@@ -194,7 +194,13 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     ubers, find, details+both 콤보} = 72조합 `<table>` 일치.
   - 남음(부가): 상단 `found_cats.erb`(찾은 캐트 요약 패널) 렌더는 미포함 — 메인
     트랙 표는 완전 일치. 필요 시 B-6에서 함께 처리.
-- [ ] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색(시드/포지션 즉시 갱신)
+- [x] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색 → `asset/track-client.js` (신규)
+  - 토글(localStorage 영속). 켜면: 시드 폼 submit, `roll()`/`pick()`, 트랙 내비 링크,
+    popstate를 가로채 `TrackData`(fetch/캐시) + `TrackEngine`(롤) + `TrackRender`(표)로
+    로컬 계산·렌더 + `history.pushState`. 끄면 서버 렌더로 그대로 복귀(동작 불변).
+  - 토글·스크립트는 `index.erb`에만 추가(layout/options/control 불간섭) — 충돌 표면 최소.
+  - 페이지 렌더·자산 서빙·JS 문법 확인 완료. 실제 브라우저 상호작용(클릭/pushState)은
+    배포 후 라이브 테스트로 검증 예정.
 
 건드리지 않는 것: 서버 트랙 라우트/렌더, `gacha.rb`/`route.rb` 등 서버 로직,
 Feature A의 모든 것.
