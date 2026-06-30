@@ -212,16 +212,17 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     `buildFoundResults`로 `[{cat, numbers}]` 생성. 표 앞에 주입.
   - 검증: platinum/normal/g11/g15 + find= 케이스에서 서버 `found_cats`와 일치.
 - [x] Stage 2: 오프라인(Service Worker) → `asset/sw.js` (신규)
-  - 전략: same-origin GET에 **network-first + 캐시 폴백**. 온라인 동작 불변(항상
-    네트워크 먼저), 1회 온라인 방문 후엔 셸/자산/`track.json`이 캐시돼 **오프라인**
-    (비행기모드/새로고침)에서도 트랙 렌더. 내비게이션은 SHELL 키로 폴백.
-  - 서빙: `server.rb` rewrite에 `'/sw.js' => '/sw.js'` 한 줄 추가 → 루트 스코프(`/`)에서
-    `text/javascript`로 서빙(SW는 스코프 때문에 루트에 있어야 함).
-  - 안전: SW 등록을 **토글과 분리** — 클라 모드 첫 ON 시 1회만 `register('/sw.js')`,
-    이후 유지(따닥 토글해도 SW 처닝 없음). 명시적 "[오프라인 캐시 비우기]" 링크로만
-    `unregister` + `caches` 삭제. `sw.js`의 `KILL=true` 배포 시 다음 활성화에서
-    자가 unregister + 전체 캐시 삭제(원격 킬스위치). activate에서 옛 버전 캐시 정리.
-  - 부트스트랩 한계: 생애 첫 1회는 온라인 방문이 있어야 SW가 깔림.
+  - 전략: **install 때 셸(`/`)+핵심 자산 precache** (install은 첫 방문 온라인에 실행되어
+    SW가 그 페이지를 아직 제어 안 해도 확실히 캐시됨) + 런타임 network-first + 캐시 폴백.
+    온라인 동작 불변. 오프라인: 내비게이션→precache 셸, 자산→캐시(ignoreSearch로 digest
+    URL도 매칭), track.json→same-tab sessionStorage 또는 캐시 → 트랙 렌더.
+  - 서빙: `server.rb` rewrite에 `'/sw.js' => '/sw.js'` 한 줄 → 루트 스코프 text/javascript.
+  - 안전: 등록을 **토글과 분리**(첫 ON 시 1회 register, 유지). "[오프라인 캐시 비우기]"로만
+    unregister+캐시삭제. `KILL=true` 배포 시 자가 unregister(원격 킬스위치). activate에서
+    옛 버전 캐시 정리(`bcr-client-v2`).
+  - 부트스트랩 한계: 생애 첫 1회 온라인 방문 필요.
+  - 주의: 첫 방문에서 SW는 그 페이지를 제어하지 못하므로 런타임 캐시만으론 셸이 안 잡힘
+    → install precache로 해결(이전 v1은 검은 503 화면이 떴음).
 
 건드리지 않는 것: 서버 트랙 라우트/렌더, `gacha.rb`/`route.rb` 등 서버 로직,
 Feature A의 모든 것.
