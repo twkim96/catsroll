@@ -63,9 +63,7 @@
   a newer version apk and use that instead.
 * Tracking history (by recording rolls we click)
 * Normal gacha banners and tracks
-* Client-side seed seeker ("내 기기 연산" option)
-  See the staged plan and option design in `Seeker/CLIENT_SIDE_SEEKER.md`.
-  Stage 1 (client WASM seek) must not touch the existing server seek logic.
+* Client-side seed seeker
 
 ## Architecture
 

@@ -2,6 +2,7 @@
 
 require_relative 'root'
 require_relative 'web'
+require_relative 'track_api'
 
 require 'jellyfish'
 require 'rack'
@@ -63,6 +64,10 @@ module BattleCatsRolls
 
     map '/seek', to: '/seek', host: SeekHost do
       run Web::Seek.new
+    end
+
+    map '/track.json', to: '/track.json', host: WebHost do
+      run TrackApi.new
     end
 
     map '/', host: WebHost do
