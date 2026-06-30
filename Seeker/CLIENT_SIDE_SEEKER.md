@@ -192,8 +192,8 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     ubers(미래 우버 풀)을 서버와 동일 처리.
   - 검증: 4 이벤트 × 2 시드 × {pos, last, pick, pick+X, pick+G, pick+GX,
     ubers, find, details+both 콤보} = 72조합 `<table>` 일치.
-  - 남음(부가): 상단 `found_cats.erb`(찾은 캐트 요약 패널) 렌더는 미포함 — 메인
-    트랙 표는 완전 일치. 필요 시 B-6에서 함께 처리.
+  - 남음(부가): 상단 `information.erb`(배너 정보 패널) 렌더는 미포함. `found_cats`는
+    포팅 완료(아래 B-6 참고).
 - [x] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색 → `asset/track-client.js` (신규)
   - 토글(localStorage 영속). 켜면: 시드 폼 submit, `roll()`/`pick()`, 트랙 내비 링크,
     popstate를 가로채 `TrackData` + `TrackEngine` + `TrackRender`로 로컬 계산·렌더 +
@@ -207,6 +207,10 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     서버는 표를 안 그리고 폼+토글+스크립트만 내려주고, 브라우저가 표를 렌더.
   - 서버 변경(국소): `route.rb`에 `compute`/`compute_client?` 접근자 + default_query
     keys에 `:compute` 추가, `web.rb` `/` 핸들러 조건 한 줄.
+- [x] found_cats 패널도 클라 렌더 (`track-render.js` renderFoundCats)
+  - 엔진 `runFindCat`를 순서 보존(Map) + occurrences/missing까지 풀 포팅,
+    `buildFoundResults`로 `[{cat, numbers}]` 생성. 표 앞에 주입.
+  - 검증: platinum/normal/g11/g15 + find= 케이스에서 서버 `found_cats`와 일치.
 
 건드리지 않는 것: 서버 트랙 라우트/렌더, `gacha.rb`/`route.rb` 등 서버 로직,
 Feature A의 모든 것.
