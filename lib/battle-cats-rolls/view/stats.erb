@@ -22,17 +22,17 @@
     <td><%= l10n('Production cost') %></td>
     <td><%= stat_augmented(stat, :production_cost) %></td>
     <td><%= l10n('Production cooldown') %></td>
-    <td><%= stat_time stat.production_cooldown %></td>
+    <td><%= stat_augmented(stat, :production_cooldown, stat_time(stat.production_cooldown)) %></td>
     <td><%= l10n('Attack cooldown') %></td>
-    <td><%= stat_time stat.attack_cooldown %></td>
+    <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.attack_cooldown)) %></td>
   </tr>
   <tr class="border_middle">
     <td><%= l10n('Attack cycle') %></td>
-    <td><%= stat_time stat.attack_cycle %></td>
+    <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.attack_cycle)) %></td>
     <td><%= l10n('Attack duration') %></td>
     <td><%= stat_time stat.attack_duration %></td>
     <td><%= l10n('Push duration') %></td>
-    <td><%= stat_time stat.push_duration %></td>
+    <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.push_duration)) %></td>
   </tr>
   <% if stat.long_range? %>
   <tr class="border_middle">

@@ -151,6 +151,19 @@ module BattleCatsRolls
 
         "#{highlight('Production cooldown')} by #{values} by #{level} levels"
       end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:production_cooldown) do
+            super() - talent.max
+          end
+        end
+      end
+
+      def augment_attributes
+        [:production_cooldown]
+      end
     end
 
     class ReduceAttackCooldown < Talent
@@ -164,6 +177,19 @@ module BattleCatsRolls
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "#{highlight('Attack cooldown')} by #{values} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:attack_cooldown) do
+            (super() * (100 - talent.max)) / 100
+          end
+        end
+      end
+
+      def augment_attributes
+        [:attack_cooldown, :dps] # rubocop:disable Style/SymbolArray
       end
     end
 

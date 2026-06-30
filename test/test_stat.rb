@@ -357,6 +357,56 @@ describe BattleCatsRolls::Stat do
         paste
       end
     end
+
+    describe 'Lasvoss Reborn' do
+      def id = 520
+
+      would 'have augmented attributes' do
+        expect(stat.health).eq 81600
+        expect(stat.dps_sum.round).eq 17626
+        expect(stat.production_cooldown).eq 1936
+      end
+
+      copy do
+        would 'not have augmented attributes' do
+          expect(stat.health).eq 34000
+          expect(stat.dps_sum.round).eq 9792
+          expect(stat.production_cooldown).eq 2136
+        end
+      end
+
+      describe 'with base form' do
+        def index = 0
+        paste
+      end
+
+      describe 'with evolved form' do
+        def index = 1
+        paste
+      end
+    end
+
+    describe 'Almighty Anubis' do
+      def id = 259
+
+      would 'have augmented attributes' do
+        expect(stat.health).eq 81600
+        expect(stat.dps_sum.round).eq 13643
+        expect(stat.attack_cooldown).eq 39
+        expect(stat.production_cost).eq 3600
+      end
+
+      describe 'when talents are excluded' do
+        def exclude_talents = true
+
+        would 'not have augmented attributes' do
+          expect(stat.health).eq 68000
+          expect(stat.dps_sum.round).eq 6685
+          expect(stat.attack_cooldown).eq 152
+          expect(stat.production_cost).eq 4200
+        end
+      end
+    end
   end
 
   describe '#max_dps_area' do
