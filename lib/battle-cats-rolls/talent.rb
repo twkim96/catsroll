@@ -23,6 +23,14 @@ module BattleCatsRolls
     class IncreaseHealth < Talent
       include TalentUtility
 
+      def name
+        'Increase'
+      end
+
+      def display
+        "#{highlight('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
+      end
+
       def augment_module
         talent = self
         Module.new do
@@ -35,18 +43,18 @@ module BattleCatsRolls
       def augment_attributes
         [:health]
       end
+    end
+
+    class IncreaseDamage < Talent
+      include TalentUtility
 
       def name
         'Increase'
       end
 
       def display
-        "#{highlight('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
+        "#{highlight('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
       end
-    end
-
-    class IncreaseDamage < Talent
-      include TalentUtility
 
       def augment_module
         talent = self
@@ -61,18 +69,21 @@ module BattleCatsRolls
       def augment_attributes
         [:damage, :dps] # rubocop:disable Style/SymbolArray
       end
+    end
+
+    class IncreaseSpeed < Talent
+      include TalentUtility
 
       def name
         'Increase'
       end
 
       def display
-        "#{highlight('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
-      end
-    end
+        show = yield.method(:stat_speed)
 
-    class IncreaseSpeed < Talent
-      include TalentUtility
+        "#{highlight('Speed')} by" \
+          " #{show[min]} ~ #{highlight(show[max])} by #{level} levels"
+      end
 
       def augment_module
         talent = self
@@ -86,21 +97,18 @@ module BattleCatsRolls
       def augment_attributes
         [:speed]
       end
-
-      def name
-        'Increase'
-      end
-
-      def display
-        show = yield.method(:stat_speed)
-
-        "#{highlight('Speed')} by" \
-          " #{show[min]} ~ #{highlight(show[max])} by #{level} levels"
-      end
     end
 
     class ReduceCost < Talent
       include TalentUtility
+
+      def name
+        'Reduce'
+      end
+
+      def display
+        "#{highlight('Cost')} by #{min} ~ #{highlight(max)} by #{level} levels"
+      end
 
       def augment_module
         talent = self
@@ -113,14 +121,6 @@ module BattleCatsRolls
 
       def augment_attributes
         [:production_cost]
-      end
-
-      def name
-        'Reduce'
-      end
-
-      def display
-        "#{highlight('Cost')} by #{min} ~ #{highlight(max)} by #{level} levels"
       end
 
       def min
