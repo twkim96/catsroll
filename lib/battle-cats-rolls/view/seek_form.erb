@@ -5,11 +5,26 @@
 
 <div class="form">
   <form method="post" action="//<%= route.seek_host %>/seek/enqueue"
-    enctype="application/x-www-form-urlencoded">
+    enctype="application/x-www-form-urlencoded"
+    data-rates="<%= route.seek_rates.join(' ') %>"
+    data-slots="<%= route.seek_slots.join(' ') %>"
+    data-track-base="<%= route.uri %>">
     <label for="seeker_select">Seeker:</label>
     <select id="seeker_select" name="seeker">
       <option value="VampireFlower" <%= selected_seeker('VampireFlower') %>>VampireFlower</option>
     </select>
+
+    <fieldset class="compute">
+      <legend>Compute (검색 위치):</legend>
+      <label>
+        <input type="radio" name="compute" value="server" checked="checked">
+        서버 연산 (Server)
+      </label>
+      <label>
+        <input type="radio" name="compute" value="client">
+        내 기기 연산 (My device)
+      </label>
+    </fieldset>
 
     <ol>
       <% 10.times do %>
@@ -41,3 +56,7 @@
     <input type="submit" value="Seek">
   </form>
 </div>
+
+<div id="client-seek-result" class="note"></div>
+
+<script type="text/javascript" src="/asset/seek-client.js"></script>

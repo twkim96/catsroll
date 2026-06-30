@@ -12,6 +12,12 @@ typedef uint32_t uint;
   #define atomic_fetch_add(x, v) InterlockedAdd(x, v)
   #define atomic_store(x, v) InterlockedExchange(x, v)
   #define PROCESS_PRIORITY_HIGH() SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS)
+#elif defined(SEEKER_WASM)
+  // Single-threaded WebAssembly build: no pthreads, no native main().
+  // The reusable algorithm functions/globals below are shared verbatim;
+  // the driver lives in Seeker-VampireFlower-wasm.c.
+  #include <stdatomic.h>
+  #define PROCESS_PRIORITY_HIGH() do {} while (0)
 #else
   #include <pthread.h>
   #include <stdatomic.h>
@@ -304,11 +310,13 @@ void find_seed_fast(ThreadArgs* arg) {
 }
 
 // pthread_create only accepts a symbol of void* func(void*)
+#ifndef SEEKER_WASM
 void* thread_func(void* arg) {
     ThreadArgs* args = (ThreadArgs*)arg; // type cast back to something meaningful
     find_seed_fast(args);
     return NULL;
 }
+#endif
 
 
 
@@ -322,6 +330,7 @@ bool determine_fastest_approach(uint rarity_range, uint rarity_count) {
 }
 
 
+#ifndef SEEKER_WASM
 int main(int argc, char** argv) {
     
     if (argc % 2 || argc < 9) {
@@ -423,3 +432,4 @@ int main(int argc, char** argv) {
 
     return 0;
 }
+#endif // SEEKER_WASM
