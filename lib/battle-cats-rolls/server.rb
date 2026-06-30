@@ -71,6 +71,10 @@ module BattleCatsRolls
       run TrackApi.new
     end
 
+    map '/events.json', to: '/events.json', host: WebHost do
+      run TrackApi.new
+    end
+
     map '/', host: WebHost do
       run Web.new
     end

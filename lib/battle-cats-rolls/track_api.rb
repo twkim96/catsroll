@@ -32,6 +32,32 @@ module BattleCatsRolls
       body JSON.generate(TrackApi.pool_data(route))
     end
 
+    # Lightweight region event list for client-side region switching: lets the
+    # browser repopulate the event dropdown without a full page reload.
+    # GET /events.json?lang=...  -> { current, upcoming:[{value,label}], past:[..] }
+    get '/events.json' do
+      route = Route.new(Request.new(env))
+
+      headers \
+        'content-type' => 'application/json; charset=utf-8',
+        'cache-control' => 'public, max-age=600'
+
+      body JSON.generate(TrackApi.events_data(route))
+    end
+
+    def self.events_data route
+      to_opt = lambda do |(event_name, info)|
+        { value: event_name,
+          label: "#{info['start_on']} ~ #{info['end_on']}: #{info['name']}" }
+      end
+
+      {
+        current: route.event,
+        upcoming: route.upcoming_events.map(&to_opt),
+        past: route.past_events.reverse.map(&to_opt)
+      }
+    end
+
     # Mirrors what Route#prepare_tracks feeds into Gacha, but as plain data.
     def self.pool_data route
       pool = route.gacha.pool
