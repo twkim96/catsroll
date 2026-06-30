@@ -142,6 +142,9 @@ Style/MultipleComparison:
 Style/MultilineBlockChain:
   Enabled: false
 
+Style/Next:
+  Enabled: false
+
 Style/NumericLiterals:
   Enabled: false
 
