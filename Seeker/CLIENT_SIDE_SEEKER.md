@@ -179,7 +179,13 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     id·score·slot·slot_seed·rarity_seed·next·rerolled·guaranteed·picked_label 전부 일치.
   - 검증 하네스는 임시(`tmp_verify2`)로 작성 후 제거. 회귀 시 재작성 가능.
   - (pick/pos/last는 엔진에 포팅됨. 전용 비교는 B-5에서.)
-- [ ] B-4: `table.erb` 구조·라벨·링크·이미지까지 **풀 렌더** (서버 HTML과 동일 산출)
+- [x] B-4: `table.erb` + view.rb td/link 헬퍼 풀 렌더 → `asset/track-render.js` (신규)
+  - number_td/seed_tds/score_tds/cat_tds/td_to_cat/link_to_roll/link_to_next/
+    link_to_cat/avatar_tag, color_rarity/color_label(exclusive/found/owned/picked),
+    expand_data_attrs, onclick_pick, uri_to_roll/uri_to_cat/backtrack/number_td URL.
+  - 엔드포인트에 렌더용 데이터 보강: cat별 `desc`(title용), `img`(요청 form 기준 해석).
+  - 검증: 서버가 그린 `<table>`과 클라 렌더를 URL/공백 정규화 후 구조 비교.
+    4 이벤트(normal/g11/g15/platinum) × 3 시드 × {text, text+details, both} = 36조합 일치.
 - [ ] B-5: find/pick/last/pos/ubers 등 부가 파라미터까지 패리티
 - [ ] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색(시드/포지션 즉시 갱신)
 

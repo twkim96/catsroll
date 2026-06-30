@@ -59,20 +59,26 @@ module BattleCatsRolls
           Cat::Uber => Array(slots[Cat::Uber]),
           Cat::Legend => Array(slots[Cat::Legend])
         },
-        cats: cats_data(pool, slots)
+        cats: cats_data(route, pool, slots)
       }
     end
 
-    # id => { name: [forms...], rarity: n }, only for cats that appear in slots.
-    def self.cats_data pool, slots
+    # id => { name: [forms...], desc: [forms...], rarity: n, img: src|nil }
+    # for cats that appear in slots. img is resolved for the requested form
+    # (route.name) + lang, mirroring Cat#pick_img_src (the server is the only
+    # side that knows which image files exist).
+    def self.cats_data route, pool, slots
       ids = slots.values.flatten.uniq
 
       ids.each_with_object({}) do |id, result|
         info = pool.dig_cat(id)
+        cat = Cat.new(id: id, info: info)
 
         result[id] = {
           name: info && info['name'],
-          rarity: info && info['rarity']
+          desc: info && info['desc'],
+          rarity: info && info['rarity'],
+          img: (cat.pick_img_src(route.name, route.lang) if info && id > 0)
         }
       end
     end
