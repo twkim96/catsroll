@@ -186,7 +186,14 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
   - 엔드포인트에 렌더용 데이터 보강: cat별 `desc`(title용), `img`(요청 form 기준 해석).
   - 검증: 서버가 그린 `<table>`과 클라 렌더를 URL/공백 정규화 후 구조 비교.
     4 이벤트(normal/g11/g15/platinum) × 3 시드 × {text, text+details, both} = 36조합 일치.
-- [ ] B-5: find/pick/last/pos/ubers 등 부가 파라미터까지 패리티
+- [x] B-5: find/pick/last/pos/ubers 부가 파라미터 패리티 (검증 완료)
+  - 엔진/렌더가 pos(next_position 회전), last(last_roll), pick(picked/
+    picked_consecutively/next_position; X 접두/ G 보장), find(found 색),
+    ubers(미래 우버 풀)을 서버와 동일 처리.
+  - 검증: 4 이벤트 × 2 시드 × {pos, last, pick, pick+X, pick+G, pick+GX,
+    ubers, find, details+both 콤보} = 72조합 `<table>` 일치.
+  - 남음(부가): 상단 `found_cats.erb`(찾은 캐트 요약 패널) 렌더는 미포함 — 메인
+    트랙 표는 완전 일치. 필요 시 B-6에서 함께 처리.
 - [ ] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색(시드/포지션 즉시 갱신)
 
 건드리지 않는 것: 서버 트랙 라우트/렌더, `gacha.rb`/`route.rb` 등 서버 로직,
