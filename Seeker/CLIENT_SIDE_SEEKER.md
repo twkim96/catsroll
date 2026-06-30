@@ -196,11 +196,17 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     트랙 표는 완전 일치. 필요 시 B-6에서 함께 처리.
 - [x] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색 → `asset/track-client.js` (신규)
   - 토글(localStorage 영속). 켜면: 시드 폼 submit, `roll()`/`pick()`, 트랙 내비 링크,
-    popstate를 가로채 `TrackData`(fetch/캐시) + `TrackEngine`(롤) + `TrackRender`(표)로
-    로컬 계산·렌더 + `history.pushState`. 끄면 서버 렌더로 그대로 복귀(동작 불변).
-  - 토글·스크립트는 `index.erb`에만 추가(layout/options/control 불간섭) — 충돌 표면 최소.
-  - 페이지 렌더·자산 서빙·JS 문법 확인 완료. 실제 브라우저 상호작용(클릭/pushState)은
-    배포 후 라이브 테스트로 검증 예정.
+    popstate를 가로채 `TrackData` + `TrackEngine` + `TrackRender`로 로컬 계산·렌더 +
+    `history.pushState`. 끄면 서버 렌더로 복귀(동작 불변).
+  - 인터셉션은 항상 설치하고 런타임에 `enabled()`로 게이트 → 토글을 켜는 즉시 적용
+    (리로드 불필요). 상태 표시: "✓ 내 기기에서 계산함 (서버 미사용)".
+  - 토글·스크립트는 `index.erb`에만 추가.
+- [x] 옵션1 (새로고침/직접링크에서도 서버 트랙 연산 스킵)
+  - 토글 ON 시 URL에 `compute=client`를 박아둠(replaceState). 서버 `/` 핸들러는
+    `show_tracks? && !compute_client?`일 때만 `prepare_tracks` 실행 → compute=client면
+    서버는 표를 안 그리고 폼+토글+스크립트만 내려주고, 브라우저가 표를 렌더.
+  - 서버 변경(국소): `route.rb`에 `compute`/`compute_client?` 접근자 + default_query
+    keys에 `:compute` 추가, `web.rb` `/` 핸들러 조건 한 줄.
 
 건드리지 않는 것: 서버 트랙 라우트/렌더, `gacha.rb`/`route.rb` 등 서버 로직,
 Feature A의 모든 것.

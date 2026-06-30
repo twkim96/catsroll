@@ -283,6 +283,16 @@ module BattleCatsRolls
       @find ||= request.params_coercion('find', :to_i)
     end
 
+    # 'client' means the browser computes/renders the track ("내 기기 연산"),
+    # so the server skips prepare_tracks. Absent/anything else = server render.
+    def compute
+      @compute ||= request.params_coercion_with_nil('compute', :to_s)
+    end
+
+    def compute_client?
+      compute == 'client'
+    end
+
     def last
       @last ||= request.params_coercion('last', :to_i)
     end
@@ -850,7 +860,7 @@ module BattleCatsRolls
     def default_query query={}, include_filters: false
       keys = %i[
         seed pos last event custom rate c_rare c_supa c_uber level lang ui
-        seeker name display theme count find
+        seeker name display theme count find compute
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
         hide_wave
