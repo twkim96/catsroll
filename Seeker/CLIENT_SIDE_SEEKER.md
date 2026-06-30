@@ -165,9 +165,20 @@ rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 
     sessionStorage 캐시. `TrackData.load({event,lang,name,custom,ubers})`.
   - 검증: platinum(uber만 132) / 일반(rare25·supa18·uber13) 케이스 + 기존 트랙/seek 페이지
     회귀 없음 확인.
-- [ ] B-2: `gacha.rb` 롤링 로직 JS 포팅 (advance/retreat, roll_both, reroll, guaranteed,
-      rerolled/last 링크, pick 라벨, mark_next_position, backtrack)
-- [ ] B-3: 서버와 트랙 데이터 1:1 대조 (여러 시드/이벤트/lang, details on/off)
+- [x] B-2: `gacha.rb` 롤링 로직 JS 포팅 → `asset/track-engine.js` (신규)
+  - advance/retreat/shift, roll_both/roll_cat, dig_rarity, new_cat,
+    reroll_cat(중복 rare), fill_cat_links, finish_rerolled_links,
+    finish_last_roll, finish_guaranteed/follow_cat, finish_picking 계열,
+    mark_next_position, backtrack_seed, next_index/next_track.
+  - `find_cat.rb`도 포팅(`runFindCat`): exclusives+legend+find 타겟을 찾을 때까지
+    count 너머로 롤 → 마지막 가시 행의 forward `.next`가 서버와 동일해짐.
+    (prepare_tracks가 finish_* 뒤에 FindCat.search를 돌리는 순서/부수효과까지 재현)
+  - 32-bit unsigned는 `>>> 0`로 처리. extra_label는 Ruby와 동일하게 미설정 시 null.
+- [x] B-3: 서버 `prepare_tracks`와 1:1 대조 검증 완료
+  - normal / 11-roll보장 / 15-roll스텝업 / platinum 4개 이벤트 × 7개 시드 × count=50:
+    id·score·slot·slot_seed·rarity_seed·next·rerolled·guaranteed·picked_label 전부 일치.
+  - 검증 하네스는 임시(`tmp_verify2`)로 작성 후 제거. 회귀 시 재작성 가능.
+  - (pick/pos/last는 엔진에 포팅됨. 전용 비교는 B-5에서.)
 - [ ] B-4: `table.erb` 구조·라벨·링크·이미지까지 **풀 렌더** (서버 HTML과 동일 산출)
 - [ ] B-5: find/pick/last/pos/ubers 등 부가 파라미터까지 패리티
 - [ ] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색(시드/포지션 즉시 갱신)
