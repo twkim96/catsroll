@@ -19,25 +19,21 @@ module BattleCatsRolls
     end
   end
 
-  class AugmentModule < Module
-    attr_reader :talent
-
-    def initialize new_talent
-      super()
-      @talent = new_talent
-    end
-  end
-
   class Talent < Struct.new(:key, :data, :ability)
     class IncreaseHealth < Talent
       include TalentUtility
 
       def augment_module
-        AugmentModule.new(talent = self) do
+        talent = self
+        Module.new do
           define_method(:health_raw) do
             super() * (1 + (talent.max / 100.0))
           end
         end
+      end
+
+      def augment_attributes
+        [:health]
       end
 
       def name
@@ -53,12 +49,17 @@ module BattleCatsRolls
       include TalentUtility
 
       def augment_module
-        AugmentModule.new(talent = self) do
+        talent = self
+        Module.new do
           define_method(:damage_raw) do |n=0|
             result = super(n)
             result * (1 + (talent.max / 100.0)) if result
           end
         end
+      end
+
+      def augment_attributes
+        [:damage, :dps] # rubocop:disable Style/SymbolArray
       end
 
       def name
@@ -74,11 +75,16 @@ module BattleCatsRolls
       include TalentUtility
 
       def augment_module
-        AugmentModule.new(talent = self) do
+        talent = self
+        Module.new do
           define_method(:speed) do
             super() + talent.max
           end
         end
+      end
+
+      def augment_attributes
+        [:speed]
       end
 
       def name
@@ -97,11 +103,16 @@ module BattleCatsRolls
       include TalentUtility
 
       def augment_module
-        AugmentModule.new(talent = self) do
+        talent = self
+        Module.new do
           define_method(:production_cost) do
             super() - talent.max
           end
         end
+      end
+
+      def augment_attributes
+        [:production_cost]
       end
 
       def name
@@ -602,18 +613,6 @@ module BattleCatsRolls
     def self.constant_name key
       key.gsub(/(?:^|_)(\w)/) do |letter|
         letter[-1].upcase
-      end
-    end
-
-    def self.augment talents, stat
-      if stat.talent?
-        talents.inject(stat) do |result, talent|
-          result.singleton_class.prepend(talent.augment_module) if
-            talent.augment_module
-          result
-        end
-      else
-        stat
       end
     end
 

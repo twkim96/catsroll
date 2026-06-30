@@ -15,27 +15,22 @@ describe BattleCatsRolls::Stat do
   def exclude_talents = true
 
   def stat
-    @stat ||= if exclude_talents
-      build_stat
-    else
-      BattleCatsRolls::Talent.augment(talents, build_stat)
-    end
+    @stat ||= BattleCatsRolls::Stat.new(
+      id: id, index: index, level: level,
+      sum_no_wave: sum_no_wave,
+      dps_no_critical: dps_no_critical,
+      info: info
+    ).augment(talents)
   end
 
   def talents
+    return if exclude_talents
+
     @talents ||= BattleCatsRolls::Talent.build(info)
   end
 
   def info
     @info ||= BattleCatsRolls::Route.public_send("ball_#{lang}").cats[id]
-  end
-
-  def build_stat
-    BattleCatsRolls::Stat.new(
-      id: id, index: index, level: level,
-      sum_no_wave: sum_no_wave,
-      dps_no_critical: dps_no_critical,
-      info: info)
   end
 
   describe 'cats without triggering effects can trigger effects' do

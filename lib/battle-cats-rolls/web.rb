@@ -144,17 +144,16 @@ module BattleCatsRolls
       with_canonical_uri("/cats/#{id}") do
         if info = route.cats[id]
           cat = Cat.new(id: id, info: info)
+          talents = Talent.build(info)
           stats = info['stat'].size.times.map do |index|
             conjure_id = info.dig('stat', index, 'conjure')
             Stat.new(id: id, info: info, index: index, level: route.level,
               conjure_info: conjure_id && route.cats[conjure_id],
               cat: cat,
               sum_no_wave: route.sum_no_wave,
-              dps_no_critical: route.dps_no_critical)
+              dps_no_critical: route.dps_no_critical
+            ).augment((talents unless route.exclude_talents))
           end
-          talents = Talent.build(info)
-          stats.map!(&Talent.method(:augment).curry[talents]) unless
-            route.exclude_talents
         else
           stats = []
           talents = {}

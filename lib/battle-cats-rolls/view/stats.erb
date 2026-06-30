@@ -12,7 +12,7 @@
   </tr>
   <tr class="border_upper">
     <td><%= l10n('Health') %></td>
-    <td><%= stat_augmented(stat, :health_raw, stat.health) %></td>
+    <td><%= stat_augmented(stat, :health) %></td>
     <td><%= l10n('Knockback times') %></td>
     <td><%= stat.knockbacks %></td>
     <td><%= l10n('Speed') %></td>
@@ -47,21 +47,21 @@
   <% if stat.attacks.size > 1 %>
   <tr class="border_middle">
     <td><%= l10n('DPS sum') %></td>
-    <td><%= stat_augmented(stat, :damage_raw, stat_int(stat.dps_sum)) %></td>
+    <td><%= stat_augmented(stat, :dps, stat_int(stat.dps_sum)) %></td>
     <td><%= l10n('Max DPS area') %></td>
     <td><%= stat_range stat.max_dps_area %></td>
     <td><%= l10n('Damage sum') %></td>
-    <td><%= stat_augmented(stat, :damage_raw, stat.damage_sum) %></td>
+    <td><%= stat_augmented(stat, :damage, stat.damage_sum) %></td>
   </tr>
   <% end %>
   <% each_attack(stat) do |attack| %>
   <tr class="border_upper <%= attack_tr_class(attack) %>">
     <td><%= l10n('DPS') %></td>
-    <td><%= stat_augmented(stat, :damage_raw, stat_int(attack.dps)) %></td>
+    <td><%= stat_augmented(stat, :dps, stat_int(attack.dps)) %></td>
     <td><%= l10n(attack.area_type) %></td>
     <td><%= stat_range attack.area_display %></td>
     <td><%= l10n('Damage') %></td>
-    <td><%= stat_augmented(stat, :damage_raw, attack.damage) %></td>
+    <td><%= stat_augmented(stat, :damage, attack.damage) %></td>
   </tr>
   <tr class="border_lower <%= attack_tr_class(attack) %>">
     <% if attack.kind_of?(BattleCatsRolls::TriggeredAttack) %>

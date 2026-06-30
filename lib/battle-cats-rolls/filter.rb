@@ -26,9 +26,8 @@ module BattleCatsRolls
                 stat = Stat.new(
                   id: id, info: info, index: index, level: level,
                   sum_no_wave: sum_no_wave,
-                  dps_no_critical: dps_no_critical)
-                stat = Talent.augment(talents_for(id, info), stat) unless
-                  exclude_talents
+                  dps_no_critical: dps_no_critical
+                ).augment(talents_for(id, info))
 
                 filter.match?(abilities, stat)
               end
@@ -60,6 +59,8 @@ module BattleCatsRolls
       end
 
       def talents_for id, info
+        return if exclude_talents
+
         (@talents ||= {}).fetch(id){ Talent.build(info) }
       end
     end

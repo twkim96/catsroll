@@ -586,15 +586,15 @@ module BattleCatsRolls
       end
     end
 
-    def stat_augmented stat, from, value=stat.public_send(from)
-      if stat.talent? && talent = stat.augmenting_talent(from)
-        style = if talent.ultra?
+    def stat_augmented stat, attribute, value=stat.public_send(attribute)
+      if talents = stat.augmenting_talents[attribute]
+        css_class = if talents.any?(&:ultra?)
           'augmented_ultra'
         else
           'augmented_regular'
         end
 
-        %Q{<span class="augmented #{style}">#{value}</span>}
+        %Q{<span class="augmented #{css_class}">#{value}</span>}
       else
         value
       end
