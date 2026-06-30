@@ -1,254 +1,216 @@
 # Client-Side Computation (내 기기 연산)
 
-> 서버가 바쁠 때 브라우저에서 직접 계산하기 위한 "내 기기 연산" 기능들의 배경,
-> 단계별 계획, 설계 원칙을 기록한다. 다음 단계로 넘어갈 때 맥락을 다시 설명하지
-> 않아도 되도록 하는 것이 목적이다.
+서버가 바쁠 때 브라우저에서 직접 계산하는 "내 기기 연산" 기능 두 가지의 설계·구현·운영
+메모. 둘 다 구현 완료 상태이며, 이 문서는 향후 유지보수/디버깅을 위한 레퍼런스다.
 
-## 0. 두 가지 독립 기능 (방향이 반대)
+## 0. 두 가지 기능 (방향이 반대)
 
-| 기능 | 방향 | 위치 | 연산 성격 | 상태 |
+| 기능 | 방향 | 위치 | 연산 | 상태 |
 |---|---|---|---|---|
-| **A. 시드 찾기 (Seeker)** | 롤(뽑은 캐트들) → 시드 | `/seek` | 2^32 브루트포스 → **WASM** | ✅ 완료 |
-| **B. 트랙 렌더 (Tracker)** | 시드 → 배열(트랙) | `/?seed=...&event=...&lang=...` | 정방향 시뮬레이션 → **순수 JS** | ✅ 구현 완료 (라이브 테스트 대기) |
+| **A. 시드 찾기 (Seeker)** | 롤(뽑은 캐트) → 시드 | `/seek` | 2^32 브루트포스 → **WASM** | ✅ |
+| **B. 트랙 렌더 (Tracker)** | 시드 → 배열(트랙) | `/?seed=...` | 정방향 시뮬 → **순수 JS** | ✅ |
 
-- A는 "내가 뽑은 캐트들로 내 시드를 알아내기". 브루트포스라 WASM이 필요했다.
-- B는 "시드를 넣으면 그 시드로 뽑히는 캐트 순서(트랙)를 예측하기". 메인 페이지가 하는 일.
-  직접 시뮬레이션이라 매우 빠르고 **WASM이 필요 없다(순수 JS로 충분)**.
-- **현재 주 목표는 B (트랙 렌더)이며, 서버와 동일한 풀 렌더(full render)를 목표로 한다.**
-  A는 이미 배포되어 동작하는 유효 기능이므로 그대로 유지한다.
+- A: "내가 뽑은 캐트들로 시드를 알아내기". 브루트포스라 WASM.
+- B: "시드를 넣으면 그 시드의 캐트 트랙을 예측"(메인 페이지). 빠른 정방향 시뮬이라 순수 JS.
 
-## 1. 공통 설계 원칙
+## 1. 설계 원칙
 
-1. **기존 서버 로직을 건드리지 않는다.** 클라이언트 연산은 옵션이 켜졌을 때만 도는
-   추가 경로이며, 꺼져 있으면 서버 동작과 100% 동일해야 한다.
-2. **알고리즘은 가능하면 재사용/이식하되 정확성을 검증한다.** 서버 출력과 1:1 대조.
-3. **점진 적용.** 각 단계가 단독으로 가치를 가지도록 쪼갠다.
-4. **충돌 최소화 (upstream gitlab 병합 대비).** 로직은 최대한 **새 파일**에 담는다.
-   - 공유/추적 파일(`route.rb`, `web.rb`, `server.rb`, 뷰들, `TODO.md` 등)은 가능한 한
-     수정하지 않는다. 불가피하면 **작고 국소적인 추가**(새 route 블록, 한 줄 include)만.
-   - 트랙 표는 **독립 렌더러**로 클라이언트가 자체 생성한다. `table.erb`/`view.rb`를
-     수정하는 하이드레이션 방식은 피한다(접촉면·충돌 증가).
-   - `TODO.md`는 upstream 추적 파일이므로 손대지 않는다. 계획·메모는 이 문서에만 둔다.
+1. **기존 서버 로직 불가침.** 클라 연산은 옵션이 켜졌을 때만 도는 추가 경로. 끄면 서버
+   동작과 100% 동일.
+2. **알고리즘은 이식하되 정확성을 서버 출력과 1:1 대조한다.**
+3. **충돌 최소화 (upstream gitlab 병합 대비).** 로직은 최대한 **새 파일**에. 공유 파일
+   (`route.rb`/`web.rb`/`server.rb`/뷰)은 불가피할 때만 작고 국소적으로 수정. `TODO.md`는
+   손대지 않는다(계획·메모는 이 문서에만).
+4. **트랙 표는 독립 렌더러**로 클라가 자체 생성한다(서버 `table.erb` 하이드레이션 안 함).
 
-## 2. 병목에 대한 이해 (왜 의미 있나)
+## 2. 왜 의미 있나 (서버 병목)
 
-"서버가 바쁘다"는 두 가지 별개의 CPU 병목을 포함한다.
+"서버 바쁨"은 두 CPU 병목을 포함한다. 페이지/데이터 서빙은 캐시 대상(varnish 10분)이라
+병목이 아니다.
 
-- **시드 찾기 큐** (`seek_seed.rb`의 `Pool = ThreadPool.new(1)`): 한 번에 하나씩 처리 →
-  A가 해소.
-- **트랙 렌더링** (`route.prepare_tracks` → `gacha.rb` 시뮬 + ERB 렌더): 시드/포지션을
-  바꿀 때마다 서버가 매번 계산·렌더. 무료 티어처럼 바쁜 인스턴스에서 느리거나 404.
-  → **B가 해소.** 시드/포지션 탐색을 서버 왕복 없이 로컬에서 즉시 갱신.
-
-페이지 셸/데이터 서빙은 캐시 대상이라(varnish 10분 TTL) 병목이 아니다. 병목은 위 두
-CPU 연산이다.
+- **시드 찾기 큐**: `seek_seed.rb`의 `Pool = ThreadPool.new(1)` — 한 번에 하나만 처리. → A가 해소.
+- **트랙 렌더링**: `route.prepare_tracks`(`gacha.rb` 시뮬) + ERB 렌더 — 시드/포지션 바꿀
+  때마다 서버가 계산·렌더. → B가 해소(로컬 탐색 + 새로고침 시 서버 트랙 연산 스킵).
 
 ---
 
-# Feature A — 시드 찾기 (Seeker), WASM ✅ 완료
+# Feature A — 시드 찾기 (Seeker, WASM)
 
-롤 → 시드. `/seek` 페이지. 기존 C 시커(`Seeker-VampireFlower.c`)를 Emscripten으로
-WASM 컴파일해 브라우저 Web Worker에서 단일 스레드로 실행한다.
+롤 → 시드. `/seek` 페이지. 기존 C 시커를 Emscripten으로 WASM 컴파일해 브라우저 Web
+Worker에서 단일 스레드로 실행한다.
 
-구현 요약:
-- `Seeker-VampireFlower.c`: `SEEKER_WASM` 가드로 pthread 드라이버와 `main()`만 제외.
-  알고리즘/전역은 그대로 공유 → 네이티브 빌드는 코드상 동일.
-- `Seeker-VampireFlower-wasm.c`: 단일 스레드 `seek_seed()` 드라이버.
-- `Seeker/bin/build-VampireFlower-wasm.sh` → `asset/seeker-vampireflower.js`(+`.wasm`).
-- `asset/seeker-worker.js`: 워커. `asset/seek-client.js`: `compute=client`일 때만
-  submit을 가로채 워커 실행. `seek_form.erb`: 라디오(서버/내 기기) + 결과 영역.
-- 서버 라우트/로직 변경 없음.
+## 파일
+- `Seeker/Seeker-VampireFlower.c` — `SEEKER_WASM` 가드로 pthread 드라이버와 `main()`만
+  제외(네이티브 빌드는 코드상 동일).
+- `Seeker/Seeker-VampireFlower-wasm.c` — 단일 스레드 `seek_seed()` 드라이버.
+- `Seeker/bin/build-VampireFlower-wasm.sh` — `asset/seeker-vampireflower.js`(+`.wasm`) 생성.
+- `asset/seeker-worker.js` — Web Worker.
+- `asset/seek-client.js` — `/seek`에서 "내 기기 연산" 라디오가 `client`일 때 form submit을
+  가로채 워커 실행.
+- `view/seek_form.erb` — 서버/내 기기 라디오 + 결과 영역.
 
-빌드 (이 개발 머신, Homebrew emscripten):
+## 빌드 (이 개발 머신: Homebrew emscripten)
+```
+EMSDK_PYTHON=/opt/homebrew/opt/python@3.14/bin/python3.14 \
+EM_LLVM_ROOT=/opt/homebrew/opt/emscripten/libexec/llvm/bin \
+EM_BINARYEN_ROOT=/opt/homebrew/opt/emscripten/libexec/binaryen \
+./Seeker/bin/build-VampireFlower-wasm.sh
+```
+표준 emsdk 환경이면 스크립트만 실행하면 된다.
 
-    EMSDK_PYTHON=/opt/homebrew/opt/python@3.14/bin/python3.14 \
-    EM_LLVM_ROOT=/opt/homebrew/opt/emscripten/libexec/llvm/bin \
-    EM_BINARYEN_ROOT=/opt/homebrew/opt/emscripten/libexec/binaryen \
-    ./Seeker/bin/build-VampireFlower-wasm.sh
+## 검증
+유일 시드(롤 8~10개): 네이티브 바이너리와 begin/end 완전 일치. 모호한 경우(롤 적음):
+양쪽 모두 count>1 보고(네이티브는 멀티스레드라 비결정적 — 버그 아님).
 
-검증: 유일 시드(롤 8~10개)는 네이티브와 begin/end 완전 일치. 모호한 경우(롤 적음)는
-양쪽 모두 count>1 보고(네이티브는 멀티스레드라 비결정적, 버그 아님).
-
-후속(선택): 11/15-roll 세 번째 링크, 진행률/취소 UI, 멀티스레드(SharedArrayBuffer+COOP/COEP).
-
-산출물(`.js`/`.wasm`)은 커밋한다. HF Docker 이미지엔 emscripten이 없어 빌드 산출물을
-그대로 서빙해야 하기 때문이다. C 알고리즘 변경 시 로컬 재빌드 후 산출물 재커밋 필요.
+## 운영 메모
+산출물 `.js`/`.wasm`은 **커밋**한다(HF Docker 이미지엔 emscripten이 없어 빌드 결과물을 그대로
+서빙). C 알고리즘을 바꾸면 로컬 재빌드 후 산출물을 재커밋해야 HF에 반영된다.
 
 ---
 
-# Feature B — 트랙 렌더 (Tracker), 순수 JS ⏳ 목표: 풀 렌더
+# Feature B — 트랙 렌더 (Tracker, 순수 JS)
 
-시드 → 배열. 메인 페이지 `/?seed=...&event=...&lang=...`. 옵션을 켜면 트랙 계산과
-표 렌더를 **브라우저에서** 수행하여, 서버가 바빠도 시드로 내 배열을 확인/탐색할 수 있게 한다.
+시드 → 배열. 메인 페이지에서 "내 기기 연산" 토글을 켜면 트랙 계산과 표 렌더를 브라우저에서
+수행한다. 서버 트랙 HTML과 **동일한 풀 렌더**가 목표이며 달성됨.
 
-**목표는 MVP가 아니라 서버와 동일한 풀 렌더**(같은 표 구조·라벨·링크·이미지)다.
-순수 JS로 구현하며 WASM은 쓰지 않는다.
+## 동작 흐름
 
-## B.1 서버 파이프라인 매핑 (이식 대상)
+1. 토글 ON → URL에 `compute=client`를 박고(replaceState) 서버는 트랙을 안 그림.
+   브라우저가 `/track.json`을 받아 로컬로 표를 그린다.
+2. 시드/포지션/pick/캐트 클릭/시드 입력 = 전부 가로채 **로컬 재계산 + `history.pushState`**
+   (서버 왕복 없음). 같은 이벤트는 `/track.json`을 다시 안 받음(캐시).
+3. 토글 OFF → `compute=client` 제거 후 새로고침 → 서버 렌더로 복귀(동작 불변).
 
-트랙 1건을 만드는 서버 흐름과 대응하는 이식 작업:
+## 클라이언트 파일 (전부 신규)
 
-1. **풀 구성** — `gacha_pool.rb` (`GachaPool`), `crystal_ball.rb`
-   - 이벤트+언어의 ball에서: 등급별 슬롯(`slots`: rare/supa/uber/legend의 cat id 배열),
-     확률(`rare/supa/uber/legend`, Base=10000), `guaranteed_rolls`(0/11/15),
-     `add_future_ubers`(미래 우버 추가), `version`.
-   - → 클라이언트엔 **이미 구성된 풀을 JSON으로 전달**(아래 B.3). 풀 구성 로직 자체는
-     이식하지 않아도 됨.
+- `asset/track-data.js` — `/track.json` fetch + sessionStorage/메모리 캐시.
+  `TrackData.load({event,lang,name,custom,ubers})`. `ubers=0`은 "없음"과 같은 캐시 키로
+  정규화(폼은 항상 ubers=0을 보내므로, 정규화 안 하면 시드마다 재fetch → 오프라인 멈춤).
+- `asset/track-engine.js` — `gacha.rb` + `find_cat.rb` 포팅. `TrackEngine.buildTracks(pool,
+  seed, opts)` → 서버 `prepare_tracks`와 동일한 `cats` 구조 + `foundCats`.
+- `asset/track-render.js` — `table.erb` + `view.rb` td/링크 헬퍼 포팅.
+  `TrackRender.renderTable/renderFoundCats`.
+- `asset/track-client.js` — 메인 페이지 컨트롤러(토글, 가로채기, 렌더 주입, SW 등록).
+- `asset/sw.js` — 오프라인 Service Worker.
 
-2. **롤링 시뮬레이션** — `gacha.rb` (핵심 이식 대상)
-   - `advance_seed` / `retreat_seed` (xorshift32 정/역방향), `backtrack_seed`.
-   - `roll_both!`(A/B 두 트랙), `roll_cat`/`roll_cat!`, `dig_rarity`, `new_cat`.
-   - `reroll_cat`(중복 rare 리롤), `fill_cat_links`(중복 시 다음 셀 연결),
-     `finish_rerolled_links`, `finish_last_roll`.
-   - `finish_guaranteed`/`fill_guaranteed`(보장 우버), `follow_cat`.
-   - `finish_picking` 계열(pick 라벨), `mark_next_position`.
-   - `next_index`/`next_track` 등 위치 계산.
+## 서버 변경 (국소, 추가 위주)
 
-3. **캐트 모델** — `cat.rb` (`Cat`)
-   - `duped?`, `pick_name(form)`, `number`, rarity/slot/seed 필드, `rerolled`/`guaranteed`/
-     `next` 링크, `picked_label`, 이미지 id 등 렌더에 필요한 속성.
+- `lib/battle-cats-rolls/track_api.rb` (신규) — Jellyfish 앱:
+  - `GET /track.json?event&lang&name&custom&ubers` → `{exist, version, rates, base,
+    guaranteed_rolls, slots, cats}`. `cats`는 id별 `{name[form], desc[form], rarity, img}`.
+    `Route#gacha.pool` 재사용(=route.rb 무수정).
+  - `GET /events.json?lang` → `{current, upcoming:[{value,label}], past:[..]}`. 지역 전환 시
+    이벤트 드롭다운만 작게 갱신하기 위함.
+- `server.rb` — `require_relative 'track_api'` + `map '/track.json'` + `map '/events.json'`
+  + rewrite에 `'/sw.js' => '/sw.js'`(루트 스코프 서빙). 모두 국소 추가.
+- `route.rb` — `compute` / `compute_client?` 접근자 추가 + `default_query` keys에 `:compute`.
+- `web.rb` — `/` 핸들러를 `show_tracks? && !compute_client?`일 때만 `prepare_tracks`.
+- `view/find_cat.erb` — 블록 조건을 `(arg || route.compute_client?)`로(클라 모드에서 서버가
+  트랙을 안 그려도 폼/토글이 보이게) + "Add future ubers" 오른쪽에 토글 마크업 추가.
+- `view/index.erb` — track-* 스크립트 4개 include.
 
-4. **찾기 기능** — `find_cat.rb` (`FindCat.search`) — "find" 파라미터로 특정 캐트 강조.
+> `gacha.rb`/`route.prepare_tracks`/`table.erb`/`view.rb`/`layout.erb`/`TODO.md`는 **무수정**.
 
-5. **렌더** — `view.rb` 헬퍼 + `view/table.erb` + `view/index.erb`
-   - `each_ab_cat`, `number_td`, `seed_tds`, `score_tds`, `cat_tds`(+`td_to_cat`),
-     `cat_name`, `uri_for_backtrack`, `uri_to_roll`, `uri_to_cat`.
-   - `show_details` 모드(Seed/Score·Slot 열 표시) 분기.
-   - rowspan 계산(리롤/보장에 따른 셀 병합), A/B 트랙, Backtrack 셀, 마지막 행.
-   - **풀 렌더 = 서버가 내보내는 HTML과 동일한 표/라벨/링크/이미지 산출.**
+## UI / 토글
 
-6. **롤 개수** — `count`(기본 100, `TrackMaxCount`로 상한; HF는 500).
+- "내 기기 연산" 체크박스 + `[캐시 제거]` 링크를 폼의 "Add future ubers" 오른쪽에 둠.
+- 상태 표시는 활성 시 체크표시(`✓`)만. (영문 괄호·"서버 미사용" 등 긴 문구 제거 — 모바일 폭)
+- 상태는 localStorage 영속. 가로채기는 항상 설치하고 런타임에 `enabled()`로 게이트
+  → 토글 켜는 즉시 적용(리로드 불필요).
 
-## B.2 알고리즘 메모 (xorshift32)
+## compute=client (새로고침/직접링크도 서버 스킵)
 
-정방향(advance):
-```
-x ^= x << 13; x ^= x >> 17; x ^= x << 15;   // 32-bit, unsigned
-```
-역방향(retreat, backtrack용):
-```
-x ^= x << 15; x ^= x << 30; x ^= x >> 17; x ^= x << 13; x ^= x << 26;
-```
-JS는 비트연산이 32-bit라 그대로 옮기되, 비교/나머지는 `>>> 0`로 unsigned 처리.
-rarity 판정은 `score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend) 기준.
+토글 ON이면 URL에 `compute=client`가 유지된다. 서버는 `compute_client?`면 `prepare_tracks`를
+건너뛰고 폼+토글+스크립트만 내려주며(트랙 표 없음), 브라우저가 표를 렌더. 따라서 새로고침/
+공유 링크에서도 서버는 트랙 연산을 하지 않는다.
 
-## B.3 데이터 전달 (이벤트 정보만 받아오면 로컬 가능)
+## 지역(lang) 전환
 
-서버에 **작은 read-only JSON 엔드포인트** 추가를 제안 (값싸고 캐시 가능):
+이벤트 목록은 지역별이라 서버 소유다. 클라 모드에서 지역을 바꾸면:
+- 온라인: `/events.json?lang=새지역`만 작게 받아 드롭다운을 in-place 갱신 + 로컬 렌더
+  (전체 리로드 없음, 체크 유지). 기존 이벤트가 새 지역에도 있으면 유지, 없으면 새 지역 current.
+- 오프라인/실패: 지역 셀렉트를 원복하고 현재 지역 유지(체크 해제 안 함).
 
-- 입력: `event`, `lang`(, `name`/form).
-- 출력: 해당 이벤트의 풀
-  - 등급별 슬롯(cat id 배열), 확률 4개, `guaranteed_rolls`, `version`.
-  - 슬롯에 등장하는 캐트들의 메타: id별 이름(form별), rarity, 이미지 id, l10n 라벨.
-- 클라이언트는 이 JSON을 한 번 받아(캐시) JS로 롤링·렌더. 시드/포지션/pick 변경은
-  네트워크 없이 로컬 갱신.
+## 오프라인 (Service Worker, `asset/sw.js`)
 
-> 이 엔드포인트는 기존 서버 트랙 라우트와 별개의 추가 경로다(서버 로직 불가침 원칙).
-
-## B.4 UI
-
-메인 페이지에 "내 기기 연산" 토글(라디오/체크박스) 추가:
-- 기본 = 서버 렌더(기존 동작 그대로).
-- 켜면 = JSON 풀을 받아 클라이언트가 트랙 표를 렌더. 시드/포지션 변경 시 즉시 재계산.
-- 가능하면 서버 렌더 결과와 DOM이 동일하도록(점진적 하이드레이션 형태도 검토).
-
-## B.5 단계 (최종 목표는 풀 패리티)
-
-풀 렌더가 목표지만 검증을 위해 순서대로 진행한다.
-
-- [x] B-1: 데이터 JSON 엔드포인트 + 클라이언트 fetch/캐시
-  - 서버: `lib/battle-cats-rolls/track_api.rb` (신규) — `GET /track.json`이 이벤트/언어의
-    풀(등급별 슬롯 cat id, 확률, base, guaranteed_rolls, version) + 캐트 메타(이름 form별,
-    rarity)를 JSON으로 반환. `Route#gacha.pool` 재사용(=route.rb 무수정). `server.rb`엔
-    require 1줄 + map 블록만 추가.
-  - 클라: `lib/battle-cats-rolls/asset/track-data.js` (신규) — `/track.json` fetch +
-    sessionStorage 캐시. `TrackData.load({event,lang,name,custom,ubers})`.
-  - 검증: platinum(uber만 132) / 일반(rare25·supa18·uber13) 케이스 + 기존 트랙/seek 페이지
-    회귀 없음 확인.
-- [x] B-2: `gacha.rb` 롤링 로직 JS 포팅 → `asset/track-engine.js` (신규)
-  - advance/retreat/shift, roll_both/roll_cat, dig_rarity, new_cat,
-    reroll_cat(중복 rare), fill_cat_links, finish_rerolled_links,
-    finish_last_roll, finish_guaranteed/follow_cat, finish_picking 계열,
-    mark_next_position, backtrack_seed, next_index/next_track.
-  - `find_cat.rb`도 포팅(`runFindCat`): exclusives+legend+find 타겟을 찾을 때까지
-    count 너머로 롤 → 마지막 가시 행의 forward `.next`가 서버와 동일해짐.
-    (prepare_tracks가 finish_* 뒤에 FindCat.search를 돌리는 순서/부수효과까지 재현)
-  - 32-bit unsigned는 `>>> 0`로 처리. extra_label는 Ruby와 동일하게 미설정 시 null.
-- [x] B-3: 서버 `prepare_tracks`와 1:1 대조 검증 완료
-  - normal / 11-roll보장 / 15-roll스텝업 / platinum 4개 이벤트 × 7개 시드 × count=50:
-    id·score·slot·slot_seed·rarity_seed·next·rerolled·guaranteed·picked_label 전부 일치.
-  - 검증 하네스는 임시(`tmp_verify2`)로 작성 후 제거. 회귀 시 재작성 가능.
-  - (pick/pos/last는 엔진에 포팅됨. 전용 비교는 B-5에서.)
-- [x] B-4: `table.erb` + view.rb td/link 헬퍼 풀 렌더 → `asset/track-render.js` (신규)
-  - number_td/seed_tds/score_tds/cat_tds/td_to_cat/link_to_roll/link_to_next/
-    link_to_cat/avatar_tag, color_rarity/color_label(exclusive/found/owned/picked),
-    expand_data_attrs, onclick_pick, uri_to_roll/uri_to_cat/backtrack/number_td URL.
-  - 엔드포인트에 렌더용 데이터 보강: cat별 `desc`(title용), `img`(요청 form 기준 해석).
-  - 검증: 서버가 그린 `<table>`과 클라 렌더를 URL/공백 정규화 후 구조 비교.
-    4 이벤트(normal/g11/g15/platinum) × 3 시드 × {text, text+details, both} = 36조합 일치.
-- [x] B-5: find/pick/last/pos/ubers 부가 파라미터 패리티 (검증 완료)
-  - 엔진/렌더가 pos(next_position 회전), last(last_roll), pick(picked/
-    picked_consecutively/next_position; X 접두/ G 보장), find(found 색),
-    ubers(미래 우버 풀)을 서버와 동일 처리.
-  - 검증: 4 이벤트 × 2 시드 × {pos, last, pick, pick+X, pick+G, pick+GX,
-    ubers, find, details+both 콤보} = 72조합 `<table>` 일치.
-  - 남음(부가): 상단 `information.erb`(배너 정보 패널) 렌더는 미포함. `found_cats`는
-    포팅 완료(아래 B-6 참고).
-- [x] B-6: 메인 페이지 "내 기기 연산" 토글 + 로컬 탐색 → `asset/track-client.js` (신규)
-  - 토글(localStorage 영속). 켜면: 시드 폼 submit, `roll()`/`pick()`, 트랙 내비 링크,
-    popstate를 가로채 `TrackData` + `TrackEngine` + `TrackRender`로 로컬 계산·렌더 +
-    `history.pushState`. 끄면 서버 렌더로 복귀(동작 불변).
-  - 인터셉션은 항상 설치하고 런타임에 `enabled()`로 게이트 → 토글을 켜는 즉시 적용
-    (리로드 불필요). 상태 표시: "✓ 내 기기에서 계산함 (서버 미사용)".
-  - 토글·스크립트는 `index.erb`에만 추가.
-- [x] 옵션1 (새로고침/직접링크에서도 서버 트랙 연산 스킵)
-  - 토글 ON 시 URL에 `compute=client`를 박아둠(replaceState). 서버 `/` 핸들러는
-    `show_tracks? && !compute_client?`일 때만 `prepare_tracks` 실행 → compute=client면
-    서버는 표를 안 그리고 폼+토글+스크립트만 내려주고, 브라우저가 표를 렌더.
-  - 서버 변경(국소): `route.rb`에 `compute`/`compute_client?` 접근자 + default_query
-    keys에 `:compute` 추가, `web.rb` `/` 핸들러 조건 한 줄.
-- [x] found_cats 패널도 클라 렌더 (`track-render.js` renderFoundCats)
-  - 엔진 `runFindCat`를 순서 보존(Map) + occurrences/missing까지 풀 포팅,
-    `buildFoundResults`로 `[{cat, numbers}]` 생성. 표 앞에 주입.
-  - 검증: platinum/normal/g11/g15 + find= 케이스에서 서버 `found_cats`와 일치.
-- [x] Stage 2: 오프라인(Service Worker) → `asset/sw.js` (신규)
-  - 전략: **install 때 셸(`/`)+핵심 자산 precache** (install은 첫 방문 온라인에 실행되어
-    SW가 그 페이지를 아직 제어 안 해도 확실히 캐시됨) + 런타임 network-first + 캐시 폴백.
-    온라인 동작 불변. 오프라인: 내비게이션→precache 셸, 자산→캐시(ignoreSearch로 digest
-    URL도 매칭), track.json→same-tab sessionStorage 또는 캐시 → 트랙 렌더.
-  - 서빙: `server.rb` rewrite에 `'/sw.js' => '/sw.js'` 한 줄 → 루트 스코프 text/javascript.
-  - 안전: 등록을 **토글과 분리**(첫 ON 시 1회 register, 유지). "[오프라인 캐시 비우기]"로만
-    unregister+캐시삭제. `KILL=true` 배포 시 자가 unregister(원격 킬스위치). activate에서
-    옛 버전 캐시 정리(`bcr-client-v2`).
-  - 부트스트랩 한계: 생애 첫 1회 온라인 방문 필요.
-  - 주의: 첫 방문에서 SW는 그 페이지를 제어하지 못하므로 런타임 캐시만으론 셸이 안 잡힘
-    → install precache로 해결(이전 v1은 검은 503 화면이 떴음).
-- [x] 클라 모드에서 지역(lang) 전환 → `/events.json` (신규, track_api.rb)
-  - 온라인이면 새 지역의 이벤트 목록만 작게 받아와(`{current, upcoming, past}`) 드롭다운을
-    in-place 갱신 + 로컬 렌더 (전체 리로드 없음, 체크 유지). 기존 이벤트가 새 지역에도
-    있으면 그대로, 없으면 새 지역 current로. 오프라인/실패 시 변경 취소(체크는 유지).
-  - 텍스트(모바일): 토글 라벨 영문 괄호 제거, 활성 상태는 체크표시(✓)만, 캐시 링크 "캐시 제거".
-
-건드리지 않는 것: 서버 트랙 라우트/렌더, `gacha.rb`/`route.rb` 등 서버 로직,
-Feature A의 모든 것.
+- 전략: same-origin GET에 **network-first + 캐시 폴백**. 온라인 동작 불변(항상 네트워크
+  우선), 오프라인일 때만 캐시 제공.
+- **install 때 셸(`/`) + 핵심 자산 precache.** (첫 방문에 SW는 그 페이지를 아직 제어하지
+  못하므로 런타임 캐시만으론 셸이 안 잡힘 → precache 필수. 이전에 이게 없어서 오프라인 시
+  검은 503 화면이 떴음.) 자산 폴백은 `ignoreSearch`로 digest 쿼리 URL도 매칭.
+- track.json은 같은 탭이면 sessionStorage, 아니면 SW 캐시에서.
+- **안전장치**:
+  - SW 등록을 **토글과 분리** — 클라 모드 첫 ON 시 1회만 `register('/sw.js')`, 이후 유지.
+    따라서 토글을 따닥 눌러도 SW 처닝이 없다(per-click은 `compute=client` 플립 + 렌더만).
+  - "[캐시 제거]" 링크로만 `unregister` + 캐시 삭제.
+  - `sw.js`의 `KILL=true`를 배포하면 다음 활성화에서 자가 unregister + 전체 캐시 삭제
+    (원격 킬스위치). activate에서 옛 버전 캐시 정리(현재 `bcr-client-v2`).
+- **부트스트랩 한계**: 생애 첫 1회 온라인 방문이 있어야 SW가 깔린다.
+- **새 이벤트 갱신**: SW가 network-first라 온라인에선 항상 최신을 받는다(서버가 막지 않음).
+  단 같은 탭에서 이미 본 이벤트는 sessionStorage 재사용, 서버 HTTP 캐시(10분)로 최근 추가분이
+  약간 지연될 수 있음(기존 사이트 동작). 확실히 갱신하려면 `[캐시 제거]`.
 
 ---
 
-## 변경 / 비변경 요약
+## 알고리즘/이식 메모
 
-추가(완료, Feature A):
-- `Seeker/Seeker-VampireFlower-wasm.c`, `Seeker/bin/build-VampireFlower-wasm.sh`
-- `lib/battle-cats-rolls/asset/seeker-worker.js`, `seek-client.js`,
-  `seeker-vampireflower.js`/`.wasm`
-- `lib/battle-cats-rolls/view/seek_form.erb` (라디오)
-- `Seeker/Seeker-VampireFlower.c` 에 `SEEKER_WASM` 가드만
+### xorshift32 (gacha.rb → track-engine.js)
+```
+advance:  x ^= x<<13; x ^= x>>17; x ^= x<<15;
+retreat:  x ^= x<<15; x ^= x<<30; x ^= x>>17; x ^= x<<13; x ^= x<<26;
+```
+JS는 32-bit 비트연산이라 그대로 옮기되 비교/나머지는 `>>> 0`(unsigned). rarity는
+`score = rarity_seed % 10000` 윈도우(rare/supa/uber/legend).
 
-추가 예정(Feature B):
-- 풀 JSON 엔드포인트 (서버, read-only 추가 경로)
-- 클라이언트 트랙 엔진 + 렌더 JS (신규 asset)
-- 메인 페이지 "내 기기 연산" 토글 (`view/options.erb` 또는 메인 폼)
+### FindCat 부수효과 (중요)
+`prepare_tracks`는 `finish_*` 뒤에 `FindCat.search`를 돌리는데, 이게 exclusives+legend+find
+타겟을 다 찾을 때까지 `count` 너머로 추가 롤을 한다. 그 부수효과로 **마지막 가시 행의 forward
+`.next`**가 채워진다(다 찾으면 추가 롤 0 → null). 엔진의 `runFindCat`이 이 순서/부수효과까지
+재현해야 서버와 `.next`가 일치한다. `runFindCat`은 순서 보존 Map + occurrences/missing까지
+포팅되어 `found_cats` 패널 렌더에도 쓰인다.
 
-비변경(보존):
-- `seek_seed.rb`, 서버 `/seek/enqueue`·`/seek/result` 흐름
-- `Seeker-VampireFlower.c` 의 네이티브 빌드/알고리즘
-- 서버 트랙 라우트(`route.prepare_tracks`)·렌더·`gacha.rb` 로직
+### 검증 (모두 서버와 1:1 일치 확인 — 임시 하네스로 검증 후 제거)
+- 트랙 데이터: normal/11-roll보장/15-roll스텝업/platinum × 7 시드 × count=50.
+- 렌더 HTML: 4 이벤트 × 3 시드 × {text, +details, both} (URL/공백 정규화 후 구조 비교).
+- 파라미터: 4 이벤트 × 2 시드 × {pos, last, pick, pick+X/+G/+GX, ubers, find, 콤보} = 72조합.
+- found_cats: platinum/normal/g11/g15 + find= 케이스.
+
+---
+
+## 해결한 버그 / 함정 (재발 방지용)
+
+- **ubers 캐시 미스**: 폼은 항상 `ubers=0`을 보내는데 초기 URL엔 없어 캐시 키가 달라져
+  시드마다 `/track.json` 재fetch(오프라인 멈춤). → `track-data.js`에서 `ubers=0`↔없음 정규화.
+- **캐트 클릭 이중 발동**: 캐트 셀에 인라인 `onclick="pick(...)"`가 있어, 캐트 링크 클릭 시
+  링크 핸들러와 `pick()`가 둘 다 발동 → 이중 내비/재렌더(깜빡임+요청). → 클릭 가로채기를
+  **캡처 단계 + `stopPropagation`**으로 변경(링크는 roll만, 셀 배경은 pick).
+- **폼 미갱신**: 로컬 렌더는 `.table`/`.found_cats`만 교체해 seed 입력칸이 과거값 →
+  렌더 후 `syncForm`으로 seed/pos/last/count/event/find/ubers 갱신.
+- **SW 검은 화면**: install precache 누락 → 위 "오프라인" 참고.
+
+## 남은 부가 항목 (선택)
+- 메인 페이지 상단 `information.erb`(배너 정보 패널)는 클라 렌더 미포함(메인 트랙 표·found_cats는 완전 일치).
+- recent-seeds 패널 링크(#content 밖)는 가로채지 않음 → 클릭 시 전체 내비게이션.
+- name(form) 변경 시 `img`는 fetch 시점 form 기준이라 이미지가 약간 어긋날 수 있음(텍스트는 정확).
+- Feature A 후속: 11/15-roll 세 번째 링크, 진행률/취소 UI, 멀티스레드(SharedArrayBuffer+COOP/COEP).
+
+---
+
+## 파일 인벤토리
+
+신규(클라):
+`asset/seeker-worker.js`, `seek-client.js`, `seeker-vampireflower.js`/`.wasm`(A),
+`asset/track-data.js`, `track-engine.js`, `track-render.js`, `track-client.js`, `sw.js`(B).
+
+신규(서버):
+`Seeker/Seeker-VampireFlower-wasm.c`, `Seeker/bin/build-VampireFlower-wasm.sh`,
+`lib/battle-cats-rolls/track_api.rb`.
+
+수정(국소):
+`Seeker/Seeker-VampireFlower.c`(가드), `server.rb`(require+map+rewrite),
+`route.rb`(compute 접근자+키), `web.rb`(/ 핸들러 조건),
+`view/find_cat.erb`(조건+토글), `view/index.erb`(스크립트), `view/seek_form.erb`(라디오, A).
+
+무수정(보존):
+`seek_seed.rb`, `/seek/enqueue`·`/seek/result` 흐름, `gacha.rb`,
+`route.prepare_tracks`·렌더, `table.erb`, `view.rb`, `layout.erb`, `TODO.md`.
