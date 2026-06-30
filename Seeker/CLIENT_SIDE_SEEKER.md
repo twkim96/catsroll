@@ -211,7 +211,9 @@ JS는 32-bit 비트연산이라 그대로 옮기되 비교/나머지는 `>>> 0`(
 
 ## 남은 부가 항목 (선택)
 - 메인 페이지 상단 `information.erb`(배너 정보 패널)는 클라 렌더 미포함(메인 트랙 표·found_cats는 완전 일치).
-- recent-seeds 패널 링크(#content 밖)는 가로채지 않음 → 클릭 시 전체 내비게이션.
+- recent-seeds 패널 링크도 클라 모드에선 가로채 SPA 이동(롱프레스 핀은 `defaultPrevented`로
+  보존). 단 패널 목록 자체는 로드 시 1회만 그려져, SPA 이동으로 방문한 시드는 다음 로드까지
+  목록에 안 들어감(경미).
 - name(form) 변경 시 `img`는 fetch 시점 form 기준이라 이미지가 약간 어긋날 수 있음(텍스트는 정확).
 - Feature A 후속: 11/15-roll 세 번째 링크, 진행률/취소 UI, 멀티스레드(SharedArrayBuffer+COOP/COEP).
 
