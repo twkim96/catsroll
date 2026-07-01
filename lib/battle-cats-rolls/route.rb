@@ -354,6 +354,20 @@ module BattleCatsRolls
       Stat::DefaultLevel
     end
 
+    def speed_unit
+      @speed_unit ||=
+        case value = request.params_coercion_with_nil('speed_unit', :to_s)
+        when 'sf'
+          value
+        else
+          default_speed_unit
+        end
+    end
+
+    def default_speed_unit
+      'rs'
+    end
+
     def hide_wave
       return @hide_wave if instance_variable_defined?(:@hide_wave)
 
@@ -768,7 +782,7 @@ module BattleCatsRolls
       keys = %i[
         seed pos last
         event custom rate c_rare c_supa c_uber
-        level lang ui
+        level speed_unit lang ui
         seeker name display theme count find
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
@@ -825,6 +839,7 @@ module BattleCatsRolls
            (key == :pos && value == '1A') ||
            (key == :last && value == 0) ||
            (key == :level && value == default_level) ||
+           (key == :speed_unit && value == default_speed_unit) ||
            (key == :lang && value == 'en') ||
            (key == :ui && value == '') ||
            (key == :seeker && value == default_seeker) ||

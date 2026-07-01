@@ -729,11 +729,12 @@ module BattleCatsRolls
         end
       end
 
-      def display values=display_values
+      def display values=nil, &block
         # rubocop:disable Style/StringLiterals
         sprintf(
           "%{chance} to produce level %{level}" \
-            " #{name.downcase} attack within %{area}", values)
+            " #{name.downcase} attack within %{area}",
+          values || display_values(&block))
         # rubocop:enable Style/StringLiterals
       end
 
@@ -752,8 +753,10 @@ module BattleCatsRolls
       private
 
       def display_values
+        area = "#{area_range.begin} ~ #{area_range.end}"
+
         {chance: percent(chance), level: highlight(level),
-         area: highlight("#{area_range.begin} ~ #{area_range.end}")}
+         area: highlight(yield.method(:stat_range)[area])}
       end
 
       def start
@@ -796,9 +799,10 @@ module BattleCatsRolls
         'Explosion'
       end
 
-      def display values=display_values
+      def display values=nil, &block
         sprintf(
-          "%{chance} to trigger #{name.downcase} attack at %{range}", values)
+          "%{chance} to trigger #{name.downcase} attack at %{range}",
+          values || display_values(&block))
       end
 
       def display_short
@@ -816,7 +820,8 @@ module BattleCatsRolls
       private
 
       def display_values
-        {chance: percent(chance), range: highlight(start)}
+        {chance: percent(chance),
+         range: highlight(yield.method(:stat_range)[start])}
       end
     end
 

@@ -16,7 +16,7 @@
     <td><%= l10n('Knockback times') %></td>
     <td><%= stat.knockbacks %></td>
     <td><%= l10n('Speed') %></td>
-    <td><%= stat.speed %></td>
+    <td><%= stat_speed(stat.speed) %></td>
   </tr>
   <tr class="border_middle">
     <td><%= l10n('Production cost') %></td>
@@ -37,11 +37,11 @@
   <% if stat.long_range? %>
   <tr class="border_middle">
     <td><%= l10n('Blind spot') %></td>
-    <td><%= stat.blind_spot %></td>
+    <td><%= stat_range stat.blind_spot %></td>
     <td><%= l10n('Range') %></td>
-    <td><%= stat.range %></td>
+    <td><%= stat_range stat.range %></td>
     <td><%= l10n('Enemy base range') %></td>
-    <td><%= stat.base_range %></td>
+    <td><%= stat_range stat.base_range %></td>
   </tr>
   <% end %>
   <% if stat.attacks.size > 1 %>
@@ -49,7 +49,7 @@
     <td><%= l10n('DPS sum') %></td>
     <td><%= stat_int(stat.dps_sum) %></td>
     <td><%= l10n('Max DPS area') %></td>
-    <td><%= stat.max_dps_area %></td>
+    <td><%= stat_range stat.max_dps_area %></td>
     <td><%= l10n('Damage sum') %></td>
     <td><%= stat.damage_sum %></td>
   </tr>
@@ -59,7 +59,7 @@
     <td><%= l10n('DPS') %></td>
     <td><%= stat_int(attack.dps) %></td>
     <td><%= l10n(attack.area_type) %></td>
-    <td><%= attack.area_display %></td>
+    <td><%= stat_range attack.area_display %></td>
     <td><%= l10n('Damage') %></td>
     <td><%= attack.damage %></td>
   </tr>

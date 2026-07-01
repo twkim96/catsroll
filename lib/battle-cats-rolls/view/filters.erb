@@ -350,7 +350,7 @@
             <input type="radio" name="stand" id="stand_<%= filter %>"
               value="<%= filter %>" <%= checked_stand(filter) %>
               onchange="roll(this)">
-            <%= mod.display %>
+            <%= mod.display(&method(:itself)) %>
           </label>
           <% end %>
         </td>
@@ -371,7 +371,7 @@
             <input type="radio" name="reach" id="reach_<%= filter %>"
               value="<%= filter %>" <%= checked_reach(filter) %>
               onchange="roll(this)">
-            <%= mod.display %>
+            <%= mod.display(&method(:itself)) %>
           </label>
           <% end %>
         </td>
@@ -392,7 +392,7 @@
             <input type="radio" name="speed" id="speed_<%= filter %>"
               value="<%= filter %>" <%= checked_speed(filter) %>
               onchange="roll(this)">
-            <%= mod.display %>
+            <%= mod.display(&method(:itself)) %>
           </label>
           <% end %>
         </td>

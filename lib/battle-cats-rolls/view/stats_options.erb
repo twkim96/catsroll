@@ -57,12 +57,18 @@
     min="1"
     max="999"
     onclick="this.select()">
-  <% else %>
-  <%= hidden_inputs('level') %>
-  <% end %>
 
-  <% if cat = arg[:cat] %>
-  Max <%= cat.max_level %>,
-  Growth rate: <%= growth_rate(cat.growth) %>
+    <% if cat = arg[:cat] %>
+    Max <%= cat.max_level %>,
+    Growth rate: <%= growth_rate(cat.growth) %>;
+    <% end %>
+
+  <label for="speed_unit_select">Speed unit:</label>
+  <select id="speed_unit_select" name="speed_unit" onchange="roll(this)">
+    <option value="rs" <%= selected_speed_unit('rs') %>>range/second</option>
+    <option value="sf" <%= selected_speed_unit('sf') %>>speed/frame</option>
+  </select>
+  <% else %>
+  <%= hidden_inputs('level', 'speed_unit') %>
   <% end %>
 </div>

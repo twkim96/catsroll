@@ -64,13 +64,13 @@
     <%= erb :filters %>
   <% else %>
     <%= hidden_inputs('advanced_filters', 'hide_wave', 'exclude_talents',
-      'sum_no_wave', 'dps_no_critical', 'level') %>
+      'sum_no_wave', 'dps_no_critical', 'level', 'speed_unit') %>
   <% end %>
 </div>
 <% else %>
 <%= hidden_inputs('lang', 'name',
   'advanced_filters', 'hide_wave', 'exclude_talents',
-  'sum_no_wave', 'dps_no_critical', 'level') %>
+  'sum_no_wave', 'dps_no_critical', 'level', 'speed_unit') %>
 <% end %>
 
 <%= hidden_inputs('o') %>

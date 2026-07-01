@@ -52,7 +52,10 @@ module BattleCatsRolls
       end
 
       def display
-        "#{highlight('Speed')} by #{min} ~ #{highlight(max)} by #{level} levels"
+        show = yield.method(:stat_speed)
+
+        "#{highlight('Speed')} by" \
+          " #{show[min]} ~ #{highlight(show[max])} by #{level} levels"
       end
     end
 
@@ -434,11 +437,12 @@ module BattleCatsRolls
           map{ |r| (r * range_multiplier).floor }
         reach = data.dig('minmax', 3).
           map.with_index{ |r, i| (r * range_multiplier).floor + start[i] }
+        area = "#{values_range(start)} ~ #{values_range(reach)}"
 
         display_text = ability.display(
           chance: values_range(chance, suffix: '%'),
           level: values_range(surge_level),
-          area: "#{values_range(start)} ~ #{values_range(reach)}")
+          area: yield.method(:stat_range)[area])
 
         "#{display_text} by #{level} levels"
       end
@@ -477,7 +481,7 @@ module BattleCatsRolls
 
         display_text = ability.display(
           chance: values_range(chance, suffix: '%'),
-          range: values_range(range))
+          range: yield.method(:stat_range)[values_range(range)])
 
         "#{display_text} by #{level} levels"
       end
