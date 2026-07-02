@@ -446,7 +446,7 @@ Entry points:
 Current UI behavior:
 
 - Up to 5 comparison rows.
-- Up to 500 table rows.
+- Up to 1200 table rows.
 - Supported regions are Korean and Japanese only.
 - Event picker lists upcoming events first, then past events.
 - URL input is not supported. Events must be chosen from known event lists.
@@ -461,7 +461,8 @@ Current UI behavior:
 - The notice text `Press Apply to update tracks.` is also clickable and keyboard-activatable with Enter or Space.
 - When not dirty, the button shows `Applied`.
 - A/B tables stay separate, but matching A/B row heights are synchronized with JS.
-- Character names in the multi table are clickable. Clicking a character updates `seed` and `last` inside `/multi`, then recalculates without leaving the multi page.
+- Character names in the multi table are clickable. Clicking a character updates `seed` and `last` inside `/multi`, pushes a browser history entry, then recalculates without leaving the multi page.
+- Browser Back restores the previous `/multi` seed/last/count state when the previous history entry is also a multi seed state. If the previous page is outside `/multi`, normal browser navigation takes over.
 
 Last roll interpretation:
 
@@ -476,11 +477,12 @@ State persistence:
 - Stored data is input state only:
   - seed
   - count
-  - last
   - rows with lang, event, ubers, customName
+- `last` is intentionally not stored in localStorage. It is only taken from the current URL or the current in-page click.
 - Rendered table cells and calculated tracks are not stored.
 - On reload or returning to `/multi`, saved comparison rows are restored.
 - If URL has `seed`, `count`, or `last`, those values override saved values.
+- If URL has no `last`, Last roll starts blank even if an older saved payload still contains a stale `last`.
 - If URL has `lang` or `event`, only the first comparison row is updated from the URL. Other saved comparison rows stay intact.
 - This supports the workflow where the comparison group remains fixed while clicked seed/last values keep changing.
 

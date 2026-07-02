@@ -82,7 +82,7 @@ Persistent browser state:
 Limits:
 
 - Maximum selected banner rows: 5.
-- Maximum count: 500 rows.
+- Maximum count: 1200 rows.
 
 ## Calculation Model
 
@@ -128,7 +128,7 @@ Mobile constraints:
 - The page should remain usable at narrow widths; exact parity with the external
   tool is not required for the first version.
 - Prevent adding a sixth banner row.
-- Clamp or reject counts above 500.
+- Clamp or reject counts above 1200.
 
 ## Planning Mode
 
@@ -158,11 +158,11 @@ Implementation note:
 
 - Keep localStorage to one latest multi setup, not an unbounded history.
 - Keep planning history bounded to the visible count, with an absolute maximum
-  of 500 steps.
+  of 1200 steps.
 - Remove or replace the previous output DOM before rendering a new result.
 - Use event delegation for row controls so adding/removing rows does not
   accumulate per-row listeners.
-- Keep the hard limits of 5 banner rows and 500 output rows.
+- Keep the hard limits of 5 banner rows and 1200 output rows.
 - If mobile rendering is still too heavy, add a later enhancement to reveal
   rows in chunks, for example 100 rows at a time.
 
@@ -236,7 +236,7 @@ Tasks:
 - Enforce a maximum of 5 banner rows.
 - Add custom name.
 - Add future ubers selector.
-- Enforce a maximum count of 500.
+- Enforce a maximum count of 1200.
 - Persist settings in `localStorage`.
 - Restore settings when revisiting `/multi`.
 
@@ -245,7 +245,7 @@ Done criteria:
 - Up to five banners can be compared from the same seed.
 - Refreshing `/multi` keeps the last selected multi setup.
 - Future uber values affect only the local calculated output.
-- Count values above 500 are clamped or rejected with a clear inline message.
+- Count values above 1200 are clamped or rejected with a clear inline message.
 
 ### Phase 4: Planning Mode or TODO
 
@@ -294,4 +294,4 @@ Use these checks before considering the feature complete:
   for a multi image view.
 - Translation/text replacement should be reused at initial render time and
   embedded into the page data, so the browser can remain local-only after load.
-- Limit to 5 selected banners and 500 rows.
+- Limit to 5 selected banners and 1200 rows.
