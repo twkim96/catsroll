@@ -25,6 +25,7 @@ Main local goals:
   - Recently used seed panel.
   - Lightweight seed-view analytics with a `today:` link and stats page.
   - Optional expanded event comparison in the track table.
+  - Optional local-only Multi Track page for comparing multiple event banners.
 
 Major files added or changed from upstream:
 
@@ -39,6 +40,8 @@ Major files added or changed from upstream:
   - Client-side recent seed panel.
 - `lib/battle-cats-rolls/asset/track-compare.js`
   - Client-side expanded event comparison UI and auto-loading.
+- `lib/battle-cats-rolls/asset/multi-track.js`
+  - Client-side local Multi Track page logic.
 - `lib/battle-cats-rolls/crystal_ball.rb`
   - JP names/events can be localized from KR when matchable.
 - `lib/battle-cats-rolls/find_cat.rb`
@@ -55,6 +58,8 @@ Major files added or changed from upstream:
 - `lib/battle-cats-rolls/view/layout.erb`
   - Loads `recent-seeds.js` and `track-compare.js`.
   - Shows the top-right `today:` seed view stats link.
+- `lib/battle-cats-rolls/view/multi.erb`
+  - Renders the local Multi Track page.
 - `lib/battle-cats-rolls/view/seed_views.erb`
   - Renders the seed view stats page.
 - Tests touched:
@@ -412,6 +417,94 @@ Conflict risk:
 - High in `track-compare.js` because it is a large local-only file.
 - Medium in `view.rb`, `web.rb`, and `route.rb` if upstream changes table rendering, routing, or JSON endpoints.
 
+### 8. Local Multi Track page
+
+Purpose:
+
+- Add an optional `/multi` page for comparing multiple event banners against the same seed.
+- Keep the existing server-side search and normal track page behavior unchanged.
+- Do local browser calculation for the multi table after the page and required pool data are loaded.
+- Do not store rendered table results. Only store user input state.
+
+Core files:
+
+- `lib/battle-cats-rolls/asset/multi-track.js`
+- `lib/battle-cats-rolls/view/multi.erb`
+- `lib/battle-cats-rolls/track_api.rb`
+- `lib/battle-cats-rolls/web.rb`
+- `lib/battle-cats-rolls/route.rb`
+- `lib/battle-cats-rolls/view/found_cats.erb`
+- `lib/battle-cats-rolls/asset/track-render.js`
+
+Entry points:
+
+- Main result page shows a text link above Found cats:
+  `멀티 트랙 보기: PC 권장`.
+- `/multi` is separate from the ordinary track page.
+- Mobile top icons are not changed. The extra entry is intentionally a text link.
+
+Current UI behavior:
+
+- Up to 5 comparison rows.
+- Up to 500 table rows.
+- Supported regions are Korean and Japanese only.
+- Event picker lists upcoming events first, then past events.
+- URL input is not supported. Events must be chosen from known event lists.
+- Each comparison row has:
+  - Region
+  - Event
+  - F/U
+  - Custom name
+- `Seed`, `Count`, `Last roll`, region, event, F/U, custom name, add row, and remove row edit a draft state.
+- Table recalculation does not run while typing.
+- The `Apply` button applies draft values and recalculates the table.
+- The notice text `Press Apply to update tracks.` is also clickable and keyboard-activatable with Enter or Space.
+- When not dirty, the button shows `Applied`.
+- A/B tables stay separate, but matching A/B row heights are synchronized with JS.
+- Character names in the multi table are clickable. Clicking a character updates `seed` and `last` inside `/multi`, then recalculates without leaving the multi page.
+
+Last roll interpretation:
+
+- `Last roll` remains a numeric editable input.
+- The adjacent read-only field shows `KR: name, JP: name`.
+- The adjacent label is `kr / jp`.
+- The read-only field is intentionally an `input readonly`, not an `output`, so it follows the same browser rendering and CSS path as the neighboring numeric inputs.
+
+State persistence:
+
+- Browser `localStorage` key is `battle-cats-rolls.multiTrack.v1`.
+- Stored data is input state only:
+  - seed
+  - count
+  - last
+  - rows with lang, event, ubers, customName
+- Rendered table cells and calculated tracks are not stored.
+- On reload or returning to `/multi`, saved comparison rows are restored.
+- If URL has `seed`, `count`, or `last`, those values override saved values.
+- If URL has `lang` or `event`, only the first comparison row is updated from the URL. Other saved comparison rows stay intact.
+- This supports the workflow where the comparison group remains fixed while clicked seed/last values keep changing.
+
+Event labels:
+
+- Multi-only event labels are shortened for display.
+- Date ranges are compacted, for example `2026-06-26` becomes `26.06.26`.
+- The Korean notice text `★확률, 상세 내용은 배너를 클릭!★` is stripped from multi labels only.
+- Do not apply these label rewrites to the main event picker unless explicitly requested.
+
+Performance notes:
+
+- The page should not precompute every event.
+- It fetches event/pool data lazily for selected rows.
+- User edits should not call `renderTables()` until Apply.
+- Row height synchronization is done after render with `requestAnimationFrame`.
+- Keeping input state in localStorage is negligible. The expensive part is table calculation, which still happens only after Apply or navigation/click actions.
+
+Conflict risk:
+
+- High in `multi-track.js`, because it is local-only behavior.
+- Medium in `track_api.rb`, `web.rb`, and `route.rb`, because they add data and route support for `/multi`.
+- Low/medium in `multi.erb`, unless upstream changes layout assumptions.
+
 ## Important design decisions
 
 - Keep conflict-prone behavior thin where possible:
@@ -432,6 +525,10 @@ Conflict risk:
   - Labels are resolved at render time from current event data.
 - Seed stats keep EN visible in region counts but hide EN from the event Top 10.
   - This keeps bot-heavy EN traffic visible without letting it fill the KR/JP event table.
+- Local Multi Track must stay optional and separate from ordinary server search.
+  - Do not route normal search through `/multi`.
+  - Do not make ordinary track rendering depend on multi state.
+  - Do not store calculated multi tables in localStorage.
 
 ## Common commands
 
@@ -465,6 +562,7 @@ Useful checks:
 ```sh
 node --check lib/battle-cats-rolls/asset/recent-seeds.js
 node --check lib/battle-cats-rolls/asset/track-compare.js
+node --check lib/battle-cats-rolls/asset/multi-track.js
 env LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ruby -Ilib test/test_seed_view_counter.rb
 env LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8 ruby -Ilib -S rake test
 ```
@@ -487,6 +585,7 @@ If `git pull upstream/master` conflicts:
 1. Preserve local features unless user explicitly asks to drop them.
 2. Highest-risk local files:
    - `lib/battle-cats-rolls/asset/track-compare.js`
+   - `lib/battle-cats-rolls/asset/multi-track.js`
    - `lib/battle-cats-rolls/view.rb`
    - `lib/battle-cats-rolls/web.rb`
    - `lib/battle-cats-rolls/server.rb`

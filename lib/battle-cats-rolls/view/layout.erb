@@ -65,14 +65,43 @@
       .found_cats li::-webkit-scrollbar {
         display: none;
       }
+      .multi_track_prompt {
+        margin: 0 0 .6rem;
+      }
+      .multi_track_prompt a {
+        display: inline-block;
+        box-sizing: border-box;
+        max-width: 100%;
+        padding: 6px 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, .9);
+        color: #555;
+        font-size: .95rem;
+        line-height: 1.2;
+        text-decoration: none;
+      }
+      .multi_track_prompt a:hover {
+        text-decoration: underline;
+      }
+      .multi_track_prompt a:focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+      }
       <% unless show_details %>
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }
       <% end %>
-      #seed_views_today {
+      #top_utility {
         position: absolute;
         right: 8px;
         top: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+      #top_utility a {
         padding: 2px 6px;
         border: 1px solid #ddd;
         border-radius: 4px;
@@ -80,12 +109,10 @@
         color: #555;
         font-size: 12px;
         line-height: 1.2;
-      }
-      #seed_views_today a {
-        color: #555;
         text-decoration: none;
+        text-align: center;
       }
-      #seed_views_today a:hover {
+      #top_utility a:hover {
         text-decoration: underline;
       }
     </style>
@@ -100,11 +127,12 @@
     </script>
   </head>
   <body>
-    <% if seed_views_today.to_i > 0 %>
-    <div id="seed_views_today">
+    <div id="top_utility">
+      <% if seed_views_today.to_i > 0 %>
       <a href="<%= route.uri(path: '/seed-views') %>">today: <%= seed_views_today %></a>
+      <% end %>
+      <a href="<%= route.multi_uri %>">multi</a>
     </div>
-    <% end %>
     <div id="menu">
       <a href="<%= route.uri %>" title="Home / Permalink">
         <img class="menu" src="/asset/image/treasure.png" alt="Treasure"></a>

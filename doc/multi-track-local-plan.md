@@ -26,13 +26,13 @@ Current layout:
 
 - `lib/battle-cats-rolls/view/layout.erb` renders the top menu icons at
   lines 108-119.
-- `#seed_views_today` renders the `today: N` link at lines 103-106.
+- The implementation should use a small top-right utility area for `today: N`
+  and `multi`; the original icon menu remains unchanged.
 
 Planned change:
 
 - Keep `#menu` and its icons exactly as-is.
-- Extend the `#seed_views_today` block to include a second link/button:
-  `multi`.
+- Add a second link/button: `multi`.
 - Treat `multi` as independent from seed view stats. It is visually placed near
   `today: N`, but it is not a child feature of the stats page.
 - Target URL: `/multi?seed=<current seed>`.
@@ -114,6 +114,11 @@ Minimum useful version:
 - Optional custom name per row.
 - Submit/update button.
 - Multi-track output table showing each selected banner side by side.
+- Output layout must group by track, not by banner:
+  render one A-track table containing all selected banners, then one B-track
+  table containing all selected banners.
+- Do not render columns as banner1 A/B, banner2 A/B, banner3 A/B. That layout is
+  harder to read on mobile and makes same-track comparison worse.
 - Links/cell markers that make duplicate-rare track switches readable.
 
 Mobile constraints:
@@ -148,6 +153,18 @@ Implementation note:
 - Current sandbox DNS failed when trying to fetch `ampuri.github.io`, so the
   first implementation should be based on local `Gacha` behavior and manual UI
   comparison.
+
+## Performance and Cache Guardrails
+
+- Keep localStorage to one latest multi setup, not an unbounded history.
+- Keep planning history bounded to the visible count, with an absolute maximum
+  of 500 steps.
+- Remove or replace the previous output DOM before rendering a new result.
+- Use event delegation for row controls so adding/removing rows does not
+  accumulate per-row listeners.
+- Keep the hard limits of 5 banner rows and 500 output rows.
+- If mobile rendering is still too heavy, add a later enhancement to reveal
+  rows in chunks, for example 100 rows at a time.
 
 ## Phases
 
@@ -271,6 +288,8 @@ Use these checks before considering the feature complete:
   region/event inside the multi page.
 - Each banner row uses region selection plus event selection. There is no
   external URL input mode.
+- Track output is grouped as A table plus B table. It is not grouped as repeated
+  A/B columns per banner.
 - Output is text-only because this server does not have the image assets needed
   for a multi image view.
 - Translation/text replacement should be reused at initial render time and

@@ -120,6 +120,10 @@ module BattleCatsRolls
       uri(path: "//#{web_host}/logs")
     end
 
+    def multi_uri
+      uri(path: "//#{web_host}/multi")
+    end
+
     def seek_uri
       uri(path: "//#{seek_host}/seek")
     end

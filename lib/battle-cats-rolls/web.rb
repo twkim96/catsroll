@@ -12,6 +12,7 @@ require_relative 'talent'
 require_relative 'filter'
 require_relative 'view'
 require_relative 'help'
+require_relative 'track_api'
 
 require 'jellyfish'
 
@@ -224,6 +225,10 @@ module BattleCatsRolls
       with_canonical_uri('/seed-views') do
         render :seed_views, SeedViewCounter.snapshot
       end
+    end
+
+    get '/multi' do
+      render :multi, multi_data: TrackApi.multi_data(route)
     end
 
     get '/expand/result' do

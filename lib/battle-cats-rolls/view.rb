@@ -12,6 +12,7 @@ require 'cgi'
 require 'erb'
 require 'digest/md5'
 require 'forwardable'
+require 'json'
 
 module BattleCatsRolls
   class View < Struct.new(:route, :arg, :seed_views_today)
@@ -829,6 +830,15 @@ module BattleCatsRolls
     def self.track_compare_digest
       @track_compare_digest ||=
         Digest::MD5.file("#{__dir__}/asset/track-compare.js").hexdigest
+    end
+
+    def self.multi_track_digest
+      @multi_track_digest ||=
+        Digest::MD5.file("#{__dir__}/asset/multi-track.js").hexdigest
+    end
+
+    def json_script data
+      JSON.generate(data).gsub('</', '<\/')
     end
 
     def self.template name
