@@ -256,7 +256,7 @@
     letter-spacing: 0;
   }
   .multi-table-wrap {
-    overflow-x: auto;
+    overflow: visible;
     border: 1px solid var(--multi-line);
     border-radius: 8px;
     background: var(--multi-panel);
@@ -281,6 +281,7 @@
     word-break: keep-all;
   }
   .multi-track-table th {
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     z-index: 2;

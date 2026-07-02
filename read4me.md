@@ -462,7 +462,7 @@ Current UI behavior:
 - The notice text `Press Apply to update tracks.` is also clickable and keyboard-activatable with Enter or Space.
 - When not dirty, the button shows `Applied`.
 - A/B tables stay separate, but matching A/B row heights are synchronized with JS.
-- Track table headers are sticky, so the `No.` column header and each custom track name remain visible at the top while scrolling through a long A/B table.
+- Track table headers are sticky, so the `No.` column header and each custom track name remain visible at the top while scrolling through a long A/B table. The table wrapper must keep vertical overflow visible; otherwise sticky headers bind to the wrapper instead of the viewport.
 - Character names in the multi table are clickable. Clicking a character updates `seed` and `last` inside `/multi`, pushes a browser history entry, then recalculates without leaving the multi page.
 - Browser Back restores the previous `/multi` seed/last/count state when the previous history entry is also a multi seed state. If the previous page is outside `/multi`, normal browser navigation takes over.
 
