@@ -863,7 +863,9 @@ module BattleCatsRolls
 
     def default_query query={}, include_filters: false
       keys = %i[
-        seed pos last event custom rate c_rare c_supa c_uber level lang ui
+        seed pos last
+        event custom rate c_rare c_supa c_uber
+        level lang ui
         seeker name display theme count find compute
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
@@ -918,6 +920,8 @@ module BattleCatsRolls
         # rubocop:disable Style/MultipleComparison
         if (key == :seed && value == 0) ||
            (key == :pos && value == '1A') ||
+           (key == :last && value == 0) ||
+           (key == :level && value == default_level) ||
            (key == :lang && value == 'en') ||
            (key == :ui && value == '') ||
            (key == :seeker && value == default_seeker) ||
@@ -926,10 +930,8 @@ module BattleCatsRolls
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
            (key == :find && value == 0) ||
-           (key == :last && value == 0) ||
            (key == :force_guaranteed && value == 0) ||
            (key == :ubers && value == 0) ||
-           (key == :level && value == default_level) ||
            (key == :o && value == '') ||
            (key == :for_against && value == default_for_against) ||
            (key == :against && value == []) ||

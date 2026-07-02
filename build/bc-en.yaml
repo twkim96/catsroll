@@ -13867,8 +13867,7 @@ gacha:
   1051:
     cats: [860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 586, 570, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 273, 272, 270, 262, 260, 259, 258, 241, 227, 213, 204, 197, 196, 195, 178, 172, 171, 170, 169, 160, 159, 144, 139, 138, 137, 136, 135, 126, 125, 108, 107, 106, 88, 87, 86, 85, 84, 77, 76, 74, 73, 72, 60, 58, 45, 44, 43, 35, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 42
-    name: New Limited Unit "Netherworld Nymph Lunacia"!Plus, raised drop rates for Uber Rare heroes!
-    similarity: 96
+    name: New unit Lone Moon Lunos added! Special Capsules featuring powerful limited units!
   1052:
     cats: [125, 626, 503, 361, 60, 87, 323, 227, 724, 307, 608, 759, 436, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 35
@@ -13882,9 +13881,8 @@ gacha:
   1054:
     cats: [449, 464, 482, 494, 138, 360, 650, 775, 655, 689, 695, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 67
-    name: Lunar New Year Capsules full of appreciation! Tap the banner for details!
+    name: '13 Year Celebration: Miracle Selection! ★ Tap banner for info!'
     rate: regular
-    similarity: 86
   1055:
     cats: [331, 332, 275, 276, 355, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 71
@@ -13901,13 +13899,11 @@ gacha:
     series_id: 21
     name: Get an Uber Rare Cat!! 100% Uber drop Rate in the PLATINUM CAPSULES!
     rate: platinum
-    similarity: 99
   1058:
     cats: [860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
     series_id: 46
     name: Get a Guaranteed Uber or Legend Rare from the Legend Capsules!
     rate: legend
-    similarity: 99
   1059:
     cats: [862, 761, 661, 621, 506, 451, 397, 178, 88, 87, 86, 85, 84, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 4
@@ -13949,7 +13945,6 @@ gacha:
     series_id: 53
     name: New units added to June Bride Capsules ★ Tap banner for info!
     rate: no_legend
-    similarity: 96
 events:
   2018-06-06_245:
     start_on: 2018-06-06
@@ -34382,6 +34377,136 @@ events:
     version: '150400'
     name: Conjurer hero Komori joins the fight! ★Tap for details!
     id: 1004
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-03_1045:
+    start_on: 2026-07-03
+    end_on: 2026-07-06
+    version: '150400'
+    name: New unit Squire Luno added! ★Uber Rare drop rate UP!
+    id: 1045
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-07-03_979:
+    start_on: 2026-07-03
+    end_on: 2026-07-07
+    version: '150400'
+    name: New Conjurer Unit Mighty Morta-Loncha, with Explosive attacks! ★Tap for details!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-03_986:
+    start_on: 2026-07-03
+    end_on: 2026-07-07
+    version: '150400'
+    name: Mystery creature Mamoluga awaits your summoning! ★ Tap banner for info!
+    id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-06_1054:
+    start_on: 2026-07-06
+    end_on: 2026-07-11
+    version: '150400'
+    name: '13 Year Celebration: Miracle Selection! ★ Tap banner for info!'
+    id: 1054
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-07_1015:
+    start_on: 2026-07-07
+    end_on: 2026-07-10
+    version: '150400'
+    name: Sorceress Sidmi added! Spooky beauties from beyond!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-07_945:
+    start_on: 2026-07-07
+    end_on: 2026-07-10
+    version: '150400'
+    name: Conjure spirits with new hero Gunduros! Tap banner for info!
+    id: 945
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-10_1021:
+    start_on: 2026-07-10
+    end_on: 2026-07-13
+    version: '150400'
+    name: Raclesa added! Cosmic cuties, here to crush your enemies!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-10_1065:
+    start_on: 2026-07-10
+    end_on: 2026-07-29
+    version: '150400'
+    name: New units added to June Bride Capsules ★ Tap banner for info!
+    id: 1065
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-07-11_1051:
+    start_on: 2026-07-11
+    end_on: 2026-07-20
+    version: '150400'
+    name: New unit Lone Moon Lunos added! Special Capsules featuring powerful limited units!
+    id: 1051
+    rare: 6470
+    supa: 2500
+    uber: 1000
+    legend: 30
+  2026-07-11_1057:
+    start_on: 2026-07-11
+    end_on: 2030-01-01
+    version: '150400'
+    name: Get an Uber Rare Cat!! 100% Uber drop Rate in the PLATINUM CAPSULES!
+    id: 1057
+    rare: 0
+    supa: 0
+    uber: 10000
+    platinum: platinum
+  2026-07-11_1058:
+    start_on: 2026-07-11
+    end_on: 2030-01-01
+    version: '150400'
+    name: Get a Guaranteed Uber or Legend Rare from the Legend Capsules!
+    id: 1058
+    rare: 0
+    supa: 0
+    uber: 9500
+    legend: 500
+    platinum: legend
+  2026-07-13_1043:
+    start_on: 2026-07-13
+    end_on: 2026-07-15
+    version: '150400'
+    name: Fuma Kotaro added! Masters of battle join the Cat cause!
+    id: 1043
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-15_946:
+    start_on: 2026-07-15
+    end_on: 2026-07-17
+    version: '150400'
+    name: Hanasaka Cat with Conjurer evolved form joins! ★Tap banner for info!
+    id: 946
     rare: 6970
     supa: 2500
     uber: 500

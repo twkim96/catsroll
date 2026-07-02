@@ -140,7 +140,7 @@ module BattleCatsRolls
         puts "WARN: Retrying for #{lang}: <#{e.class}> #{e.message}"
         begin
           Runner.build(lang)
-        rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError => e
+        rescue Errno::ECONNRESET, OpenSSL::SSL::SSLError, Date::Error => e
           puts "WARN: Retried. Ignoring for #{lang}: <#{e.class}> #{e.message}"
         end
       end
