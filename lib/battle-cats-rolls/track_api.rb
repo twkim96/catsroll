@@ -76,14 +76,14 @@ module BattleCatsRolls
       {
         initial: {
           seed: route.seed,
-          count: [route.count, 1200].min,
+          count: [route.count, 500].min,
           lang: initial_lang,
           event: route.event,
           name: route.name
         },
         limits: {
           rows: 5,
-          count: 1200
+          count: 500
         },
         last_cats: multi_last_cats(route.name),
         regions: MultiLangs.each_with_object({}) do |lang, result|

@@ -446,7 +446,8 @@ Entry points:
 Current UI behavior:
 
 - Up to 5 comparison rows.
-- Up to 1200 table rows.
+- Up to 500 table rows.
+- `/multi` uses a wider 1200px max-width so five comparison columns have more room on desktop.
 - Supported regions are Korean and Japanese only.
 - Event picker lists upcoming events first, then past events.
 - URL input is not supported. Events must be chosen from known event lists.
