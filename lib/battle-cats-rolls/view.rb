@@ -549,16 +549,21 @@ module BattleCatsRolls
         title = "#{frames} frames"
         %Q{<span title="#{title}">#{(frames.to_f / Stat::FPS).round(2)}s</span>}
       else
-        frames || '?'
+        frames || '-'
       end
     end
 
     def stat_speed speed
-      case route.speed_unit
-      when 'pf'
-        "#{speed}p/f"
-      else # rs
-        "#{speed * 15}r/s"
+      case speed
+      when Numeric
+        case route.speed_unit
+        when 'pf'
+          "#{speed}p/f"
+        else # rs
+          "#{speed * 15}r/s"
+        end
+      else
+        speed || '-'
       end
     end
 
