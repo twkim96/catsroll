@@ -209,8 +209,12 @@ module BattleCatsRolls
         when 'both', 'image'
           value
         else
-          'text'
+          default_display
         end
+    end
+
+    def default_display
+      'text'
     end
 
     def theme
@@ -825,7 +829,7 @@ module BattleCatsRolls
            (key == :ui && value == '') ||
            (key == :seeker && value == default_seeker) ||
            (key == :name && value == 0) ||
-           (key == :display && value == 'text') ||
+           (key == :display && value == default_display) ||
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
            (key == :find && value == 0) ||
