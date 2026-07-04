@@ -396,7 +396,7 @@ module BattleCatsRolls
     end
 
     def default_for_against
-      @default_for_against ||= 'all'
+      'all'
     end
 
     def against
@@ -414,7 +414,7 @@ module BattleCatsRolls
     end
 
     def default_for_buff
-      @default_for_buff ||= 'any'
+      'any'
     end
 
     def buff
@@ -432,7 +432,7 @@ module BattleCatsRolls
     end
 
     def default_for_resistant
-      @default_for_resistant ||= 'or'
+      'or'
     end
 
     def resistant
@@ -450,7 +450,7 @@ module BattleCatsRolls
     end
 
     def default_for_range
-      @default_for_range ||= 'any'
+      'any'
     end
 
     def range
@@ -463,7 +463,7 @@ module BattleCatsRolls
     end
 
     def default_area
-      @default_area ||= 'any'
+      'any'
     end
 
     def for_control
@@ -477,7 +477,7 @@ module BattleCatsRolls
     end
 
     def default_for_control
-      @default_for_control ||= 'any'
+      'any'
     end
 
     def control
@@ -495,7 +495,7 @@ module BattleCatsRolls
     end
 
     def default_for_immunity
-      @default_for_immunity ||= 'any'
+      'any'
     end
 
     def immunity
@@ -513,7 +513,7 @@ module BattleCatsRolls
     end
 
     def default_for_counter
-      @default_for_counter ||= 'any'
+      'any'
     end
 
     def counter
@@ -531,7 +531,7 @@ module BattleCatsRolls
     end
 
     def default_for_combat
-      @default_for_combat ||= 'any'
+      'any'
     end
 
     def combat
@@ -549,7 +549,7 @@ module BattleCatsRolls
     end
 
     def default_for_other
-      @default_for_other ||= 'all'
+      'all'
     end
 
     def other
@@ -561,7 +561,7 @@ module BattleCatsRolls
     end
 
     def default_dps
-      @default_dps ||= 'any'
+      'any'
     end
 
     def damage
@@ -570,7 +570,7 @@ module BattleCatsRolls
     end
 
     def default_damage
-      @default_damage ||= 'any'
+      'any'
     end
 
     def health
@@ -579,7 +579,7 @@ module BattleCatsRolls
     end
 
     def default_health
-      @default_health ||= 'any'
+      'any'
     end
 
     def knockbacks
@@ -588,7 +588,7 @@ module BattleCatsRolls
     end
 
     def default_knockbacks
-      @default_knockbacks ||= 'any'
+      'any'
     end
 
     def stand
@@ -597,7 +597,7 @@ module BattleCatsRolls
     end
 
     def default_stand
-      @default_stand ||= 'any'
+      'any'
     end
 
     def reach
@@ -606,7 +606,7 @@ module BattleCatsRolls
     end
 
     def default_reach
-      @default_reach ||= 'any'
+      'any'
     end
 
     def speed
@@ -615,7 +615,7 @@ module BattleCatsRolls
     end
 
     def default_speed
-      @default_speed ||= 'any'
+      'any'
     end
 
     def cost
@@ -624,7 +624,7 @@ module BattleCatsRolls
     end
 
     def default_cost
-      @default_cost ||= 'any'
+      'any'
     end
 
     def production
@@ -633,7 +633,7 @@ module BattleCatsRolls
     end
 
     def default_production
-      @default_production ||= 'any'
+      'any'
     end
 
     def for_aspect
@@ -647,7 +647,7 @@ module BattleCatsRolls
     end
 
     def default_for_aspect
-      @default_for_aspect ||= 'all'
+      'all'
     end
 
     def aspect
