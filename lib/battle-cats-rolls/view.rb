@@ -555,8 +555,8 @@ module BattleCatsRolls
 
     def stat_speed speed
       case route.speed_unit
-      when 'sf'
-        "#{speed}s/f"
+      when 'pf'
+        "#{speed}p/f"
       else # rs
         "#{speed * 15}r/s"
       end

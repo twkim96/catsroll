@@ -357,7 +357,7 @@ module BattleCatsRolls
     def speed_unit
       @speed_unit ||=
         case value = request.params_coercion_with_nil('speed_unit', :to_s)
-        when 'sf'
+        when 'pf'
           value
         else
           default_speed_unit
