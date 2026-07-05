@@ -457,10 +457,8 @@ int main(int argc, char* argv[]) {
 
     if (found_seeds == 0)
         printf("No seeds found.\n");
-    else if (found_seeds == 1)
-        printf("%u\n%u\n", seed_begin, seed_end);
     else
-        printf("%u\n%u\n%u\n", seed_begin, seed_end, found_seeds);
+        printf("%u\n%u\n%u\n%u\n", seed_begin, seed_end, found_seeds, RUN);
 
     free(cats);
     free(args);

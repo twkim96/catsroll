@@ -257,12 +257,12 @@ module BattleCatsRolls
 
       get %r{^/seek/result/?(?<key>\w*)} do |m|
         key = m[:key]
-        seed = cache[key] if /./.match?(key)
         seek = SeekSeed.queue[key]
+        result = cache[key] if /./.match?(key)
 
         seek.yield if seek&.ended?
 
-        render :seek_result, seed: seed, seek: seek
+        render :seek_result, seek: seek, result: result
       end
     end
   end

@@ -123,6 +123,11 @@ module BattleCatsRolls
       steps.times.inject(base_seed){ |seed| retreat_seed(seed) }
     end
 
+    def duped_last_cat
+      slots = pool.dig_slot(Cat::Rare)
+      slots[advance_seed % slots.size]
+    end
+
     private
 
     def pick_cats rarity

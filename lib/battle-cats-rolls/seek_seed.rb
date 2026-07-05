@@ -11,6 +11,8 @@ module BattleCatsRolls
     :promise, :seed, :previous_count)
     Pool = PromisePool::ThreadPool.new(1)
     Mutex = Mutex.new
+    Result = Struct.new(
+      :starting_seed, :current_seed, :found_seeds, :run_type)
 
     def self.processed
       @processed ||= 0
@@ -89,7 +91,7 @@ module BattleCatsRolls
             " failed with #{source.join(' ')}")
         end
 
-        result
+        Result.new(*result)
       else
         []
       end

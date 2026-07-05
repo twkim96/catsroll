@@ -607,12 +607,21 @@ module BattleCatsRolls
       CGI.escape_html(str)
     end
 
-    def made10rolls? seeds
-      gacha = Gacha.new(route.gacha.pool, seeds.first)
+    def duped_last_cat result
+      if result.run_type == 0
+        0
+      else
+        Gacha.new(route.gacha.pool, result.starting_seed).duped_last_cat
+      end
+    end
+
+    def made10rolls? result
+      gacha = Gacha.new(route.gacha.pool, result.starting_seed)
       gacha.send(:advance_seed!) # Account offset
+      gacha.send(:advance_seed!) if result.run_type > 0 # Account duped rare
       9.times{ gacha.roll! } # Only 9 rolls left
 
-      if gacha.seed == seeds.last
+      if gacha.seed == result.current_seed
         gacha.send(:advance_seed!) # Account for guaranteed roll
         gacha.seed
       end
