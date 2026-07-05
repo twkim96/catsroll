@@ -1,0 +1,4 @@
+#!/bin/sh
+
+root=$(readlink -e "$(dirname "$0")"/..)
+docker run --rm -v "$root/.git:/host.git:ro" -p 8080:8080 registry.gitlab.com/godfat/battle-cats-rolls
