@@ -14,6 +14,10 @@ module BattleCatsRolls
     Result = Struct.new(
       :starting_seed, :current_seed, :found_seeds, :run_type)
 
+    def self.resolve result
+      Result.new(*result) if result
+    end
+
     def self.processed
       @processed ||= 0
     end
