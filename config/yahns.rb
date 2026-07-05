@@ -17,4 +17,4 @@ app :rack, rack, preload: true do
   queue do
     worker_threads BattleCatsRolls::SeekThreads
   end
-end
+end if BattleCatsRolls::SeekHost
