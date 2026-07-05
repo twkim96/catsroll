@@ -869,8 +869,7 @@ module BattleCatsRolls
 
     def self.template name
       (@template ||= {})[name.to_s] ||=
-        Tilt.new("#{__dir__}/view/#{name}.erb",
-          trim: '-', default_encoding: Encoding::UTF_8)
+        Tilt.new("#{__dir__}/view/#{name}.erb", trim: '-')
     end
 
     def self.warmup
