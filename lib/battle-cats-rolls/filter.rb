@@ -284,7 +284,7 @@ module BattleCatsRolls
 
     module Melee
       def self.display
-        '<250'
+        yield.method(:stat_range)['<250']
       end
 
       def self.match? abilities, stat=nil
@@ -294,7 +294,7 @@ module BattleCatsRolls
 
     module Midrange
       def self.display
-        '250~449'
+        yield.method(:stat_range)['250~449']
       end
 
       def self.match? abilities, stat=nil
@@ -305,7 +305,7 @@ module BattleCatsRolls
 
     module Backline
       def self.display
-        '>=450'
+        yield.method(:stat_range)['>=450']
       end
 
       def self.match? abilities, stat=nil
@@ -315,7 +315,7 @@ module BattleCatsRolls
 
     module Rearline
       def self.display
-        '>=550'
+        yield.method(:stat_range)['>=550']
       end
 
       def self.match? abilities, stat=nil
@@ -325,7 +325,7 @@ module BattleCatsRolls
 
     class ReachFilter < Struct.new(:criteria)
       def display
-        ">=#{criteria}"
+        ">=#{yield.method(:stat_range)[criteria]}"
       end
 
       def match? abilities, stat
@@ -335,7 +335,7 @@ module BattleCatsRolls
 
     class SpeedFilter < Struct.new(:criteria, :op)
       def display
-        "#{op}#{criteria}"
+        "#{op}#{yield.method(:stat_speed)[criteria]}"
       end
 
       def match? abilities, stat=nil

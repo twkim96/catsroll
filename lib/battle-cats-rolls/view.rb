@@ -367,6 +367,10 @@ module BattleCatsRolls
       'selected="selected"' if route.ubers == n
     end
 
+    def selected_speed_unit unit
+      'selected="selected"' if route.speed_unit == unit
+    end
+
     def checked_details
       'checked="checked"' if route.details
     end
@@ -584,7 +588,29 @@ module BattleCatsRolls
         title = "#{frames} frames"
         %Q{<span title="#{title}">#{(frames.to_f / Stat::FPS).round(2)}s</span>}
       else
-        frames || '?'
+        frames || '-'
+      end
+    end
+
+    def stat_speed speed
+      case speed
+      when Numeric
+        case route.speed_unit
+        when 'pf'
+          "#{speed}p/f"
+        else # rs
+          "#{speed * 15}r/s"
+        end
+      else
+        speed || '-'
+      end
+    end
+
+    def stat_range range
+      if range.kind_of?(Numeric)
+        "#{range}r"
+      else
+        range.gsub(/(\d+)/, '\\1r')
       end
     end
 
@@ -843,7 +869,8 @@ module BattleCatsRolls
 
     def self.template name
       (@template ||= {})[name.to_s] ||=
-        Tilt.new("#{__dir__}/view/#{name}.erb", trim: '-')
+        Tilt.new("#{__dir__}/view/#{name}.erb",
+          trim: '-', default_encoding: Encoding::UTF_8)
     end
 
     def self.warmup
