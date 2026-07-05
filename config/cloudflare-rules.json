@@ -1,0 +1,15 @@
+{
+  "action": "block",
+  "description": "Rate limiting bots",
+  "enabled": true,
+  "expression": "(cf.bot_management.verified_bot)",
+  "ratelimit": {
+    "characteristics": [
+      "ip.src"
+    ],
+    "mitigation_timeout": 10,
+    "period": 10,
+    "requests_per_period": 10,
+    "rate_exceeds": "request_base"
+  }
+}
