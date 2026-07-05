@@ -610,7 +610,7 @@ module BattleCatsRolls
     def made10rolls? seeds
       gacha = Gacha.new(route.gacha.pool, seeds.first)
       gacha.send(:advance_seed!) # Account offset
-      9.times.inject(nil){ |last| gacha.roll! } # Only 9 rolls left
+      9.times{ gacha.roll! } # Only 9 rolls left
 
       if gacha.seed == seeds.last
         gacha.send(:advance_seed!) # Account for guaranteed roll
