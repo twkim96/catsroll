@@ -12,6 +12,49 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-07-06, part 2") %>
+<ul>
+  <li><p>
+    The server has been very overloaded for some time. In order to fight
+    against this, beside reducing max count from 500 to 250, two specific
+    Cloudflare rules are added to reduce requests coming from bots.
+  </p>
+  <p>
+    From now on, bots are not allowed to request <code>/</code> with
+    <code>seed=</code>. For now that's the most expensive requests which
+    should be preserved for human only. There are also infinite links which
+    the bots might get lost and stuck there.
+  </p>
+  <p>
+    Bots are also rate limited to 10 requests per 10 seconds at most. That's
+    already faster than most human can ever read.
+  </p>
+  <p>
+    For the record, Facebook (Meta) <code>meta-externalagent</code> is the top
+    offender, making 10 times more requests than the second offender,
+    Apple <code>Applebot</code>, and 200 times more requests than the third
+    offender, Anthropic <code>ClaudeBot</code>. Both Facebook and Apple also
+    completely ignore all 3 measures to politely ask them stop:
+    <ul>
+      <li>File <code>robots.txt</code>, ignored</li>
+      <li>HTML <code>&lt;meta name="robots" content="none"&gt;</code>, ignored</li>
+      <li>HTTP header <code>X-Robots-Tag: none</code>, ignored</li>
+    </ul>
+    While it's probably not surprising that Facebook is not a good citizen,
+    Apple published this document: <a href="https://support.apple.com/en-us/119829" target="_blank" rel="noopener noreferrer">About Applebot</a>
+    and it specifically documented that <code>Applebot</code> should respect
+    the above 3 measures but that's not true, and they're still bombarding
+    the site. Of course, it's worth to repeat that Facebook (Meta) still did
+    10 times more than Apple did. The rest were making much less requests so
+    we can ignore for now.
+  </p>
+  <p>
+    This policy will be revisited based on the future data. It's not
+    intended to completely block bots from accessing, but it has to be
+    reasonable.
+  </p></li>
+</ul>
+
 <%= header(2, "2026-07-06") %>
 <ul>
   <li><p>
