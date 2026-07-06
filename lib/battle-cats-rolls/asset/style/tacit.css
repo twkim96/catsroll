@@ -334,12 +334,6 @@ figure img {
     flex-grow: 1;
     page-break-before: auto
   }
-  section {
-    width: auto
-  }
-  x:-moz-any-link {
-    display: table-cell
-  }
 }
 
 /* Customization below */
