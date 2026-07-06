@@ -13,8 +13,8 @@
 <%= header(1, "What's changed?") %><p></p>
 
 <%= header(2, "2026-07-06") %>
-<ul><li>
-  <p>
+<ul>
+  <li><p>
     The @VampireFlower seeker now can detect the first duped rare by itself,
     fixing a forever standing 8.6+ seeker "bug", so long that it's kind of
     considered a "feature" lately.
@@ -27,8 +27,22 @@
   <p>
     Thanks @VampireFlower for the
     <a href="https://gitlab.com/godfat/battle-cats-rolls/-/merge_requests/54">contribution</a>.
-  </p>
-</li></ul>
+  </p></li>
+  <li>
+    The 3rd link in the seek result page for guaranteed rolls was broken and
+    never shown after the VampireFlower seeker was introduced due to internal
+    interface change. This is fixed now. If you have 10 inputs, it'll show
+    this 3rd link again for those who used guaranteed rolls for inputs.
+  </li>
+  <li>
+    To further reduce server load, the max count has been reduced again
+    from 999 to 500 and now to 250. It will be raised back when server load
+    is no longer a concern. You can also run the server locally with Docker
+    where the default max count is still 999:
+    <code>docker run --rm -p 8080:8080 registry.gitlab.com/godfat/battle-cats-rolls</code>
+    Check <a href="https://gitlab.com/godfat/battle-cats-rolls/-/blob/35112846c3ac6f94f50f7addcc71e055e06059fb/README.md#with-pre-built-docker-image">README.md</a> for more details.
+  </li>
+</ul>
 
 <%= header(2, "2026-07-05") %>
 <ul>
