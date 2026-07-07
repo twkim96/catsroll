@@ -12,6 +12,22 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-07-07") %>
+<ul>
+  <li>
+    The max count (rolls) is slightly raised from 250 to 300, given that
+    the server seems to be relatively stable now. There's no plan to raise
+    this back to 999, but somewhere between 300 and 500 is considered.
+  </li>
+  <li>
+    Reviewing all the blocked requests from bots, one particular agent is
+    also blocked but maybe shouldn't: <code>Google-Read-Aloud</code>. If
+    you're a user who relies on that, please file an issue and let's talk
+    if that should be exempted and how. File an issue at:
+    <a href="https://gitlab.com/godfat/battle-cats-rolls/-/work_items">issues</a>
+  </li>
+</ul>
+
 <%= header(2, "2026-07-06, part 2") %>
 <ul>
   <li><p>
