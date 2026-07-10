@@ -10,12 +10,98 @@
   <% end %>
 </ul>
 
-<%= header(1, "Known bugs for 8.6+") %><p></p>
-<ol>
-  <li>Seed seeking does not fully work for 8.6+ yet. If it can't find the seed, roll another cat, and put your new last 10 cats. When you don't have any duplicated rare cats in the last 10 rolls, it can find the seed.</li>
-</ol>
-
 <%= header(1, "What's changed?") %><p></p>
+
+<%= header(2, "2026-07-07") %>
+<ul>
+  <li>
+    The max count (rolls) is slightly raised from 250 to 300, given that
+    the server seems to be relatively stable now. There's no plan to raise
+    this back to 999, but somewhere between 300 and 500 is considered.
+  </li>
+  <li>
+    Reviewing all the blocked requests from bots, one particular agent is
+    also blocked but maybe shouldn't: <code>Google-Read-Aloud</code>. If
+    you're a user who relies on that, please file an issue and let's talk
+    if that should be exempted and how. File an issue at:
+    <a href="https://gitlab.com/godfat/battle-cats-rolls/-/work_items">issues</a>
+  </li>
+</ul>
+
+<%= header(2, "2026-07-06, part 2") %>
+<ul>
+  <li><p>
+    The server has been very overloaded for some time. In order to fight
+    against this, beside reducing max count from 500 to 250, two specific
+    Cloudflare rules are added to reduce requests coming from bots.
+  </p>
+  <p>
+    From now on, bots are not allowed to request <code>/</code> with
+    <code>seed=</code>. For now that's the most expensive requests which
+    should be preserved for human only. There are also infinite links which
+    the bots might get lost and stuck there.
+  </p>
+  <p>
+    Bots are also rate limited to 10 requests per 10 seconds at most. That's
+    already faster than most human can ever read.
+  </p>
+  <p>
+    For the record, Facebook (Meta) <code>meta-externalagent</code> is the top
+    offender, making 10 times more requests than the second offender,
+    Apple <code>Applebot</code>, and 200 times more requests than the third
+    offender, Anthropic <code>ClaudeBot</code>. Both Facebook and Apple also
+    completely ignore all 3 measures to politely ask them stop:
+    <ul>
+      <li>File <code>robots.txt</code>, ignored</li>
+      <li>HTML <code>&lt;meta name="robots" content="none"&gt;</code>, ignored</li>
+      <li>HTTP header <code>X-Robots-Tag: none</code>, ignored</li>
+    </ul>
+    While it's probably not surprising that Facebook is not a good citizen,
+    Apple published this document: <a href="https://support.apple.com/en-us/119829" target="_blank" rel="noopener noreferrer">About Applebot</a>
+    and it specifically documented that <code>Applebot</code> should respect
+    the above 3 measures but that's not true, and they're still bombarding
+    the site. Of course, it's worth to repeat that Facebook (Meta) still did
+    10 times more than Apple did. The rest were making much less requests so
+    we can ignore for now.
+  </p>
+  <p>
+    This policy will be revisited based on the future data. It's not
+    intended to completely block bots from accessing, but it has to be
+    reasonable.
+  </p></li>
+</ul>
+
+<%= header(2, "2026-07-06") %>
+<ul>
+  <li><p>
+    The @VampireFlower seeker now can detect the first duped rare by itself,
+    fixing a forever standing 8.6+ seeker "bug", so long that it's kind of
+    considered a "feature" lately.
+  </p>
+  <p>
+    Given the fix, even if the seeker couldn't find a seed, you do not need to
+    remove the first rare cat and try again. It will not help and will not
+    find anything different.
+  </p>
+  <p>
+    Thanks @VampireFlower for the
+    <a href="https://gitlab.com/godfat/battle-cats-rolls/-/merge_requests/54">contribution</a>.
+  </p></li>
+  <li>
+    The 3rd link in the seek result page for guaranteed rolls was broken and
+    never shown after the VampireFlower seeker was introduced due to internal
+    interface change. This is fixed now. If you have 10 inputs, it'll show
+    this 3rd link again for those who used guaranteed rolls for inputs.
+  </li>
+  <li>
+    To further reduce server load, the max count has been reduced again
+    from 999 to 500 and now to 250. It will be raised back when server load
+    is no longer a concern. You can also run the server locally with Docker
+    where the default max count is still 999:
+    <code>docker run --rm -p 8080:8080 registry.gitlab.com/godfat/battle-cats-rolls</code>
+    Check <a href="https://gitlab.com/godfat/battle-cats-rolls/-/blob/35112846c3ac6f94f50f7addcc71e055e06059fb/README.md#with-pre-built-docker-image">README.md</a> for more details.
+  </li>
+</ul>
 
 <%= header(2, "2026-07-05") %>
 <ul>

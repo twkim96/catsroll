@@ -1,0 +1,23 @@
+[
+  {
+    "action": "block",
+    "description": "Rate limit bots",
+    "enabled": true,
+    "expression": "(cf.bot_management.verified_bot)",
+    "ratelimit": {
+      "characteristics": [
+        "ip.src"
+      ],
+      "mitigation_timeout": 10,
+      "period": 10,
+      "requests_per_period": 10,
+      "rate_exceeds": "request_base"
+    }
+  },
+  {
+    "action": "block",
+    "description": "Block bots accessing /",
+    "enabled": true,
+    "expression": "(cf.client.bot and http.request.uri.path eq \"/\" and http.request.uri.query contains \"seed=\")"
+  }
+]

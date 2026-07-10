@@ -1,13 +1,4 @@
 User-agent: *
-Disallow: /*.png
-
-User-agent: ClaudeBot
-User-agent: Applebot
-User-agent: Meta-ExternalAgent
-User-agent: GPTBot
-User-agent: Amazonbot
-User-agent: PetalBot
-User-agent: BingBot
 Disallow: /
 Allow: /cats
 Allow: /help

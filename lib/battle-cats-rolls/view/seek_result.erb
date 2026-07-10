@@ -2,14 +2,13 @@
   <%= erb :help_seek_result %>
   <hr>
 
-  <% if arg[:seed] %>
-    <% if arg[:seed].empty? %>
+  <% if result = arg[:result] %>
+    <% if result.starting_seed.nil? %>
       <ul>
         <li>
           Unfortunately we didn't successfully find your seed. There could have
           several possible reasons:
           <ul>
-            <li>The <strong>first rare cat</strong> you put into is a duplicated rare cat. <em>Try to remove it from the list and try again.</em></li>
             <li>There's a bug.</li>
             <li>You put the cats wrong, or you picked the wrong event.</li>
             <li>The formula changed and we didn't update the code yet.</li>
@@ -23,7 +22,7 @@
           Your starting seed is:
           <ul>
             <li>
-              <a href="<%= route.uri(query: {seed: arg.dig(:seed, 0)}) %>"><%= arg.dig(:seed, 0) %></a>
+              <a href="<%= route.uri(query: {seed: result.starting_seed, last: duped_last_cat(result)}) %>"><%= result.starting_seed %></a>
             </li>
           </ul>
         </li>
@@ -31,11 +30,11 @@
           After rolling the cats you entered, your last seed is:
           <ul>
             <li>
-              <a href="<%= route.uri(query: {seed: arg.dig(:seed, 1)}) %>"><%= arg.dig(:seed, 1) %></a>
+              <a href="<%= route.uri(query: {seed: result.current_seed}) %>"><%= result.current_seed %></a>
             </li>
           </ul>
         </li>
-        <% if offset_seed = made10rolls?(arg[:seed]) %>
+        <% if offset_seed = made10rolls?(result) %>
           <li>
             If you made 11-rolls with a <strong>guaranteed event</strong>,
             or 15-rolls (3+5+7) with a <strong>step-up event</strong>,
@@ -48,7 +47,7 @@
             </ul>
           </li>
         <% end %>
-        <% if arg.dig(:seed, 2).to_i > 1 %>
+        <% if result.found_seeds > 1 %>
           <li>
             <strong>This might not be your actual seed</strong>
             because there are more than 1 seeds found. Be sure to verify

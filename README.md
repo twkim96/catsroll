@@ -108,6 +108,30 @@ will be used by the Ruby server.
 
     ./bin/server
 
+### With pre-built Docker image:
+
+If you want to run the server quickly with a Docker image locally for
+personal use, you can run this:
+
+    ./docker/run # Access it with http://localhost:8080
+
+It'll fetch a pre-built Docker image and update the code/data with your
+local repository. This way it also ensures that you can update the code/data
+with your local repository quickly and easily.
+
+If you don't want to have a repository, you can also run with only the
+pre-built image:
+
+    docker run --rm -p 8080:8080 registry.gitlab.com/godfat/battle-cats-rolls
+
+It'll also update the code/data with canonical repository to avoid being
+oudated.
+
+If there are dependencies updates, expect a new pre-built image, or build it
+yourself:
+
+    ./docker/build
+
 ## Production with memcached, nginx, varnish, systemd and socket activation:
 
 ### Set up memcached

@@ -2,16 +2,9 @@
 
 * Add an advanced filter for rarity. Useful to tick all rare cats,
   for example, or find all usable cats in a 4-stars stage (special + rare)
-* Toggle talents
 * Show surge duration
 * Show knockback distance
-* Show slow percentage
-* Use consistent unit for speed (range per second)
-* Figure out how where to find the hard coded values in the game data
-
-## Talents
-
-* When unlocked at lv1, it starts at min. when it's at max level, it's at max. so growth is `(max - min) / (maxLevel - 1)`
+* Show slow speed (7.5 r/s or 0.5 p/f)
 
 ## Bugs
 
@@ -26,7 +19,6 @@
   https://bc.godfat.org/?seed=1&event=custom&custom=12&details=true
   This should not show empty gacha, but what are there and what's missing.
   Check GachaPool#slots for this.
-* Fix guessing 10 rolls link when seeking seed (Can't recall this. Was this for dupe rare?)
 * Preserve current queries when swapping language for a non-existing cat when
   showing stats (This is something that it's hard to fix, too. We don't know
   if the user intentionally enter an invalid level, or it's swapping to a cat
@@ -59,11 +51,11 @@
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.
   Reference: https://ampuri.github.io/bc-normal-seed-tracking/
+  and https://ampuri.github.io/godfat-multi/
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Tracking history (by recording rolls we click)
 * Normal gacha banners and tracks
-* Client-side seed seeker
 
 ## Architecture
 
@@ -74,8 +66,3 @@
 ## Build script, language and APK
 
 * Only show the languages which are built, no need to force all of them
-
-## Seed seeker
-
-* Fix the bug where it cannot find the seed if the first rare cat happens to
-  be a re-rolled rare cat.
