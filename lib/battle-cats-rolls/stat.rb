@@ -51,19 +51,13 @@ module BattleCatsRolls
     end
 
     def augment talents
-      if talents && talent?
-        talents.each do |talent|
-          if talent.augment_module
-            singleton_class.prepend(talent.augment_module)
-
-            talent.augment_attributes.each do |attribute|
-              (augmenting_talents[attribute] ||= []) << talent
-            end
-          end
-        end
-      end
+      talents.each{ _1.augment(self) } if talents && talent?
 
       self
+    end
+
+    def augment_attribute talent, attribute
+      (augmenting_talents[attribute] ||= []) << talent
     end
 
     def augmenting_talents

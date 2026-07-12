@@ -199,6 +199,24 @@ module BattleCatsRolls
         self.ability = Ability::Specialization.new(
           [key.delete_prefix('against_').capitalize])
       end
+
+      def augment stat
+        super
+
+        specialization = stat.specialized_abilities.find do |ability|
+          ability.kind_of?(Ability::Specialization)
+        end
+
+        if specialization
+          specialization.enemies.concat(ability.enemies)
+          capitalized_list = Ability::Specialization::List.map(&:capitalize)
+          specialization.enemies.sort_by!(&capitalized_list.method(:index))
+        end
+      end
+
+      def augment_attributes
+        ability.enemies
+      end
     end
 
     Ability::Specialization::List.each do |type|
@@ -642,7 +660,19 @@ module BattleCatsRolls
       end
     end
 
+    def augment stat
+      stat.singleton_class.prepend(augment_module) if augment_module
+
+      augment_attributes.each do |attribute|
+        stat.augment_attribute(self, attribute)
+      end
+    end
+
     def augment_module
+    end
+
+    def augment_attributes
+      []
     end
 
     def name

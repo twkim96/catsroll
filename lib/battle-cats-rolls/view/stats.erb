@@ -71,13 +71,13 @@
     <td><%= stat_time attack.duration %></td>
     <% end %>
     <td><%= l10n('Trigger effects') %></td>
-    <td colspan="3"><%= display_list(attack.display_effects) %></td>
+    <td colspan="3"><%= display_list(attack.display_effects, stat: stat) %></td>
   </tr>
   <% end %>
   <% stat.specialized_abilities.each do |ability| %>
   <tr class="border_middle">
     <td><%= l10n(ability.name) %></td>
-    <td colspan="5"><%= display_ability(ability) %></td>
+    <td colspan="5"><%= display_ability(ability, stat: stat) %></td>
   </tr>
   <% end %>
   <% if stat.generic_abilities.any? %>
@@ -88,7 +88,7 @@
     <% stat.generic_abilities.each do |ability| %>
   <tr class="border_middle">
     <td><%= l10n(ability.name) %></td>
-    <td colspan="5"><%= display_ability(ability) %></td>
+    <td colspan="5"><%= display_ability(ability, stat: stat) %></td>
   </tr>
     <% end %>
   <% end %>

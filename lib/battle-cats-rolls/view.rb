@@ -51,6 +51,10 @@ module BattleCatsRolls
       end
     end
 
+    def l10n_augmented text, stat
+      stat_augmented(stat, text, l10n(text))
+    end
+
     def l10n text
       L10n.translate(route.ui_lang, text)
     end
@@ -520,22 +524,22 @@ module BattleCatsRolls
       h cat.pick_name(route.name)
     end
 
-    def display_ability ability
-      display_list(ability.display(&method(:itself)), strong: true)
+    def display_ability ability, **args
+      display_list(ability.display(&method(:itself)), strong: true, **args)
     end
 
-    def display_list text_or_list, strong: false
+    def display_list text_or_list, stat: nil, strong: false
       case text_or_list
       when Array
         text_or_list.map do |text|
           if strong
-            "<strong>#{l10n(text)}</strong>"
+            "<strong>#{l10n_augmented(text, stat)}</strong>"
           else
-            l10n(text)
+            l10n_augmented(text, stat)
           end
         end.join(l10n(', '))
       else
-        l10n(text_or_list)
+        l10n_augmented(text_or_list, stat)
       end
     end
 
@@ -587,7 +591,7 @@ module BattleCatsRolls
     end
 
     def stat_augmented stat, attribute, value=stat.public_send(attribute)
-      if talents = stat.augmenting_talents[attribute]
+      if stat && talents = stat.augmenting_talents[attribute]
         css_class = if talents.any?(&:ultra?)
           'augmented_ultra'
         else
