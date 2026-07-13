@@ -196,7 +196,7 @@ module BattleCatsRolls
     class Specialization < Talent
       def initialize(...)
         super
-        self.ability = Ability::Specialization.new(
+        self.ability ||= Ability::Specialization.new(
           [key.delete_prefix('against_').capitalize])
       end
 
@@ -205,17 +205,27 @@ module BattleCatsRolls
 
         specialization = stat.specialized_abilities.find do |ability|
           ability.kind_of?(Ability::Specialization)
-        end
+        end || augment_specialization(stat)
 
-        if specialization
-          specialization.enemies.concat(ability.enemies)
-          capitalized_list = Ability::Specialization::List.map(&:capitalize)
-          specialization.enemies.sort_by!(&capitalized_list.method(:index))
-        end
+        specialization.enemies.concat(ability.enemies)
+        capitalized_list = Ability::Specialization::List.map(&:capitalize)
+        specialization.enemies.sort_by!(&capitalized_list.method(:index))
       end
 
       def augment_attributes
         ability.enemies
+      end
+
+      private
+
+      # This will be used for talent_against which implies that the cat
+      # doesn't have a native specilization
+      def augment_specialization stat
+        specialization = Ability::Specialization.new([])
+        stat.specialized_abilities << specialization
+        stat.specialized_abilities.sort_by!(&:index)
+
+        specialization
       end
     end
 

@@ -2,6 +2,7 @@
 
 require_relative 'ability'
 require_relative 'attack'
+require_relative 'talent'
 require_relative 'cat'
 
 module BattleCatsRolls
@@ -51,7 +52,17 @@ module BattleCatsRolls
     end
 
     def augment talents
-      talents.each{ _1.augment(self) } if talents && talent?
+      if talents && talent?
+        talents.each{ _1.augment(self) }
+
+        if against = info['talent_against']
+          Talent::Specialization.new(
+            'talent_against', {},
+            Ability::Specialization.new(
+              Ability::Specialization.display(against))
+          ).augment(self)
+        end
+      end
 
       self
     end
