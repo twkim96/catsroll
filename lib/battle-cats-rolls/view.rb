@@ -678,6 +678,10 @@ module BattleCatsRolls
       "https://battlecatsstats.com/unit/#{cat.id}/#{route.name}"
     end
 
+    def uri_to_bc_info cat
+      "https://battlecatsinfo.github.io/unit.html?id=#{cat.id - 1}"
+    end
+
     def uri_to_cat_db cat
       "https://battlecats-db.com/unit/#{sprintf('%03d', cat.id)}.html"
     end
