@@ -876,6 +876,11 @@ module BattleCatsRolls
         Digest::MD5.file("#{__dir__}/asset/multi-track.js").hexdigest
     end
 
+    def self.seed_view_admin_digest
+      @seed_view_admin_digest ||=
+        Digest::MD5.file("#{__dir__}/asset/seed-view-admin.js").hexdigest
+    end
+
     def json_script data
       JSON.generate(data).gsub('</', '<\/')
     end

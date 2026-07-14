@@ -66,7 +66,74 @@
     max-width: 70rem;
     table-layout: fixed;
   }
+  .seed-view-admin {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+    width: 100%;
+    max-width: 70rem;
+    margin: .25rem 0 1rem;
+  }
+  .seed-view-admin button {
+    margin: 0;
+  }
+  .seed-view-admin-status {
+    flex-basis: 100%;
+    min-height: 1.5rem;
+    margin: 0;
+    color: #555;
+  }
+  .seed-view-admin-status[data-state="error"] {
+    color: #a40000;
+  }
+  .seed-view-admin-status[data-state="success"] {
+    color: #246b36;
+  }
+  .seed-view-admin-dialog {
+    width: min(24rem, calc(100% - 2rem));
+    padding: 1rem;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+  }
+  .seed-view-admin-dialog::backdrop {
+    background: rgba(0, 0, 0, .4);
+  }
+  .seed-view-admin-dialog label,
+  .seed-view-admin-dialog input {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .seed-view-admin-dialog menu {
+    display: flex;
+    justify-content: flex-end;
+    gap: .5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+  }
 </style>
+
+<div class="seed-view-admin" data-seed-view-admin
+  data-endpoint="<%= route.uri(path: '/seed-views/admin') %>">
+  <button type="button" data-tsv-action="deploy"><strong>KR/JP TSV 업데이트 + 배포</strong></button>
+  <button type="button" data-tsv-action="check"><strong>KR/JP TSV 업데이트 확인</strong></button>
+  <p class="seed-view-admin-status" data-tsv-status role="status" aria-live="polite"></p>
+</div>
+
+<dialog class="seed-view-admin-dialog" data-tsv-dialog>
+  <form data-tsv-password-form>
+    <label for="tsv_admin_password">관리자 암호</label>
+    <input id="tsv_admin_password" name="password" type="password"
+      autocomplete="current-password" required>
+    <menu>
+      <button type="button" data-tsv-cancel>취소</button>
+      <button type="submit">실행</button>
+    </menu>
+  </form>
+</dialog>
+
+<script src="/asset/seed-view-admin.js?<%= self.class.seed_view_admin_digest %>" defer></script>
 
 <% recent_quarters = arg[:recent_quarters] %>
 <% recent_hours = arg[:recent_hours] %>

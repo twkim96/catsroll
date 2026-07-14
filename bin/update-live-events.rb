@@ -81,6 +81,7 @@ module BattleCatsRolls
     def run
       validate_repo!
       fail!('--url can only be used with a single lang') if @url && @langs.size != 1
+      sync_from_origin
 
       puts "[info] repo: #{@repo}"
       puts "[info] langs: #{@langs.join(', ')}"
@@ -127,7 +128,8 @@ module BattleCatsRolls
     end
 
     def download_tsv url
-      data = URI.open(url, 'User-Agent' => USER_AGENT, &:read)
+      data = URI.open(url, 'User-Agent' => USER_AGENT,
+        open_timeout: 10, read_timeout: 20, &:read)
       unless data.include?("[start]\n") && data.include?("[end]\n")
         fail!('downloaded data does not look like gatya.tsv')
       end
@@ -209,6 +211,29 @@ module BattleCatsRolls
       @push_remotes.each do |remote|
         run_git(['remote', 'get-url', remote], quiet: true)
         run_git(['push', remote, 'main'])
+      end
+    end
+
+    def sync_from_origin
+      return if @dry_run || !@push_remotes.include?('origin')
+
+      assert_git_main!
+      unless git_success?(['diff', '--quiet']) &&
+             git_success?(['diff', '--cached', '--quiet'])
+        fail!('tracked local changes exist; refusing to sync before update')
+      end
+
+      puts '[info] syncing local main from origin/main'
+      run_git(['fetch', 'origin', 'main'])
+      local = capture_git(['rev-parse', 'HEAD']).strip
+      remote = capture_git(['rev-parse', 'FETCH_HEAD']).strip
+      return if local == remote
+
+      base = capture_git(['merge-base', 'HEAD', 'FETCH_HEAD']).strip
+      if base == local
+        run_git(['merge', '--ff-only', 'FETCH_HEAD'])
+      elsif base != remote
+        fail!('local main and origin/main have diverged; refusing automatic merge')
       end
     end
 

@@ -1,0 +1,38 @@
+name: Update KR/JP live events and deploy
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-live-events-and-deploy
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: Update KR/JP event data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          ruby bin/update-live-events.rb kr jp --commit --push origin
+
+      - name: Deploy main to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          test -n "$HF_TOKEN"
+          git remote add hf-deploy "https://twkim96:${HF_TOKEN}@huggingface.co/spaces/twkim96/my-cats-rolls"
+          git push hf-deploy HEAD:main
