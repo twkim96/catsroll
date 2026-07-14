@@ -212,8 +212,7 @@ module BattleCatsRolls
           capitalized_list = Ability::Specialization::List.map(&:capitalize)
           specialization.enemies.sort_by!(&capitalized_list.method(:index))
         else
-          stat.specialized_abilities << ability
-          stat.specialized_abilities.sort_by!(&:index)
+          (stat.specialized_abilities << ability).sort_by!(&:index)
         end
       end
 
@@ -226,21 +225,33 @@ module BattleCatsRolls
       const_set("Against#{type.capitalize}", Specialization)
     end
 
-    class Strong < Talent
+    class Standalone < Talent
+      def augment stat
+        super
+
+        (stat.specialized_abilities << ability).sort_by!(&:index)
+      end
+
+      def augment_attributes
+        [name]
+      end
+    end
+
+    class Strong < Standalone
       def initialize(...)
         super
         self.ability = Ability::Strong.new
       end
     end
 
-    class Resistant < Talent
+    class Resistant < Standalone
       def initialize(...)
         super
         self.ability = Ability::Resistant.new
       end
     end
 
-    class MassiveDamage < Talent
+    class MassiveDamage < Standalone
       def initialize(...)
         super
         self.ability = Ability::MassiveDamage.new

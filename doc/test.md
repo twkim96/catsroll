@@ -62,12 +62,16 @@
 
 ## Stats
 
+* Heavy Assault C.A.T.: Talent massive damage
+  https://bc.godfat.org/cats/15
 * Awakened Bahamut Cat: Multi area attacks:
   https://bc.godfat.org/cats/26
 * Apple Cat: Single single attack and single area attack:
   https://bc.godfat.org/cats/40
 * Ice Crystal Cat: Ultra talent to augment specialization
   https://bc.godfat.org/cats/43
+* God-Emperor Kamukura: Talent resistant
+  https://bc.godfat.org/cats/87
 * Crazed Titan Cat: Health should be 52200
   https://bc.godfat.org/cats/100
 * Immortal Kenshin: Talent specialization for both true and ultra form
@@ -76,6 +80,8 @@
   https://bc.godfat.org/cats/175
 * Metal Cat: Metal and max level is 20:
   https://bc.godfat.org/cats/201
+* Akuma Hayabusa: Talent strong
+  https://bc.godfat.org/cats/262
 * Sea Maiden Ruri: Multi single attacks:
   https://bc.godfat.org/cats/336
 * Iron wall: Immune to bosswave:

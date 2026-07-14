@@ -76,7 +76,7 @@
   <% end %>
   <% stat.specialized_abilities.each do |ability| %>
   <tr class="border_middle">
-    <td><%= l10n(ability.name) %></td>
+    <td><%= l10n_augmented(ability.name, stat) %></td>
     <td colspan="5"><%= display_ability(ability, stat: stat) %></td>
   </tr>
   <% end %>
@@ -87,7 +87,7 @@
   </tr>
     <% stat.generic_abilities.each do |ability| %>
   <tr class="border_middle">
-    <td><%= l10n(ability.name) %></td>
+    <td><%= l10n_augmented(ability.name, stat) %></td>
     <td colspan="5"><%= display_ability(ability, stat: stat) %></td>
   </tr>
     <% end %>
