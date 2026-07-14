@@ -205,27 +205,20 @@ module BattleCatsRolls
 
         specialization = stat.specialized_abilities.find do |ability|
           ability.kind_of?(Ability::Specialization)
-        end || augment_specialization(stat)
+        end
 
-        specialization.enemies.concat(ability.enemies)
-        capitalized_list = Ability::Specialization::List.map(&:capitalize)
-        specialization.enemies.sort_by!(&capitalized_list.method(:index))
+        if specialization
+          specialization.enemies.concat(ability.enemies)
+          capitalized_list = Ability::Specialization::List.map(&:capitalize)
+          specialization.enemies.sort_by!(&capitalized_list.method(:index))
+        else
+          stat.specialized_abilities << ability
+          stat.specialized_abilities.sort_by!(&:index)
+        end
       end
 
       def augment_attributes
         ability.enemies
-      end
-
-      private
-
-      # This will be used for talent_against which implies that the cat
-      # doesn't have a native specilization
-      def augment_specialization stat
-        specialization = Ability::Specialization.new([])
-        stat.specialized_abilities << specialization
-        stat.specialized_abilities.sort_by!(&:index)
-
-        specialization
       end
     end
 
