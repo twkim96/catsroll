@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 concurrency:
   group: update-live-events-and-deploy
@@ -30,9 +31,24 @@ jobs:
           ruby bin/update-live-events.rb kr jp --commit --push origin
 
       - name: Deploy main to Hugging Face
-        env:
-          HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
+          set -euo pipefail
+          ID_TOKEN=$(curl -fsSL \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://huggingface.co" | \
+            jq -r .value)
+          HF_TOKEN=$(curl -fsSL -X POST https://huggingface.co/oauth/token \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg token "$ID_TOKEN" \
+              --arg resource "spaces/twkim96/my-cats-rolls" \
+              '{
+                grant_type: "urn:ietf:params:oauth:grant-type:token-exchange",
+                subject_token_type: "urn:ietf:params:oauth:token-type:id_token",
+                subject_token: $token,
+                resource: $resource
+              }')" | jq -r .access_token)
           test -n "$HF_TOKEN"
+          test "$HF_TOKEN" != null
+          echo "::add-mask::$HF_TOKEN"
           git remote add hf-deploy "https://twkim96:${HF_TOKEN}@huggingface.co/spaces/twkim96/my-cats-rolls"
           git push hf-deploy HEAD:main
