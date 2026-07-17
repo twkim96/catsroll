@@ -153,11 +153,7 @@ module BattleCatsRolls
       def display
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
-        if level
-          "Improve rate by #{values} by #{level} levels"
-        else
-          "Improve rate by #{values}"
-        end
+        "Improve rate by #{values} by #{level} levels"
       end
     end
 
@@ -197,11 +193,7 @@ module BattleCatsRolls
         values = values_range(data.dig('minmax', 0),
           show: yield.method(:stat_time))
 
-        if level
-          "Improve duration by #{values} by #{level} levels"
-        else
-          "Improve duration by #{values}"
-        end
+        "Improve duration by #{values} by #{level} levels"
       end
     end
 
@@ -324,6 +316,15 @@ module BattleCatsRolls
       def initialize(...)
         super
         self.ability = Ability::CriticalStrike.new
+        ability.chance = data.dig('minmax', 0, -1) unless level
+      end
+
+      def display
+        if level
+          super
+        else
+          ability.display
+        end
       end
     end
 
