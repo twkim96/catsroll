@@ -7,7 +7,7 @@ require_relative 'cat'
 module BattleCatsRolls
   class Stat < Struct.new(
     :id, :info, :index, :level, :conjure_info, :cat,
-    :exclude_talents, :sum_no_wave, :dps_no_critical,
+    :sum_no_wave, :dps_no_critical,
     keyword_init: true)
 
     DefaultLevel = 30

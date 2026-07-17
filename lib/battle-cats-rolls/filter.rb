@@ -25,7 +25,6 @@ module BattleCatsRolls
                 filter.match?(abilities,
                   Stat.new(id: id, info: info, index: index,
                     level: level,
-                    exclude_talents: exclude_talents,
                     sum_no_wave: sum_no_wave,
                     dps_no_critical: dps_no_critical))
               end
