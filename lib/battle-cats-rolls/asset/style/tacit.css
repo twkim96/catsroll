@@ -239,7 +239,7 @@ body {
   background: #f5f5f5;
   color: #1a1919;
 }
-ul, ol, dl, blockquote, hr, pre, table, fieldset, figure, address {
+ul, ol, dl, hr, pre, table, fieldset, figure, address {
   margin-bottom: 29.7px
 }
 section {
