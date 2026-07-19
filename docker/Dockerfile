@@ -16,4 +16,4 @@ RUN env CC=gcc Seeker/bin/build-VampireFlower.sh
 RUN apk del linux-headers build-base
 
 ENTRYPOINT ["docker/entrypoint.sh"]
-CMD [ "yahns", "-c", "config/yahns.rb" ]
+CMD [ "bin/server" ]

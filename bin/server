@@ -3,4 +3,4 @@
 root=$(readlink -f "$(dirname "$0")"/..)
 test -f "$root/.env" || touch "$root/.env"
 # shellcheck disable=SC2046 # Quoting it can cause an error when .env is empty
-env $(cat "$root/.env") yahns -c "$root/config/yahns.rb" "$@"
+exec env $(cat "$root/.env") yahns -c "$root/config/yahns.rb" "$@"
