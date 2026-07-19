@@ -203,7 +203,7 @@ module BattleCatsRolls
       def augment stat
         super
 
-        specialization = stat.specialized_abilities.find do |ability|
+        specialization = stat.abilities.find do |ability|
           ability.kind_of?(Ability::Specialization)
         end
 
@@ -212,7 +212,7 @@ module BattleCatsRolls
           capitalized_list = Ability::Specialization::List.map(&:capitalize)
           specialization.enemies.sort_by!(&capitalized_list.method(:index))
         else
-          (stat.specialized_abilities << ability).sort_by!(&:index)
+          (stat.abilities << ability).sort_by!(&:index)
         end
       end
 
@@ -229,7 +229,7 @@ module BattleCatsRolls
       def augment stat
         super
 
-        (stat.specialized_abilities << ability).sort_by!(&:index)
+        (stat.abilities << ability).sort_by!(&:index)
       end
 
       def augment_attributes

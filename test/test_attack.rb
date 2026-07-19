@@ -12,7 +12,8 @@ describe BattleCatsRolls::Attack do
   def stat
     @stat ||= BattleCatsRolls::Stat.new(
       id: id, index: index,
-      info: BattleCatsRolls::Route.public_send("ball_#{lang}").cats[id])
+      info: BattleCatsRolls::Route.public_send("ball_#{lang}").cats[id]
+    ).augment(nil)
   end
 
   describe '#area_type' do

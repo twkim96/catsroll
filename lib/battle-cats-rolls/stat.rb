@@ -64,6 +64,7 @@ module BattleCatsRolls
         end
       end
 
+      finalize
       self
     end
 
@@ -193,9 +194,9 @@ module BattleCatsRolls
     end
 
     def effects
-      @effects ||= abilities.flat_map do |(_, abis)|
-        abis.select(&:effects)
-      end
+      # Specialized abilities should come first so we don't use abilities
+      @effects ||= (specialized_abilities + generic_abilities).
+        select(&:effects)
     end
 
     def wave_effect
@@ -281,18 +282,21 @@ module BattleCatsRolls
       stat['damage_1'].nil?
     end
 
-    def specialized_abilities
-      @specialized_abilities ||= abilities[true] || []
+    def abilities
+      @abilities ||= Ability.build(stat)
     end
 
-    def generic_abilities
-      @generic_abilities ||= abilities[false] || []
-    end
+    attr_reader :specialized_abilities, :generic_abilities
 
     private
 
-    def abilities
-      @abilities ||= Ability.build(stat).group_by(&:specialized)
+    attr_writer :specialized_abilities, :generic_abilities
+
+    def finalize
+      grouped_abilities = abilities.group_by(&:specialized)
+      self.specialized_abilities = grouped_abilities[true] || []
+      self.generic_abilities = grouped_abilities[false] || []
+      self
     end
 
     def damage n=0
