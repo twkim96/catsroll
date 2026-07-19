@@ -11,7 +11,7 @@ RUN git reset --hard
 RUN bundle config set without 'cache:test'
 RUN bundle install
 RUN gem install lru_redux
-RUN gcc -O2 Seeker/Seeker-VampireFlower.c -o Seeker/Seeker-VampireFlower
+RUN env CC=gcc Seeker/bin/build-VampireFlower.sh
 
 RUN apk del linux-headers build-base
 
