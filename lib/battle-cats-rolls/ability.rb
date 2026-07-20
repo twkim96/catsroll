@@ -929,7 +929,7 @@ module BattleCatsRolls
     def self.build stat
       constants.filter_map do |ability|
         const_get(ability, false).build_if_available(stat)
-      end.sort_by(&:index)
+      end
     end
 
     def self.build_if_available stat; end

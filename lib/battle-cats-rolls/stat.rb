@@ -293,7 +293,7 @@ module BattleCatsRolls
     attr_writer :specialized_abilities, :generic_abilities
 
     def finalize
-      grouped_abilities = abilities.group_by(&:specialized)
+      grouped_abilities = abilities.sort_by(&:index).group_by(&:specialized)
       self.specialized_abilities = grouped_abilities[true] || []
       self.generic_abilities = grouped_abilities[false] || []
       self
