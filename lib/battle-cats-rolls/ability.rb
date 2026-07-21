@@ -16,14 +16,14 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance),
-         duration: seconds_range(yield.method(:stat_time))}
+         duration: seconds_with_treasure(yield.method(:stat_time))}
       end
     end
 
-    def seconds_range stat_time
+    def seconds_with_treasure stat_time
       max_time = (duration * treasure_multiplier).floor
 
-      "#{stat_time[duration]} ~ #{highlight(stat_time[max_time])}"
+      "#{stat_time[duration]} or #{highlight(stat_time[max_time])}"
     end
 
     def seconds stat_time
@@ -110,7 +110,7 @@ module BattleCatsRolls
       end
 
       def display
-        'Deal 150% ~ 180% damage and take 50% ~ 40% damage'
+        'Deal 150% or 180% damage and take 50% or 40% damage'
       end
 
       def specialized = true
@@ -128,7 +128,7 @@ module BattleCatsRolls
       end
 
       def display
-        'Deal 300% ~ 400% damage'
+        'Deal 300% or 400% damage'
       end
 
       def specialized = true
@@ -146,7 +146,7 @@ module BattleCatsRolls
       end
 
       def display
-        'Deal 500% ~ 600% damage'
+        'Deal 500% or 600% damage'
       end
 
       def specialized = true
@@ -164,7 +164,7 @@ module BattleCatsRolls
       end
 
       def display
-        'Take 25% ~ 20% damage'
+        'Take 25% or 20% damage'
       end
 
       def specialized = true
@@ -182,7 +182,7 @@ module BattleCatsRolls
       end
 
       def display
-        'Take 16% ~ 14% damage'
+        'Take 16% or 14% damage'
       end
 
       def specialized = true
@@ -266,7 +266,7 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance), multiplier: percent(multiplier),
-         duration: seconds_range(yield.method(:stat_time))}
+         duration: seconds_with_treasure(yield.method(:stat_time))}
       end
     end
 
@@ -317,7 +317,7 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance),
-         duration: seconds_range(yield.method(:stat_time))}
+         duration: seconds_with_treasure(yield.method(:stat_time))}
       end
     end
 
