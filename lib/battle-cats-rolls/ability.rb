@@ -16,27 +16,37 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance),
-         duration: seconds_with_treasure(yield.method(:stat_time))}
+         duration: seconds_with_treasure(yield)}
       end
-    end
-
-    def seconds_with_treasure stat_time
-      max_time = (duration * treasure_multiplier).floor
-
-      "#{stat_time[duration]} or #{highlight(stat_time[max_time])}"
-    end
-
-    def seconds stat_time
-      highlight(stat_time[duration])
-    end
-
-    def percent integer
-      highlight("#{integer}%")
     end
 
     private
 
-    def highlight text
+    def seconds_with_treasure view
+      max_time = (duration * treasure_multiplier).floor
+      without = view.stat_time(duration)
+      with = view.stat_time(max_time)
+
+      "#{without} or #{highlight(view, with)}"
+    end
+
+    def seconds view
+      strong(view.stat_time(duration))
+    end
+
+    def percent_highlight view, integer
+      highlight(view, percent(integer))
+    end
+
+    def percent integer
+      strong("#{integer}%")
+    end
+
+    def highlight view, text
+      strong(text)
+    end
+
+    def strong text
       "<strong>#{text}</strong>"
     end
 
@@ -202,7 +212,7 @@ module BattleCatsRolls
       end
 
       def display
-        percent(chance)
+        percent_highlight(yield, chance)
       end
 
       def specialized = true
@@ -266,7 +276,7 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance), multiplier: percent(multiplier),
-         duration: seconds_with_treasure(yield.method(:stat_time))}
+         duration: seconds_with_treasure(yield)}
       end
     end
 
@@ -317,7 +327,7 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance),
-         duration: seconds_with_treasure(yield.method(:stat_time))}
+         duration: seconds_with_treasure(yield)}
       end
     end
 
@@ -332,10 +342,10 @@ module BattleCatsRolls
         'Survive'
       end
 
-      def display values=display_values
+      def display values=nil, &block
         sprintf(
           '%{chance} to survive a lethal strike to be knocked back with 1 health', # rubocop:disable Layout/LineLength
-          values)
+          values || display_values(&block))
       end
 
       def specialized = false
@@ -345,7 +355,7 @@ module BattleCatsRolls
       private
 
       def display_values
-        {chance: percent(chance)}
+        {chance: percent_highlight(yield, chance)}
       end
     end
 
@@ -393,7 +403,9 @@ module BattleCatsRolls
       end
 
       def display
-        "#{percent(chance)} to deal #{percent(modifier + 100)} damage"
+        percentage = percent_highlight(yield, chance)
+
+        "#{percentage} to deal #{percent(modifier + 100)} damage"
       end
 
       def specialized = false
@@ -413,7 +425,9 @@ module BattleCatsRolls
       end
 
       def display
-        "#{percent(chance)} to deal 200% damage and ignore metal effect"
+        percentage = percent_highlight(yield, chance)
+
+        "#{percentage} to deal 200% damage and ignore metal effect"
       end
 
       def modifier
@@ -449,7 +463,7 @@ module BattleCatsRolls
       include AbilityUtility
 
       def self.build_if_available stat
-        new (stat['break_barrier_chance']) if stat['break_barrier_chance']
+        new(stat['break_barrier_chance']) if stat['break_barrier_chance']
       end
 
       def name
@@ -457,7 +471,9 @@ module BattleCatsRolls
       end
 
       def display
-        "#{percent(chance)} to break star alien barrier"
+        percentage = percent_highlight(yield, chance)
+
+        "#{percentage} to break star alien barrier"
       end
 
       def specialized = false
@@ -469,7 +485,7 @@ module BattleCatsRolls
       include AbilityUtility
 
       def self.build_if_available stat
-        new (stat['break_shield_chance']) if stat['break_shield_chance']
+        new(stat['break_shield_chance']) if stat['break_shield_chance']
       end
 
       def name
@@ -477,7 +493,9 @@ module BattleCatsRolls
       end
 
       def display
-        "#{percent(chance)} to break aku shield"
+        percentage = percent_highlight(yield, chance)
+
+        "#{percentage} to break aku shield"
       end
 
       def specialized = false
@@ -638,7 +656,7 @@ module BattleCatsRolls
       private
 
       def display_values
-        {chance: percent(chance), duration: seconds(yield.method(:stat_time))}
+        {chance: percent(chance), duration: seconds(yield)}
       end
     end
 
@@ -702,7 +720,7 @@ module BattleCatsRolls
       private
 
       def display_values
-        {chance: percent(chance), level: highlight(level)}
+        {chance: percent(chance), level: strong(level)}
       end
     end
 
@@ -756,7 +774,7 @@ module BattleCatsRolls
         area = "#{area_range.begin} ~ #{area_range.end}"
 
         {chance: percent(chance), level: highlight(level),
-         area: highlight(yield.method(:stat_range)[area])}
+         area: highlight(yield.stat_range(area))}
       end
 
       def start
@@ -821,7 +839,7 @@ module BattleCatsRolls
 
       def display_values
         {chance: percent(chance),
-         range: highlight(yield.method(:stat_range)[start])}
+         range: strong(yield.stat_range(start))}
       end
     end
 

@@ -547,7 +547,7 @@ module BattleCatsRolls
       h l10n(filter.sub(/^./, &:upcase).tr('_', ' '))
     end
 
-    def stat_time frames
+    public def stat_time frames
       case frames
       when Numeric
         title = "#{frames} frames"
@@ -571,7 +571,7 @@ module BattleCatsRolls
       end
     end
 
-    def stat_range range
+    public def stat_range range
       if range.kind_of?(Numeric)
         "#{range}r"
       else
@@ -590,7 +590,7 @@ module BattleCatsRolls
       end
     end
 
-    def stat_augmented stat, attribute, value=stat.public_send(attribute)
+    public def stat_augmented stat, attribute, value=stat.public_send(attribute)
       if stat && talents = stat.augmenting_talents[attribute]
         css_class = if talents.any?(&:ultra?)
           'augmented_ultra'

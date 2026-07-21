@@ -12,9 +12,9 @@ module BattleCatsRolls
 
       if result.size > 1
         last_value = "#{show.call(result.last)}#{suffix}"
-        "#{first_value} ~ #{highlight(last_value)}"
+        "#{first_value} ~ #{strong(last_value)}"
       else
-        highlight(first_value)
+        strong(first_value)
       end
     end
   end
@@ -28,7 +28,7 @@ module BattleCatsRolls
       end
 
       def display
-        "#{highlight('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
+        "#{strong('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
       end
 
       def augment_module
@@ -53,7 +53,7 @@ module BattleCatsRolls
       end
 
       def display
-        "#{highlight('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
+        "#{strong('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
       end
 
       def augment_module
@@ -81,8 +81,8 @@ module BattleCatsRolls
       def display
         show = yield.method(:stat_speed)
 
-        "#{highlight('Speed')} by" \
-          " #{show[min]} ~ #{highlight(show[max])} by #{level} levels"
+        "#{strong('Speed')} by" \
+          " #{show[min]} ~ #{strong(show[max])} by #{level} levels"
       end
 
       def augment_module
@@ -107,7 +107,7 @@ module BattleCatsRolls
       end
 
       def display
-        "#{highlight('Cost')} by #{min} ~ #{highlight(max)} by #{level} levels"
+        "#{strong('Cost')} by #{min} ~ #{strong(max)} by #{level} levels"
       end
 
       def augment_module
@@ -149,7 +149,7 @@ module BattleCatsRolls
         values = values_range(data.dig('minmax', 0),
           show: yield.method(:stat_time))
 
-        "#{highlight('Production cooldown')} by #{values} by #{level} levels"
+        "#{strong('Production cooldown')} by #{values} by #{level} levels"
       end
 
       def augment_module
@@ -176,7 +176,7 @@ module BattleCatsRolls
       def display
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
-        "#{highlight('Attack cooldown')} by #{values} by #{level} levels"
+        "#{strong('Attack cooldown')} by #{values} by #{level} levels"
       end
 
       def augment_module
@@ -203,14 +203,10 @@ module BattleCatsRolls
       def augment stat
         super
 
-        specialization = stat.abilities.find do |ability|
-          ability.kind_of?(Ability::Specialization)
-        end
-
-        if specialization
-          specialization.enemies.concat(ability.enemies)
+        if target = stat.abilities.find{ _1.kind_of?(Ability::Specialization) }
+          target.enemies.concat(ability.enemies)
           capitalized_list = Ability::Specialization::List.map(&:capitalize)
-          specialization.enemies.sort_by!(&capitalized_list.method(:index))
+          target.enemies.sort_by!(&capitalized_list.method(:index))
         else
           stat.abilities << ability
         end
@@ -266,12 +262,33 @@ module BattleCatsRolls
 
         "Improve rate by #{values} by #{level} levels"
       end
+
+      def augment_ability_module stat
+        Module.new do
+          define_method(:highlight) do |view, text|
+            view.stat_augmented(stat, name.downcase, super(view, text))
+          end
+        end
+      end
+
+      def augment stat
+        super
+
+        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+          target.chance += ability.chance
+          target.singleton_class.prepend(augment_ability_module(stat))
+          stat.augment_attribute(self, name.downcase)
+        else
+          stat.abilities << ability
+          stat.augment_attribute(self, name)
+        end
+      end
     end
 
     class Knockback < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::Knockback.new
+        self.ability = Ability::Knockback.new(data.dig('minmax', 0, 1))
       end
     end
 
@@ -376,7 +393,7 @@ module BattleCatsRolls
     class Survive < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::Survive.new
+        self.ability = Ability::Survive.new(data.dig('minmax', 0, 1))
       end
     end
 
@@ -419,22 +436,21 @@ module BattleCatsRolls
     class SavageBlow < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::SavageBlow.new
+        self.ability = Ability::SavageBlow.new(*data['minmax'].transpose.last)
       end
     end
 
     class CriticalStrike < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::CriticalStrike.new
-        ability.chance = data.dig('minmax', 0, -1) unless level
+        self.ability = Ability::CriticalStrike.new(data.dig('minmax', 0, 1))
       end
 
-      def display
+      def display(...)
         if level
           super
         else
-          ability.display
+          ability.display(...)
         end
       end
     end
@@ -442,14 +458,14 @@ module BattleCatsRolls
     class BreakBarrier < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::BreakBarrier.new
+        self.ability = Ability::BreakBarrier.new(data.dig('minmax', 0, 1))
       end
     end
 
     class BreakShield < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::BreakShield.new
+        self.ability = Ability::BreakShield.new(data.dig('minmax', 0, 1))
       end
     end
 
@@ -634,7 +650,7 @@ module BattleCatsRolls
       def display
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
-        "Reduce #{highlight(type)} #{kind} by #{values} by #{level} levels"
+        "Reduce #{strong(type)} #{kind} by #{values} by #{level} levels"
       end
 
       private
