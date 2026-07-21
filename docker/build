@@ -1,4 +1,4 @@
 #!/bin/sh
 
-root=$(readlink -e "$(dirname "$0")"/..)
+root=$(readlink -f "$(dirname "$0")"/..)
 docker build -t registry.gitlab.com/godfat/battle-cats-rolls -f "$root/docker/Dockerfile" "$root/.git"
