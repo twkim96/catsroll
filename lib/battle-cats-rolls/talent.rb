@@ -27,7 +27,7 @@ module BattleCatsRolls
         'Increase'
       end
 
-      def display
+      def display(**)
         "#{strong('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
       end
 
@@ -52,7 +52,7 @@ module BattleCatsRolls
         'Increase'
       end
 
-      def display
+      def display(**)
         "#{strong('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
       end
 
@@ -78,8 +78,8 @@ module BattleCatsRolls
         'Increase'
       end
 
-      def display
-        show = yield.method(:stat_speed)
+      def display(view:, **)
+        show = view.method(:stat_speed)
 
         "#{strong('Speed')} by" \
           " #{show[min]} ~ #{strong(show[max])} by #{level} levels"
@@ -106,7 +106,7 @@ module BattleCatsRolls
         'Reduce'
       end
 
-      def display
+      def display(**)
         "#{strong('Cost')} by #{min} ~ #{strong(max)} by #{level} levels"
       end
 
@@ -145,9 +145,9 @@ module BattleCatsRolls
         'Reduce'
       end
 
-      def display
+      def display(view:, **)
         values = values_range(data.dig('minmax', 0),
-          show: yield.method(:stat_time))
+          show: view.method(:stat_time))
 
         "#{strong('Production cooldown')} by #{values} by #{level} levels"
       end
@@ -173,7 +173,7 @@ module BattleCatsRolls
         'Reduce'
       end
 
-      def display
+      def display(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "#{strong('Attack cooldown')} by #{values} by #{level} levels"
@@ -257,18 +257,10 @@ module BattleCatsRolls
     class EffectRate < Talent
       include TalentUtility
 
-      def display
+      def display(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "Improve rate by #{values} by #{level} levels"
-      end
-
-      def augment_ability_module stat
-        Module.new do
-          define_method(:highlight) do |view, text|
-            view.stat_augmented(stat, name.downcase, super(view, text))
-          end
-        end
       end
 
       def augment stat
@@ -276,7 +268,6 @@ module BattleCatsRolls
 
         if target = stat.abilities.find{ _1.kind_of?(ability.class) }
           target.chance += ability.chance
-          target.singleton_class.prepend(augment_ability_module(stat))
           stat.augment_attribute(self, name.downcase)
         else
           stat.abilities << ability
@@ -295,31 +286,32 @@ module BattleCatsRolls
     class EffectDuration < Talent
       include TalentUtility
 
-      def display(...)
+      def display(**)
         if data['minmax'].size > 1
-          display_full(...)
+          display_full(**)
         else
-          display_improve(...)
+          display_improve(**)
         end
       end
 
       private
 
-      def display_full
+      def display_full(view:, **)
         chance = data.dig('minmax', 0)
         duration = data.dig('minmax', 1)
-        stat_time = yield.method(:stat_time)
+        stat_time = view.method(:stat_time)
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
-          duration: values_range(duration, show: stat_time))
+          duration: values_range(duration, show: stat_time)
+        })
 
         "#{display_text} by #{level} levels"
       end
 
-      def display_improve
+      def display_improve(view:, **)
         values = values_range(data.dig('minmax', 0),
-          show: yield.method(:stat_time))
+          show: view.method(:stat_time))
 
         "Improve duration by #{values} by #{level} levels"
       end
@@ -349,16 +341,17 @@ module BattleCatsRolls
 
       private
 
-      def display_full
+      def display_full(view:, **)
         chance = data.dig('minmax', 0)
         duration = data.dig('minmax', 1)
         multiplier = data.dig('minmax', 2)
-        stat_time = yield.method(:stat_time)
+        stat_time = view.method(:stat_time)
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
           duration: values_range(duration, show: stat_time),
-          multiplier: values_range(multiplier, suffix: '%'))
+          multiplier: values_range(multiplier, suffix: '%')
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -379,7 +372,7 @@ module BattleCatsRolls
 
       private
 
-      def display_improve
+      def display_improve(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         if level
@@ -405,28 +398,29 @@ module BattleCatsRolls
         self.ability = Ability::Strengthen.new
       end
 
-      def display
+      def display(**)
         if data['minmax'].size > 1
-          display_full
+          display_full(**)
         else
-          display_improve
+          display_improve(**)
         end
       end
 
       private
 
-      def display_full
+      def display_full(**)
         threshold = data.dig('minmax', 0).map{ |p| 100 - p }
         multiplier = data.dig('minmax', 1).map{ |p| p + 100 }
 
-        display_text = ability.display(
+        display_text = ability.display({
           threshold: values_range(threshold, suffix: '%'),
-          multiplier: values_range(multiplier, suffix: '%'))
+          multiplier: values_range(multiplier, suffix: '%')
+        })
 
         "#{display_text} by #{level} levels"
       end
 
-      def display_improve
+      def display_improve(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "Improve damage by #{values} by #{level} levels"
@@ -446,11 +440,11 @@ module BattleCatsRolls
         self.ability = Ability::CriticalStrike.new(data.dig('minmax', 0, 1))
       end
 
-      def display(...)
+      def display(**)
         if level
           super
         else
-          ability.display(...)
+          ability.display(**)
         end
       end
     end
@@ -512,14 +506,15 @@ module BattleCatsRolls
         self.ability = Ability::BehemothSlayer.new
       end
 
-      def display
+      def display(view:, **)
         chance = data.dig('minmax', 0)
         duration = data.dig('minmax', 1)
-        stat_time = yield.method(:stat_time)
+        stat_time = view.method(:stat_time)
 
-        ability.display(
+        ability.display({
           chance: values_range(chance, suffix: '%'),
-          duration: values_range(duration, show: stat_time))
+          duration: values_range(duration, show: stat_time)
+        })
       end
     end
 
@@ -531,13 +526,14 @@ module BattleCatsRolls
         self.ability = Ability::Wave.new
       end
 
-      def display
+      def display(**)
         chance = data.dig('minmax', 0)
         wave_level = data.dig('minmax', 1)
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
-          level: values_range(wave_level))
+          level: values_range(wave_level)
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -558,7 +554,7 @@ module BattleCatsRolls
         self.ability = Ability::Surge.new
       end
 
-      def display
+      def display(view:, **)
         chance = data.dig('minmax', 0)
         surge_level = data.dig('minmax', 1)
         start = data.dig('minmax', 2).
@@ -567,10 +563,11 @@ module BattleCatsRolls
           map.with_index{ |r, i| (r * range_multiplier).floor + start[i] }
         area = "#{values_range(start)} ~ #{values_range(reach)}"
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
           level: values_range(surge_level),
-          area: yield.method(:stat_range)[area])
+          area: view.stat_range(area)
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -602,14 +599,15 @@ module BattleCatsRolls
         'Explosion'
       end
 
-      def display
+      def display(view:, **)
         chance = data.dig('minmax', 0)
         range = data.dig('minmax', 1).
           map{ |r| (r * range_multiplier).floor }
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
-          range: yield.method(:stat_range)[values_range(range)])
+          range: view.stat_range(values_range(range))
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -647,7 +645,7 @@ module BattleCatsRolls
         'Resistance'
       end
 
-      def display
+      def display(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "Reduce #{strong(type)} #{kind} by #{values} by #{level} levels"
@@ -709,8 +707,8 @@ module BattleCatsRolls
       ability.name
     end
 
-    def display
-      ability.display
+    def display(**)
+      ability.display(**)
     end
 
     def level

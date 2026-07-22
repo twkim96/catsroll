@@ -5,8 +5,8 @@ module BattleCatsRolls
     class EffectDuration < Struct.new(:chance, :duration)
       include AbilityUtility
 
-      def display values=nil, &block
-        sprintf('%{chance} for %{duration}', values || display_values(&block))
+      def display(values=nil, **)
+        sprintf('%{chance} for %{duration}', values || display_values(**))
       end
 
       def specialized = true
@@ -14,36 +14,42 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance),
-         duration: seconds_with_treasure(yield)}
+         duration: seconds_with_treasure(**)}
       end
     end
 
     private
 
-    def seconds_with_treasure view
+    def seconds_with_treasure(view: view, **)
       max_time = (duration * treasure_multiplier).floor
       without = view.stat_time(duration)
       with = view.stat_time(max_time)
 
-      "#{without} or #{highlight(view, with)}"
+      "#{without} or #{highlight(with, view: view, **)}"
     end
 
-    def seconds view
+    def seconds(view: view, **)
       strong(view.stat_time(duration))
     end
 
-    def percent_highlight view, integer
-      highlight(view, percent(integer))
+    def percent_highlight(integer, **)
+      highlight(percent(integer), **)
     end
 
     def percent integer
       strong("#{integer}%")
     end
 
-    def highlight view, text
-      strong(text)
+    def highlight text, view:, stat: nil
+      result = strong(text)
+
+      if stat
+        view.stat_augmented(stat, name.downcase, result)
+      else
+        result
+      end
     end
 
     def strong text
@@ -83,7 +89,7 @@ module BattleCatsRolls
         'Specialized to'
       end
 
-      def display
+      def display(**)
         enemies
       end
 
@@ -101,7 +107,7 @@ module BattleCatsRolls
         'Attack only'
       end
 
-      def display
+      def display(**)
         "Only attack specialized enemies or enemy base.<br>\nWhen cursed, only attack the base." # rubocop:disable Layout/LineLength
       end
 
@@ -119,7 +125,7 @@ module BattleCatsRolls
         'Strong'
       end
 
-      def display
+      def display(**)
         'Deal 150% or 180% damage and take 50% or 40% damage'
       end
 
@@ -137,7 +143,7 @@ module BattleCatsRolls
         'Massive damage'
       end
 
-      def display
+      def display(**)
         'Deal 300% or 400% damage'
       end
 
@@ -155,7 +161,7 @@ module BattleCatsRolls
         'Insane damage'
       end
 
-      def display
+      def display(**)
         'Deal 500% or 600% damage'
       end
 
@@ -173,7 +179,7 @@ module BattleCatsRolls
         'Resistant'
       end
 
-      def display
+      def display(**)
         'Take 25% or 20% damage'
       end
 
@@ -191,7 +197,7 @@ module BattleCatsRolls
         'Insane resistant'
       end
 
-      def display
+      def display(**)
         'Take 16% or 14% damage'
       end
 
@@ -211,8 +217,8 @@ module BattleCatsRolls
         'Knockback'
       end
 
-      def display
-        percent_highlight(yield, chance)
+      def display(**)
+        percent_highlight(chance, **)
       end
 
       def specialized = true
@@ -262,10 +268,10 @@ module BattleCatsRolls
         'Weaken'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           '%{chance} to reduce enemies damage to %{multiplier} for %{duration}',
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def specialized = true
@@ -274,9 +280,9 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance), multiplier: percent(multiplier),
-         duration: seconds_with_treasure(yield)}
+         duration: seconds_with_treasure(**)}
       end
     end
 
@@ -291,10 +297,10 @@ module BattleCatsRolls
         'Curse'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           '%{chance} to invalidate specialization for %{duration}',
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def index = __LINE__
@@ -313,10 +319,10 @@ module BattleCatsRolls
         'Dodge'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           '%{chance} to become invulnerable when hit for %{duration}',
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def specialized = true
@@ -325,9 +331,9 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance),
-         duration: seconds_with_treasure(yield)}
+         duration: seconds_with_treasure(**)}
       end
     end
 
@@ -342,10 +348,10 @@ module BattleCatsRolls
         'Survive'
       end
 
-      def display values=nil, &block
+      def display(**)
         sprintf(
           '%{chance} to survive a lethal strike to be knocked back with 1 health', # rubocop:disable Layout/LineLength
-          values || display_values(&block))
+          display_values(**))
       end
 
       def specialized = false
@@ -354,8 +360,8 @@ module BattleCatsRolls
 
       private
 
-      def display_values
-        {chance: percent_highlight(yield, chance)}
+      def display_values(**)
+        {chance: percent_highlight(chance, **)}
       end
     end
 
@@ -372,10 +378,10 @@ module BattleCatsRolls
         'Strengthen'
       end
 
-      def display values=display_values
+      def display(values=nil, **)
         sprintf(
           'Deal %{multiplier} damage when health reached %{threshold}',
-          values)
+          values || display_values(**))
       end
 
       def specialized = false
@@ -384,7 +390,7 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {multiplier: percent(modifier + 100), threshold: percent(threshold)}
       end
     end
@@ -402,8 +408,8 @@ module BattleCatsRolls
         'Savage blow'
       end
 
-      def display
-        percentage = percent_highlight(yield, chance)
+      def display(**)
+        percentage = percent_highlight(chance, **)
 
         "#{percentage} to deal #{percent(modifier + 100)} damage"
       end
@@ -424,8 +430,8 @@ module BattleCatsRolls
         'Critical strike'
       end
 
-      def display
-        percentage = percent_highlight(yield, chance)
+      def display(**)
+        percentage = percent_highlight(chance, **)
 
         "#{percentage} to deal 200% damage and ignore metal effect"
       end
@@ -450,7 +456,7 @@ module BattleCatsRolls
         'Metal killer'
       end
 
-      def display
+      def display(**)
         "Deal #{percent(percentage)} health to metal enemies"
       end
 
@@ -470,8 +476,8 @@ module BattleCatsRolls
         'Break barrier'
       end
 
-      def display
-        percentage = percent_highlight(yield, chance)
+      def display(**)
+        percentage = percent_highlight(chance, **)
 
         "#{percentage} to break star alien barrier"
       end
@@ -492,8 +498,8 @@ module BattleCatsRolls
         'Break shield'
       end
 
-      def display
-        percentage = percent_highlight(yield, chance)
+      def display(**)
+        percentage = percent_highlight(chance, **)
 
         "#{percentage} to break aku shield"
       end
@@ -512,7 +518,7 @@ module BattleCatsRolls
         'Zombie killer'
       end
 
-      def display
+      def display(**)
         'Final blow prevents zombies from reviving'
       end
 
@@ -530,7 +536,7 @@ module BattleCatsRolls
         'Soul strike'
       end
 
-      def display
+      def display(**)
         'It can attack zombie corpses'
       end
 
@@ -548,7 +554,7 @@ module BattleCatsRolls
         'Base destroyer'
       end
 
-      def display
+      def display(**)
         'Deal 400% damage to enemy base'
       end
 
@@ -566,7 +572,7 @@ module BattleCatsRolls
         'Colossus slayer'
       end
 
-      def display
+      def display(**)
         'Deal 160% damage to and take 70% damage from colossus'
       end
 
@@ -584,7 +590,7 @@ module BattleCatsRolls
         'Sage slayer'
       end
 
-      def display
+      def display(**)
         'Deal 120% damage, take 50% damage, trigger 100% effects for sages'
       end
 
@@ -602,7 +608,7 @@ module BattleCatsRolls
         'Witch slayer'
       end
 
-      def display
+      def display(**)
         'Deal 500% damage to and take 10% damage from witches'
       end
 
@@ -620,7 +626,7 @@ module BattleCatsRolls
         'Eva angel slayer'
       end
 
-      def display
+      def display(**)
         'Deal 500% damage to and take 20% damage from eva angels'
       end
 
@@ -643,10 +649,10 @@ module BattleCatsRolls
         'Behemoth slayer'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           'Deal 250%% and take 60%% damage, and %{chance} to be immune for %{duration}', # rubocop:disable Layout/LineLength
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def specialized = false
@@ -655,8 +661,8 @@ module BattleCatsRolls
 
       private
 
-      def display_values
-        {chance: percent(chance), duration: seconds(yield)}
+      def display_values(**)
+        {chance: percent(chance), duration: seconds(**)}
       end
     end
 
@@ -669,9 +675,9 @@ module BattleCatsRolls
         'Conjure'
       end
 
-      def display
+      def display(view:, **)
         if cat_info
-          href = yield.route.uri_to_cat(Cat.new(id: cat_id))
+          href = view.route.uri_to_cat(Cat.new(id: cat_id))
           %Q{<a href="#{href}">#{cat_info.dig('desc', 0)}</a>}
         else
           'Unknown spirit'
@@ -703,13 +709,13 @@ module BattleCatsRolls
         end
       end
 
-      def display values=display_values
+      def display(values=nil, **)
         sprintf(
           "%{chance} to produce level %{level} #{name.downcase} attack",
-          values)
+          values || display_values(**))
       end
 
-      def display_short
+      def display_short(**)
         "#{percent(chance)} #{name.downcase}"
       end
 
@@ -719,7 +725,7 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance), level: strong(level)}
       end
     end
@@ -747,16 +753,16 @@ module BattleCatsRolls
         end
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         # rubocop:disable Style/StringLiterals
         sprintf(
           "%{chance} to produce level %{level}" \
             " #{name.downcase} attack within %{area}",
-          values || display_values(&block))
+          values || display_values(**))
         # rubocop:enable Style/StringLiterals
       end
 
-      def display_short
+      def display_short(**)
         "#{percent(chance)} #{name.downcase}"
       end
 
@@ -770,11 +776,11 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(view:, **)
         area = "#{area_range.begin} ~ #{area_range.end}"
 
-        {chance: percent(chance), level: highlight(level),
-         area: highlight(yield.stat_range(area))}
+        {chance: percent(chance), level: highlight(level, view: view),
+         area: highlight(view.stat_range(area), view: view)}
       end
 
       def start
@@ -795,7 +801,7 @@ module BattleCatsRolls
         'Counter-surge'
       end
 
-      def display
+      def display(**)
         'Spawn the same surge with self damage and effects when hit by a surge'
       end
 
@@ -817,13 +823,13 @@ module BattleCatsRolls
         'Explosion'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           "%{chance} to trigger #{name.downcase} attack at %{range}",
-          values || display_values(&block))
+          values || display_values(**))
       end
 
-      def display_short
+      def display_short(**)
         "#{percent(chance)} #{name.downcase}"
       end
 
@@ -837,9 +843,9 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(view:, **)
         {chance: percent(chance),
-         range: strong(yield.stat_range(start))}
+         range: strong(view.stat_range(start))}
       end
     end
 
@@ -852,7 +858,7 @@ module BattleCatsRolls
         'Extra money'
       end
 
-      def display
+      def display(**)
         'Get double money from defeating enemies'
       end
 
@@ -870,7 +876,7 @@ module BattleCatsRolls
         'Metallic'
       end
 
-      def display
+      def display(**)
         'Take only 1 damage except from critical strikes'
       end
 
@@ -888,7 +894,7 @@ module BattleCatsRolls
         'Kamikaze'
       end
 
-      def display
+      def display(**)
         'It dies from its own attack'
       end
 
@@ -917,7 +923,7 @@ module BattleCatsRolls
         'Immune to'
       end
 
-      def display
+      def display(**)
         immunity
       end
 
@@ -935,7 +941,7 @@ module BattleCatsRolls
         'Block wave'
       end
 
-      def display
+      def display(**)
         'Immune to and block wave from reaching further'
       end
 

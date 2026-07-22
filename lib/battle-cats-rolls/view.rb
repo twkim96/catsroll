@@ -525,7 +525,9 @@ module BattleCatsRolls
     end
 
     def display_ability ability, **args
-      display_list(ability.display(&method(:itself)), strong: true, **args)
+      text_or_list = ability.display(view: self, stat: args[:stat])
+
+      display_list(text_or_list, strong: true, **args)
     end
 
     def display_list text_or_list, stat: nil, strong: false
