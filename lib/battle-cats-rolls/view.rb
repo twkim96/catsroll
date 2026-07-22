@@ -23,6 +23,64 @@ module BattleCatsRolls
       erb(:layout){ erb(name) }
     end
 
+    def stat_time frames
+      case frames
+      when Numeric
+        title = "#{frames} frames"
+        seconds = (frames.to_f / Stat::FPS).round(2)
+        %Q{<span title="#{title}">#{seconds}s</span>}
+      else
+        frames || '-'
+      end
+    end
+
+    def stat_range range
+      if range.kind_of?(Numeric)
+        "#{range}r"
+      else
+        range.gsub(/(\d+)/, '\\1r')
+      end
+    end
+
+    def stat_speed speed
+      case speed
+      when Numeric
+        case route.speed_unit
+        when 'pf'
+          "#{speed}p/f"
+        else # rs
+          "#{speed * 15}r/s"
+        end
+      else
+        speed || '-'
+      end
+    end
+
+    def stat_int number
+      case number
+      when Numeric
+        number.round
+      when NilClass
+        '?'
+      else
+        number
+      end
+    end
+
+    def stat_augmented stat, attribute, value=stat.public_send(attribute)
+      if stat && talents = stat.augmenting_talents[attribute]
+        css_class = if talents.any?(&:ultra?)
+          'augmented_ultra'
+        else
+          'augmented_regular'
+        end
+
+        %Q{<span class="augmented #{css_class}">#{value}</span>}
+      else
+        value
+      end
+    end
+
     private
 
     def html_title
@@ -547,63 +605,6 @@ module BattleCatsRolls
 
     def display_filter filter
       h l10n(filter.sub(/^./, &:upcase).tr('_', ' '))
-    end
-
-    public def stat_time frames
-      case frames
-      when Numeric
-        title = "#{frames} frames"
-        %Q{<span title="#{title}">#{(frames.to_f / Stat::FPS).round(2)}s</span>}
-      else
-        frames || '-'
-      end
-    end
-
-    def stat_speed speed
-      case speed
-      when Numeric
-        case route.speed_unit
-        when 'pf'
-          "#{speed}p/f"
-        else # rs
-          "#{speed * 15}r/s"
-        end
-      else
-        speed || '-'
-      end
-    end
-
-    public def stat_range range
-      if range.kind_of?(Numeric)
-        "#{range}r"
-      else
-        range.gsub(/(\d+)/, '\\1r')
-      end
-    end
-
-    def stat_int number
-      case number
-      when Numeric
-        number.round
-      when NilClass
-        '?'
-      else
-        number
-      end
-    end
-
-    public def stat_augmented stat, attribute, value=stat.public_send(attribute)
-      if stat && talents = stat.augmenting_talents[attribute]
-        css_class = if talents.any?(&:ultra?)
-          'augmented_ultra'
-        else
-          'augmented_regular'
-        end
-
-        %Q{<span class="augmented #{css_class}">#{value}</span>}
-      else
-        value
-      end
     end
 
     def growth_rate growth

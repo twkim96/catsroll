@@ -79,10 +79,10 @@ module BattleCatsRolls
       end
 
       def display(view:, **)
-        show = view.method(:stat_speed)
+        from = view.stat_speed(min)
+        to = view.stat_speed(max)
 
-        "#{strong('Speed')} by" \
-          " #{show[min]} ~ #{strong(show[max])} by #{level} levels"
+        "#{strong('Speed')} by #{from} ~ #{strong(to)} by #{level} levels"
       end
 
       def augment_module
