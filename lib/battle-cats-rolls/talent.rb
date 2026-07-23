@@ -313,6 +313,20 @@ module BattleCatsRolls
         end
       end
 
+      def augment stat
+        super
+
+        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+          # Talent improves the duration, and the value was set at the chance
+          # if there's no duration
+          target.duration += ability.duration || ability.chance
+          stat.augment_attribute(self, name.downcase)
+        else
+          stat.abilities << ability
+          stat.augment_attribute(self, name)
+        end
+      end
+
       private
 
       def display_full(view:, **)
@@ -339,14 +353,14 @@ module BattleCatsRolls
     class Freeze < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Freeze.new
+        self.ability = Ability::Freeze.new(*data['minmax'].transpose.last)
       end
     end
 
     class Slow < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Slow.new
+        self.ability = Ability::Slow.new(*data['minmax'].transpose.last)
       end
     end
 
@@ -355,7 +369,7 @@ module BattleCatsRolls
 
       def initialize(...)
         super
-        self.ability = Ability::Weaken.new
+        self.ability = Ability::Weaken.new(*data['minmax'].transpose.last)
       end
 
       private
@@ -379,14 +393,14 @@ module BattleCatsRolls
     class Curse < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Curse.new
+        self.ability = Ability::Curse.new(*data['minmax'].transpose.last)
       end
     end
 
     class Dodge < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Dodge.new
+        self.ability = Ability::Dodge.new(*data['minmax'].transpose.last)
       end
 
       private
