@@ -408,15 +408,23 @@ module BattleCatsRolls
         'Savage blow'
       end
 
-      def display(**)
-        percentage = percent_highlight(chance, **)
-
-        "#{percentage} to deal #{percent(modifier + 100)} damage"
+      def display(values=nil, **)
+        sprintf(
+          '%{chance} to deal %{multiplier} damage',
+          values || display_values(**)
+        )
       end
 
       def specialized = false
       def effects = true
       def index = __LINE__
+
+      private
+
+      def display_values(**)
+        {chance: percent_highlight(chance, **),
+         multiplier: percent(modifier + 100)}
+      end
     end
 
     class CriticalStrike < Struct.new(:chance)

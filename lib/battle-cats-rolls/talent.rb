@@ -258,6 +258,25 @@ module BattleCatsRolls
       include TalentUtility
 
       def display(**)
+        if data['minmax'].size > 1
+          display_full(**)
+        else
+          display_improve(**)
+        end
+      end
+
+      def display_full(**)
+        multipliers = data.dig('minmax', 1).map{ _1 + 100 }
+
+        display_text = ability.display({
+          chance: values_range(data.dig('minmax', 0), suffix: '%'),
+          multiplier: values_range(multipliers, suffix: '%')
+        })
+
+        "#{display_text} by #{level} levels"
+      end
+
+      def display_improve(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "Improve rate by #{values} by #{level} levels"
