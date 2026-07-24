@@ -16,6 +16,18 @@ module BattleCatsRolls
       end
     end
 
+    def augment_ability stat, attribute
+      if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+        current = target.public_send(attribute)
+        delta = ability.first # First value is always the delta
+        target.public_send("#{attribute}=", current + delta)
+        stat.augment_attribute(self, ability.qualified_value_name)
+      else
+        stat.abilities << ability
+        stat.augment_attribute(self, ability.qualified_name)
+      end
+    end
+
     def values_range values, suffix: '', show: :itself.to_proc
       result = values.uniq
       first_value = "#{show.call(result.first)}#{suffix}"
@@ -235,7 +247,6 @@ module BattleCatsRolls
     class Standalone < Talent
       def augment stat
         super
-
         stat.abilities << ability
       end
 
@@ -274,14 +285,7 @@ module BattleCatsRolls
 
       def augment stat
         super
-
-        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
-          target.chance += ability.chance
-          stat.augment_attribute(self, ability.qualified_value_name)
-        else
-          stat.abilities << ability
-          stat.augment_attribute(self, ability.qualified_name)
-        end
+        augment_ability(stat, :chance)
       end
 
       private
@@ -320,16 +324,7 @@ module BattleCatsRolls
 
       def augment stat
         super
-
-        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
-          # Talent improves the duration, and the value was set at the chance
-          # if there's no duration
-          target.duration += ability.duration || ability.chance
-          stat.augment_attribute(self, ability.qualified_value_name)
-        else
-          stat.abilities << ability
-          stat.augment_attribute(self, ability.qualified_name)
-        end
+        augment_ability(stat, :duration)
       end
 
       private
@@ -433,11 +428,17 @@ module BattleCatsRolls
 
       def initialize(...)
         super
-        self.ability = Ability::Strengthen.new
+        self.ability = Ability::Strengthen.new(*data['minmax'].transpose.last)
+        ability.threshold = 100 - ability.threshold # Convert to ability value
       end
 
       def display(**)
         display_full_or_improve(**)
+      end
+
+      def augment stat
+        super
+        augment_ability(stat, :modifier)
       end
 
       private

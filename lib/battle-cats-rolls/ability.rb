@@ -413,7 +413,8 @@ module BattleCatsRolls
       private
 
       def display_values(**)
-        {multiplier: percent(modifier + 100), threshold: percent(threshold)}
+        {multiplier: percent_highlight(modifier + 100, **),
+         threshold: percent(threshold)}
       end
     end
 
