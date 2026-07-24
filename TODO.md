@@ -2,6 +2,8 @@
 
 * Add an advanced filter for rarity. Useful to tick all rare cats,
   for example, or find all usable cats in a 4-stars stage (special + rare)
+* Add an advanced filter for forms. Useful to find all cats having ultra form
+* Add an advanced filter for having talents, and/or ultra talents
 * Show surge duration
 * Show knockback distance
 * Show slow speed (7.5 r/s or 0.5 p/f)
@@ -32,6 +34,7 @@
 ## Features and utilities
 
 * Add light purple for double legends which are just uber in regular banners
+* Add rarity indicator when slot rarity and cat rarity doesn't match
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
 * Collapse past events. The dropdown can look like:
