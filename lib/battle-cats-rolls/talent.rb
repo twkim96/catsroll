@@ -6,6 +6,16 @@ module BattleCatsRolls
   module TalentUtility
     include AbilityUtility
 
+    private
+
+    def display_full_or_improve(**)
+      if data['minmax'].size > 1
+        display_full(**)
+      else
+        display_improve(**)
+      end
+    end
+
     def values_range values, suffix: '', show: :itself.to_proc
       result = values.uniq
       first_value = "#{show.call(result.first)}#{suffix}"
@@ -259,12 +269,22 @@ module BattleCatsRolls
       include TalentUtility
 
       def display(**)
-        if data['minmax'].size > 1
-          display_full(**)
+        display_full_or_improve(**)
+      end
+
+      def augment stat
+        super
+
+        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+          target.chance += ability.chance
+          stat.augment_attribute(self, ability.qualified_value_name)
         else
-          display_improve(**)
+          stat.abilities << ability
+          stat.augment_attribute(self, ability.qualified_name)
         end
       end
+
+      private
 
       def display_full(**)
         multipliers = data.dig('minmax', 1).map{ _1 + 100 }
@@ -282,18 +302,6 @@ module BattleCatsRolls
 
         "Improve rate by #{values} by #{level} levels"
       end
-
-      def augment stat
-        super
-
-        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
-          target.chance += ability.chance
-          stat.augment_attribute(self, ability.qualified_value_name)
-        else
-          stat.abilities << ability
-          stat.augment_attribute(self, ability.qualified_name)
-        end
-      end
     end
 
     class Knockback < EffectRate
@@ -307,11 +315,7 @@ module BattleCatsRolls
       include TalentUtility
 
       def display(**)
-        if data['minmax'].size > 1
-          display_full(**)
-        else
-          display_improve(**)
-        end
+        display_full_or_improve(**)
       end
 
       def augment stat
@@ -433,11 +437,7 @@ module BattleCatsRolls
       end
 
       def display(**)
-        if data['minmax'].size > 1
-          display_full(**)
-        else
-          display_improve(**)
-        end
+        display_full_or_improve(**)
       end
 
       private
