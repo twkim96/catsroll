@@ -578,8 +578,8 @@ module BattleCatsRolls
       h cat.pick_name(route.name)
     end
 
-    def display_ability_name(ability, **)
-      display_text(ability.name, attribute: ability.qualified_name, **)
+    def display_ability_name ability, stat:
+      stat_augmented(stat, ability.qualified_name, l10n(ability.name))
     end
 
     def display_ability(ability, **)
@@ -594,7 +594,7 @@ module BattleCatsRolls
       when Array
         text_or_list.map do |text|
           attribute = "#{prefix}.#{text}"
-          augmented = display_text(text, attribute: attribute, stat: stat)
+          augmented = stat_augmented(stat, attribute, l10n(text))
 
           if strong
             "<strong>#{augmented}</strong>"
@@ -604,14 +604,6 @@ module BattleCatsRolls
         end.join(l10n(', '))
       else
         l10n(text_or_list)
-      end
-    end
-
-    def display_text text, attribute: nil, stat: nil
-      if attribute
-        stat_augmented(stat, attribute, l10n(text))
-      else
-        l10n(text)
       end
     end
 
