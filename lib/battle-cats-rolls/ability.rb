@@ -20,6 +20,14 @@ module BattleCatsRolls
       end
     end
 
+    def qualified_name
+      "ability.#{name}"
+    end
+
+    def qualified_value_name
+      qualified_name.downcase
+    end
+
     private
 
     def seconds_with_treasure(view: view, **)
@@ -46,7 +54,7 @@ module BattleCatsRolls
       result = strong(text)
 
       if stat
-        view.stat_augmented(stat, name.downcase, result)
+        view.stat_augmented(stat, qualified_value_name, result)
       else
         result
       end
@@ -99,6 +107,8 @@ module BattleCatsRolls
     end
 
     class AgainstOnly
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['against_only']
       end
@@ -117,6 +127,8 @@ module BattleCatsRolls
     end
 
     class Strong
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['strong']
       end
@@ -135,6 +147,8 @@ module BattleCatsRolls
     end
 
     class MassiveDamage
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['massive_damage']
       end
@@ -153,6 +167,8 @@ module BattleCatsRolls
     end
 
     class InsaneDamage
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['insane_damage']
       end
@@ -171,6 +187,8 @@ module BattleCatsRolls
     end
 
     class Resistant
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['resistant']
       end
@@ -189,6 +207,8 @@ module BattleCatsRolls
     end
 
     class InsaneResistant
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['insane_resistant']
       end
@@ -227,6 +247,8 @@ module BattleCatsRolls
     end
 
     class Freeze < AbilityUtility::EffectDuration
+      include AbilityUtility
+
       def self.build_if_available stat
         if stat['freeze_chance']
           new(*stat.values_at('freeze_chance', 'freeze_duration'))
@@ -518,6 +540,8 @@ module BattleCatsRolls
     end
 
     class ZombieKiller
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['zombie_killer']
       end
@@ -536,6 +560,8 @@ module BattleCatsRolls
     end
 
     class SoulStrike
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['soul_strike']
       end
@@ -554,6 +580,8 @@ module BattleCatsRolls
     end
 
     class BaseDestroyer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['base_destroyer']
       end
@@ -572,6 +600,8 @@ module BattleCatsRolls
     end
 
     class ColossusSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['colossus_slayer']
       end
@@ -590,6 +620,8 @@ module BattleCatsRolls
     end
 
     class SageSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['sage_slayer']
       end
@@ -608,6 +640,8 @@ module BattleCatsRolls
     end
 
     class WitchSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['witch_slayer']
       end
@@ -626,6 +660,8 @@ module BattleCatsRolls
     end
 
     class EvaAngelSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['eva_angel_slayer']
       end
@@ -675,6 +711,8 @@ module BattleCatsRolls
     end
 
     class Conjure < Struct.new(:cat_id, :cat_info)
+      include AbilityUtility
+
       def self.build_if_available stat
         new(stat['conjure'], stat['conjure_info']) if stat['conjure']
       end
@@ -801,6 +839,8 @@ module BattleCatsRolls
     end
 
     class CounterSurge
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['counter_surge']
       end
@@ -858,6 +898,8 @@ module BattleCatsRolls
     end
 
     class ExtraMoney
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['extra_money']
       end
@@ -876,6 +918,8 @@ module BattleCatsRolls
     end
 
     class Metallic
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['metallic']
       end
@@ -894,6 +938,8 @@ module BattleCatsRolls
     end
 
     class Kamikaze
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['kamikaze']
       end
@@ -941,6 +987,8 @@ module BattleCatsRolls
     end
 
     class BlockWave
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['block_wave']
       end

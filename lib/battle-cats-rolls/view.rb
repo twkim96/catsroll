@@ -109,10 +109,6 @@ module BattleCatsRolls
       end
     end
 
-    def l10n_augmented text, stat
-      stat_augmented(stat, text, l10n(text))
-    end
-
     def l10n text
       L10n.translate(route.ui_lang, text)
     end
@@ -582,24 +578,40 @@ module BattleCatsRolls
       h cat.pick_name(route.name)
     end
 
-    def display_ability ability, **args
-      text_or_list = ability.display(view: self, stat: args[:stat])
-
-      display_list(text_or_list, strong: true, **args)
+    def display_ability_name(ability, **)
+      display_text(ability.name, attribute: ability.qualified_name, **)
     end
 
-    def display_list text_or_list, stat: nil, strong: false
+    def display_ability(ability, **)
+      text_or_list = ability.display(view: self, **)
+
+      display_list(text_or_list, strong: true,
+        prefix: ability.qualified_value_name, **)
+    end
+
+    def display_list text_or_list, strong: false, prefix: nil, stat: nil
       case text_or_list
       when Array
         text_or_list.map do |text|
+          attribute = "#{prefix}.#{text}"
+          augmented = display_text(text, attribute: attribute, stat: stat)
+
           if strong
-            "<strong>#{l10n_augmented(text, stat)}</strong>"
+            "<strong>#{augmented}</strong>"
           else
-            l10n_augmented(text, stat)
+            augmented
           end
         end.join(l10n(', '))
       else
-        l10n_augmented(text_or_list, stat)
+        l10n(text_or_list)
+      end
+    end
+
+    def display_text text, attribute: nil, stat: nil
+      if attribute
+        stat_augmented(stat, attribute, l10n(text))
+      else
+        l10n(text)
       end
     end
 

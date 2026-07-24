@@ -213,7 +213,8 @@ module BattleCatsRolls
       end
 
       def augment_attributes
-        ability.enemies
+        prefix = ability.qualified_value_name
+        ability.enemies.map{ "#{prefix}.#{_1}" }
       end
     end
 
@@ -229,7 +230,7 @@ module BattleCatsRolls
       end
 
       def augment_attributes
-        [name]
+        [qualified_name]
       end
     end
 
@@ -287,10 +288,10 @@ module BattleCatsRolls
 
         if target = stat.abilities.find{ _1.kind_of?(ability.class) }
           target.chance += ability.chance
-          stat.augment_attribute(self, name.downcase)
+          stat.augment_attribute(self, ability.qualified_value_name)
         else
           stat.abilities << ability
-          stat.augment_attribute(self, name)
+          stat.augment_attribute(self, ability.qualified_name)
         end
       end
     end
@@ -320,10 +321,10 @@ module BattleCatsRolls
           # Talent improves the duration, and the value was set at the chance
           # if there's no duration
           target.duration += ability.duration || ability.chance
-          stat.augment_attribute(self, name.downcase)
+          stat.augment_attribute(self, ability.qualified_value_name)
         else
           stat.abilities << ability
-          stat.augment_attribute(self, name)
+          stat.augment_attribute(self, ability.qualified_name)
         end
       end
 
@@ -738,6 +739,14 @@ module BattleCatsRolls
 
     def name
       ability.name
+    end
+
+    def qualified_name
+      ability.qualified_name
+    end
+
+    def qualified_value_name
+      ability.qualified_value_name
     end
 
     def display(**)
