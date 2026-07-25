@@ -615,18 +615,6 @@ module BattleCatsRolls
       end
     end
 
-    def made10rolls? result
-      gacha = Gacha.new(route.gacha.pool, result.starting_seed)
-      gacha.send(:advance_seed!) # Account offset
-      gacha.send(:advance_seed!) if result.run_type > 0 # Account duped rare
-      9.times{ gacha.roll! } # Only 9 rolls left
-
-      if gacha.seed == result.current_seed
-        gacha.send(:advance_seed!) # Account for guaranteed roll
-        gacha.seed
-      end
-    end
-
     def rarity_header rarity, size
       label = BattleCatsRolls::Cat.wiki_rarity_label(rarity)
       header(2, "#{label} (#{size})", label.downcase.gsub(/\W+/, '-'))

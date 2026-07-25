@@ -31,10 +31,14 @@
           <ul>
             <li>
               <a href="<%= route.uri(query: {seed: result.current_seed}) %>"><%= result.current_seed %></a>
+              <% if result.offset_seed %>
+                (If you rolled on a <strong>guaranteed event</strong>,
+                this is not your seed. Use the next one)
+              <% end %>
             </li>
           </ul>
         </li>
-        <% if offset_seed = made10rolls?(result) %>
+        <% if result.offset_seed %>
           <li>
             If you made 11-rolls with a <strong>guaranteed event</strong>,
             or 15-rolls (3+5+7) with a <strong>step-up event</strong>,
@@ -42,7 +46,7 @@
             then your seed should be:
             <ul>
               <li>
-                <a href="<%= route.uri(query: {seed: offset_seed}) %>"><%= offset_seed %></a> (1A here is the same as 1B in the above link)
+                <a href="<%= route.uri(query: {seed: result.offset_seed}) %>"><%= result.offset_seed %></a> (1A here is the same as 1B in the above link)
               </li>
             </ul>
           </li>

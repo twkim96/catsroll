@@ -12,7 +12,8 @@ module BattleCatsRolls
     Pool = PromisePool::ThreadPool.new(1)
     Mutex = Mutex.new
     Result = Struct.new(
-      :starting_seed, :current_seed, :found_seeds, :run_type)
+      :starting_seed, :current_seed, :found_seeds, :run_type,
+      :offset_seed)
 
     def self.resolve result
       Result.new(*result) if result
