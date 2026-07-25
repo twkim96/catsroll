@@ -1,6 +1,7 @@
 
 require 'pork/auto'
 require 'battle-cats-rolls/web'
+require 'battle-cats-rolls/route'
 require 'json'
 require 'rack/mock'
 require 'muack'
@@ -11,8 +12,11 @@ describe BattleCatsRolls::Web do
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
 
-  define_method(:expect_status_200) do |path|
-    status, _headers, _body = web.call('PATH_INFO' => path)
+  BattleCatsRolls::Route.reload_balls
+
+  define_method(:expect_status_200) do |path, query=''|
+    status, _headers, _body = web.call(
+      'PATH_INFO' => path, 'QUERY_STRING' => query)
 
     expect(status).eq 200
   end
@@ -90,5 +94,11 @@ describe BattleCatsRolls::Web do
     expect(data['supported']).eq false
     expect(data['lang']).eq 'jp'
     expect(data['events']).eq []
+  end
+
+  BattleCatsRolls::Route.ball_jp.cats.each_key do |id|
+    would "respond 200 for /cats/#{id}?lang=jp" do
+      expect_status_200("/cats/#{id}", 'lang=jp')
+    end
   end
 end

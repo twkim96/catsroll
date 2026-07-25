@@ -5612,9 +5612,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   456:
-    name: [ワンダー・モモコ, キューティー・モモコ]
-    desc: ["異次元からやってきた宇宙をまたにかける刑事\nラブリー光線銃で宇宙の悪人を一網打尽！(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙戦艦に乗ってワルモノ退治をするセクシー刑事\n一撃必殺のキューティービームで星ごと爆破(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ"]
-    stat: [{health: 4000, knockbacks: 2, speed: 13, cost: 3000, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 2700, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 60, wave_chance: 100, wave_level: 8, immune_wave: 1, attack_duration: 200}, {health: 4000, knockbacks: 2, speed: 13, cost: 3000, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 2700, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 60, wave_chance: 100, wave_level: 8, immune_wave: 1, attack_duration: 200}]
+    name: [ワンダー・モモコ, キューティー・モモコ, スターライト・モモコ]
+    desc: ["異次元からやってきた宇宙をまたにかける刑事\nラブリー光線銃で宇宙の悪人を一網打尽！(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙戦艦に乗ってワルモノ退治をするセクシー刑事\n一撃必殺のキューティービームで星ごと爆破(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙をまたにかけるパーリー刑事。押収したガジェットで\n夜な夜なスペースディスコを盛り上げる。超生命体特効を持ち\n赤い敵と黒い敵と天使の動きを止める波動を放つ(範囲攻撃)\nスターライト・モモコ"]
+    stat: [{health: 4000, knockbacks: 2, speed: 13, cost: 3000, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 2700, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 60, wave_chance: 100, wave_level: 8, immune_wave: 1, attack_duration: 200}, {health: 4000, knockbacks: 2, speed: 13, cost: 3000, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 2700, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 60, wave_chance: 100, wave_level: 8, immune_wave: 1, attack_duration: 200}, {health: 5200, knockbacks: 2, speed: 13, cost: 2500, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 3500, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 90, colossus_slayer: 1, wave_chance: 100, wave_level: 8, immune_freeze: 1, immune_weaken: 1, immune_wave: 1, attack_duration: 200}]
     rarity: 5
     max_level: 59
     growth: [20, 20, 20, 20, 20, 20]
@@ -9031,6 +9031,20 @@ cats:
     rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
+  872:
+    name: ['古びたタマゴ:N208', '緑のタマゴ:N208', アサルトザリガニネコ]
+    desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N208」と小さく刻まれているように見えるが…\nフルビタタマゴ", "緑のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\n浮いてる敵と天使に打たれ強い\nミドリノタマゴ", "田んぼや池などの浅い水辺に生息するネコ\nハサミで掴んだ物は決して放さないガッツを見せる\n超獣特効を持ち、浮いてる敵と天使に打たれ強い\nアサルトザリガニネコ"]
+    stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_float: 1, against_angel: 1, resistant: 1}, {health: 600, knockbacks: 2, speed: 33, cost: 320, production_cooldown: 220, attack_cooldown: 40, range: 160, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, against_angel: 1, resistant: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 60}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  873:
+    name: [ジャングルハンタートモエ, ジャングルマスタートモエ]
+    desc: ["潜入任務でジャングルを訪れた忍者娘。甘いバナナの匂いを\n頼りに任務そっちのけで奥地へ突き進む。超生命体特効を持ち\n赤い敵と天使とエイリアンにめっぽう強くたまに動きを止める\nジャングルハンタートモエ", "ジャングル生活を楽しむ忍者娘。食料が充実し\n永住も視野に入れている。超生命体特効を持ち\n赤い敵と天使とエイリアンにめっぽう強くたまに動きを止める\nジャングルマスタートモエ"]
+    stat: [{health: 3300, knockbacks: 4, speed: 20, cost: 2900, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1120, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 460, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_red: 1, against_angel: 1, against_alien: 1, strong: 1, freeze_chance: 50, freeze_duration: 120, colossus_slayer: 1, immune_wave: 1, attack_duration: 89}, {health: 3800, knockbacks: 4, speed: 20, cost: 2900, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1320, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 660, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_red: 1, against_angel: 1, against_alien: 1, strong: 1, freeze_chance: 50, freeze_duration: 120, colossus_slayer: 1, immune_wave: 1, attack_duration: 89}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14789,6 +14803,12 @@ gacha:
     series_id: 64
     name: 開放的な夏限定のキャラクターをGETしよう！★詳細はバナーをタップ!!
     rate: no_legend
+  1074:
+    cats: [873, 495, 760, 715, 615, 565, 275, 655, 689, 695, 277, 277, 277, 566, 566, 566, 567, 567, 567, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 65
+    name: "「真夏のホワイトラビット」に第3形態追加！★詳細はバナーをタップ!!"
+    rate: no_legend
+    similarity: 95
 events:
   2018-09-15_320:
     start_on: 2018-09-15
@@ -35028,3 +35048,72 @@ events:
     supa: 2500
     uber: 500
     legend: 30
+  2026-07-27_991:
+    start_on: 2026-07-27
+    end_on: 2026-07-29
+    version: '150500'
+    name: 波動攻撃と召喚能力を持つ「韋駄天スカンダ」登場！★詳細はバナーをタップ!!
+    id: 991
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-29_979:
+    start_on: 2026-07-29
+    end_on: 2026-08-01
+    version: '150500'
+    name: 爆波攻撃と召喚能力を持つ「曲射砲台ランチャーズ」登場！★詳細はバナーをタップ!!
+    id: 979
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-07-31_1061:
+    start_on: 2026-07-31
+    end_on: 2026-08-06
+    version: '150500'
+    name: 限定キャラ「幼騎士ルーノ」登場！★超激レア出現率アップの「超ネコ祭」開催中!!
+    id: 1061
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-08-01_1059:
+    start_on: 2026-08-01
+    end_on: 2026-08-04
+    version: '150500'
+    name: 赤と悪魔に超ダメージを与える「嵐竜機ヴォルネード」登場！★詳細はバナーをタップ!!
+    id: 1059
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-08-04_1015:
+    start_on: 2026-08-04
+    end_on: 2026-08-06
+    version: '150500'
+    name: 召喚能力を持つキャラクター「魔導師シドミ」登場！★詳細はバナーをタップ!!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    legend: 30
+  2026-08-04_1061:
+    start_on: 2026-08-04
+    end_on: 2026-08-06
+    version: '150500'
+    name: 限定キャラ「幼騎士ルーノ」登場！★超激レア出現率アップの「超ネコ祭」開催中!!
+    id: 1061
+    rare: 6470
+    supa: 2600
+    uber: 900
+    legend: 30
+  2026-08-04_1073:
+    start_on: 2026-08-04
+    end_on: 2026-08-11
+    version: '150500'
+    name: 開放的な夏限定のキャラクターをGETしよう！★詳細はバナーをタップ!!
+    id: 1073
+    rare: 7000
+    supa: 2500
+    uber: 500
