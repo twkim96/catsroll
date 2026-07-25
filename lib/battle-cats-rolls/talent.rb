@@ -498,47 +498,48 @@ module BattleCatsRolls
       end
     end
 
-    class ZombieKiller < Talent
+    class ZombieKiller < Standalone
       def initialize(...)
         super
         self.ability = Ability::ZombieKiller.new
       end
     end
 
-    class SoulStrike < Talent
+    class SoulStrike < Standalone
       def initialize(...)
         super
         self.ability = Ability::SoulStrike.new
       end
     end
 
-    class BaseDestroyer < Talent
+    class BaseDestroyer < Standalone
       def initialize(...)
         super
         self.ability = Ability::BaseDestroyer.new
       end
     end
 
-    class ColossusSlayer < Talent
+    class ColossusSlayer < Standalone
       def initialize(...)
         super
         self.ability = Ability::ColossusSlayer.new
       end
     end
 
-    class SageSlayer < Talent
+    class SageSlayer < Standalone
       def initialize(...)
         super
         self.ability = Ability::SageSlayer.new
       end
     end
 
-    class BehemothSlayer < Talent
+    class BehemothSlayer < Standalone
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::BehemothSlayer.new
+        self.ability = Ability::BehemothSlayer.new(
+          *data['minmax'].transpose.last)
       end
 
       def display(view:, **)
@@ -615,7 +616,7 @@ module BattleCatsRolls
       end
     end
 
-    class CounterSurge < Talent
+    class CounterSurge < Standalone
       def initialize(...)
         super
         self.ability = Ability::CounterSurge.new
@@ -648,7 +649,7 @@ module BattleCatsRolls
       end
     end
 
-    class ExtraMoney < Talent
+    class ExtraMoney < Standalone
       def initialize(...)
         super
         self.ability = Ability::ExtraMoney.new
