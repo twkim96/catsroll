@@ -1,0 +1,31 @@
+.found_cats li {
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+.found_cats li::-webkit-scrollbar {
+  display: none;
+}
+.multi_track_prompt {
+  margin: 0 0 .6rem;
+}
+.multi_track_prompt a {
+  display: inline-block;
+  box-sizing: border-box;
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, .9);
+  color: #555;
+  font-size: .95rem;
+  line-height: 1.2;
+  text-decoration: none;
+}
+.multi_track_prompt a:hover {
+  text-decoration: underline;
+}
+.multi_track_prompt a:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

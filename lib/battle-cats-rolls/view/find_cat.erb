@@ -59,13 +59,7 @@
     <% end %>
   </select>
 
-  <span id="client-compute" class="client-compute">
-    <label title="Compute and render the tracks in your browser instead of on the server">
-      <input type="checkbox" id="client-compute-toggle"> 내 기기 연산
-    </label>
-    <span id="client-compute-status"></span>
-    <a href="#" id="client-compute-clear" title="Unregister the offline service worker and clear its cache">[캐시 제거]</a>
-  </span>
+  <%= local_partial(:local_find_controls) %>
 </div>
 <% else %>
 <%= hidden_inputs('find', 'no_guaranteed', 'force_guaranteed', 'ubers') %>

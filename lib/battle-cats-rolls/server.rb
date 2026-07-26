@@ -2,7 +2,7 @@
 
 require_relative 'root'
 require_relative 'web'
-require_relative 'track_api'
+require_relative 'local_features'
 
 require 'jellyfish'
 require 'rack'
@@ -31,11 +31,9 @@ module BattleCatsRolls
       youtube.com
     ])
     DisallowedDomains = Regexp.new("\\b#{disallowed_domains}\\b")
-    DisallowedUserAgents = /meta-webindexer/i
 
     get // do
-      if DisallowedDomains.match?(request.referrer) ||
-         DisallowedUserAgents.match?(request.user_agent.to_s)
+      if DisallowedDomains.match?(request.referrer)
         not_found
       else
         cascade
@@ -51,12 +49,12 @@ module BattleCatsRolls
     use Rack::ContentType, 'text/html; charset=utf-8'
 
     use GuardReferrer
+    use LocalServerMiddleware
 
     # This part can be completely replaced by Nginx
     rewrite \
       '/asset' => '',
-      '/robots.txt' => '/robots.txt',
-      '/sw.js' => '/sw.js' do
+      '/robots.txt' => '/robots.txt' do
       run Rack::Files.new(File.expand_path('asset', __dir__))
     end
     rewrite '/extract' => '' do
@@ -65,14 +63,6 @@ module BattleCatsRolls
 
     map '/seek', to: '/seek', host: SeekHost do
       run Web::Seek.new
-    end
-
-    map '/track.json', to: '/track.json', host: WebHost do
-      run TrackApi.new
-    end
-
-    map '/events.json', to: '/events.json', host: WebHost do
-      run TrackApi.new
     end
 
     map '/', host: WebHost do
@@ -87,11 +77,9 @@ module BattleCatsRolls
 
     @shutdown = false
 
-    persist_seed_view_stats
     auto_update_event_data if ENV['AUTO_UPDATE_EVENT_DATA']
     monitor_memory if ENV['MONITOR_MEMORY']
 
-    Kernel.at_exit(&SeedViewCounter.method(:flush))
     Kernel.at_exit(&Task.method(:shutdown))
     Kernel.at_exit(&SeekSeed::Pool.method(:shutdown))
   end
@@ -163,18 +151,6 @@ module BattleCatsRolls
       # rubocop:enable Style/FormatStringToken
 
       sleep(10)
-    end
-  end
-
-  def self.persist_seed_view_stats
-    SeedViewCounter.load!
-
-    Task.create(__method__) do
-      sleep(SeedViewCounter.flush_interval)
-
-      next if Task.shutting_down
-
-      SeedViewCounter.flush
     end
   end
 

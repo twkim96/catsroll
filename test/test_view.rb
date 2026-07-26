@@ -6,8 +6,6 @@ require 'battle-cats-rolls/route'
 require 'battle-cats-rolls/request'
 
 describe BattleCatsRolls::View do
-  BattleCatsRolls::Route.reload_balls
-
   def view
     @view ||= BattleCatsRolls::View.new(route)
   end
@@ -75,18 +73,6 @@ describe BattleCatsRolls::View do
         spy(cat).img_src(0, 'en')
         ok
       end
-
-      would 'fall back to text when avatar is unavailable' do
-        missing = BattleCatsRolls::Cat.new(id: 149,
-          info: {'name' => ['Missing Cat'], 'desc' => []})
-        stub(missing).img_src(0, 'en'){ nil }
-
-        html = view.__send__(:link_to_roll, missing, image: true, text: false)
-
-        expect(html).not.include?('class="track_avatar_wrap"')
-        expect(html).not.include?('class="track_avatar"')
-        expect(html).include?('>Missing Cat<')
-      end
     end
 
     describe '#link_to_next' do
@@ -99,50 +85,6 @@ describe BattleCatsRolls::View do
 
         expect(image).lt arrow
       end
-    end
-  end
-
-  describe '#td' do
-    def cat
-      BattleCatsRolls::Cat.new(
-        id: 1,
-        info: {'name' => ['Cat'], 'desc' => ['Cat']},
-        rarity_seed: 123,
-        slot_seed: 456)
-    end
-
-    would 'render expanded-result seed data for score cells' do
-      html = view.__send__(:td, cat, :score, content: 'Cat')
-
-      expect(html).include?('data-expand-kind="roll"')
-      expect(html).include?('data-expand-rarity-seed="123"')
-      expect(html).include?('data-expand-slot-seed="456"')
-    end
-
-    would 'render guaranteed kind for guaranteed score cells' do
-      guaranteed = cat.new_with(extra_label: 'G')
-      html = view.__send__(:td, guaranteed, :score, content: 'Cat')
-
-      expect(html).include?('data-expand-kind="guaranteed"')
-    end
-  end
-
-  describe '#found_cat_numbers' do
-    def found_view
-      request = BattleCatsRolls::Request.new('QUERY_STRING' => 'count=10')
-      BattleCatsRolls::View.new(BattleCatsRolls::Route.new(request))
-    end
-
-    would 'link displayed positions and leave supplemental positions plain' do
-      cat = BattleCatsRolls::FindCat::Found.new(
-        cat: BattleCatsRolls::Cat.new(id: 1),
-        numbers: %w[3A 4BG 142B])
-      html = found_view.__send__(:found_cat_numbers, cat)
-
-      expect(html).include?('<a href="#N3A">3A</a>')
-      expect(html).include?('<a href="#N4B">4BG</a>')
-      expect(html).include?('142B')
-      expect(html).not.include?('#N142B')
     end
   end
 end

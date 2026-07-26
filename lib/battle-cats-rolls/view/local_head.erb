@@ -1,0 +1,4 @@
+<script src="/asset/recent-seeds.js?<%= self.class.recent_seeds_digest %>" defer></script>
+<%- if BattleCatsRolls::ExpandCompareSupported -%>
+<script src="/asset/track-compare.js?<%= self.class.track_compare_digest %>" defer></script>
+<%- end -%>

@@ -1,0 +1,6 @@
+<div id="top_utility">
+  <% if seed_views_today.to_i > 0 %>
+  <a href="<%= route.uri(path: '/seed-views') %>">today: <%= seed_views_today %></a>
+  <% end %>
+  <a href="<%= route.multi_uri %>">multi</a>
+</div>

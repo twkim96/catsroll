@@ -2,6 +2,6 @@
 
 require_relative 'lib/battle-cats-rolls/server'
 
-warmup(&BattleCatsRolls.method(:warmup))
+warmup(&BattleCatsRolls.method(:warmup_with_local_features))
 
 run BattleCatsRolls::Server

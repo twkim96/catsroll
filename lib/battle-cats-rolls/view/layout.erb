@@ -10,10 +10,7 @@
     <meta name="robots" content="none">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css?<%= self.class.css_digest %>" rel="stylesheet" type="text/css">
-    <script src="/asset/recent-seeds.js?<%= self.class.recent_seeds_digest %>" defer></script>
-    <%- if BattleCatsRolls::ExpandCompareSupported -%>
-    <script src="/asset/track-compare.js?<%= self.class.track_compare_digest %>" defer></script>
-    <%- end -%>
+    <%= local_partial(:local_head) %>
     <title>Battle Cats Rolls - <%= html_title %></title>
     <style>
       .rare { background-color: white; }
@@ -57,64 +54,12 @@
       .owned.legend { background: linear-gradient(to right, darkviolet 10%, azure 10%); }
       <% end %>
       .legend a, .legend { color: #d8a56f; }
-      .found_cats li {
-        overflow-x: auto;
-        scrollbar-width: none;
-        white-space: nowrap;
-      }
-      .found_cats li::-webkit-scrollbar {
-        display: none;
-      }
-      .multi_track_prompt {
-        margin: 0 0 .6rem;
-      }
-      .multi_track_prompt a {
-        display: inline-block;
-        box-sizing: border-box;
-        max-width: 100%;
-        padding: 6px 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: rgba(255, 255, 255, .9);
-        color: #555;
-        font-size: .95rem;
-        line-height: 1.2;
-        text-decoration: none;
-      }
-      .multi_track_prompt a:hover {
-        text-decoration: underline;
-      }
-      .multi_track_prompt a:focus-visible {
-        outline: 2px solid currentColor;
-        outline-offset: 2px;
-      }
+      <%= local_partial(:local_styles) %>
       <% unless show_details %>
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }
       <% end %>
-      #top_utility {
-        position: absolute;
-        right: 8px;
-        top: 8px;
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 4px;
-      }
-      #top_utility a {
-        padding: 2px 6px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background: rgba(255, 255, 255, .9);
-        color: #555;
-        font-size: 12px;
-        line-height: 1.2;
-        text-decoration: none;
-        text-align: center;
-      }
-      #top_utility a:hover {
-        text-decoration: underline;
-      }
+      <%= local_partial(:local_utility_styles) %>
     </style>
     <script>
       function roll(element) {
@@ -127,12 +72,7 @@
     </script>
   </head>
   <body>
-    <div id="top_utility">
-      <% if seed_views_today.to_i > 0 %>
-      <a href="<%= route.uri(path: '/seed-views') %>">today: <%= seed_views_today %></a>
-      <% end %>
-      <a href="<%= route.multi_uri %>">multi</a>
-    </div>
+    <%= local_partial(:local_body) %>
     <div id="menu">
       <a href="<%= route.uri %>" title="Home / Permalink">
         <img class="menu" src="/asset/image/treasure.png" alt="Treasure"></a>

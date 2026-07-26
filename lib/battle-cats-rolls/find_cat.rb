@@ -6,23 +6,6 @@ require_relative 'cat'
 module BattleCatsRolls
   class FindCat < Struct.new(:gacha, :ids)
     Max = 999
-    Found = Struct.new(:cat, :numbers, keyword_init: true) do
-      def number
-        numbers.join(', ')
-      end
-
-      def respond_to_missing? name, include_private=false
-        cat.respond_to?(name, include_private) || super
-      end
-
-      def method_missing name, *args, &block
-        if cat.respond_to?(name)
-          cat.public_send(name, *args, &block)
-        else
-          super
-        end
-      end
-    end
 
     def self.exclusives
       @exclusives ||= [
@@ -78,21 +61,15 @@ module BattleCatsRolls
       if ids.empty?
         []
       else
-        occurrences = search_all_from_cats(cats, guaranteed, ids.uniq)
         found = search_deep(cats, guaranteed, max)
 
-        results = found.values.map do |cat|
-          found_result(cat, occurrences[cat.id] || [cat])
-        end
-
-        if found.size < ids.uniq.size
-          results + (ids.uniq - found.keys).map do |missing_id|
+        if found.size < ids.size
+          found.values + (ids - found.keys).map do |missing_id|
             info = gacha.pool.dig_cat(missing_id)
-            cat = Cat.new(id: missing_id, info: info, sequence: max)
-            found_result(cat, [cat])
+            Cat.new(id: missing_id, info: info, sequence: max)
           end
         else
-          results
+          found.values
         end
       end
     end
@@ -130,21 +107,6 @@ module BattleCatsRolls
       end
     end
 
-    def search_all_from_cats cats, guaranteed, remaining_ids
-      cats.each_with_object({}) do |ab, result|
-        remaining_ids.each do |id|
-          ab.each do |cat|
-            case id
-            when cat.id
-              (result[id] ||= []) << cat
-            when cat.guaranteed&.id
-              (result[id] ||= []) << cat.guaranteed if guaranteed
-            end
-          end
-        end
-      end
-    end
-
     def search_from_rolling found, cats, guaranteed, max
       cats.size.succ.upto(max).inject(found) do |result, sequence|
         if result.size == ids.size
@@ -161,10 +123,6 @@ module BattleCatsRolls
             search_from_cats([new_ab], guaranteed, ids - result.keys))
         end
       end
-    end
-
-    def found_result cat, cats
-      Found.new(cat: cat, numbers: cats.map(&:number))
     end
   end
 end
