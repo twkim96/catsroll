@@ -391,7 +391,7 @@ describe BattleCatsRolls::Stat do
 
       would 'have augmented attributes' do
         expect(stat.health).eq 81600
-        expect(stat.dps_sum.round).eq 13643
+        expect(stat.dps_sum.round).eq 17736
         expect(stat.attack_cooldown).eq 39
         expect(stat.production_cost).eq 3600
       end

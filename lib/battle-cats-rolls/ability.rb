@@ -778,7 +778,7 @@ module BattleCatsRolls
     end
 
     class Surge < Struct.new(
-      :chance, :level, :mini, :range, :range_offset)
+      :chance, :level, :range, :range_offset, :mini)
       include AbilityUtility
 
       def self.build_if_available stat
@@ -786,9 +786,9 @@ module BattleCatsRolls
           new(
             stat['surge_chance'] || stat['surge_mini'],
             stat['surge_level'],
-            !!stat['surge_mini'],
             stat['surge_range'],
-            stat['surge_range_offset'])
+            stat['surge_range_offset'],
+            !!stat['surge_mini'])
         end
       end
 

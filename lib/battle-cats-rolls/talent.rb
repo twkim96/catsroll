@@ -554,12 +554,18 @@ module BattleCatsRolls
       end
     end
 
-    class Wave < Talent
+    class Combat < Standalone
+      def augment_attributes
+        super << :dps
+      end
+    end
+
+    class Wave < Combat
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::Wave.new
+        self.ability = Ability::Wave.new(*data['minmax'].transpose.last)
       end
 
       def display(**)
@@ -582,12 +588,12 @@ module BattleCatsRolls
       end
     end
 
-    class Surge < Talent
+    class Surge < Combat
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::Surge.new
+        self.ability = Ability::Surge.new(*data['minmax'].transpose.last)
       end
 
       def display(view:, **)
@@ -623,12 +629,12 @@ module BattleCatsRolls
       end
     end
 
-    class Explosion < Talent
+    class Explosion < Combat
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::Explosion.new
+        self.ability = Ability::Explosion.new(*data['minmax'].transpose.last)
       end
 
       def name
