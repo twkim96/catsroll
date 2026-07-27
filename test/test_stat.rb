@@ -327,6 +327,14 @@ describe BattleCatsRolls::Stat do
         expect(stat.health).eq 58752
         expect(stat.damage_sum).eq 40392
         expect(stat.production_cost).eq 4725
+
+        # Ensure it's not mutating the talents
+        immunities =
+          talents.select{ _1.kind_of?(BattleCatsRolls::Talent::Immunity) }
+        expect(immunities.size).eq 2
+        immunities.each do |immunity|
+          expect(immunity.ability.list.size).eq 1
+        end
       end
 
       describe 'with ultra form' do

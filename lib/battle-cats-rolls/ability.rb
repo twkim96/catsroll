@@ -74,7 +74,7 @@ module BattleCatsRolls
   end
 
   class Ability
-    class Specialization < Struct.new(:enemies)
+    class Specialization < Struct.new(:list)
       include AbilityUtility
 
       List = %w[
@@ -86,11 +86,11 @@ module BattleCatsRolls
       end
 
       def self.build_if_available stat
-        enemies = List.filter_map do |type|
+        list = List.filter_map do |type|
           stat["against_#{type}"] && type.capitalize
         end
 
-        new(enemies) if enemies.any?
+        new(list) if list.any?
       end
 
       def name
@@ -98,7 +98,7 @@ module BattleCatsRolls
       end
 
       def display(**)
-        enemies
+        list
       end
 
       def specialized = true
@@ -958,7 +958,7 @@ module BattleCatsRolls
       def index = __LINE__
     end
 
-    class Immunity < Struct.new(:immunity)
+    class Immunity < Struct.new(:list)
       include AbilityUtility
 
       List = %w[
@@ -967,11 +967,11 @@ module BattleCatsRolls
       ].freeze
 
       def self.build_if_available stat
-        immunity = List.filter_map do |effect|
+        list = List.filter_map do |effect|
           stat["immune_#{effect}"] && effect.capitalize
         end
 
-        new(immunity) if immunity.any?
+        new(list) if list.any?
       end
 
       def name
@@ -979,7 +979,7 @@ module BattleCatsRolls
       end
 
       def display(**)
-        immunity
+        list
       end
 
       def specialized = false

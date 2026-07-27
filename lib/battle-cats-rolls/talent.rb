@@ -215,28 +215,32 @@ module BattleCatsRolls
       end
     end
 
-    class Specialization < Talent
-      def initialize(...)
-        super
-        self.ability ||= Ability::Specialization.new(
-          [key.delete_prefix('against_').capitalize])
-      end
-
+    class List < Talent
       def augment stat
         super
 
-        if target = stat.abilities.find{ _1.kind_of?(Ability::Specialization) }
-          target.enemies.concat(ability.enemies)
-          capitalized_list = Ability::Specialization::List.map(&:capitalize)
-          target.enemies.sort_by!(&capitalized_list.method(:index))
+        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+          target.list.concat(ability.list)
+          capitalized = ability.class.const_get(:List, false).map(&:capitalize)
+          target.list.sort_by!(&capitalized.method(:index))
         else
-          stat.abilities << ability
+          # We duplicate the list to avoid subsequent specialization/immunity
+          # talent mutating the list from the original talent
+          stat.abilities << ability.class.new(ability.list.dup)
         end
       end
 
       def augment_attributes
         prefix = ability.qualified_value_name
-        ability.enemies.map{ "#{prefix}.#{_1}" }
+        ability.list.map{ "#{prefix}.#{_1}" }
+      end
+    end
+
+    class Specialization < List
+      def initialize(...)
+        super
+        self.ability ||= Ability::Specialization.new(
+          [key.delete_prefix('against_').capitalize])
       end
     end
 
@@ -662,7 +666,7 @@ module BattleCatsRolls
       end
     end
 
-    class Immunity < Talent
+    class Immunity < List
       def initialize(...)
         super
         self.ability = Ability::Immunity.new(
