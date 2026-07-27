@@ -1,6 +1,8 @@
 name: Update KR/JP live events and deploy
 
 on:
+  schedule:
+    - cron: '7,17,27,37,47,57 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -25,12 +27,21 @@ jobs:
           ruby-version: '3.2'
 
       - name: Update KR/JP event data
+        id: update
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          before=$(git rev-parse HEAD)
           ruby bin/update-live-events.rb kr jp --commit --push origin
+          after=$(git rev-parse HEAD)
+          if [ "$before" = "$after" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Deploy main to Hugging Face
+        if: github.event_name == 'workflow_dispatch' || steps.update.outputs.changed == 'true'
         run: |
           set -euo pipefail
           ID_TOKEN=$(curl -fsSL \

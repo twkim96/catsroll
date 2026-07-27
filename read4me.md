@@ -93,6 +93,12 @@ Operational note:
     each language in the action console.
   - It does not write files, commit, push, or rebuild Hugging Face.
 - `KR/JP TSV 업데이트 + 배포` remains the separate write/commit/push action.
+- GitHub Actions checks KR/JP automatically every 10 minutes at minutes
+  `07, 17, 27, 37, 47, 57`.
+  - If the event data changed, it commits and pushes `main`, then deploys the
+    new commit to Hugging Face.
+  - If nothing changed, it skips the Hugging Face token exchange and deploy.
+  - Manual workflow dispatch and the web/control-server buttons remain available.
 - If event TSV files are unchanged, normal git commit/push should have nothing meaningful to upload.
 - Official upstream later adding the same TSV usually should not conflict if contents match. If not identical, conflict is possible in the TSV file only.
 
