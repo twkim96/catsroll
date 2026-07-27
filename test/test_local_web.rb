@@ -24,6 +24,8 @@ describe 'local web features' do
     expect(response.body.include?('KR/JP TSV 업데이트 + 배포')).eq true
     expect(response.body.include?('KR/JP TSV 업데이트 확인')).eq true
     expect(response.body.include?('/asset/seed-view-admin.js?')).eq true
+    expect(response.body.include?('top: 42%')).eq true
+    expect(response.body.include?('transform: translate(-50%, -50%)')).eq true
   end
 
   would 'reject an invalid TSV admin password' do
@@ -44,7 +46,13 @@ describe 'local web features' do
   would 'run an authorized TSV update check' do
     previous = ENV['TSV_ADMIN_PASSWORD']
     ENV['TSV_ADMIN_PASSWORD'] = 'correct-password'
-    result = {ok: true, action: 'check', message: 'KR: up to date'}
+    result = {
+      ok: true,
+      action: 'check',
+      update_available: true,
+      update_count: 2,
+      message: 'KR: 최신 버전 / JP: 업데이트 2건'
+    }
     stub(BattleCatsRolls::LiveEventsAdmin).check{ result }
     response = Rack::MockRequest.new(web).post('/seed-views/admin',
       'REMOTE_ADDR' => '192.0.2.11',

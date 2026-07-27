@@ -89,7 +89,7 @@ Operational note:
 - The external control server under `../terminal` has buttons for update/deploy flows.
 - `KR/JP TSV 업데이트 확인` runs the updater once with `--check`.
   - It downloads and parses the live KR/JP TSV files, compares parsed events
-    with local build data, and prints `update available` or `up to date` for
+    with local build data, and prints `업데이트 N건` or `최신 버전` for
     each language in the action console.
   - It does not write files, commit, push, or rebuild Hugging Face.
 - `KR/JP TSV 업데이트 + 배포` remains the separate write/commit/push action.

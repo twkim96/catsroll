@@ -91,10 +91,18 @@
     color: #246b36;
   }
   .seed-view-admin-dialog {
+    position: fixed;
+    inset: auto;
+    top: 42%;
+    left: 50%;
     width: min(24rem, calc(100% - 2rem));
+    max-height: calc(100dvh - 2rem);
+    margin: 0;
     padding: 1rem;
     border: 1px solid #aaa;
     border-radius: 6px;
+    overflow: auto;
+    transform: translate(-50%, -50%);
   }
   .seed-view-admin-dialog::backdrop {
     background: rgba(0, 0, 0, .4);

@@ -40,15 +40,22 @@ module BattleCatsRolls
             RbConfig.ruby, File.join(Root, 'bin', 'update-live-events.rb'),
             *LANGS, '--check', chdir: Root)
           results = output.scan(/^\[result\] (KR|JP): (.+)$/).to_h
+          valid_results = results.values.all? do |result|
+            result == '최신 버전' || /\A업데이트 \d+건\z/.match?(result)
+          end
 
-          unless status.success? && results.keys.sort == %w[JP KR]
+          unless status.success? && results.keys.sort == %w[JP KR] && valid_results
             raise RuntimeError, check_error(output, status.exitstatus)
+          end
+          update_count = results.values.sum do |result|
+            result[/\A업데이트 (\d+)건\z/, 1].to_i
           end
 
           {
             ok: true,
             action: 'check',
-            update_available: results.value?('update available'),
+            update_available: update_count.positive?,
+            update_count: update_count,
             message: LANGS.map{ |lang| "#{lang.upcase}: #{results.fetch(lang.upcase)}" }.
               join(' / ')
           }

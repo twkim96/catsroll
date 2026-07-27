@@ -117,7 +117,8 @@ module BattleCatsRolls
       changes = merge_events(build_path, data, live_events)
 
       if @check
-        status = changes.values.any?(&:positive?) ? 'update available' : 'up to date'
+        count = changes.values.sum
+        status = count.positive? ? "업데이트 #{count}건" : '최신 버전'
         puts "[result] #{lang.upcase}: #{status}"
       end
     end
