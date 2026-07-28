@@ -958,6 +958,26 @@ module BattleCatsRolls
       def index = __LINE__
     end
 
+    class BlockWave
+      include AbilityUtility
+
+      def self.build_if_available stat
+        new if stat['block_wave']
+      end
+
+      def name
+        'Block wave'
+      end
+
+      def display(**)
+        'Immune to and block wave from reaching further'
+      end
+
+      def specialized = false
+      def effects = false
+      def index = __LINE__
+    end
+
     class Immunity < Struct.new(:list)
       include AbilityUtility
 
@@ -980,26 +1000,6 @@ module BattleCatsRolls
 
       def display(**)
         list
-      end
-
-      def specialized = false
-      def effects = false
-      def index = __LINE__
-    end
-
-    class BlockWave
-      include AbilityUtility
-
-      def self.build_if_available stat
-        new if stat['block_wave']
-      end
-
-      def name
-        'Block wave'
-      end
-
-      def display(**)
-        'Immune to and block wave from reaching further'
       end
 
       def specialized = false
