@@ -93,6 +93,7 @@
     <% end %>
   <% end %>
 <% end %>
+<% if route.exclude_talents %>
 <% if talents = arg.dig(:talents, false) %>
   <tr class="border_upper talents">
     <% if talent_against = arg[:cat].talent_against %>
@@ -121,6 +122,7 @@
       <td colspan="5"><%= display_ability(talent) %></td>
     </tr>
   <% end %>
+<% end %>
 <% end %>
   <tr class="border_bottom"><td style="display: none" colspan="6"></td></tr>
 </tbody></table>
