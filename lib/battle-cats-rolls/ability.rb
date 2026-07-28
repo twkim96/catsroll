@@ -1007,6 +1007,41 @@ module BattleCatsRolls
       def index = __LINE__
     end
 
+    class Resistance < Struct.new(:percentage, :type, :kind)
+      include AbilityUtility
+
+      def self.build_if_available _
+        # No such abilility yet. Only available through talents
+      end
+
+      def name
+        'Resistance'
+      end
+
+      def qualified_name
+        "#{super}.#{type}"
+      end
+
+      def display(values=nil, **)
+        sprintf(
+          'Reduce %{type} %{kind} by %{percentage}',
+          values || display_values(**))
+      end
+
+      def specialized = false
+      def effects = false
+
+      def index
+        @index ||= __LINE__ + Immunity::List.index(type)
+      end
+
+      private
+
+      def display_values(**)
+        {type: strong(type), kind: kind, percentage: percent(percentage)}
+      end
+    end
+
     def self.build stat
       constants.filter_map do |ability|
         const_get(ability, false).build_if_available(stat)

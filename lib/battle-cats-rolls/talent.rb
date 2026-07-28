@@ -687,14 +687,30 @@ module BattleCatsRolls
         end
       end
 
+      def initialize(...)
+        super
+        self.ability = Ability::Resistance.new(
+          data.dig('minmax', 0, 1), type, kind)
+      end
+
       def name
         'Resistance'
       end
 
       def display(**)
-        values = values_range(data.dig('minmax', 0), suffix: '%')
+        percentages = values_range(data.dig('minmax', 0), suffix: '%')
 
-        "Reduce #{strong(type)} #{kind} by #{values} by #{level} levels"
+        display_text = ability.display({
+          type: strong(type), kind: kind, percentage: percentages
+        })
+
+        "#{display_text} by #{level} levels"
+      end
+
+      def augment stat
+        super
+        stat.abilities << ability
+        stat.augment_attribute(self, ability.qualified_name)
       end
 
       private
