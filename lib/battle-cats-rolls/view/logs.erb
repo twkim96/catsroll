@@ -15,6 +15,12 @@
 <%= header(2, "2026-07-30") %>
 <ul>
   <li>
+    Another fix for 3rd link in the seek result page for guaranteed rolls.
+    It was not showing up if the 10 inputs contain any duped rare cats.
+    Now it would always properly detect when there are 10 inputs, and show
+    the 3rd link. Thanks Dersing for reporting this.
+  </li>
+  <li>
     Talents are applied at max level by default from now. This gives a better
     overview for the max potentials. The affected numbers or abilities are
     highlighted with the same color from the respective talents.

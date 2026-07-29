@@ -80,18 +80,9 @@ module BattleCatsRolls
         end
       end
 
-      def made10rolls? result
-        return unless result.starting_seed
-
-        gacha = Gacha.new(route.gacha.pool, result.starting_seed)
-        gacha.send(:advance_seed!) # Account offset
-        gacha.send(:advance_seed!) if result.run_type > 0 # Account duped rare
-        9.times{ gacha.roll! } # Only 9 rolls left
-
-        if gacha.seed == result.current_seed
-          gacha.send(:advance_seed!) # Account for guaranteed roll
-          gacha.seed
-        end
+      def set_offset_seed result
+        gacha = Gacha.new(route.gacha.pool, result.current_seed)
+        result.offset_seed = gacha.seed
       end
 
       def cache
@@ -275,7 +266,7 @@ module BattleCatsRolls
         key = m[:key]
         seek = SeekSeed.queue[key]
         result = SeekSeed.resolve(cache[key]) if /./.match?(key)
-        result.offset_seed = made10rolls?(result) if result
+        set_offset_seed(result) if result&.made10rolls
 
         seek.yield if seek&.ended?
 
