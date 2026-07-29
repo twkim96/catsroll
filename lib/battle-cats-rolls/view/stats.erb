@@ -47,11 +47,11 @@
   <% if stat.attacks.size > 1 %>
   <tr class="border_middle">
     <td><%= l10n('DPS sum') %></td>
-    <td><%= stat_augmented(stat, :dps, stat_int(stat.dps_sum)) %></td>
+    <td><%= stat_augmented(stat, :dps_sum, stat_int(stat.dps_sum)) %></td>
     <td><%= l10n('Max DPS area') %></td>
     <td><%= stat_range stat.max_dps_area %></td>
     <td><%= l10n('Damage sum') %></td>
-    <td><%= stat_augmented(stat, :damage, stat.damage_sum) %></td>
+    <td><%= stat_augmented(stat, :damage_sum, stat.damage_sum) %></td>
   </tr>
   <% end %>
   <% each_attack(stat) do |attack| %>

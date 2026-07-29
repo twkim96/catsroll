@@ -89,7 +89,7 @@ module BattleCatsRolls
       end
 
       def augment_attributes
-        [:damage, :dps] # rubocop:disable Style/SymbolArray
+        %i[damage damage_sum dps dps_sum]
       end
     end
 
@@ -211,7 +211,7 @@ module BattleCatsRolls
       end
 
       def augment_attributes
-        [:attack_cooldown, :dps] # rubocop:disable Style/SymbolArray
+        %i[attack_cooldown dps dps_sum]
       end
     end
 
@@ -560,7 +560,7 @@ module BattleCatsRolls
 
     class Combat < Standalone
       def augment_attributes
-        super << :dps
+        super.push(:dps_sum, :damage_sum)
       end
     end
 
