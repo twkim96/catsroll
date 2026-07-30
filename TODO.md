@@ -11,8 +11,6 @@
 
 ## Owned cats
 
-* Provide a way to tick cats and then sumbit them at once, not by submitting
-  each individual tick every single time.
 * Provide a way to import/export cookies from/to the URL. Preferring cookies
   over URL to avoid messing up with random visits.
 
