@@ -466,18 +466,23 @@ module BattleCatsRolls
       end
     end
 
-    class SavageBlow < EffectRate
+    class CriticalEffect < EffectRate
+      def augment stat
+        super
+        %i[dps dps_sum].each do |attribute|
+          stat.augment_attribute(self, attribute)
+        end unless stat.dps_no_critical
+      end
+    end
+
+    class SavageBlow < CriticalEffect
       def initialize(...)
         super
         self.ability = Ability::SavageBlow.new(*data['minmax'].transpose.last)
       end
-
-      def augment_attributes
-        super.push(:dps, :dps_sum)
-      end
     end
 
-    class CriticalStrike < EffectRate
+    class CriticalStrike < CriticalEffect
       def initialize(...)
         super
         self.ability = Ability::CriticalStrike.new(data.dig('minmax', 0, 1))
@@ -489,10 +494,6 @@ module BattleCatsRolls
         else
           ability.display(**)
         end
-      end
-
-      def augment_attributes
-        super.push(:dps, :dps_sum)
       end
     end
 
