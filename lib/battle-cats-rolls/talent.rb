@@ -6,15 +6,37 @@ module BattleCatsRolls
   module TalentUtility
     include AbilityUtility
 
+    private
+
+    def display_full_or_improve(**)
+      if data['minmax'].size > 1
+        display_full(**)
+      else
+        display_improve(**)
+      end
+    end
+
+    def augment_ability stat, attribute
+      if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+        current = target.public_send(attribute)
+        delta = ability.first # First value is always the delta
+        target.public_send("#{attribute}=", current + delta)
+        stat.augment_attribute(self, ability.qualified_value_name)
+      else
+        stat.abilities << ability
+        stat.augment_attribute(self, ability.qualified_name)
+      end
+    end
+
     def values_range values, suffix: '', show: :itself.to_proc
       result = values.uniq
       first_value = "#{show.call(result.first)}#{suffix}"
 
       if result.size > 1
         last_value = "#{show.call(result.last)}#{suffix}"
-        "#{first_value} ~ #{highlight(last_value)}"
+        "#{first_value} ~ #{strong(last_value)}"
       else
-        highlight(first_value)
+        strong(first_value)
       end
     end
   end
@@ -27,8 +49,21 @@ module BattleCatsRolls
         'Increase'
       end
 
-      def display
-        "#{highlight('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
+      def display(**)
+        "#{strong('Health')} by #{min}% ~ #{percent(max)} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:health_raw) do
+            super() * (1 + (talent.max / 100.0))
+          end
+        end
+      end
+
+      def augment_attributes
+        [:health]
       end
     end
 
@@ -39,8 +74,22 @@ module BattleCatsRolls
         'Increase'
       end
 
-      def display
-        "#{highlight('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
+      def display(**)
+        "#{strong('Damage')} by #{min}% ~ #{percent(max)} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:damage_raw) do |n=0|
+            result = super(n)
+            result * (1 + (talent.max / 100.0)) if result
+          end
+        end
+      end
+
+      def augment_attributes
+        %i[damage damage_sum dps dps_sum]
       end
     end
 
@@ -51,11 +100,24 @@ module BattleCatsRolls
         'Increase'
       end
 
-      def display
-        show = yield.method(:stat_speed)
+      def display(view:, **)
+        from = view.stat_speed(min)
+        to = view.stat_speed(max)
 
-        "#{highlight('Speed')} by" \
-          " #{show[min]} ~ #{highlight(show[max])} by #{level} levels"
+        "#{strong('Speed')} by #{from} ~ #{strong(to)} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:speed) do
+            super() + talent.max
+          end
+        end
+      end
+
+      def augment_attributes
+        [:speed]
       end
     end
 
@@ -66,11 +128,22 @@ module BattleCatsRolls
         'Reduce'
       end
 
-      def display
-        "#{highlight('Cost')} by #{min} ~ #{highlight(max)} by #{level} levels"
+      def display(**)
+        "#{strong('Cost')} by #{min} ~ #{strong(max)} by #{level} levels"
       end
 
-      private
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:production_cost) do
+            super() - talent.max
+          end
+        end
+      end
+
+      def augment_attributes
+        [:production_cost]
+      end
 
       def min
         (super * chapter2_cost_multiplier).round
@@ -79,6 +152,8 @@ module BattleCatsRolls
       def max
         (super * chapter2_cost_multiplier).round
       end
+
+      private
 
       def chapter2_cost_multiplier
         1.5
@@ -92,11 +167,24 @@ module BattleCatsRolls
         'Reduce'
       end
 
-      def display
+      def display(view:, **)
         values = values_range(data.dig('minmax', 0),
-          show: yield.method(:stat_time))
+          show: view.method(:stat_time))
 
-        "#{highlight('Production cooldown')} by #{values} by #{level} levels"
+        "#{strong('Production cooldown')} by #{values} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:production_cooldown) do
+            super() - talent.max
+          end
+        end
+      end
+
+      def augment_attributes
+        [:production_cooldown]
       end
     end
 
@@ -107,17 +195,51 @@ module BattleCatsRolls
         'Reduce'
       end
 
-      def display
+      def display(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
-        "#{highlight('Attack cooldown')} by #{values} by #{level} levels"
+        "#{strong('Attack cooldown')} by #{values} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:attack_cooldown) do
+            (super() * (100 - talent.max)) / 100
+          end
+        end
+      end
+
+      def augment_attributes
+        %i[attack_cooldown dps dps_sum]
       end
     end
 
-    class Specialization < Talent
+    class List < Talent
+      def augment stat
+        super
+
+        if target = stat.abilities.find{ _1.kind_of?(ability.class) }
+          target.list.concat(ability.list)
+          capitalized = ability.class.const_get(:List, false).map(&:capitalize)
+          target.list.sort_by!(&capitalized.method(:index))
+        else
+          # We duplicate the list to avoid subsequent specialization/immunity
+          # talent mutating the list from the original talent
+          stat.abilities << ability.class.new(ability.list.dup)
+        end
+      end
+
+      def augment_attributes
+        prefix = ability.qualified_value_name
+        ability.list.map{ "#{prefix}.#{_1}" }
+      end
+    end
+
+    class Specialization < List
       def initialize(...)
         super
-        self.ability = Ability::Specialization.new(
+        self.ability ||= Ability::Specialization.new(
           [key.delete_prefix('against_').capitalize])
       end
     end
@@ -126,21 +248,32 @@ module BattleCatsRolls
       const_set("Against#{type.capitalize}", Specialization)
     end
 
-    class Strong < Talent
+    class Standalone < Talent
+      def augment stat
+        super
+        stat.abilities << ability
+      end
+
+      def augment_attributes
+        [qualified_name]
+      end
+    end
+
+    class Strong < Standalone
       def initialize(...)
         super
         self.ability = Ability::Strong.new
       end
     end
 
-    class Resistant < Talent
+    class Resistant < Standalone
       def initialize(...)
         super
         self.ability = Ability::Resistant.new
       end
     end
 
-    class MassiveDamage < Talent
+    class MassiveDamage < Standalone
       def initialize(...)
         super
         self.ability = Ability::MassiveDamage.new
@@ -150,7 +283,29 @@ module BattleCatsRolls
     class EffectRate < Talent
       include TalentUtility
 
-      def display
+      def display(**)
+        display_full_or_improve(**)
+      end
+
+      def augment stat
+        super
+        augment_ability(stat, :chance)
+      end
+
+      private
+
+      def display_full(**)
+        multipliers = data.dig('minmax', 1).map{ _1 + 100 }
+
+        display_text = ability.display({
+          chance: values_range(data.dig('minmax', 0), suffix: '%'),
+          multiplier: values_range(multipliers, suffix: '%')
+        })
+
+        "#{display_text} by #{level} levels"
+      end
+
+      def display_improve(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "Improve rate by #{values} by #{level} levels"
@@ -160,38 +315,40 @@ module BattleCatsRolls
     class Knockback < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::Knockback.new
+        self.ability = Ability::Knockback.new(data.dig('minmax', 0, 1))
       end
     end
 
     class EffectDuration < Talent
       include TalentUtility
 
-      def display(...)
-        if data['minmax'].size > 1
-          display_full(...)
-        else
-          display_improve(...)
-        end
+      def display(**)
+        display_full_or_improve(**)
+      end
+
+      def augment stat
+        super
+        augment_ability(stat, :duration)
       end
 
       private
 
-      def display_full
+      def display_full(view:, **)
         chance = data.dig('minmax', 0)
         duration = data.dig('minmax', 1)
-        stat_time = yield.method(:stat_time)
+        stat_time = view.method(:stat_time)
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
-          duration: values_range(duration, show: stat_time))
+          duration: values_range(duration, show: stat_time)
+        })
 
         "#{display_text} by #{level} levels"
       end
 
-      def display_improve
+      def display_improve(view:, **)
         values = values_range(data.dig('minmax', 0),
-          show: yield.method(:stat_time))
+          show: view.method(:stat_time))
 
         "Improve duration by #{values} by #{level} levels"
       end
@@ -200,14 +357,14 @@ module BattleCatsRolls
     class Freeze < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Freeze.new
+        self.ability = Ability::Freeze.new(*data['minmax'].transpose.last)
       end
     end
 
     class Slow < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Slow.new
+        self.ability = Ability::Slow.new(*data['minmax'].transpose.last)
       end
     end
 
@@ -216,21 +373,22 @@ module BattleCatsRolls
 
       def initialize(...)
         super
-        self.ability = Ability::Weaken.new
+        self.ability = Ability::Weaken.new(*data['minmax'].transpose.last)
       end
 
       private
 
-      def display_full
+      def display_full(view:, **)
         chance = data.dig('minmax', 0)
         duration = data.dig('minmax', 1)
         multiplier = data.dig('minmax', 2)
-        stat_time = yield.method(:stat_time)
+        stat_time = view.method(:stat_time)
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
           duration: values_range(duration, show: stat_time),
-          multiplier: values_range(multiplier, suffix: '%'))
+          multiplier: values_range(multiplier, suffix: '%')
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -239,19 +397,19 @@ module BattleCatsRolls
     class Curse < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Curse.new
+        self.ability = Ability::Curse.new(*data['minmax'].transpose.last)
       end
     end
 
     class Dodge < EffectDuration
       def initialize(...)
         super
-        self.ability = Ability::Dodge.new
+        self.ability = Ability::Dodge.new(*data['minmax'].transpose.last)
       end
 
       private
 
-      def display_improve
+      def display_improve(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         if level
@@ -265,7 +423,7 @@ module BattleCatsRolls
     class Survive < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::Survive.new
+        self.ability = Ability::Survive.new(data.dig('minmax', 0, 1))
       end
     end
 
@@ -274,56 +432,67 @@ module BattleCatsRolls
 
       def initialize(...)
         super
-        self.ability = Ability::Strengthen.new
+        self.ability = Ability::Strengthen.new(*data['minmax'].transpose.last)
+        ability.threshold = 100 - ability.threshold # Convert to ability value
       end
 
-      def display
-        if data['minmax'].size > 1
-          display_full
-        else
-          display_improve
-        end
+      def display(**)
+        display_full_or_improve(**)
+      end
+
+      def augment stat
+        super
+        augment_ability(stat, :modifier)
       end
 
       private
 
-      def display_full
+      def display_full(**)
         threshold = data.dig('minmax', 0).map{ |p| 100 - p }
         multiplier = data.dig('minmax', 1).map{ |p| p + 100 }
 
-        display_text = ability.display(
+        display_text = ability.display({
           threshold: values_range(threshold, suffix: '%'),
-          multiplier: values_range(multiplier, suffix: '%'))
+          multiplier: values_range(multiplier, suffix: '%')
+        })
 
         "#{display_text} by #{level} levels"
       end
 
-      def display_improve
+      def display_improve(**)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
         "Improve damage by #{values} by #{level} levels"
       end
     end
 
-    class SavageBlow < EffectRate
-      def initialize(...)
+    class CriticalEffect < EffectRate
+      def augment stat
         super
-        self.ability = Ability::SavageBlow.new
+        %i[dps dps_sum].each do |attribute|
+          stat.augment_attribute(self, attribute)
+        end unless stat.dps_no_critical
       end
     end
 
-    class CriticalStrike < EffectRate
+    class SavageBlow < CriticalEffect
       def initialize(...)
         super
-        self.ability = Ability::CriticalStrike.new
-        ability.chance = data.dig('minmax', 0, -1) unless level
+        self.ability = Ability::SavageBlow.new(*data['minmax'].transpose.last)
+      end
+    end
+
+    class CriticalStrike < CriticalEffect
+      def initialize(...)
+        super
+        self.ability = Ability::CriticalStrike.new(data.dig('minmax', 0, 1))
       end
 
-      def display
+      def display(**)
         if level
           super
         else
-          ability.display
+          ability.display(**)
         end
       end
     end
@@ -331,86 +500,98 @@ module BattleCatsRolls
     class BreakBarrier < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::BreakBarrier.new
+        self.ability = Ability::BreakBarrier.new(data.dig('minmax', 0, 1))
       end
     end
 
     class BreakShield < EffectRate
       def initialize(...)
         super
-        self.ability = Ability::BreakShield.new
+        self.ability = Ability::BreakShield.new(data.dig('minmax', 0, 1))
       end
     end
 
-    class ZombieKiller < Talent
+    class ZombieKiller < Standalone
       def initialize(...)
         super
         self.ability = Ability::ZombieKiller.new
       end
     end
 
-    class SoulStrike < Talent
+    class SoulStrike < Standalone
       def initialize(...)
         super
         self.ability = Ability::SoulStrike.new
       end
     end
 
-    class BaseDestroyer < Talent
+    class BaseDestroyer < Standalone
       def initialize(...)
         super
         self.ability = Ability::BaseDestroyer.new
       end
     end
 
-    class ColossusSlayer < Talent
+    class ColossusSlayer < Standalone
       def initialize(...)
         super
         self.ability = Ability::ColossusSlayer.new
       end
     end
 
-    class SageSlayer < Talent
+    class SageSlayer < Standalone
       def initialize(...)
         super
         self.ability = Ability::SageSlayer.new
       end
     end
 
-    class BehemothSlayer < Talent
+    class BehemothSlayer < Standalone
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::BehemothSlayer.new
+        self.ability = Ability::BehemothSlayer.new(
+          *data['minmax'].transpose.last)
       end
 
-      def display
+      def display(view:, **)
         chance = data.dig('minmax', 0)
         duration = data.dig('minmax', 1)
-        stat_time = yield.method(:stat_time)
+        stat_time = view.method(:stat_time)
 
-        ability.display(
+        ability.display({
           chance: values_range(chance, suffix: '%'),
-          duration: values_range(duration, show: stat_time))
+          duration: values_range(duration, show: stat_time)
+        })
       end
     end
 
-    class Wave < Talent
+    class Combat < Standalone
+      def augment stat
+        super
+        %i[dps_sum damage_sum].each do |attribute|
+          stat.augment_attribute(self, attribute)
+        end unless stat.sum_no_wave
+      end
+    end
+
+    class Wave < Combat
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::Wave.new
+        self.ability = Ability::Wave.new(*data['minmax'].transpose.last)
       end
 
-      def display
+      def display(**)
         chance = data.dig('minmax', 0)
         wave_level = data.dig('minmax', 1)
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
-          level: values_range(wave_level))
+          level: values_range(wave_level)
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -423,15 +604,15 @@ module BattleCatsRolls
       end
     end
 
-    class Surge < Talent
+    class Surge < Combat
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::Surge.new
+        self.ability = Ability::Surge.new(*data['minmax'].transpose.last)
       end
 
-      def display
+      def display(view:, **)
         chance = data.dig('minmax', 0)
         surge_level = data.dig('minmax', 1)
         start = data.dig('minmax', 2).
@@ -440,10 +621,11 @@ module BattleCatsRolls
           map.with_index{ |r, i| (r * range_multiplier).floor + start[i] }
         area = "#{values_range(start)} ~ #{values_range(reach)}"
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
           level: values_range(surge_level),
-          area: yield.method(:stat_range)[area])
+          area: view.stat_range(area)
+        })
 
         "#{display_text} by #{level} levels"
       end
@@ -456,46 +638,47 @@ module BattleCatsRolls
       end
     end
 
-    class CounterSurge < Talent
+    class CounterSurge < Standalone
       def initialize(...)
         super
         self.ability = Ability::CounterSurge.new
       end
     end
 
-    class Explosion < Talent
+    class Explosion < Combat
       include TalentUtility
 
       def initialize(...)
         super
-        self.ability = Ability::Explosion.new
+        self.ability = Ability::Explosion.new(*data['minmax'].transpose.last)
       end
 
       def name
         'Explosion'
       end
 
-      def display
+      def display(view:, **)
         chance = data.dig('minmax', 0)
         range = data.dig('minmax', 1).
           map{ |r| (r * range_multiplier).floor }
 
-        display_text = ability.display(
+        display_text = ability.display({
           chance: values_range(chance, suffix: '%'),
-          range: yield.method(:stat_range)[values_range(range)])
+          range: view.stat_range(values_range(range))
+        })
 
         "#{display_text} by #{level} levels"
       end
     end
 
-    class ExtraMoney < Talent
+    class ExtraMoney < Standalone
       def initialize(...)
         super
         self.ability = Ability::ExtraMoney.new
       end
     end
 
-    class Immunity < Talent
+    class Immunity < List
       def initialize(...)
         super
         self.ability = Ability::Immunity.new(
@@ -516,14 +699,30 @@ module BattleCatsRolls
         end
       end
 
+      def initialize(...)
+        super
+        self.ability = Ability::Resistance.new(
+          data.dig('minmax', 0, 1), type, kind)
+      end
+
       def name
         'Resistance'
       end
 
-      def display
-        values = values_range(data.dig('minmax', 0), suffix: '%')
+      def display(**)
+        percentages = values_range(data.dig('minmax', 0), suffix: '%')
 
-        "Reduce #{highlight(type)} #{kind} by #{values} by #{level} levels"
+        display_text = ability.display({
+          type: strong(type), kind: kind, percentage: percentages
+        })
+
+        "#{display_text} by #{level} levels"
+      end
+
+      def augment stat
+        super
+        stat.abilities << ability
+        stat.augment_attribute(self, ability.qualified_name)
       end
 
       private
@@ -563,12 +762,35 @@ module BattleCatsRolls
       end
     end
 
+    def augment stat
+      stat.singleton_class.prepend(augment_module) if augment_module
+
+      augment_attributes.each do |attribute|
+        stat.augment_attribute(self, attribute)
+      end
+    end
+
+    def augment_module
+    end
+
+    def augment_attributes
+      []
+    end
+
     def name
       ability.name
     end
 
-    def display
-      ability.display
+    def qualified_name
+      ability.qualified_name
+    end
+
+    def qualified_value_name
+      ability.qualified_value_name
+    end
+
+    def display(**)
+      ability.display(**)
     end
 
     def level

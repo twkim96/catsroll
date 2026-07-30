@@ -2,6 +2,7 @@
 
 require_relative 'ability'
 require_relative 'attack'
+require_relative 'talent'
 require_relative 'cat'
 
 module BattleCatsRolls
@@ -46,6 +47,35 @@ module BattleCatsRolls
       end
     end
 
+    def talent?
+      index == 2 || index == 3
+    end
+
+    def augment talents
+      if talents && talent?
+        talents.each{ _1.augment(self) }
+
+        if against = info['talent_against']
+          Talent::Specialization.new(
+            'talent_against', {},
+            Ability::Specialization.new(
+              Ability::Specialization.display(against))
+          ).augment(self)
+        end
+      end
+
+      finalize
+      self
+    end
+
+    def augment_attribute talent, attribute
+      (augmenting_talents[attribute] ||= []) << talent
+    end
+
+    def augmenting_talents
+      @augmenting_talents ||= {}
+    end
+
     def level
       super || DefaultLevel
     end
@@ -55,8 +85,11 @@ module BattleCatsRolls
     end
 
     def health
-      @health ||=
-        (stat['health'] * treasure_multiplier * level_multiplier).round
+      @health ||= health_raw.round
+    end
+
+    def health_raw
+      stat['health'] * treasure_multiplier * level_multiplier
     end
 
     def knockbacks
@@ -161,9 +194,9 @@ module BattleCatsRolls
     end
 
     def effects
-      @effects ||= abilities.flat_map do |(_, abis)|
-        abis.select(&:effects)
-      end
+      # Specialized abilities should come first so we don't use abilities
+      @effects ||= (specialized_abilities + generic_abilities).
+        select(&:effects)
     end
 
     def wave_effect
@@ -249,24 +282,30 @@ module BattleCatsRolls
       stat['damage_1'].nil?
     end
 
-    def specialized_abilities
-      @specialized_abilities ||= abilities[true] || []
+    def abilities
+      @abilities ||= Ability.build(stat)
     end
 
-    def generic_abilities
-      @generic_abilities ||= abilities[false] || []
-    end
+    attr_reader :specialized_abilities, :generic_abilities
 
     private
 
-    def abilities
-      @abilities ||= Ability.build(stat).group_by(&:specialized)
+    attr_writer :specialized_abilities, :generic_abilities
+
+    def finalize
+      grouped_abilities = abilities.sort_by(&:index).group_by(&:specialized)
+      self.specialized_abilities = grouped_abilities[true] || []
+      self.generic_abilities = grouped_abilities[false] || []
+      self
     end
 
     def damage n=0
-      value = stat["damage_#{n}"]
+      damage_raw(n)&.round
+    end
 
-      (value * treasure_multiplier * level_multiplier).round if value
+    def damage_raw n=0
+      value = stat["damage_#{n}"]
+      value * treasure_multiplier * level_multiplier if value
     end
 
     def long_range n=0

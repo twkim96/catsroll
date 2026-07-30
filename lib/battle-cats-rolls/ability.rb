@@ -5,8 +5,8 @@ module BattleCatsRolls
     class EffectDuration < Struct.new(:chance, :duration)
       include AbilityUtility
 
-      def display values=nil, &block
-        sprintf('%{chance} for %{duration}', values || display_values(&block))
+      def display(values=nil, **)
+        sprintf('%{chance} for %{duration}', values || display_values(**))
       end
 
       def specialized = true
@@ -14,29 +14,53 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance),
-         duration: seconds_with_treasure(yield.method(:stat_time))}
+         duration: seconds_with_treasure(**)}
       end
     end
 
-    def seconds_with_treasure stat_time
-      max_time = (duration * treasure_multiplier).floor
-
-      "#{stat_time[duration]} or #{highlight(stat_time[max_time])}"
+    def qualified_name
+      "ability.#{name}"
     end
 
-    def seconds stat_time
-      highlight(stat_time[duration])
-    end
-
-    def percent integer
-      highlight("#{integer}%")
+    def qualified_value_name
+      qualified_name.downcase
     end
 
     private
 
-    def highlight text
+    def seconds_with_treasure(view: view, **)
+      max_time = (duration * treasure_multiplier).floor
+      without = view.stat_time(duration)
+      with = view.stat_time(max_time)
+
+      "#{without} or #{highlight(with, view: view, **)}"
+    end
+
+    def seconds(view: view, **)
+      strong(view.stat_time(duration))
+    end
+
+    def percent_highlight(integer, **)
+      highlight(percent(integer), **)
+    end
+
+    def percent integer
+      strong("#{integer}%")
+    end
+
+    def highlight text, view:, stat: nil
+      result = strong(text)
+
+      if stat
+        view.stat_augmented(stat, qualified_value_name, result)
+      else
+        result
+      end
+    end
+
+    def strong text
       "<strong>#{text}</strong>"
     end
 
@@ -50,7 +74,7 @@ module BattleCatsRolls
   end
 
   class Ability
-    class Specialization < Struct.new(:enemies)
+    class Specialization < Struct.new(:list)
       include AbilityUtility
 
       List = %w[
@@ -62,19 +86,19 @@ module BattleCatsRolls
       end
 
       def self.build_if_available stat
-        enemies = List.filter_map do |type|
+        list = List.filter_map do |type|
           stat["against_#{type}"] && type.capitalize
         end
 
-        new(enemies) if enemies.any?
+        new(list) if list.any?
       end
 
       def name
         'Specialized to'
       end
 
-      def display
-        enemies
+      def display(**)
+        list
       end
 
       def specialized = true
@@ -83,6 +107,8 @@ module BattleCatsRolls
     end
 
     class AgainstOnly
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['against_only']
       end
@@ -91,7 +117,7 @@ module BattleCatsRolls
         'Attack only'
       end
 
-      def display
+      def display(**)
         "Only attack specialized enemies or enemy base.<br>\nWhen cursed, only attack the base." # rubocop:disable Layout/LineLength
       end
 
@@ -101,6 +127,8 @@ module BattleCatsRolls
     end
 
     class Strong
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['strong']
       end
@@ -109,7 +137,7 @@ module BattleCatsRolls
         'Strong'
       end
 
-      def display
+      def display(**)
         'Deal 150% or 180% damage and take 50% or 40% damage'
       end
 
@@ -119,6 +147,8 @@ module BattleCatsRolls
     end
 
     class MassiveDamage
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['massive_damage']
       end
@@ -127,7 +157,7 @@ module BattleCatsRolls
         'Massive damage'
       end
 
-      def display
+      def display(**)
         'Deal 300% or 400% damage'
       end
 
@@ -137,6 +167,8 @@ module BattleCatsRolls
     end
 
     class InsaneDamage
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['insane_damage']
       end
@@ -145,7 +177,7 @@ module BattleCatsRolls
         'Insane damage'
       end
 
-      def display
+      def display(**)
         'Deal 500% or 600% damage'
       end
 
@@ -155,6 +187,8 @@ module BattleCatsRolls
     end
 
     class Resistant
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['resistant']
       end
@@ -163,7 +197,7 @@ module BattleCatsRolls
         'Resistant'
       end
 
-      def display
+      def display(**)
         'Take 25% or 20% damage'
       end
 
@@ -173,6 +207,8 @@ module BattleCatsRolls
     end
 
     class InsaneResistant
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['insane_resistant']
       end
@@ -181,7 +217,7 @@ module BattleCatsRolls
         'Insane resistant'
       end
 
-      def display
+      def display(**)
         'Take 16% or 14% damage'
       end
 
@@ -201,8 +237,8 @@ module BattleCatsRolls
         'Knockback'
       end
 
-      def display
-        percent(chance)
+      def display(**)
+        percent_highlight(chance, **)
       end
 
       def specialized = true
@@ -211,6 +247,8 @@ module BattleCatsRolls
     end
 
     class Freeze < AbilityUtility::EffectDuration
+      include AbilityUtility
+
       def self.build_if_available stat
         if stat['freeze_chance']
           new(*stat.values_at('freeze_chance', 'freeze_duration'))
@@ -252,10 +290,10 @@ module BattleCatsRolls
         'Weaken'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           '%{chance} to reduce enemies damage to %{multiplier} for %{duration}',
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def specialized = true
@@ -264,9 +302,9 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance), multiplier: percent(multiplier),
-         duration: seconds_with_treasure(yield.method(:stat_time))}
+         duration: seconds_with_treasure(**)}
       end
     end
 
@@ -281,10 +319,10 @@ module BattleCatsRolls
         'Curse'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           '%{chance} to invalidate specialization for %{duration}',
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def index = __LINE__
@@ -303,10 +341,10 @@ module BattleCatsRolls
         'Dodge'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           '%{chance} to become invulnerable when hit for %{duration}',
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def specialized = true
@@ -315,9 +353,9 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(**)
         {chance: percent(chance),
-         duration: seconds_with_treasure(yield.method(:stat_time))}
+         duration: seconds_with_treasure(**)}
       end
     end
 
@@ -332,10 +370,10 @@ module BattleCatsRolls
         'Survive'
       end
 
-      def display values=display_values
+      def display(**)
         sprintf(
           '%{chance} to survive a lethal strike to be knocked back with 1 health', # rubocop:disable Layout/LineLength
-          values)
+          display_values(**))
       end
 
       def specialized = false
@@ -344,8 +382,8 @@ module BattleCatsRolls
 
       private
 
-      def display_values
-        {chance: percent(chance)}
+      def display_values(**)
+        {chance: percent_highlight(chance, **)}
       end
     end
 
@@ -362,10 +400,10 @@ module BattleCatsRolls
         'Strengthen'
       end
 
-      def display values=display_values
+      def display(values=nil, **)
         sprintf(
           'Deal %{multiplier} damage when health reached %{threshold}',
-          values)
+          values || display_values(**))
       end
 
       def specialized = false
@@ -374,8 +412,9 @@ module BattleCatsRolls
 
       private
 
-      def display_values
-        {multiplier: percent(modifier + 100), threshold: percent(threshold)}
+      def display_values(**)
+        {multiplier: percent_highlight(modifier + 100, **),
+         threshold: percent(threshold)}
       end
     end
 
@@ -392,13 +431,23 @@ module BattleCatsRolls
         'Savage blow'
       end
 
-      def display
-        "#{percent(chance)} to deal #{percent(modifier + 100)} damage"
+      def display(values=nil, **)
+        sprintf(
+          '%{chance} to deal %{multiplier} damage',
+          values || display_values(**)
+        )
       end
 
       def specialized = false
       def effects = true
       def index = __LINE__
+
+      private
+
+      def display_values(**)
+        {chance: percent_highlight(chance, **),
+         multiplier: percent(modifier + 100)}
+      end
     end
 
     class CriticalStrike < Struct.new(:chance)
@@ -412,8 +461,10 @@ module BattleCatsRolls
         'Critical strike'
       end
 
-      def display
-        "#{percent(chance)} to deal 200% damage and ignore metal effect"
+      def display(**)
+        percentage = percent_highlight(chance, **)
+
+        "#{percentage} to deal 200% damage and ignore metal effect"
       end
 
       def modifier
@@ -436,7 +487,7 @@ module BattleCatsRolls
         'Metal killer'
       end
 
-      def display
+      def display(**)
         "Deal #{percent(percentage)} health to metal enemies"
       end
 
@@ -449,15 +500,17 @@ module BattleCatsRolls
       include AbilityUtility
 
       def self.build_if_available stat
-        new (stat['break_barrier_chance']) if stat['break_barrier_chance']
+        new(stat['break_barrier_chance']) if stat['break_barrier_chance']
       end
 
       def name
         'Break barrier'
       end
 
-      def display
-        "#{percent(chance)} to break star alien barrier"
+      def display(**)
+        percentage = percent_highlight(chance, **)
+
+        "#{percentage} to break star alien barrier"
       end
 
       def specialized = false
@@ -469,15 +522,17 @@ module BattleCatsRolls
       include AbilityUtility
 
       def self.build_if_available stat
-        new (stat['break_shield_chance']) if stat['break_shield_chance']
+        new(stat['break_shield_chance']) if stat['break_shield_chance']
       end
 
       def name
         'Break shield'
       end
 
-      def display
-        "#{percent(chance)} to break aku shield"
+      def display(**)
+        percentage = percent_highlight(chance, **)
+
+        "#{percentage} to break aku shield"
       end
 
       def specialized = false
@@ -486,6 +541,8 @@ module BattleCatsRolls
     end
 
     class ZombieKiller
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['zombie_killer']
       end
@@ -494,7 +551,7 @@ module BattleCatsRolls
         'Zombie killer'
       end
 
-      def display
+      def display(**)
         'Final blow prevents zombies from reviving'
       end
 
@@ -504,6 +561,8 @@ module BattleCatsRolls
     end
 
     class SoulStrike
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['soul_strike']
       end
@@ -512,7 +571,7 @@ module BattleCatsRolls
         'Soul strike'
       end
 
-      def display
+      def display(**)
         'It can attack zombie corpses'
       end
 
@@ -522,6 +581,8 @@ module BattleCatsRolls
     end
 
     class BaseDestroyer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['base_destroyer']
       end
@@ -530,7 +591,7 @@ module BattleCatsRolls
         'Base destroyer'
       end
 
-      def display
+      def display(**)
         'Deal 400% damage to enemy base'
       end
 
@@ -540,6 +601,8 @@ module BattleCatsRolls
     end
 
     class ColossusSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['colossus_slayer']
       end
@@ -548,7 +611,7 @@ module BattleCatsRolls
         'Colossus slayer'
       end
 
-      def display
+      def display(**)
         'Deal 160% damage to and take 70% damage from colossus'
       end
 
@@ -558,6 +621,8 @@ module BattleCatsRolls
     end
 
     class SageSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['sage_slayer']
       end
@@ -566,7 +631,7 @@ module BattleCatsRolls
         'Sage slayer'
       end
 
-      def display
+      def display(**)
         'Deal 120% damage, take 50% damage, trigger 100% effects for sages'
       end
 
@@ -576,6 +641,8 @@ module BattleCatsRolls
     end
 
     class WitchSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['witch_slayer']
       end
@@ -584,7 +651,7 @@ module BattleCatsRolls
         'Witch slayer'
       end
 
-      def display
+      def display(**)
         'Deal 500% damage to and take 10% damage from witches'
       end
 
@@ -594,6 +661,8 @@ module BattleCatsRolls
     end
 
     class EvaAngelSlayer
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['eva_angel_slayer']
       end
@@ -602,7 +671,7 @@ module BattleCatsRolls
         'Eva angel slayer'
       end
 
-      def display
+      def display(**)
         'Deal 500% damage to and take 20% damage from eva angels'
       end
 
@@ -625,10 +694,10 @@ module BattleCatsRolls
         'Behemoth slayer'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           'Deal 250%% and take 60%% damage, and %{chance} to be immune for %{duration}', # rubocop:disable Layout/LineLength
-          values || display_values(&block))
+          values || display_values(**))
       end
 
       def specialized = false
@@ -637,12 +706,14 @@ module BattleCatsRolls
 
       private
 
-      def display_values
-        {chance: percent(chance), duration: seconds(yield.method(:stat_time))}
+      def display_values(**)
+        {chance: percent(chance), duration: seconds(**)}
       end
     end
 
     class Conjure < Struct.new(:cat_id, :cat_info)
+      include AbilityUtility
+
       def self.build_if_available stat
         new(stat['conjure'], stat['conjure_info']) if stat['conjure']
       end
@@ -651,9 +722,9 @@ module BattleCatsRolls
         'Conjure'
       end
 
-      def display
+      def display(view:, **)
         if cat_info
-          href = yield.route.uri_to_cat(Cat.new(id: cat_id))
+          href = view.route.uri_to_cat(Cat.new(id: cat_id))
           %Q{<a href="#{href}">#{cat_info.dig('desc', 0)}</a>}
         else
           'Unknown spirit'
@@ -685,13 +756,13 @@ module BattleCatsRolls
         end
       end
 
-      def display values=display_values
+      def display(values=nil, **)
         sprintf(
           "%{chance} to produce level %{level} #{name.downcase} attack",
-          values)
+          values || display_values(**))
       end
 
-      def display_short
+      def display_short(**)
         "#{percent(chance)} #{name.downcase}"
       end
 
@@ -701,13 +772,13 @@ module BattleCatsRolls
 
       private
 
-      def display_values
-        {chance: percent(chance), level: highlight(level)}
+      def display_values(**)
+        {chance: percent(chance), level: strong(level)}
       end
     end
 
     class Surge < Struct.new(
-      :chance, :level, :mini, :range, :range_offset)
+      :chance, :level, :range, :range_offset, :mini)
       include AbilityUtility
 
       def self.build_if_available stat
@@ -715,9 +786,9 @@ module BattleCatsRolls
           new(
             stat['surge_chance'] || stat['surge_mini'],
             stat['surge_level'],
-            !!stat['surge_mini'],
             stat['surge_range'],
-            stat['surge_range_offset'])
+            stat['surge_range_offset'],
+            !!stat['surge_mini'])
         end
       end
 
@@ -729,16 +800,16 @@ module BattleCatsRolls
         end
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         # rubocop:disable Style/StringLiterals
         sprintf(
           "%{chance} to produce level %{level}" \
             " #{name.downcase} attack within %{area}",
-          values || display_values(&block))
+          values || display_values(**))
         # rubocop:enable Style/StringLiterals
       end
 
-      def display_short
+      def display_short(**)
         "#{percent(chance)} #{name.downcase}"
       end
 
@@ -752,11 +823,11 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(view:, **)
         area = "#{area_range.begin} ~ #{area_range.end}"
 
-        {chance: percent(chance), level: highlight(level),
-         area: highlight(yield.method(:stat_range)[area])}
+        {chance: percent(chance), level: highlight(level, view: view),
+         area: highlight(view.stat_range(area), view: view)}
       end
 
       def start
@@ -769,6 +840,8 @@ module BattleCatsRolls
     end
 
     class CounterSurge
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['counter_surge']
       end
@@ -777,7 +850,7 @@ module BattleCatsRolls
         'Counter-surge'
       end
 
-      def display
+      def display(**)
         'Spawn the same surge with self damage and effects when hit by a surge'
       end
 
@@ -799,13 +872,13 @@ module BattleCatsRolls
         'Explosion'
       end
 
-      def display values=nil, &block
+      def display(values=nil, **)
         sprintf(
           "%{chance} to trigger #{name.downcase} attack at %{range}",
-          values || display_values(&block))
+          values || display_values(**))
       end
 
-      def display_short
+      def display_short(**)
         "#{percent(chance)} #{name.downcase}"
       end
 
@@ -819,13 +892,15 @@ module BattleCatsRolls
 
       private
 
-      def display_values
+      def display_values(view:, **)
         {chance: percent(chance),
-         range: highlight(yield.method(:stat_range)[start])}
+         range: strong(view.stat_range(start))}
       end
     end
 
     class ExtraMoney
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['extra_money']
       end
@@ -834,7 +909,7 @@ module BattleCatsRolls
         'Extra money'
       end
 
-      def display
+      def display(**)
         'Get double money from defeating enemies'
       end
 
@@ -844,6 +919,8 @@ module BattleCatsRolls
     end
 
     class Metallic
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['metallic']
       end
@@ -852,7 +929,7 @@ module BattleCatsRolls
         'Metallic'
       end
 
-      def display
+      def display(**)
         'Take only 1 damage except from critical strikes'
       end
 
@@ -862,6 +939,8 @@ module BattleCatsRolls
     end
 
     class Kamikaze
+      include AbilityUtility
+
       def self.build_if_available stat
         new if stat['kamikaze']
       end
@@ -870,7 +949,7 @@ module BattleCatsRolls
         'Kamikaze'
       end
 
-      def display
+      def display(**)
         'It dies from its own attack'
       end
 
@@ -879,36 +958,9 @@ module BattleCatsRolls
       def index = __LINE__
     end
 
-    class Immunity < Struct.new(:immunity)
+    class BlockWave
       include AbilityUtility
 
-      List = %w[
-        bosswave knockback warp freeze slow weaken curse
-        wave surge explosion toxic
-      ].freeze
-
-      def self.build_if_available stat
-        immunity = List.filter_map do |effect|
-          stat["immune_#{effect}"] && effect.capitalize
-        end
-
-        new(immunity) if immunity.any?
-      end
-
-      def name
-        'Immune to'
-      end
-
-      def display
-        immunity
-      end
-
-      def specialized = false
-      def effects = false
-      def index = __LINE__
-    end
-
-    class BlockWave
       def self.build_if_available stat
         new if stat['block_wave']
       end
@@ -917,7 +969,7 @@ module BattleCatsRolls
         'Block wave'
       end
 
-      def display
+      def display(**)
         'Immune to and block wave from reaching further'
       end
 
@@ -926,10 +978,74 @@ module BattleCatsRolls
       def index = __LINE__
     end
 
+    class Immunity < Struct.new(:list)
+      include AbilityUtility
+
+      List = %w[
+        bosswave knockback warp freeze slow weaken curse
+        wave surge explosion toxic
+      ].freeze
+
+      def self.build_if_available stat
+        list = List.filter_map do |effect|
+          stat["immune_#{effect}"] && effect.capitalize
+        end
+
+        new(list) if list.any?
+      end
+
+      def name
+        'Immune to'
+      end
+
+      def display(**)
+        list
+      end
+
+      def specialized = false
+      def effects = false
+      def index = __LINE__
+    end
+
+    class Resistance < Struct.new(:percentage, :type, :kind)
+      include AbilityUtility
+
+      def self.build_if_available _
+        # No such abilility yet. Only available through talents
+      end
+
+      def name
+        'Resistance'
+      end
+
+      def qualified_name
+        "#{super}.#{type}"
+      end
+
+      def display(values=nil, **)
+        sprintf(
+          'Reduce %{type} %{kind} by %{percentage}',
+          values || display_values(**))
+      end
+
+      def specialized = false
+      def effects = false
+
+      def index
+        @index ||= __LINE__ + Immunity::List.index(type)
+      end
+
+      private
+
+      def display_values(**)
+        {type: strong(type), kind: kind, percentage: percent(percentage)}
+      end
+    end
+
     def self.build stat
       constants.filter_map do |ability|
         const_get(ability, false).build_if_available(stat)
-      end.sort_by(&:index)
+      end
     end
 
     def self.build_if_available stat; end

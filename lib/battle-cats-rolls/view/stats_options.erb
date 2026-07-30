@@ -6,6 +6,9 @@
       onchange="roll(this)">
     Advanced filters
   </label>
+  <% else %>
+  <%= hidden_inputs('advanced_filters') %>
+  <% end %>
 
   <label for="exclude_talents_input">
     <input type="checkbox" id="exclude_talents_input" name="exclude_talents"
@@ -13,9 +16,6 @@
       onchange="roll(this)">
     Exclude talents
   </label>
-  <% else %>
-  <%= hidden_inputs('advanced_filters', 'exclude_talents') %>
-  <% end %>
 
   <% if arg[:cat] %>
   <label for="hide_wave_input">

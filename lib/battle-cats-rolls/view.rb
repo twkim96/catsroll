@@ -23,6 +23,64 @@ module BattleCatsRolls
       erb(:layout){ erb(name) }
     end
 
+    def stat_time frames
+      case frames
+      when Numeric
+        title = "#{frames} frames"
+        seconds = (frames.to_f / Stat::FPS).round(2)
+        %Q{<span title="#{title}">#{seconds}s</span>}
+      else
+        frames || '-'
+      end
+    end
+
+    def stat_range range
+      if range.kind_of?(Numeric)
+        "#{range}r"
+      else
+        range.gsub(/(\d+)/, '\\1r')
+      end
+    end
+
+    def stat_speed speed
+      case speed
+      when Numeric
+        case route.speed_unit
+        when 'pf'
+          "#{speed}p/f"
+        else # rs
+          "#{speed * 15}r/s"
+        end
+      else
+        speed || '-'
+      end
+    end
+
+    def stat_int number
+      case number
+      when Numeric
+        number.round
+      when NilClass
+        '?'
+      else
+        number
+      end
+    end
+
+    def stat_augmented stat, attribute, value=stat.public_send(attribute)
+      if stat && talents = stat.augmenting_talents[attribute]
+        css_class = if talents.any?(&:ultra?)
+          'augmented_ultra'
+        else
+          'augmented_regular'
+        end
+
+        %Q{<span class="augmented #{css_class}">#{value}</span>}
+      else
+        value
+      end
+    end
+
     private
 
     def html_title
@@ -520,18 +578,28 @@ module BattleCatsRolls
       h cat.pick_name(route.name)
     end
 
-    def display_ability ability
-      display_list(ability.display(&method(:itself)), strong: true)
+    def display_ability_name ability, stat:
+      stat_augmented(stat, ability.qualified_name, l10n(ability.name))
     end
 
-    def display_list text_or_list, strong: false
+    def display_ability(ability, **)
+      text_or_list = ability.display(view: self, **)
+
+      display_list(text_or_list, strong: true,
+        prefix: ability.qualified_value_name, **)
+    end
+
+    def display_list text_or_list, strong: false, prefix: nil, stat: nil
       case text_or_list
       when Array
         text_or_list.map do |text|
+          attribute = "#{prefix}.#{text}"
+          augmented = stat_augmented(stat, attribute, l10n(text))
+
           if strong
-            "<strong>#{l10n(text)}</strong>"
+            "<strong>#{augmented}</strong>"
           else
-            l10n(text)
+            augmented
           end
         end.join(l10n(', '))
       else
@@ -541,49 +609,6 @@ module BattleCatsRolls
 
     def display_filter filter
       h l10n(filter.sub(/^./, &:upcase).tr('_', ' '))
-    end
-
-    def stat_time frames
-      case frames
-      when Numeric
-        title = "#{frames} frames"
-        %Q{<span title="#{title}">#{(frames.to_f / Stat::FPS).round(2)}s</span>}
-      else
-        frames || '-'
-      end
-    end
-
-    def stat_speed speed
-      case speed
-      when Numeric
-        case route.speed_unit
-        when 'pf'
-          "#{speed}p/f"
-        else # rs
-          "#{speed * 15}r/s"
-        end
-      else
-        speed || '-'
-      end
-    end
-
-    def stat_range range
-      if range.kind_of?(Numeric)
-        "#{range}r"
-      else
-        range.gsub(/(\d+)/, '\\1r')
-      end
-    end
-
-    def stat_int number
-      case number
-      when Numeric
-        number.round
-      when NilClass
-        '?'
-      else
-        number
-      end
     end
 
     def growth_rate growth
@@ -612,18 +637,6 @@ module BattleCatsRolls
         0
       else
         Gacha.new(route.gacha.pool, result.starting_seed).duped_last_cat
-      end
-    end
-
-    def made10rolls? result
-      gacha = Gacha.new(route.gacha.pool, result.starting_seed)
-      gacha.send(:advance_seed!) # Account offset
-      gacha.send(:advance_seed!) if result.run_type > 0 # Account duped rare
-      9.times{ gacha.roll! } # Only 9 rolls left
-
-      if gacha.seed == result.current_seed
-        gacha.send(:advance_seed!) # Account for guaranteed roll
-        gacha.seed
       end
     end
 

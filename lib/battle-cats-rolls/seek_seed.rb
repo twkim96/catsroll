@@ -8,11 +8,13 @@ require 'promise_pool'
 module BattleCatsRolls
   class SeekSeed < Struct.new(
     :source, :key, :logger, :cache, :done_callback,
-    :promise, :seed, :previous_count)
+    :promise, :result, :previous_count)
     Pool = PromisePool::ThreadPool.new(1)
     Mutex = Mutex.new
     Result = Struct.new(
-      :starting_seed, :current_seed, :found_seeds, :run_type)
+      :starting_seed, :current_seed, :found_seeds, :run_type,
+      :made10rolls,
+      :offset_seed)
 
     def self.resolve result
       Result.new(*result) if result
@@ -67,10 +69,10 @@ module BattleCatsRolls
     def enqueue
       self.previous_count = Pool.queue_size + self.class.processed
       self.promise = PromisePool::Promise.new.defer(Pool) do
-        self.seed = cache[key] || seek
+        self.result = cache[key] || seek
 
         self.class.finishing(key) do
-          cache[key] = seed if $?.success?
+          cache[key] = result if $?.success?
           done_callback.call
         end
       end
@@ -81,7 +83,7 @@ module BattleCatsRolls
 
       case seeker = source.first
       when 'VampireFlower'
-        result = IO.popen([
+        output = IO.popen([
           "#{Root}/Seeker/Seeker-VampireFlower", *source.drop(1),
           err: %i[child out] # rubocop:disable Style/HashAsLastArrayItem
         ], 'r+') do |io|
@@ -95,7 +97,8 @@ module BattleCatsRolls
             " failed with #{source.join(' ')}")
         end
 
-        Result.new(*result)
+        output[4] = source.size == 30 if output.any? # made10rolls
+        output
       else
         []
       end

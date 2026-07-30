@@ -12,6 +12,47 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-07-30") %>
+<ul>
+  <li>
+    For customized gacha, the predefined Superfest rate is updated with legend
+    being included. A new Superfest rate without legend being included is also
+    added to maintain backward compatibility.
+    <ul><li>
+      This also means the predicted rate for Superfest should be fixed now.
+      It was predicted as a regular banner before, now properly as Superfest
+    </li></ul>
+  </li>
+  <li>
+    Another fix for 3rd link in the seek result page for guaranteed rolls.
+    It was not showing up if the 10 inputs contain any duped rare cats.
+    Now it would always properly detect when there are 10 inputs, and show
+    the 3rd link. Thanks Dersing for reporting this.
+  </li>
+  <li>
+    Talents are applied at max level by default from now. This gives a better
+    overview for the max potentials. The affected numbers or abilities are
+    highlighted with the same color from the respective talents.
+    <ul><li>
+      If this is not desired, tick the "Exclude talents" option at the top.
+      When this option is used, it'll also list the talents separately as
+      before.
+    </li></ul>
+  </li>
+  <li>
+    The ultra talent's color is changed from lightpink to greenyellow, because
+    otherwise the color would be too similar to wave/surge/explosion attacks.
+  </li>
+  <li>
+    Similarly to Critical Strike talent description fix, the same fix is
+    applied to Savage Blow. On Ultra Delinquent Cat it was:
+    <blockquote>Improve rate by 1% ~ 10% by 10 levels</blockquote>
+    Now it is:
+    <blockquote>1% ~ 10% to deal 300% damage by 10 levels</blockquote>
+    This talent is unlocking Savage Blow rather than improving it.
+  </li>
+</ul>
+
 <%= header(2, "2026-07-21") %>
 <ul>
   <li>

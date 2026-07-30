@@ -150,6 +150,7 @@ describe BattleCatsRolls::Filter do
     ids = chain.filter!(['extremely_high_effectively'], 'all',
       BattleCatsRolls::Filter::DPS).keys
 
+    expect(ids).include?(633) # Obliterator Diabolosa
     expect(ids).include?(693) # Issun Boshi
     expect(ids).include?(792) # Kaoru Hanayama
   end
@@ -307,6 +308,13 @@ describe BattleCatsRolls::Filter do
       expect(ids).not.include?(85) # Megidora, talent, against_metal
       expect(ids).not.include?(170) # Kubiluga, talent, talent_against: [metal]
       expect(ids).include?(574) # Vega, native, against_metal
+    end
+
+    would 'filter extremely high effective DPS' do
+      ids = chain.filter!(['extremely_high_effectively'], 'all',
+        BattleCatsRolls::Filter::DPS).keys
+
+      expect(ids).not.include?(633) # Obliterator Diabolosa
     end
   end
 end

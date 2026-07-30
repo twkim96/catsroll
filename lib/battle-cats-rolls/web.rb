@@ -80,6 +80,11 @@ module BattleCatsRolls
         end
       end
 
+      def set_offset_seed result
+        gacha = Gacha.new(route.gacha.pool, result.current_seed)
+        result.offset_seed = gacha.seed
+      end
+
       def cache
         @cache ||= Cache.default(logger)
       end
@@ -130,21 +135,23 @@ module BattleCatsRolls
       with_canonical_uri("/cats/#{id}") do
         if info = route.cats[id]
           cat = Cat.new(id: id, info: info)
+          talents = Talent.build(info)
           stats = info['stat'].size.times.map do |index|
             conjure_id = info.dig('stat', index, 'conjure')
             Stat.new(id: id, info: info, index: index, level: route.level,
               conjure_info: conjure_id && route.cats[conjure_id],
               cat: cat,
               sum_no_wave: route.sum_no_wave,
-              dps_no_critical: route.dps_no_critical)
+              dps_no_critical: route.dps_no_critical
+            ).augment((talents unless route.exclude_talents))
           end
-          talents = Talent.build(info).group_by(&:ultra?)
         else
           stats = []
           talents = {}
         end
 
-        render :stats, cat: cat, stats: stats, talents: talents
+        render :stats, cat: cat, stats: stats,
+          talents: talents.group_by(&:ultra?)
       end
     end
 
@@ -259,6 +266,7 @@ module BattleCatsRolls
         key = m[:key]
         seek = SeekSeed.queue[key]
         result = SeekSeed.resolve(cache[key]) if /./.match?(key)
+        set_offset_seed(result) if result&.made10rolls
 
         seek.yield if seek&.ended?
 

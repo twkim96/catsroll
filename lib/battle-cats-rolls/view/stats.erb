@@ -12,27 +12,27 @@
   </tr>
   <tr class="border_upper">
     <td><%= l10n('Health') %></td>
-    <td><%= stat.health %></td>
+    <td><%= stat_augmented(stat, :health) %></td>
     <td><%= l10n('Knockback times') %></td>
     <td><%= stat.knockbacks %></td>
     <td><%= l10n('Speed') %></td>
-    <td><%= stat_speed(stat.speed) %></td>
+    <td><%= stat_augmented(stat, :speed, stat_speed(stat.speed)) %></td>
   </tr>
   <tr class="border_middle">
     <td><%= l10n('Production cost') %></td>
-    <td><%= stat.production_cost %></td>
+    <td><%= stat_augmented(stat, :production_cost) %></td>
     <td><%= l10n('Production cooldown') %></td>
-    <td><%= stat_time stat.production_cooldown %></td>
+    <td><%= stat_augmented(stat, :production_cooldown, stat_time(stat.production_cooldown)) %></td>
     <td><%= l10n('Attack cooldown') %></td>
-    <td><%= stat_time stat.attack_cooldown %></td>
+    <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.attack_cooldown)) %></td>
   </tr>
   <tr class="border_middle">
     <td><%= l10n('Attack cycle') %></td>
-    <td><%= stat_time stat.attack_cycle %></td>
+    <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.attack_cycle)) %></td>
     <td><%= l10n('Attack duration') %></td>
     <td><%= stat_time stat.attack_duration %></td>
     <td><%= l10n('Push duration') %></td>
-    <td><%= stat_time stat.push_duration %></td>
+    <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.push_duration)) %></td>
   </tr>
   <% if stat.long_range? %>
   <tr class="border_middle">
@@ -47,21 +47,21 @@
   <% if stat.attacks.size > 1 %>
   <tr class="border_middle">
     <td><%= l10n('DPS sum') %></td>
-    <td><%= stat_int(stat.dps_sum) %></td>
+    <td><%= stat_augmented(stat, :dps_sum, stat_int(stat.dps_sum)) %></td>
     <td><%= l10n('Max DPS area') %></td>
     <td><%= stat_range stat.max_dps_area %></td>
     <td><%= l10n('Damage sum') %></td>
-    <td><%= stat.damage_sum %></td>
+    <td><%= stat_augmented(stat, :damage_sum, stat.damage_sum) %></td>
   </tr>
   <% end %>
   <% each_attack(stat) do |attack| %>
   <tr class="border_upper <%= attack_tr_class(attack) %>">
     <td><%= l10n('DPS') %></td>
-    <td><%= stat_int(attack.dps) %></td>
+    <td><%= stat_augmented(stat, :dps, stat_int(attack.dps)) %></td>
     <td><%= l10n(attack.area_type) %></td>
     <td><%= stat_range attack.area_display %></td>
     <td><%= l10n('Damage') %></td>
-    <td><%= attack.damage %></td>
+    <td><%= stat_augmented(stat, :damage, attack.damage) %></td>
   </tr>
   <tr class="border_lower <%= attack_tr_class(attack) %>">
     <% if attack.kind_of?(BattleCatsRolls::TriggeredAttack) %>
@@ -71,13 +71,13 @@
     <td><%= stat_time attack.duration %></td>
     <% end %>
     <td><%= l10n('Trigger effects') %></td>
-    <td colspan="3"><%= display_list(attack.display_effects) %></td>
+    <td colspan="3"><%= display_list(attack.display_effects, stat: stat, prefix: 'ability') %></td>
   </tr>
   <% end %>
   <% stat.specialized_abilities.each do |ability| %>
   <tr class="border_middle">
-    <td><%= l10n(ability.name) %></td>
-    <td colspan="5"><%= display_ability(ability) %></td>
+    <td><%= display_ability_name(ability, stat: stat) %></td>
+    <td colspan="5"><%= display_ability(ability, stat: stat) %></td>
   </tr>
   <% end %>
   <% if stat.generic_abilities.any? %>
@@ -87,12 +87,13 @@
   </tr>
     <% stat.generic_abilities.each do |ability| %>
   <tr class="border_middle">
-    <td><%= l10n(ability.name) %></td>
-    <td colspan="5"><%= display_ability(ability) %></td>
+    <td><%= display_ability_name(ability, stat: stat) %></td>
+    <td colspan="5"><%= display_ability(ability, stat: stat) %></td>
   </tr>
     <% end %>
   <% end %>
 <% end %>
+<% if route.exclude_talents %>
 <% if talents = arg.dig(:talents, false) %>
   <tr class="border_upper talents">
     <% if talent_against = arg[:cat].talent_against %>
@@ -121,6 +122,7 @@
       <td colspan="5"><%= display_ability(talent) %></td>
     </tr>
   <% end %>
+<% end %>
 <% end %>
   <tr class="border_bottom"><td style="display: none" colspan="6"></td></tr>
 </tbody></table>
