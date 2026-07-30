@@ -568,8 +568,11 @@ module BattleCatsRolls
     end
 
     class Combat < Standalone
-      def augment_attributes
-        super.push(:dps_sum, :damage_sum)
+      def augment stat
+        super
+        %i[dps_sum damage_sum].each do |attribute|
+          stat.augment_attribute(self, attribute)
+        end unless stat.sum_no_wave
       end
     end
 
