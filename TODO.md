@@ -41,7 +41,6 @@
 
 ## Features and utilities
 
-* Add light purple for double legends which are just uber in regular banners
 * Add rarity indicator when slot rarity and cat rarity doesn't match
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
