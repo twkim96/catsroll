@@ -64,24 +64,62 @@
 
 * Heavy Assault C.A.T.: Talent massive damage
   https://bc.godfat.org/cats/15
-* Awakened Bahamut Cat: Multi area attacks:
+* Awakened Bahamut Cat: Multi area attacks. Talents showing explosion and
+  highlighting on Speed, DPS sum, Damage sum, but not individual Damage.
   https://bc.godfat.org/cats/26
+* Ultra Delinquent Cat: Strengthen at 67% Health
+  https://bc.godfat.org/cats/32
 * Apple Cat: Single single attack and single area attack:
   https://bc.godfat.org/cats/40
-* Ice Crystal Cat: Ultra talent to augment specialization
+* Luxury Bath Cat: Talent highlight Knockback ability but not the value,
+  because this is unlocking the ability not improving the value.
+  https://bc.godfat.org/cats/41
+* Ice Crystal Cat: Ultra talent to augment specialization and highlight
+  the Strengthen ability without highlighting its value.
   https://bc.godfat.org/cats/43
+* Catasaurus: Talent highlight critical value because it's improving it.
+  Effect not highlighted because it's not unlocking it.
+  https://bc.godfat.org/cats/47
+* Sanzo Cat: Talent highlight the slow duration, improving 1.2s rather than
+  1.0s because treasure multiplier is applied on that.
+  https://bc.godfat.org/cats/51
+* Immortal Keiji: Wave triggered effect highlighted in ultra talent.
+  DPS/Damage sum highlighted the same as well, but DPS/Damage are highlighted
+  with regular talents because that's improved by regular talents. If
+  `sum_no_wave` option is used, don't highlight in ultra because then it's
+  not accounted after all.
+  https://bc.godfat.org/cats/73
+  https://bc.godfat.org/cats/73?sum_no_wave=true
 * God-Emperor Kamukura: Talent resistant
   https://bc.godfat.org/cats/87
 * Crazed Titan Cat: Health should be 52200
   https://bc.godfat.org/cats/100
+* Ultra Kasa Jizo: Both true form and ultra form are augmented with talents
+  https://bc.godfat.org/cats/138
 * Immortal Kenshin: Talent specialization for both true and ultra form
   https://bc.godfat.org/cats/159
 * Master of the Pacific: Talent with built-in specialization
   https://bc.godfat.org/cats/175
 * Metal Cat: Metal and max level is 20:
   https://bc.godfat.org/cats/201
+* Li'l Mohawk Cat: Talent highlight Critical strike, not the value, because
+  this is unlocking the ability, not improving it. The effect is also
+  highlighted because it's added with the talent.
+  https://bc.godfat.org/cats/210
+* Li'l Macho Legs Cat: Talent highlight Knockback value, not Knockback itself,
+  because this is improving the value, not unlocking the ability.
+  https://bc.godfat.org/cats/246
+* Almighty Anubis: Ultra highlighted: Production cost, Attack cooldown/cycle,
+  Push duration, DPS sum, DPS, Break shield effect and ability. Damage sum
+  and Damage should be highlighted by regular talents with increased damage.
+  https://bc.godfat.org/cats/259
+* Almighty Aphrodite: A lot of Resistance, each with its row because values
+  can be different for them.
+  https://bc.godfat.org/cats/260
 * Akuma Hayabusa: Talent strong
   https://bc.godfat.org/cats/262
+* Almighty Ganesha: Talent highlighting Strengthen value
+  https://bc.godfat.org/cats/273
 * Sea Maiden Ruri: Multi single attacks:
   https://bc.godfat.org/cats/336
 * Iron wall: Immune to bosswave:
@@ -96,6 +134,12 @@
   https://bc.godfat.org/cats/447
 * Wonder MOMOCO: First strike wave and stop effect:
   https://bc.godfat.org/cats/456
+* Nameless Eyewaltz CC: No increased damage talent yet DPS (sum) should be
+  highlighted by Savage Blow because it does increase the DPS. Do not
+  highlight if `dps_no_critical` is used though, because then it should not
+  account Savage Blow.
+  https://bc.godfat.org/cats/507
+  https://bc.godfat.org/cats/507?dps_no_critical=true
 * Ken: Third strike effect with all range:
   https://bc.godfat.org/cats/518
 * Almighty Hades: Talent with built-in specialization
