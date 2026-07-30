@@ -4,9 +4,17 @@
   for example, or find all usable cats in a 4-stars stage (special + rare)
 * Add an advanced filter for forms. Useful to find all cats having ultra form
 * Add an advanced filter for having talents, and/or ultra talents
+* Add an advanced filter for banners
 * Show surge duration
 * Show knockback distance
 * Show slow speed (7.5 r/s or 0.5 p/f)
+
+## Owned cats
+
+* Provide a way to tick cats and then sumbit them at once, not by submitting
+  each individual tick every single time.
+* Provide a way to import/export cookies from/to the URL. Preferring cookies
+  over URL to avoid messing up with random visits.
 
 ## Bugs
 
