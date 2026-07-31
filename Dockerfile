@@ -1,5 +1,5 @@
-# 1. 뼈대가 되는 Ruby 3.2 전체 환경 가져오기 (기본 컴파일러 내장)
-FROM ruby:3.2
+# 1. 공식 운영 서버와 같은 Ruby 3.4 계열 Debian 환경 사용
+FROM ruby:3.4-trixie
 
 # 2. 필수 패키지 설치 (배열 탐색기에 필요한 clang 명시적 추가)
 RUN apt-get update && apt-get install -y \
