@@ -98,6 +98,19 @@ module BattleCatsRolls
       self.class.new(to_h.merge(args))
     end
 
+    def cat_rarity_label
+      case rarity
+      when 2
+        :rare
+      when 3
+        :supa
+      when 4
+        :uber
+      when 5
+        :legend
+      end
+    end
+
     def score_rarity_label
       super ||
         case score

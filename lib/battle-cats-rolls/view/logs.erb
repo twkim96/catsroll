@@ -12,6 +12,34 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-08-03") %>
+<ul>
+  <li>
+    A new highlighting option is added. The default basic one is unchanged.
+    A new advanced one is added, which shows a rarity indicator on the left
+    of the cell. If the main color is not a score color (for example, when
+    you're searching for it, or when you owned it, or when it's an exclusive
+    cat), then rather than showing the rarity, it would show the score color
+    instead. This way, the score color will always show. This has the
+    following advantages comparing to the basic highlighting:
+    <ul>
+      <li>Never miss the score, so never miss a potential uber/legend.</li>
+      <li>
+        Easier to spot a legend hiding inside the legend banner, or when
+        the score color doesn't perfectly match the rates of the banner.
+        For example, there are special banners like Busterfest (7% uber),
+        Dynasty Fest (7% uber), Superfest (10% uber), and
+        100M DL Special (0.7% legend), or other potential future banners
+        which don't share regular rates. Some people mistook the mismatch
+        as bugs, but there are too many combinations and edge cases when
+        there are banners with uncommon rates. They might expect the score
+        color as the rarity color, and now this adds actual rarity color so
+        it would be easier to spot mismatch with this new indicator.
+      </li>
+    </ul>
+  </li>
+</ul>
+
 <%= header(2, "2026-08-02") %>
 <ul>
   <li>Fixed owned coloring for legend-fest and legend positions</li>

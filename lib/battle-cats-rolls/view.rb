@@ -149,6 +149,20 @@ module BattleCatsRolls
     end
 
     def rarity_labels cat
+      case route.highlighting
+      when 'advanced'
+        highlight_advanced(cat)
+      else
+        highlight_basic(cat)
+      end
+    end
+
+    # Right priority:
+    #   Owned/Found/Exclusive/Score
+    # Left priority:
+    #   If right is Owned then follow right priority (Found/Exclusive/Score),
+    #   otherwise same color as right
+    def highlight_basic cat
       special_label = if route.owned_set.member?(cat.id)
         :owned
       elsif cat.id == route.find
@@ -163,6 +177,8 @@ module BattleCatsRolls
         elsif FindCat.exclusives.member?(cat.id)
           :exclusive
         elsif cat.score_rarity_label == :rare
+          # Use the same color as owned, don't use rare color. Guaranteed
+          # falls here as well, because guaranteed doesn't have a score
           :owned
         else
           cat.score_rarity_label
@@ -171,7 +187,40 @@ module BattleCatsRolls
         special_label || cat.score_rarity_label
       end
 
+      # cat_label is the same cat.score_rarity_label if
+      # special_label is not defined. This is to avoid calling
+      # cat.score_rarity_label twice.
       score_label = special_label || cat_label
+
+      ["cat_#{cat_label}", "score_#{score_label}"]
+    end
+
+    # Right priority:
+    #   Found/Owned/Exclusive/Score
+    # Left priority:
+    #   If right is Score, then Rarity, otherwise Score
+    def highlight_advanced cat
+      special_label = if cat.id == route.find
+        :found
+      elsif route.owned_set.member?(cat.id)
+        :owned
+      elsif FindCat.exclusives.member?(cat.id)
+        :exclusive
+      end
+
+      cat_label = if special_label
+        if cat.score_rarity_label == :rare
+          special_label
+        else
+          cat.score_rarity_label
+        end
+      elsif cat.score
+        cat.cat_rarity_label
+      else
+        :rare # Guaranteed falls here (can fall above as well)
+      end
+
+      score_label = special_label || cat.score_rarity_label
 
       ["cat_#{cat_label}", "score_#{score_label}"]
     end
@@ -342,6 +391,10 @@ module BattleCatsRolls
 
     def selected_display display_name
       'selected="selected"' if route.display == display_name
+    end
+
+    def selected_highlighting highlighting_name
+      'selected="selected"' if route.highlighting == highlighting_name
     end
 
     def selected_theme theme_name

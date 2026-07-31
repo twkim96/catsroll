@@ -217,6 +217,20 @@ module BattleCatsRolls
       'text'
     end
 
+    def highlighting
+      @highlighting ||=
+        case value = request.params_coercion_with_nil('highlighting', :to_s)
+        when 'advanced'
+          value
+        else
+          default_highlighting
+        end
+    end
+
+    def default_highlighting
+      'basic'
+    end
+
     def theme
       @theme ||=
         case value = request.params_coercion_with_nil('theme', :to_s)
@@ -783,7 +797,7 @@ module BattleCatsRolls
         seed pos last
         event custom rate c_rare c_supa c_uber
         level speed_unit lang ui
-        seeker name display theme count find
+        seeker name display highlighting theme count find
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
         hide_wave
@@ -845,6 +859,7 @@ module BattleCatsRolls
            (key == :seeker && value == default_seeker) ||
            (key == :name && value == 0) ||
            (key == :display && value == default_display) ||
+           (key == :highlighting && value == default_highlighting) ||
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
            (key == :find && value == 0) ||
