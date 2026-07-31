@@ -30,7 +30,7 @@ module BattleCatsRolls
 
     private
 
-    def seconds_with_treasure(view: view, **)
+    def seconds_with_treasure(view:, **)
       max_time = (duration * treasure_multiplier).floor
       without = view.stat_time(duration)
       with = view.stat_time(max_time)
@@ -38,7 +38,7 @@ module BattleCatsRolls
       "#{without} or #{highlight(with, view: view, **)}"
     end
 
-    def seconds(view: view, **)
+    def seconds(view:, **)
       strong(view.stat_time(duration))
     end
 
