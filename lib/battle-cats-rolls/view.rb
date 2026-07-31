@@ -167,17 +167,6 @@ module BattleCatsRolls
       end
     end
 
-    def color_guaranteed cat
-      case cat.guaranteed.id
-      when route.find
-        :found
-      when *FindCat.exclusives
-        :exclusive
-      when Integer
-        :rare
-      end
-    end
-
     def number_td cat, other_cat
       rowspan = 2 + [cat.rerolled, other_cat&.rerolled].compact.size
 
