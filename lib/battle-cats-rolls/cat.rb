@@ -10,7 +10,7 @@ module BattleCatsRolls
     :slot, :slot_seed,
     :sequence, :track, :steps,
     :next, :parent, :rerolled, :guaranteed,
-    :rarity_label, :picked_label, :extra_label,
+    :score_rarity_label, :picked_label, :extra_label,
     keyword_init: true)
 
     Rare   = 2
@@ -98,7 +98,7 @@ module BattleCatsRolls
       self.class.new(to_h.merge(args))
     end
 
-    def rarity_label
+    def score_rarity_label
       super ||
         case score
         when nil, 0...6470

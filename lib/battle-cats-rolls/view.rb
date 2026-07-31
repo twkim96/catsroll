@@ -145,26 +145,35 @@ module BattleCatsRolls
         cursor = :navigate
       end
 
-      rarity = color_rarity(cat)
-      ownership = :owned if route.owned_set.member?(cat.id)
-
-      [cursor, rarity, *ownership, *picked].join(' ')
+      [cursor, *rarity_labels(cat), *picked].join(' ')
     end
 
-    def color_rarity cat
-      case rarity_label = cat.rarity_label
-      when :legend
-        :legend
-      else
-        case cat.id
-        when route.find
-          :found
-        when *FindCat.exclusives
-          :exclusive
-        else
-          rarity_label
-        end
+    def rarity_labels cat
+      special_label = if route.owned_set.member?(cat.id)
+        :owned
+      elsif cat.id == route.find
+        :found
+      elsif FindCat.exclusives.member?(cat.id)
+        :exclusive
       end
+
+      cat_label = if special_label == :owned
+        if cat.id == route.find
+          :found
+        elsif FindCat.exclusives.member?(cat.id)
+          :exclusive
+        elsif cat.score_rarity_label == :rare
+          :owned
+        else
+          cat.score_rarity_label
+        end
+      else
+        special_label || cat.score_rarity_label
+      end
+
+      score_label = special_label || cat.score_rarity_label
+
+      ["cat_#{cat_label}", "score_#{score_label}"]
     end
 
     def number_td cat, other_cat
@@ -238,7 +247,7 @@ module BattleCatsRolls
       <<~HTML
         <td
           rowspan="#{rowspan}"
-          class="#{type} #{color_label(cat, type, rerolled)}"
+          class="position #{type} #{color_label(cat, type, rerolled)}"
           #{onclick_pick(cat, type)}>
           #{content}
         </td>

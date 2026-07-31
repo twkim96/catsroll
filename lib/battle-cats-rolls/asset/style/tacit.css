@@ -370,6 +370,47 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   display: inline-block;
 }
+
+.position {
+  background: linear-gradient(to right, var(--cat) 10%, var(--score) 10%);
+}
+
+.rare { background-color: var(--rare); }
+.supa_fest { background-color: var(--supa_fest); }
+.supa { background-color: var(--supa); }
+.uber_fest { background-color: var(--uber_fest); }
+.uber { background-color: var(--uber); }
+.legend_fest { background-color: var(--legend_fest); }
+.legend { background-color: var(--legend); }
+.found { background-color: var(--found); }
+.owned { background-color: var(--owned); }
+.exclusive { background-color: var(--exclusive); }
+
+.cat_rare { --cat: var(--rare); }
+.cat_supa_fest { --cat: var(--supa_fest) }
+.cat_supa { --cat: var(--supa); }
+.cat_uber_fest { --cat: var(--uber_fest); }
+.cat_uber { --cat: var(--uber); }
+.cat_legend_fest { --cat: var(--legend_fest); }
+.cat_legend { --cat: var(--legend); }
+.cat_found { --cat: var(--found); }
+.cat_owned { --cat: var(--owned); }
+.cat_exclusive { --cat: var(--exclusive); }
+
+.score_rare { --score: var(--rare); }
+.score_supa_fest { --score: var(--supa_fest); }
+.score_supa { --score: var(--supa); }
+.score_uber_fest { --score: var(--uber_fest); }
+.score_uber { --score: var(--uber); }
+.score_legend_fest { --score: var(--legend_fest); }
+.score_legend { --score: var(--legend); }
+.score_found { --score: var(--found); }
+.score_owned { --score: var(--owned); }
+.score_exclusive { --score: var(--exclusive); }
+
+.legend_fest a, .legend a,
+.score_legend_fest a, .score_legend a { color: #d8a56f; }
+
 .navigate { cursor: help; }
 .pick { cursor: cell; }
 .picked,

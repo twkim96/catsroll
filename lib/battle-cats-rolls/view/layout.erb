@@ -16,43 +16,37 @@
       .owned { background-color: azure; }
       <% case route.theme; when 'mkweb' %>
       /* https://mk.bcgsc.ca/colorblind/img/colorblindness.palettes.v11_4.png */
-      .supa_fest { background-color: #AFFF2A; }
-      .supa { background-color: #FFDC3D; }
-      .uber_fest { background-color: #FF9DC8; }
-      .uber { background-color: #F60239; }
-      .exclusive { background-color: #00E5F8; }
-      .found { background-color: #00F407; }
-      .legend_fest { background-color: #0079FA; }
-      .legend { background-color: #8400CD; }
+      :root {
+        --rare: white;
+        --supa_fest: #AFFF2A;
+        --supa: #FFDC3D;
+        --uber_fest: #FF9DC8;
+        --uber: #F60239;
+        --legend_fest: #0079FA;
+        --legend: #8400CD;
+        --found: #00F407;
+        --owned: azure;
+        --exclusive: #00E5F8;
+      }
       .attack { background-color: white; }
       .triggered_attack { background-color: #FFCFE2; }
-      .owned.supa_fest { background: linear-gradient(to right, #AFFF2A 10%, azure 10%); }
-      .owned.supa { background: linear-gradient(to right, #FFDC3D 10%, azure 10%); }
-      .owned.uber_fest { background: linear-gradient(to right, #FF9DCB 10%, azure 10%); }
-      .owned.uber { background: linear-gradient(to right, #F60239 10%, azure 10%); }
-      .owned.exclusive { background: linear-gradient(to right, #00E5F8 10%, azure 10%); }
-      .owned.found { background: linear-gradient(to right, #00F407 10%, azure 10%); }
-      .owned.legend { background: linear-gradient(to right, #8400CD 10%, azure 10%); }
       <% else %>
-      .supa_fest { background-color: yellow; }
-      .supa { background-color: gold; }
-      .uber_fest { background-color: salmon; }
-      .uber { background-color: red; }
-      .exclusive { background-color: aqua; }
-      .found { background-color: lime; }
-      .legend_fest { background-color: mediumslateblue; }
-      .legend { background-color: darkviolet; }
+      :root {
+        --rare: white;
+        --supa_fest: yellow;
+        --supa: gold;
+        --uber_fest: salmon;
+        --uber: red;
+        --legend_fest: mediumslateblue;
+        --legend: darkviolet;
+        --found: lime;
+        --owned: azure;
+        --exclusive: aqua;
+      }
       .attack { background-color: lavender; }
       .triggered_attack { background-color: pink; }
-      .owned.supa_fest { background: linear-gradient(to right, yellow 10%, azure 10%); }
-      .owned.supa { background: linear-gradient(to right, gold 10%, azure 10%); }
-      .owned.uber_fest { background: linear-gradient(to right, salmon 10%, azure 10%); }
-      .owned.uber { background: linear-gradient(to right, red 10%, azure 10%); }
-      .owned.exclusive { background: linear-gradient(to right, aqua 10%, azure 10%); }
-      .owned.found { background: linear-gradient(to right, lime 10%, azure 10%); }
-      .owned.legend { background: linear-gradient(to right, darkviolet 10%, azure 10%); }
       <% end %>
-      .legend a, .legend_fest a { color: #d8a56f; }
+
       <% unless show_details %>
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }

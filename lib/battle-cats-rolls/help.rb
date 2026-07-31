@@ -123,7 +123,7 @@ module BattleCatsRolls
           track_label = (track + 'A'.ord).chr
           name = "(#{sequence}#{track_label} #{rarity_label} cat)"
           cat = fake_cat(-1, name, sequence, track)
-          cat.rarity_label = rarity_label
+          cat.score_rarity_label = rarity_label
           cat
         end
       end.transpose
