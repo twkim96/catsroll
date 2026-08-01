@@ -171,7 +171,7 @@ module BattleCatsRolls
         special_label || cat.score_rarity_label
       end
 
-      score_label = special_label || cat.score_rarity_label
+      score_label = special_label || cat_label
 
       ["cat_#{cat_label}", "score_#{score_label}"]
     end
