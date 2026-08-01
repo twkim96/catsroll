@@ -471,8 +471,8 @@
   </div>
 
   <%= header(2,
-    %Q{Show me all cats (<a href="#{uri_to_own_all_cats}#show-me-all-cats">Own all below!</a>) (<a href="#{uri_to_drop_all_cats}#show-me-all-cats">Drop all below!</a>)},
-    'show-me-all-cats')
+    %Q{Cats listing <input type="submit" value="Own all ticked" formaction="#{route.path_info}#cats-listing"> (<a href="#{uri_to_own_all_cats}#cats-listing">Own all below!</a>) (<a href="#{uri_to_drop_all_cats}#cats-listing">Drop all below!</a>)},
+    'cats-listing')
   %>
 
   <div class="cats_listing">
@@ -480,7 +480,7 @@
     <%= rarity_header(rarity, cats.size) %>
     <div class="cats_by_rarity">
       <% cats.reverse_each do |c| %>
-      <input type="checkbox" onchange="roll(this)"
+      <input type="checkbox"
         name="t" id="cat-<%= c.id %>" value="<%= c.id %>"
         <%= checked_cat(c) %>>
       <%= link_to_cat(c) %>

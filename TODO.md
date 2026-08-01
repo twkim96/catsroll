@@ -4,9 +4,15 @@
   for example, or find all usable cats in a 4-stars stage (special + rare)
 * Add an advanced filter for forms. Useful to find all cats having ultra form
 * Add an advanced filter for having talents, and/or ultra talents
+* Add an advanced filter for banners/families
 * Show surge duration
 * Show knockback distance
 * Show slow speed (7.5 r/s or 0.5 p/f)
+
+## Owned cats
+
+* Provide a way to import/export cookies from/to the URL. Preferring cookies
+  over URL to avoid messing up with random visits.
 
 ## Bugs
 
@@ -33,7 +39,6 @@
 
 ## Features and utilities
 
-* Add light purple for double legends which are just uber in regular banners
 * Add rarity indicator when slot rarity and cat rarity doesn't match
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
@@ -58,14 +63,10 @@
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Tracking history (by recording rolls we click)
-* Normal gacha banners and tracks
+* Normal gacha banners and tracks. Possibly with a new menu item
 
 ## Architecture
 
 * Queue in memcached rather than in-process! Otherwise can't do great
   zero down time restarting. But we might want to find a way to clear
   the queue without clearing the whole memcached.
-
-## Build script, language and APK
-
-* Only show the languages which are built, no need to force all of them
