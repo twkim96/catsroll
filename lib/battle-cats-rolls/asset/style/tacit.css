@@ -382,8 +382,8 @@ h1, h2, h3, h4, h5, h6 {
 .uber { background-color: var(--uber); }
 .legend_fest { background-color: var(--legend_fest); }
 .legend { background-color: var(--legend); }
-.found { background-color: var(--found); }
 .owned { background-color: var(--owned); }
+.found { background-color: var(--found); }
 .exclusive { background-color: var(--exclusive); }
 
 .cat_rare { --cat: var(--rare); }
@@ -393,8 +393,8 @@ h1, h2, h3, h4, h5, h6 {
 .cat_uber { --cat: var(--uber); }
 .cat_legend_fest { --cat: var(--legend_fest); }
 .cat_legend { --cat: var(--legend); }
-.cat_found { --cat: var(--found); }
 .cat_owned { --cat: var(--owned); }
+.cat_found { --cat: var(--found); }
 .cat_exclusive { --cat: var(--exclusive); }
 
 .score_rare { --score: var(--rare); }
@@ -404,8 +404,8 @@ h1, h2, h3, h4, h5, h6 {
 .score_uber { --score: var(--uber); }
 .score_legend_fest { --score: var(--legend_fest); }
 .score_legend { --score: var(--legend); }
-.score_found { --score: var(--found); }
 .score_owned { --score: var(--owned); }
+.score_found { --score: var(--found); }
 .score_exclusive { --score: var(--exclusive); }
 
 .legend_fest a, .legend a,
