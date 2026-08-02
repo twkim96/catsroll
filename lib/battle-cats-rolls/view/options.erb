@@ -51,7 +51,7 @@
   <% if route.path_info == '/' %>
   <label for="highlighting_select" title="How we highlight the cells">Highlighting:</label>
   <select id="highlighting_select" name="highlighting" onchange="roll(this)">
-    <option value="" <%= selected_highlighting('basic') %>>Basic</option>
+    <option value="basic" <%= selected_highlighting('basic') %>>Basic</option>
     <option value="advanced" <%= selected_highlighting('advanced') %>>Advanced</option>
   </select>
   <% else %>
