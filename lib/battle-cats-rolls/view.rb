@@ -533,6 +533,10 @@ module BattleCatsRolls
       'checked="checked"' if route.other.member?(value)
     end
 
+    def checked_rarity value
+      'checked="checked"' if route.rarity.member?(value)
+    end
+
     def checked_dps value
       'checked="checked"' if route.dps == value
     end

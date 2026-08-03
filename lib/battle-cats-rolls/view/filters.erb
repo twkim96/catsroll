@@ -250,6 +250,26 @@
       <% if route.advanced_filters %>
       <tr class="attack">
         <td class="for">
+          <label for="for_rarity_any">
+            <input type="radio" id="for_rarity_any" name="for_rarity"
+              value="any" checked="checked">
+            Any
+          </label>
+        </td>
+        <td class="filter">
+          <div><strong>Rarity</strong></div>
+          <% BattleCatsRolls::Filter::Rarity.each_key do |rarity| %>
+          <label for="<%= rarity %>">
+            <input type="checkbox" name="rarity" id="<%= rarity %>"
+            value="<%= rarity %>" onchange="roll(this)"
+            <%= checked_rarity(rarity) %>>
+            <%= display_filter(rarity) %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
           <label for="dps_any">
             <input type="radio" id="dps_any" name="dps"
               value="any" <%= checked_dps('any') %>

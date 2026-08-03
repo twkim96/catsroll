@@ -22,6 +22,8 @@ module BattleCatsRolls
               case filter = filter_table[item]
               when String, NilClass
                 abilities[filter] || abilities[item]
+              when Proc
+                filter.call(item, id, info, index)
               else
                 stat = Stat.new(
                   id: id, info: info, index: index, level: level,
@@ -482,6 +484,12 @@ module BattleCatsRolls
       'metallic' => nil,
       'kamikaze' => nil,
     }.freeze
+
+    Rarities = %w[normal special rare super uber legend].freeze
+    RarityFilter = lambda do |rarity, id, info, index|
+      info['rarity'] == Rarities.index(rarity)
+    end
+    Rarity = Hash[Rarities.zip(Array.new(Rarities.size, RarityFilter))].freeze
 
     DPS = {
       'high' => HighDPS,
