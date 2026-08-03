@@ -473,10 +473,6 @@ module BattleCatsRolls
       'checked="checked"' if route.against.member?(value)
     end
 
-    def checked_for_buff value
-      'checked="checked"' if route.for_buff == value
-    end
-
     def checked_buff value
       'checked="checked"' if route.buff.member?(value)
     end
@@ -487,10 +483,6 @@ module BattleCatsRolls
 
     def checked_resistant value
       'checked="checked"' if route.resistant.member?(value)
-    end
-
-    def checked_for_range value
-      'checked="checked"' if route.for_range == value
     end
 
     def checked_range value
