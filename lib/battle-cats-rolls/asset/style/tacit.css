@@ -372,7 +372,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .position {
-  background: linear-gradient(to right, var(--cat) 10%, var(--score) 10%);
+  background: linear-gradient(to right, var(--minor) 10%, var(--major) 10%);
 }
 
 .rare { background-color: var(--rare); }
@@ -386,30 +386,30 @@ h1, h2, h3, h4, h5, h6 {
 .found { background-color: var(--found); }
 .exclusive { background-color: var(--exclusive); }
 
-.cat_rare { --cat: var(--rare); }
-.cat_supa_fest { --cat: var(--supa_fest) }
-.cat_supa { --cat: var(--supa); }
-.cat_uber_fest { --cat: var(--uber_fest); }
-.cat_uber { --cat: var(--uber); }
-.cat_legend_fest { --cat: var(--legend_fest); }
-.cat_legend { --cat: var(--legend); }
-.cat_owned { --cat: var(--owned); }
-.cat_found { --cat: var(--found); }
-.cat_exclusive { --cat: var(--exclusive); }
+.minor_rare { --minor: var(--rare); }
+.minor_supa_fest { --minor: var(--supa_fest) }
+.minor_supa { --minor: var(--supa); }
+.minor_uber_fest { --minor: var(--uber_fest); }
+.minor_uber { --minor: var(--uber); }
+.minor_legend_fest { --minor: var(--legend_fest); }
+.minor_legend { --minor: var(--legend); }
+.minor_owned { --minor: var(--owned); }
+.minor_found { --minor: var(--found); }
+.minor_exclusive { --minor: var(--exclusive); }
 
-.score_rare { --score: var(--rare); }
-.score_supa_fest { --score: var(--supa_fest); }
-.score_supa { --score: var(--supa); }
-.score_uber_fest { --score: var(--uber_fest); }
-.score_uber { --score: var(--uber); }
-.score_legend_fest { --score: var(--legend_fest); }
-.score_legend { --score: var(--legend); }
-.score_owned { --score: var(--owned); }
-.score_found { --score: var(--found); }
-.score_exclusive { --score: var(--exclusive); }
+.major_rare { --major: var(--rare); }
+.major_supa_fest { --major: var(--supa_fest); }
+.major_supa { --major: var(--supa); }
+.major_uber_fest { --major: var(--uber_fest); }
+.major_uber { --major: var(--uber); }
+.major_legend_fest { --major: var(--legend_fest); }
+.major_legend { --major: var(--legend); }
+.major_owned { --major: var(--owned); }
+.major_found { --major: var(--found); }
+.major_exclusive { --major: var(--exclusive); }
 
 .legend_fest a, .legend a,
-.score_legend_fest a, .score_legend a { color: #d8a56f; }
+.major_legend_fest a, .major_legend a { color: #d8a56f; }
 
 .navigate { cursor: help; }
 .pick { cursor: cell; }

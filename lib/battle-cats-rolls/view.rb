@@ -157,13 +157,13 @@ module BattleCatsRolls
       end
     end
 
-    # Right priority:
+    # Major priority:
     #   Owned/Found/Exclusive/Score
-    # Left priority:
-    #   If right is Owned then follow right priority (Found/Exclusive/Score),
-    #   otherwise same color as right
+    # Minor priority:
+    #   If major is Owned then follow major priority (Found/Exclusive/Score),
+    #   otherwise same color as major
     def highlight_basic cat
-      special_label = if route.owned_set.member?(cat.id)
+      special = if route.owned_set.member?(cat.id)
         :owned
       elsif cat.id == route.find
         :found
@@ -171,7 +171,7 @@ module BattleCatsRolls
         :exclusive
       end
 
-      cat_label = if special_label == :owned
+      minor = if special == :owned
         if cat.id == route.find
           :found
         elsif FindCat.exclusives.member?(cat.id)
@@ -184,23 +184,22 @@ module BattleCatsRolls
           cat.score_rarity_label
         end
       else
-        special_label || cat.score_rarity_label
+        special || cat.score_rarity_label
       end
 
-      # cat_label is the same cat.score_rarity_label if
-      # special_label is not defined. This is to avoid calling
-      # cat.score_rarity_label twice.
-      score_label = special_label || cat_label
+      # minor is the same as cat.score_rarity_label if special is not defined.
+      # This is to avoid calling cat.score_rarity_label twice.
+      major = special || minor
 
-      ["cat_#{cat_label}", "score_#{score_label}"]
+      ["minor_#{minor}", "major_#{major}"]
     end
 
-    # Right priority:
+    # Major priority:
     #   Found/Owned/Exclusive/Score
-    # Left priority:
-    #   If right is Score, then Rarity, otherwise Score
+    # Minor priority:
+    #   If major is Score, then Rarity, otherwise Score
     def highlight_advanced cat
-      special_label = if cat.id == route.find
+      special = if cat.id == route.find
         :found
       elsif route.owned_set.member?(cat.id)
         :owned
@@ -208,9 +207,9 @@ module BattleCatsRolls
         :exclusive
       end
 
-      cat_label = if special_label
+      minor = if special
         if cat.score_rarity_label == :rare
-          special_label
+          special
         else
           cat.score_rarity_label
         end
@@ -220,9 +219,9 @@ module BattleCatsRolls
         :rare # Guaranteed falls here (can fall above as well)
       end
 
-      score_label = special_label || cat.score_rarity_label
+      major = special || cat.score_rarity_label
 
-      ["cat_#{cat_label}", "score_#{score_label}"]
+      ["minor_#{minor}", "major_#{major}"]
     end
 
     def number_td cat, other_cat
