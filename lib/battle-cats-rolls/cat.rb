@@ -108,6 +108,8 @@ module BattleCatsRolls
         :uber
       when 5
         :legend
+      else
+        :rare
       end
     end
 
