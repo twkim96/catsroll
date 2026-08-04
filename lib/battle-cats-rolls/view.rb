@@ -171,25 +171,23 @@ module BattleCatsRolls
         :exclusive
       end
 
+      score = cat.score_rarity_label
+      major = special || score
       minor = if special == :owned
         if cat.id == route.find
           :found
         elsif FindCat.exclusives.member?(cat.id)
           :exclusive
-        elsif cat.score_rarity_label == :rare
+        elsif score == :rare
           # Use the same color as owned, don't use rare color. Guaranteed
           # falls here as well, because guaranteed doesn't have a score
           :owned
         else
-          cat.score_rarity_label
+          score
         end
       else
-        special || cat.score_rarity_label
+        major
       end
-
-      # minor is the same as cat.score_rarity_label if special is not defined.
-      # This is to avoid calling cat.score_rarity_label twice.
-      major = special || minor
 
       ["minor_#{minor}", "major_#{major}"]
     end
@@ -207,19 +205,19 @@ module BattleCatsRolls
         :exclusive
       end
 
+      score = cat.score_rarity_label
+      major = special || score
       minor = if special
-        if cat.score_rarity_label == :rare
-          special
+        if score == :rare
+          special # Guaranteed can fall here as well
         else
-          cat.score_rarity_label
+          score
         end
       elsif cat.score
         cat.cat_rarity_label
       else
-        :rare # Guaranteed falls here (can fall above as well)
+        :rare # Guaranteed falls here as well
       end
-
-      major = special || cat.score_rarity_label
 
       ["minor_#{minor}", "major_#{major}"]
     end
