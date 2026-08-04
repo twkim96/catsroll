@@ -2,7 +2,8 @@ name: Update KR/JP live events and deploy
 
 on:
   schedule:
-    - cron: '7,17,27,37,47,57 * * * *'
+    - cron: '7 * * * *'
+    - cron: '37 * * * *'
   workflow_dispatch:
 
 permissions:
