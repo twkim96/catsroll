@@ -152,6 +152,8 @@ module BattleCatsRolls
       case route.highlighting
       when 'advanced'
         highlight_advanced(cat)
+      when 'consistent'
+        highlight_consistent(cat)
       else
         highlight_basic(cat)
       end
@@ -218,6 +220,31 @@ module BattleCatsRolls
       else
         :rare # Guaranteed falls here as well
       end
+
+      ["minor_#{minor}", "major_#{major}"]
+    end
+
+    # Major priority:
+    #   Found/Owned/Exclusive/Rarity (except platinum's uber)
+    # Minor priority:
+    #   Score
+    def highlight_consistent cat
+      major = if cat.id == route.find
+        :found
+      elsif route.owned_set.member?(cat.id)
+        :owned
+      elsif FindCat.exclusives.member?(cat.id)
+        :exclusive
+      elsif route.platinum? && cat.rarity == Cat::Uber
+        :rare # Except platinum's uber
+      elsif cat.score
+        cat.cat_rarity_label
+      else
+        :rare # Guaranteed falls here
+      end
+
+      score = cat.score_rarity_label
+      minor = if score == :rare then major else score end
 
       ["minor_#{minor}", "major_#{major}"]
     end

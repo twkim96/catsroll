@@ -53,6 +53,7 @@
   <select id="highlighting_select" name="highlighting" onchange="roll(this)">
     <option value="basic" <%= selected_highlighting('basic') %>>Basic</option>
     <option value="advanced" <%= selected_highlighting('advanced') %>>Advanced</option>
+    <option value="consistent" <%= selected_highlighting('consistent') %>>Consistent</option>
   </select>
   <% else %>
   <%= hidden_inputs('highlighting') %>

@@ -220,7 +220,7 @@ module BattleCatsRolls
     def highlighting
       @highlighting ||=
         case value = request.params_coercion_with_nil('highlighting', :to_s)
-        when 'advanced'
+        when 'advanced', 'consistent'
           value
         else
           default_highlighting
@@ -675,6 +675,12 @@ module BattleCatsRolls
       else
         raise "Unknown language: #{lang}"
       end
+    end
+
+    def platinum?
+      return @platinum if instance_variable_defined?(:@platinum)
+
+      @platinum = pool.event['platinum']
     end
 
     private

@@ -212,6 +212,9 @@ module BattleCatsRolls
 
     get '/help' do
       with_canonical_uri('/help') do
+        # Fake it to avoid affecting the help page highlighting
+        route.instance_variable_set(:@platinum, nil)
+
         render :help, help: Help.new
       end
     end
