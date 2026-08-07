@@ -173,24 +173,26 @@ module BattleCatsRolls
         chain.filter!(route.against, route.for_against,
           Filter::Specialization)
 
-        chain.filter!(route.buff + from_resistant, route.for_buff,
+        chain.filter!(route.buff + from_resistant, 'any',
           Filter::Buff.merge(Filter::Resistant))
 
-        # Resistant uses the same condition from buff, and
-        # OR will be filtered with buffs together, so we only filter
-        # in the case that it's AND, where it's ignored from buff.
+        # When we're using OR for Resistant, the above ANY would already
+        # cover the case for Resistant so we don't do anything in that case.
+        # When we're using AND for Resistant, we need to ensure that any of
+        # the Resistant case should match as well.
         if route.for_resistant == 'and'
-          chain.filter!(route.resistant, route.for_buff, Filter::Resistant)
+          chain.filter!(route.resistant, 'any', Filter::Resistant)
         end
 
         # rubocop:disable Layout/LineLength
-        chain.filter!(route.range, route.for_range, Filter::Range)
+        chain.filter!(route.range, 'any', Filter::Range)
         chain.filter!([route.area], 'any', Filter::Area) if route.area != 'any'
         chain.filter!(route.control, route.for_control, Filter::Control)
         chain.filter!(route.immunity, route.for_immunity, Filter::Immunity)
         chain.filter!(route.counter, route.for_counter, Filter::Counter)
         chain.filter!(route.combat, route.for_combat, Filter::Combat)
         chain.filter!(route.other, route.for_other, Filter::Other)
+        chain.filter!(route.rarity, 'any', Filter::Rarity)
         chain.filter!([route.dps], 'any', Filter::DPS) if route.dps != 'any'
         chain.filter!([route.damage], 'any', Filter::Damage) if route.damage != 'any'
         chain.filter!([route.health], 'any', Filter::Health) if route.health != 'any'
@@ -210,6 +212,9 @@ module BattleCatsRolls
 
     get '/help' do
       with_canonical_uri('/help') do
+        # Fake it to avoid affecting the help page highlighting
+        route.instance_variable_set(:@platinum, nil)
+
         render :help, help: Help.new
       end
     end

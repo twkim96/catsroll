@@ -48,6 +48,17 @@
     </option>
   </select>
 
+  <% if route.path_info == '/' %>
+  <label for="highlighting_select" title="How we highlight the cells">Highlighting:</label>
+  <select id="highlighting_select" name="highlighting" onchange="roll(this)">
+    <option value="basic" <%= selected_highlighting('basic') %>>Basic</option>
+    <option value="advanced" <%= selected_highlighting('advanced') %>>Advanced</option>
+    <option value="consistent" <%= selected_highlighting('consistent') %>>Consistent</option>
+  </select>
+  <% else %>
+  <%= hidden_inputs('highlighting') %>
+  <% end %>
+
   <% if route.path_info == '/' || route.path_info.start_with?('/cats') %>
   <label for="theme_select" title="Color theme for highlighting">Theme:</label>
   <select id="theme_select" name="theme" onchange="roll(this)">

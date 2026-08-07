@@ -122,9 +122,9 @@ module BattleCatsRolls
           sequence = index + 1
           track_label = (track + 'A'.ord).chr
           name = "(#{sequence}#{track_label} #{rarity_label} cat)"
-          cat = fake_cat(-1, name, sequence, track)
-          cat.rarity_label = rarity_label
-          cat
+          fake_cat(-1, name, sequence, track,
+            score_rarity_label: rarity_label,
+            score: 0, rarity: rarities.index(rarity_label) + Cat::Rare)
         end
       end.transpose
     end
@@ -134,6 +134,10 @@ module BattleCatsRolls
         id: id, info: {'name' => [name]},
         sequence: sequence, track: track,
         **args)
+    end
+
+    def rarities
+      @rarities ||= %i[rare supa uber legend]
     end
 
     def pick_sequence result, sequence, track, label

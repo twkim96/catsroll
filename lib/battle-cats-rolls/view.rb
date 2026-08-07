@@ -145,26 +145,108 @@ module BattleCatsRolls
         cursor = :navigate
       end
 
-      rarity = color_rarity(cat)
-      ownership = :owned if route.owned_set.member?(cat.id)
-
-      [cursor, rarity, *ownership, *picked].join(' ')
+      [cursor, *rarity_labels(cat), *picked].join(' ')
     end
 
-    def color_rarity cat
-      case rarity_label = cat.rarity_label
-      when :legend
-        :legend
+    def rarity_labels cat
+      case route.highlighting
+      when 'advanced'
+        highlight_advanced(cat)
+      when 'consistent'
+        highlight_consistent(cat)
       else
-        case cat.id
-        when route.find
-          :found
-        when *FindCat.exclusives
-          :exclusive
-        else
-          rarity_label
-        end
+        highlight_basic(cat)
       end
+    end
+
+    # Major priority:
+    #   Owned/Found/Exclusive/Score
+    # Minor priority:
+    #   If major is Owned then follow major priority (Found/Exclusive/Score),
+    #   otherwise same color as major
+    def highlight_basic cat
+      special = if route.owned_set.member?(cat.id)
+        :owned
+      elsif cat.id == route.find
+        :found
+      elsif FindCat.exclusives.member?(cat.id)
+        :exclusive
+      end
+
+      score = cat.score_rarity_label
+      major = special || score
+      minor = if special == :owned
+        if cat.id == route.find
+          :found
+        elsif FindCat.exclusives.member?(cat.id)
+          :exclusive
+        elsif score == :rare
+          # Use the same color as owned, don't use rare color. Guaranteed
+          # falls here as well, because guaranteed doesn't have a score
+          :owned
+        else
+          score
+        end
+      else
+        major
+      end
+
+      ["minor_#{minor}", "major_#{major}"]
+    end
+
+    # Major priority:
+    #   Found/Owned/Exclusive/Score
+    # Minor priority:
+    #   If major is Score, then Rarity, otherwise Score
+    def highlight_advanced cat
+      special = if cat.id == route.find
+        :found
+      elsif route.owned_set.member?(cat.id)
+        :owned
+      elsif FindCat.exclusives.member?(cat.id)
+        :exclusive
+      end
+
+      score = cat.score_rarity_label
+      major = special || score
+      minor = if special
+        if score == :rare
+          special # Guaranteed can fall here as well
+        else
+          score
+        end
+      elsif cat.score
+        cat.cat_rarity_label
+      else
+        :rare # Guaranteed falls here as well
+      end
+
+      ["minor_#{minor}", "major_#{major}"]
+    end
+
+    # Major priority:
+    #   Found/Owned/Exclusive/Rarity (except platinum's uber)
+    # Minor priority:
+    #   Score
+    def highlight_consistent cat
+      major = if cat.id == route.find
+        :found
+      elsif route.owned_set.member?(cat.id)
+        :owned
+      elsif FindCat.exclusives.member?(cat.id)
+        :exclusive
+      elsif route.platinum? && cat.rarity == Cat::Uber
+        :rare # Except platinum's uber
+      elsif cat.score
+        cat.cat_rarity_label
+      else
+        :rare # Guaranteed falls here
+      end
+
+      score = cat.score_rarity_label
+      minor = if score == :rare then major else score end
+
+      ["minor_#{minor}", "major_#{major}"]
     end
 
     def number_td cat, other_cat
@@ -238,7 +320,7 @@ module BattleCatsRolls
       <<~HTML
         <td
           rowspan="#{rowspan}"
-          class="#{type} #{color_label(cat, type, rerolled)}"
+          class="position #{type} #{color_label(cat, type, rerolled)}"
           #{onclick_pick(cat, type)}>
           #{content}
         </td>
@@ -335,6 +417,10 @@ module BattleCatsRolls
       'selected="selected"' if route.display == display_name
     end
 
+    def selected_highlighting highlighting_name
+      'selected="selected"' if route.highlighting == highlighting_name
+    end
+
     def selected_theme theme_name
       'selected="selected"' if route.theme == theme_name
     end
@@ -411,10 +497,6 @@ module BattleCatsRolls
       'checked="checked"' if route.against.member?(value)
     end
 
-    def checked_for_buff value
-      'checked="checked"' if route.for_buff == value
-    end
-
     def checked_buff value
       'checked="checked"' if route.buff.member?(value)
     end
@@ -425,10 +507,6 @@ module BattleCatsRolls
 
     def checked_resistant value
       'checked="checked"' if route.resistant.member?(value)
-    end
-
-    def checked_for_range value
-      'checked="checked"' if route.for_range == value
     end
 
     def checked_range value
@@ -477,6 +555,10 @@ module BattleCatsRolls
 
     def checked_other value
       'checked="checked"' if route.other.member?(value)
+    end
+
+    def checked_rarity value
+      'checked="checked"' if route.rarity.member?(value)
     end
 
     def checked_dps value

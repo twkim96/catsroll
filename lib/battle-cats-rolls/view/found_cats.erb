@@ -6,7 +6,7 @@
   <ul>
     <% arg[:found_cats].each do |cat| %>
       <li>
-        <span class="<%= cat.rarity_label %>">
+        <span class="<%= cat.score_rarity_label %>">
           <%= link_to_roll(cat) %>
         </span>:
         <%= found_cat_numbers(cat) %>

@@ -116,6 +116,14 @@ describe BattleCatsRolls::Filter do
     expect(ids).include?(649) # Lovestruck Lesser Demon
   end
 
+  would 'filter rarity' do
+    chain.filter!(['white'], 'all', BattleCatsRolls::Filter::Specialization)
+    chain.filter!(['normal'], 'all', BattleCatsRolls::Filter::Rarity)
+    ids = chain.cats.keys
+
+    expect(ids).include?(9) # Titan Cat
+  end
+
   would 'filter high DPS' do
     ids = chain.filter!(['high'], 'all',
       BattleCatsRolls::Filter::DPS).keys

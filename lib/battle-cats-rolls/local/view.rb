@@ -27,7 +27,7 @@ module BattleCatsRolls
       <<~HTML
         <td
           rowspan="#{rowspan}"
-          class="#{type} #{color_label(cat, type, rerolled)}"
+          class="position #{type} #{color_label(cat, type, rerolled)}"
           #{expand_data_attrs(cat, type)}
           #{onclick_pick(cat, type)}>
           #{content}

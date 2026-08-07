@@ -167,6 +167,7 @@ module BattleCatsRolls
       {
         exist: true,
         version: pool.version,
+        platinum: route.platinum?,
         rates: {
           rare: pool.rare,
           supa: pool.supa,
@@ -197,6 +198,7 @@ module BattleCatsRolls
       {
         exist: true,
         version: pool.version,
+        platinum: event['platinum'],
         rates: {
           rare: pool.rare,
           supa: pool.supa,

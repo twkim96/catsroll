@@ -217,6 +217,20 @@ module BattleCatsRolls
       'text'
     end
 
+    def highlighting
+      @highlighting ||=
+        case value = request.params_coercion_with_nil('highlighting', :to_s)
+        when 'advanced', 'consistent'
+          value
+        else
+          default_highlighting
+        end
+    end
+
+    def default_highlighting
+      'basic'
+    end
+
     def theme
       @theme ||=
         case value = request.params_coercion_with_nil('theme', :to_s)
@@ -417,20 +431,6 @@ module BattleCatsRolls
       @against ||= Array(request.params['against'])
     end
 
-    def for_buff
-      @for_buff ||=
-        case value = request.params_coercion_with_nil('for_buff', :to_s)
-        when 'any', 'all'
-          value
-        else
-          default_for_buff
-        end
-    end
-
-    def default_for_buff
-      'any'
-    end
-
     def buff
       @buff ||= Array(request.params['buff'])
     end
@@ -451,20 +451,6 @@ module BattleCatsRolls
 
     def resistant
       @resistant ||= Array(request.params['resistant'])
-    end
-
-    def for_range
-      @for_range ||=
-        case value = request.params_coercion_with_nil('for_range', :to_s)
-        when 'any', 'all'
-          value
-        else
-          default_for_range
-        end
-    end
-
-    def default_for_range
-      'any'
     end
 
     def range
@@ -568,6 +554,10 @@ module BattleCatsRolls
 
     def other
       @other ||= Array(request.params['other'])
+    end
+
+    def rarity
+      @rarity ||= Array(request.params['rarity'])
     end
 
     def dps
@@ -687,6 +677,12 @@ module BattleCatsRolls
       end
     end
 
+    def platinum?
+      return @platinum if instance_variable_defined?(:@platinum)
+
+      @platinum = pool.event['platinum']
+    end
+
     private
 
     def pool
@@ -783,7 +779,7 @@ module BattleCatsRolls
         seed pos last
         event custom rate c_rare c_supa c_uber
         level speed_unit lang ui
-        seeker name display theme count find
+        seeker name display highlighting theme count find
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
         hide_wave
@@ -793,9 +789,9 @@ module BattleCatsRolls
       if include_filters
         keys.push(
           :for_against, :against,
-          :for_buff, :buff,
+          :buff,
           :for_resistant, :resistant,
-          :for_range, :range, :area,
+          :range, :area,
           :for_control, :control,
           :for_immunity, :immunity,
           :for_counter, :counter,
@@ -804,7 +800,7 @@ module BattleCatsRolls
 
         if advanced_filters
           keys.push(
-            :dps, :damage, :health, :knockbacks,
+            :rarity, :dps, :damage, :health, :knockbacks,
             :stand, :reach, :speed, :cost, :production,
             :for_aspect, :aspect)
         end
@@ -845,6 +841,7 @@ module BattleCatsRolls
            (key == :seeker && value == default_seeker) ||
            (key == :name && value == 0) ||
            (key == :display && value == default_display) ||
+           (key == :highlighting && value == default_highlighting) ||
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
            (key == :find && value == 0) ||
@@ -853,11 +850,9 @@ module BattleCatsRolls
            (key == :o && value == '') ||
            (key == :for_against && value == default_for_against) ||
            (key == :against && value == []) ||
-           (key == :for_buff && value == default_for_buff) ||
            (key == :buff && value == []) ||
            (key == :for_resistant && value == default_for_resistant) ||
            (key == :resistant && value == []) ||
-           (key == :for_range && value == default_for_range) ||
            (key == :range && value == []) ||
            (key == :area && value == default_area) ||
            (key == :for_control && value == default_for_control) ||
@@ -870,6 +865,7 @@ module BattleCatsRolls
            (key == :combat && value == []) ||
            (key == :for_other && value == default_for_other) ||
            (key == :other && value == []) ||
+           (key == :rarity && value == []) ||
            (key == :dps && value == default_dps) ||
            (key == :damage && value == default_damage) ||
            (key == :health && value == default_health) ||

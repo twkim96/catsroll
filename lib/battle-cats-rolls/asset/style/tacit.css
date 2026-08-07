@@ -370,6 +370,47 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0;
   display: inline-block;
 }
+
+.position {
+  background: linear-gradient(to right, var(--minor) 10%, var(--major) 10%);
+}
+
+.rare { background-color: var(--rare); }
+.supa_fest { background-color: var(--supa_fest); }
+.supa { background-color: var(--supa); }
+.uber_fest { background-color: var(--uber_fest); }
+.uber { background-color: var(--uber); }
+.legend_fest { background-color: var(--legend_fest); }
+.legend { background-color: var(--legend); }
+.owned { background-color: var(--owned); }
+.found { background-color: var(--found); }
+.exclusive { background-color: var(--exclusive); }
+
+.minor_rare { --minor: var(--rare); }
+.minor_supa_fest { --minor: var(--supa_fest) }
+.minor_supa { --minor: var(--supa); }
+.minor_uber_fest { --minor: var(--uber_fest); }
+.minor_uber { --minor: var(--uber); }
+.minor_legend_fest { --minor: var(--legend_fest); }
+.minor_legend { --minor: var(--legend); }
+.minor_owned { --minor: var(--owned); }
+.minor_found { --minor: var(--found); }
+.minor_exclusive { --minor: var(--exclusive); }
+
+.major_rare { --major: var(--rare); }
+.major_supa_fest { --major: var(--supa_fest); }
+.major_supa { --major: var(--supa); }
+.major_uber_fest { --major: var(--uber_fest); }
+.major_uber { --major: var(--uber); }
+.major_legend_fest { --major: var(--legend_fest); }
+.major_legend { --major: var(--legend); }
+.major_owned { --major: var(--owned); }
+.major_found { --major: var(--found); }
+.major_exclusive { --major: var(--exclusive); }
+
+.legend_fest a, .legend a,
+.major_legend_fest a, .major_legend a { color: #d8a56f; }
+
 .navigate { cursor: help; }
 .pick { cursor: cell; }
 .picked,

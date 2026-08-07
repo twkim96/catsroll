@@ -56,7 +56,7 @@ module BattleCatsRolls
         available: true,
         id: cat.id,
         name: cat.pick_name(name),
-        rarity: cat.rarity_label.to_s
+        rarity: cat.score_rarity_label.to_s
       }
     end
 
