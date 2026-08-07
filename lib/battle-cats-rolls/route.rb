@@ -122,12 +122,12 @@ module BattleCatsRolls
     end
 
     def uri path: "//#{web_host}/", query: {}, **args
-      query = cleanup_query(default_query(query, **args))
+      cleaned_query = cleanup_query(default_query(query, **args))
 
-      if query.empty?
+      if cleaned_query.empty?
         path
       else
-        "#{path}?#{query_string(query)}"
+        "#{path}?#{query_string(cleaned_query)}"
       end
     end
 
