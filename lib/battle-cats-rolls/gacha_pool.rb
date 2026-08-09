@@ -29,7 +29,7 @@ module BattleCatsRolls
     end
 
     def exist?
-      !!gacha && slots.any?
+      !!gacha && slots.each_value.any?(&:any?)
     end
 
     def version
