@@ -121,12 +121,20 @@ describe BattleCatsRolls::Web do
     would 'load the last page correctly' do
       last_page = (BattleCatsRolls::Route.ball_en.events.size.to_f /
         BattleCatsRolls::CrystalBall::EventsPerPage).ceil
+      last_event = /<option\s+value="2018-06-06_245"\s*>/
 
       expect_request('/', "event_page=#{last_page}") do |body|
         expect(body).not.include? text_selected_group
         expect(body).include? text_select_event
 
-        expect(body).match? /<option\s+value="2018-06-06_245"\s*>/
+        expect(body).match? last_event
+      end
+
+      expect_request('/', "event_page=#{last_page + 1}") do |body|
+        expect(body).not.include? text_selected_group
+        expect(body).include? text_select_event
+
+        expect(body).not.match? last_event
       end
     end
   end

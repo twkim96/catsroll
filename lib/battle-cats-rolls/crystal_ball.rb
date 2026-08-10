@@ -170,9 +170,11 @@ module BattleCatsRolls
     end
 
     def events_page page
+      offset = EventsPerPage * page
+      size = events.size
       (@events_page ||= events.to_a)[
-        [-(EventsPerPage * page), -events.size].max,
-        EventsPerPage
+        -[offset, size].min,
+        [EventsPerPage, size - (offset - EventsPerPage)].min
       ].to_h
     end
 
