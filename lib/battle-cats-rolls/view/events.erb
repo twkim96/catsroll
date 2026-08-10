@@ -2,6 +2,22 @@
 <div class="events">
   <label for="event_select" title="Gacha banner to show">Event:</label>
   <select id="event_select" name="event" onchange="roll(this)">
+    <% if route.event_page > 1 %>
+    <option value="prev_page">Previous page...</option>
+    <% end %>
+
+    <% if gacha.pool.event %>
+      <% if route.event_not_in_menu? %>
+      <optgroup label="Selected:">
+        <option value="<%= route.event %>" selected="selected">
+          <%= show_event(route.gacha.pool.event) %>
+        </option>
+      </optgroup>
+      <% end %>
+    <% else %>
+    <option value="" selected="selected">(Select an event here)</option>
+    <% end %>
+
     <optgroup label="Upcoming:">
       <% route.upcoming_events.each do |(event_name, info)| %>
         <option
@@ -24,6 +40,8 @@
             <%= show_event(info) %></option>
       <% end %>
     </optgroup>
+
+    <option value="next_page">Next page...</option>
   </select>
 
   <% if route.event == 'custom' %>
@@ -73,3 +91,4 @@
 <% else %>
 <%= hidden_inputs('event') %>
 <% end %>
+<%= hidden_inputs('event_page') %>

@@ -5,8 +5,6 @@
   <%= erb :information %>
   <%= erb :table %>
   <%= erb :table_notes %>
-<% end %>
-
-<% unless gacha.pool.exist? %>
+<% elsif route.event_missing_data? %>
   <p>Data only available in v<%= gacha.pool.version %>+</p>
 <% end %>

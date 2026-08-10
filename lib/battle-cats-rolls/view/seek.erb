@@ -4,6 +4,6 @@
 
 <% if gacha.pool.exist? %>
   <%= erb :seek_form %>
-<% else %>
+<% elsif gacha.pool.event %>
   <p>Data only available in v<%= gacha.pool.version %>+</p>
 <% end %>

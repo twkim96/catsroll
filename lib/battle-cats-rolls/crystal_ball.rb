@@ -4,6 +4,8 @@ require_relative 'cat'
 
 module BattleCatsRolls
   class CrystalBall < Struct.new(:data)
+    EventsPerPage = 100
+
     def self.from_cats_builder_and_events cats_builder, events
       gacha_data = attach_gacha_series_id(
         cats_builder.gacha, cats_builder.provider.gacha_option)
@@ -165,6 +167,13 @@ module BattleCatsRolls
 
     def cats
       data['cats']
+    end
+
+    def events_page page
+      (@events_page ||= events.to_a)[
+        [-(EventsPerPage * page), -events.size].max,
+        EventsPerPage
+      ].to_h
     end
 
     def each_custom_gacha name_index

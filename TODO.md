@@ -1,7 +1,5 @@
 ## Stats
 
-* Add an advanced filter for rarity. Useful to tick all rare cats,
-  for example, or find all usable cats in a 4-stars stage (special + rare)
 * Add an advanced filter for forms. Useful to find all cats having ultra form
 * Add an advanced filter for having talents, and/or ultra talents
 * Add an advanced filter for banners/families
@@ -42,19 +40,6 @@
 * Add rarity indicator when slot rarity and cat rarity doesn't match
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
-* Collapse past events. The dropdown can look like:
-  * Upcoming:
-    * Yesterday
-    * Today
-    * Tomorrow
-  * Custom:
-    * Customize...
-  * Past:
-    * Within last year...
-    * Within 2 years ago...
-    * Within 3 years ago...
-  So it expands like "Customize..." when selecting those past ones.
-  To avoid timezone offset, possibly keep 1 day more worth of banners.
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.
