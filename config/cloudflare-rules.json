@@ -10,7 +10,7 @@
       ],
       "mitigation_timeout": 10,
       "period": 10,
-      "requests_per_period": 10,
+      "requests_per_period": 5,
       "rate_exceeds": "request_base"
     }
   },
