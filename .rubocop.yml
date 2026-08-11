@@ -160,7 +160,7 @@ Style/OneLineConditional:
   Enabled: false
 
 Style/SoleNestedConditional:
-  AllowModifier: true
+  Enabled: false
 
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
