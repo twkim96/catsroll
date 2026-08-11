@@ -10,19 +10,20 @@ module BattleCatsRolls
       gacha_data = attach_gacha_series_id(
         cats_builder.gacha, cats_builder.provider.gacha_option)
 
-      new({
+      new(deep_freeze({
         'cats' => cats_builder.cats,
         'gacha' => guess_gacha_events(gacha_data, events.gacha.values),
         'events' => events.gacha
-      })
+      }))
     end
 
     def self.load dir, lang
       require 'yaml'
 
       new(
-        YAML.safe_load_file("#{dir}/bc-#{lang}.yaml",
-          permitted_classes: [Date]))
+        YAML.safe_load_file(
+          "#{dir}/bc-#{lang}.yaml", permitted_classes: [Date])
+      ).noramlize_end_date_by_series_id!
     end
 
     def self.deep_freeze data
@@ -149,12 +150,6 @@ module BattleCatsRolls
       end.sort.to_h.transform_values(&:to_h)
     end
 
-    def initialize(...)
-      super
-      noramlize_end_date_by_series_id!
-      self.class.deep_freeze(data)
-    end
-
     def inspect
       "#<#{self.class} cat=#{cats.dig(1, 'name', 0).inspect}>"
     end
@@ -238,8 +233,6 @@ module BattleCatsRolls
       visitor.tree.yaml(nil, line_width: -1)
     end
 
-    private
-
     def noramlize_end_date_by_series_id!
       series_id_to_event = {}
 
@@ -254,6 +247,9 @@ module BattleCatsRolls
 
         series_id_to_event[series_id] = event
       end
+
+      self.class.deep_freeze(data)
+      self
     end
   end
 end
