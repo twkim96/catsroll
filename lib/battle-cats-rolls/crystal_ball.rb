@@ -4,6 +4,8 @@ require_relative 'cat'
 
 module BattleCatsRolls
   class CrystalBall < Struct.new(:data)
+    EventsPerPage = 100
+
     def self.from_cats_builder_and_events cats_builder, events
       gacha_data = attach_gacha_series_id(
         cats_builder.gacha, cats_builder.provider.gacha_option)
@@ -18,9 +20,10 @@ module BattleCatsRolls
     def self.load dir, lang
       require 'yaml'
 
-      new(deep_freeze(
-        YAML.safe_load_file("#{dir}/bc-#{lang}.yaml",
-          permitted_classes: [Date])))
+      new(
+        YAML.safe_load_file(
+          "#{dir}/bc-#{lang}.yaml", permitted_classes: [Date])
+      ).noramlize_end_date_by_series_id!
     end
 
     def self.deep_freeze data
@@ -167,6 +170,15 @@ module BattleCatsRolls
       data['cats']
     end
 
+    def events_page page
+      offset = EventsPerPage * page
+      size = events.size
+      (@events_page ||= events.to_a)[
+        -[offset, size].min,
+        [EventsPerPage, size - (offset - EventsPerPage)].min
+      ].to_h
+    end
+
     def each_custom_gacha name_index
       ubers = cats_by_rarity[Cat::Uber].keys
       legends = cats_by_rarity[Cat::Legend].keys
@@ -219,6 +231,25 @@ module BattleCatsRolls
       end
 
       visitor.tree.yaml(nil, line_width: -1)
+    end
+
+    def noramlize_end_date_by_series_id!
+      series_id_to_event = {}
+
+      events.each_value do |event|
+        series_id = gacha.dig(event['id'], 'series_id')
+
+        if earlier_event = series_id_to_event[series_id]
+          if event['start_on'] < earlier_event['end_on']
+            earlier_event['end_on'] = event['start_on']
+          end
+        end
+
+        series_id_to_event[series_id] = event
+      end
+
+      self.class.deep_freeze(data)
+      self
     end
   end
 end

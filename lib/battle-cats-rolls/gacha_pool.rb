@@ -22,14 +22,15 @@ module BattleCatsRolls
     end
 
     def initialize ball, event_data: nil, event_name: nil
-      event_data ||= ball.events[event_name] || ball.events.first.last
-      # If there's no such event, pick the first active one
+      event_data ||= ball.events[event_name]
 
-      super(ball.cats, ball.gacha.dig(event_data['id'], 'cats'), event_data)
+      if event_data
+        super(ball.cats, ball.gacha.dig(event_data['id'], 'cats'), event_data)
+      end
     end
 
     def exist?
-      !!gacha && slots.any?
+      !!gacha && slots.each_value.any?(&:any?)
     end
 
     def version

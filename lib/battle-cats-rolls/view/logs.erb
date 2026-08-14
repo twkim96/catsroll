@@ -12,6 +12,43 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-08-11") %>
+<ul>
+  <li>
+    Event end dates are now normalized based on the upcoming replacement
+    events. This means platinum/legend events are no longer showing an end
+    year on 2030 if there is an upcoming new platinum/legend event to
+    replace it.
+  </li>
+  <li>
+    Given the above change, hiding past platinum/legend events workaround is
+    also removed, therefore you would be able to see past platinum/legend
+    events from now on. Previously, past platinum/legend events were hidden.
+  </li>
+  <li>
+    The same change applies to other events as well, meaning that you would
+    no longer see a bunch of the same events showing up in upcoming, because
+    earlier ones will be considered expired, even when technically they're
+    not expired yet. This better reflects how the game works. You can't
+    roll on those events anyway. You can still find them on the past events
+    if they're still up in your timezone.
+  </li>
+</ul>
+
+<%= header(2, "2026-08-10") %>
+<ul>
+  <li>
+    We no longer show all events in a single page. This should improve page
+    responsiveness by stop showing 2200 events but only the most recent 100.
+    To turn to next page, scroll to the bottom of the event dropdown menu, and
+    select "Next page...". Similarly, select "Previous page..." on the top to
+    turn to previous page when you're not on page 1.
+  </li>
+  <li>
+    Navigation on older platinum and legend events are fixed.
+  </li>
+</ul>
+
 <%= header(2, "2026-08-06") %>
 <ul>
   <li>

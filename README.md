@@ -158,7 +158,13 @@ systemd:
     sudo systemctl start varnish
 
 Note that you might want to change the systemd service to bind it only to
-`localhost` instead of `0.0.0.0`.
+`localhost` instead of `0.0.0.0`. You most likely also want to override
+OOM policy for it with the contents set in `config/varnish.conf` via:
+
+    sudo systemctl edit varnish
+
+This ensures that if the varnish worker got killed by OOM, the main process
+could start a new worker immediately, rather than killing everything down.
 
 ### Other various setup
 

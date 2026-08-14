@@ -71,7 +71,15 @@ module BattleCatsRolls
     end
 
     def show_tracks?
-      event && seed.nonzero? && gacha.pool.exist?
+      seed.nonzero? && gacha.pool.exist?
+    end
+
+    def event_not_in_menu?
+      all_events[event].nil?
+    end
+
+    def event_missing_data?
+      gacha.pool.event && !gacha.pool.exist?
     end
 
     def prepare_tracks
@@ -122,12 +130,12 @@ module BattleCatsRolls
     end
 
     def uri path: "//#{web_host}/", query: {}, **args
-      query = cleanup_query(default_query(query, **args))
+      cleaned_query = cleanup_query(default_query(query, **args))
 
-      if query.empty?
+      if cleaned_query.empty?
         path
       else
-        "#{path}?#{query_string(query)}"
+        "#{path}?#{query_string(cleaned_query)}"
       end
     end
 
@@ -251,6 +259,10 @@ module BattleCatsRolls
     def event
       @event ||= request.params_coercion_with_nil('event', :to_s) ||
         current_event
+    end
+
+    def event_page
+      @event_page ||= [request.params_coercion('event_page', :to_i), 1].max
     end
 
     def upcoming_events
@@ -711,7 +723,7 @@ module BattleCatsRolls
       @grouped_events ||= begin
         today = Date.today
 
-        events = all_events.group_by do |_, value|
+        all_events.group_by do |_, value|
           if today <= value['start_on']
             :upcoming
           elsif today <= value['end_on']
@@ -720,21 +732,11 @@ module BattleCatsRolls
             :past
           end
         end
-
-        if events[:ongoing]
-          # keep each types of platinum just once for ongoing events
-          # uniq will keep the first occurrence so we reverse and reverse
-          events[:ongoing] = events[:ongoing].reverse_each.uniq do |id, event|
-            event['platinum'] || id
-          end.reverse!
-        end
-
-        events
       end
     end
 
     def all_events
-      @all_events ||= ball.events
+      @all_events ||= ball.events_page(event_page)
     end
 
     def get_rate name, index
@@ -777,7 +779,7 @@ module BattleCatsRolls
     def default_query query={}, include_filters: false
       keys = %i[
         seed pos last
-        event custom rate c_rare c_supa c_uber
+        event event_page custom rate c_rare c_supa c_uber
         level speed_unit lang ui
         seeker name display highlighting theme count find
         no_guaranteed force_guaranteed ubers details
@@ -822,6 +824,15 @@ module BattleCatsRolls
         # https://bc.godfat.org/?seed=1&event=custom&custom=2&rate=predicted
         # We want it to be preserved and we should be able to pick freely.
         ret[:rate] = 'predicted'
+      end
+
+      case ret[:event]
+      when 'next_page'
+        ret.delete(:event)
+        ret[:event_page] = event_page.succ
+      when 'prev_page'
+        ret.delete(:event)
+        ret[:event_page] = event_page.pred if event_page > 1
       end
 
       ret
@@ -878,6 +889,7 @@ module BattleCatsRolls
            (key == :for_aspect && value == default_for_aspect) ||
            (key == :aspect && value == []) ||
            (key == :event && value == current_event) ||
+           (key == :event_page && value == 1) ||
            (query[:event] != 'custom' &&
               (key == :custom || key == :rate ||
                key == :c_rare || key == :c_supa || key == :c_uber)) ||
