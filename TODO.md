@@ -2,7 +2,7 @@
 
 * Add an advanced filter for forms. Useful to find all cats having ultra form
 * Add an advanced filter for having talents, and/or ultra talents
-* Add an advanced filter for banners/families
+* Add a separate filter for banners/families based on series id
 * Show surge duration
 * Show knockback distance
 * Show slow speed (7.5 r/s or 0.5 p/f)
@@ -36,6 +36,7 @@
 
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
+* Add a dropdown menu for filtering events based on series id
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.
