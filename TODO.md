@@ -34,7 +34,6 @@
 
 ## Features and utilities
 
-* Add rarity indicator when slot rarity and cat rarity doesn't match
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
 * Multi-select for finding cats
