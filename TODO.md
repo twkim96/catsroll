@@ -14,9 +14,6 @@
 
 ## Bugs
 
-* Links with outdated platinum banners cannot be displayed.
-  We don't show outdated platinum banners in the drop down menu, but the
-  links should still work.
 * If there's a non-existing cat in a gacha, for now we show nothing because
   tracking can't be done due to missing rarity data. However, it'll be useful
   to show the gacha data so we know it's not just an empty gacha but a gacha
