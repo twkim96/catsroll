@@ -119,10 +119,20 @@
 
 <%= header(2, 'Switching tracks') %>
 <ul>
-  <li>Switching tracks will happen whenever you made any guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.</li>
+  <li>
+    There are two cases that you would switch between the tracks:
+    <ol>
+      <li>
+        Perform guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.
+      </li>
+      <li>
+        Rolling a potentially <a href="#consecutive-duplicated-rare-cats">consecutive duplicated rare cat</a>.
+      </li>
+    </ol>
+  </li>
   <li>Beside that you always stay on the same track, regardless you're seeing it as track A or B. See <a href="#tracks-perspective">Tracks perspective</a> for details about perspective.</li>
   <li>We already see an example switching from A to B above, let's see an example switching from B to A.</li>
-  <li>Due to the offset, we jump from 1B to <strong>12A</strong>.</li>
+  <li>Due to the offset, we jump from 1B to <strong>12A</strong>. See <a href="#guaranteed-rolls-are-half-rolls">Guaranteed rolls are half rolls (to be written)</a></li>
 </ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 1, true) %>
