@@ -31,7 +31,7 @@
 
 <%= header(2, 'Read the tracks') %>
 <ul>
-  <li>Using the link, you'll see a table looks like below.</li>
+  <li>Using the link from the seek result, you'll see a table looks like below.</li>
   <li>Suppose you start at <strong>1A</strong>, then your next roll with rare ticket or cat food will be the cat located in 1A. It's a rare cat (<strong>1A rare cat</strong>) in this case.</li>
   <li>Your next roll will be located at <strong>2A</strong>, which is a super rare cat (<span class="supa">2A supa cat</span>).</li>
 </ul>
@@ -42,7 +42,7 @@
 <ul>
   <li>You can click on the cells, and it'll highlight the cats you'll roll out.</li>
   <li>Suppose we click on <span class="supa">2A supa cat</span>'s cell, and 2A + 3A will be <span class="picked">highlighted</span> in light grey.</li>
-  <li><strong>3A rare cat</strong> will also be <span class="next_position">highlighted</span> in zebra, indicating your next position after the rolls.</li>
+  <li><strong>3A rare cat</strong> will also be <span class="next_position">highlighted</span> in stripes, indicating your next position after the rolls.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].read_the_tracks, 2, 0) %>
@@ -51,7 +51,7 @@
 <ul>
   <li>You can click on the cat's name, which will simulate that you rolled to that cat.</li>
   <li>Following the above example, let's click on the cat's name at 2A (i.e. <span class="supa">2A supa cat</span>) to simulate that you rolled to that cat. This will lead you to a table looks like below.</li>
-  <li>You can see that you advanced two rows. Previously <strong>3A rare cat</strong> was located at 3A, <span class="next_position">highlighted</span> in zebra, now it's located at 1A.</li>
+  <li>You can see that you advanced two rows. Previously <strong>3A rare cat</strong> was located at 3A, <span class="next_position">highlighted</span> in stripes, now it's located at 1A.</li>
   <li>Your new next roll will be <strong>3A rare cat</strong> located at <strong>1A</strong>.</li>
   <li>You can see that the other track will also advance, meaning that you can only pick one in the same row.</li>
 </ul>
@@ -61,7 +61,7 @@
 <%= header(2, "Look up cat's data") %>
 <ul>
   <li>You can click on <strong>🐾</strong> beside the cat's name, which will show you the cat's data.</li>
-  <li>If <strong>🐾</strong> isn't showing, click on the cat's name instead.</li>
+  <li>If <strong>🐾</strong> isn't showing up, click on the cat's name instead.</li>
 </ul>
 <%= erb :table, cats: arg[:help].lookup_cat_data %>
 
@@ -83,7 +83,7 @@
 <ul>
   <li>Ubers listed on the guaranteed column are the guaranteed ubers.</li>
   <li>Guaranteed ubers will only be displayed if we're looking at a guaranteed event.</li>
-  <li>Here if you make 11 guaranteed rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong>, totally 11 cats.</li>
+  <li>Here if you make 11 guaranteed rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong> (1AG), totally 11 cats.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].mark_next_position(arg[:help].guaranteed_tracks) %>
@@ -91,8 +91,8 @@
 <%= header(2, 'Highlight guaranteed rolls') %>
 <ul>
   <li>You can also click on the guaranteed cells, and all the cats you'll roll out will be highlighted.</li>
-  <li>Here we click on <strong>1A guaranteed uber</strong>'s cell, and 1A ~ 10A + 1A guaranteed uber are <span class="picked_consecutively">highlighted</span> in dark grey.</li>
-  <li><strong>11B</strong> will also be <span class="next_position">highlighted</span> in zebra, indicating your next position after the 11 rolls.</li>
+  <li>Here we click on <strong>1A guaranteed uber</strong>'s cell, and 1A ~ 10A + 1A guaranteed uber (1AG) are <span class="picked_consecutively">highlighted</span> in dark grey.</li>
+  <li><strong>11B</strong> will also be <span class="next_position">highlighted</span> in stripes, indicating your next position after the 11 rolls.</li>
   <li>This is also indicated on the 1A guaranteed uber's cell, shown as <em>-&gt; 11B</em>. Here we jump from 1A to 11B.</li>
   <li>This will lead to the next topic: <a href="#switch-tracks">Switch tracks</a>.</li>
 </ul>
