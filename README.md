@@ -123,7 +123,7 @@ yourself:
 
     ./docker/build
 
-## Production with memcached, nginx, varnish, systemd and socket activation:
+## Production with memcached, nginx, vinyl-cache, systemd and socket activation:
 
 ### Set up memcached
 
@@ -140,22 +140,23 @@ systemd:
     sudo systemctl enable nginx
     sudo systemctl start nginx
 
-### Set up varnish
+### Set up vinyl-cache
 
-Take `config/varnish.vcl` as an example to set up varnish, and start it with
-systemd:
+Take `config/vinyl-cache.vcl` as an example to set up vinyl-cache, and
+start it with systemd:
 
-    sudo systemctl enable varnish
-    sudo systemctl start varnish
+    sudo systemctl enable vinyl-cache
+    sudo systemctl start vinyl-cache
 
 Note that you might want to change the systemd service to bind it only to
 `localhost` instead of `0.0.0.0`. You most likely also want to override
-OOM policy for it with the contents set in `config/varnish.conf` via:
+OOM policy for it with the contents set in `config/vinyl-cache.vcl` via:
 
-    sudo systemctl edit varnish
+    sudo systemctl edit vinyl-cache
 
-This ensures that if the varnish worker got killed by OOM, the main process
-could start a new worker immediately, rather than killing everything down.
+This ensures that if the vinyl-cache worker got killed by OOM,
+the main process could start a new worker immediately, rather than
+killing everything down.
 
 ### Other various setup
 
