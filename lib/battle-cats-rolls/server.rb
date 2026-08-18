@@ -18,36 +18,12 @@ module BattleCatsRolls
     end
   end
 
-  class GuardReferrer
-    include Jellyfish
-    controller_include NormalizedPath
-
-    disallowed_domains = Regexp.union(%w[
-      t.co
-      twitter.com
-      x.com
-      facebook.com
-      youtube.com
-    ])
-    DisallowedDomains = Regexp.new("\\b#{disallowed_domains}\\b")
-
-    get // do
-      if DisallowedDomains.match?(request.referrer)
-        not_found
-      else
-        cascade
-      end
-    end
-  end
-
   Server = Jellyfish::Builder.app do
     use Rack::Deflater
     use YahnsStatus, path: '/yahns/status', listeners: [WebBind, SeekBind]
 
     use Rack::ContentLength
     use Rack::ContentType, 'text/html; charset=utf-8'
-
-    use GuardReferrer
 
     # This part can be completely replaced by Nginx
     rewrite \
