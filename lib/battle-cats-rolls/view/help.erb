@@ -169,28 +169,23 @@
 <%= header(2, 'Consecutive duplicated rare cats') %>
 <ul>
   <li>
-    When there are consecutive duplicated rare cats in a row:
-    <ul>
-      <li>
-        Before 8.5-, the game will just shift the second rare cat you'll get,
-        avoiding consecutive duplicated rare cats. For example, suppose the
-        game rolled two Tin Cats in a row, the second Tin Cat will be changed
-        to Rocker Cat. You can predict the change by subtracting one to the
-        original slot code, like Tin Cat (slot 9) becomes Rocker Cat (slot 8).
-        Check <a href="#read-the-details">Read the details</a> to understand
-        what is a slot code.
-      </li>
-      <li>
-        <strong>After 8.6+</strong>, the game will instead consume the seed
-        again to roll another rare cat for you. As a result,
-        <strong>it'll move you to the other track</strong> upon hitting into a
-        consecutive duplicated rare cat. The reason you'll switch the track is
-        exactly the same as rolling a guaranteed uber cat, that it'll consume
-        the seed once, moving you half way forward, resulting track switch.
-      </li>
-    </ul>
+    The game does not allow you to get two consecutive duplicated rare cats
+    in a row. Whenever you could be getting a consecutive duplicated rare cat,
+    instead of giving you that, the game will instead make an additional
+    half roll, to roll another rare cat for you.
   </li>
-  <li>Let's look at an example for <strong>8.6+</strong>, where we have a consecutive duplicated rare cat at <strong>4A</strong>, a Tin Cat can turn into a <strong>Pogo Cat</strong>.</li>
+  <li>
+    As a result, <strong>it'll move you to the other track</strong> upon
+    hitting into a consecutive duplicated rare cat, and you'll get a different
+    rare cat which is different than the previous one you got, based on the
+    result of this additional half roll.
+  </li>
+  <li>
+    The reason you'll switch to the other track is exactly the same as rolling
+    a guaranteed uber cat, that it'll make a half roll, and
+    <a href="#switching-track-is-the-effect-of-making-a-half-roll">switching track is the effect of making a half roll</a>.
+  </li>
+  <li>Let's look at an example where we have a consecutive duplicated rare cat at <strong>4A</strong>, a Tin Cat can turn into a <strong>Pogo Cat</strong>.</li>
   <li>Assuming you're clicking on the cell for 4A, highlighting the path toward it.</li>
   <li>You'll see that Pogo Cat was highlighted rather than the Tin Cat, and your next position will jump to <strong>5B</strong> instead of 5A.</li>
 </ul>
