@@ -77,6 +77,28 @@ module BattleCatsRolls
       end
     end
 
+    def dodge_dupes_3a
+      @dodge_dupes_3a ||= begin
+        tracks = read_the_tracks.map(&:dup)
+
+        tracks[2][0] = fake_cat(35, 'Nekoluga', 3, 0)
+        tracks[3][0] = fake_cat(148, 'Tin Cat', 4, 0)
+
+        tracks
+      end
+    end
+
+    def dodge_dupes_4a
+      @dodge_dupes_4a ||= begin
+        tracks = read_the_tracks.map(&:dup)
+
+        tracks[2][0] = fake_cat(148, 'Tin Cat', 3, 0)
+        tracks[3][0] = fake_cat(58, 'Marauder Cat', 4, 0)
+
+        tracks
+      end
+    end
+
     def mark_next_position cats
       result = cats.dup
       result[0] = result[0].dup

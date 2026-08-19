@@ -110,24 +110,6 @@
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 0, true) %>
 
-<%= header(2, 'Marking the next position') %>
-<ul>
-  <li>
-    When we want to plan a few sequence of guaranteed rolls, to avoid
-    confusion, we likely do not want to advance the tracks just yet.
-  </li>
-  <li>
-    Marking the next position can come handy in this case. We can click on
-    the label of the position, for example 11B, to mark that as the next
-    position.
-  </li>
-  <li>
-    Highlighting following that, will start from 11B rather than 1A in that
-    case. This should help us visualize the paths better with multiple
-    tabs opened for each of the guaranteed rolls.
-  </li>
-</ul>
-
 <%= header(2, 'Switching tracks') %>
 <ul>
   <li>
@@ -192,21 +174,135 @@
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].dupe_rare_tracks, 4, 0) %>
 
-<%= header(3, 'Bouncing with consecutive duplicated rare cats') %>
-<ul></ul>
+<%= header(2, 'Bouncing with consecutive duplicated rare cats') %>
+<ul>
+  <li>
+    It is not very common but it's possible that you could immediately get
+    another duplicated rare cat right after you switched to the other track.
+  </li>
+  <li>
+    When this happens, as you would expect, the same mechanism will kick in
+    and you would get another re-rolled rare cat and switch the track again.
+  </li>
+  <li>
+    Here's an example showing 3A -&gt; 4AR (4A re-rolled) -&gt;
+    5BR (5B re-rolled) -&gt; 7A
+  </li>
+</ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].bouncing_tracks, 4, 0) %>
 
-<%= header(3, 'Not necessarily a consecutive duplicated rare cat') %>
-<ul></ul>
+<%= header(2, 'Not necessarily a consecutive duplicated rare cat') %>
+<ul>
+  <li>
+    Did you notice that in the above example, while 4B and 5B are different
+    rare cats, the track still shows a re-rolled cat at 5B? That's used
+    when you're coming from 4AR, but what if you're coming from 4B?
+  </li>
+  <li>
+    Remember again that the game will only re-roll a rare cat for you
+    if and only if you could get a consecutive duplicated rare cat.
+    It is not depending on the tracks themselves. Those are not fixed.
+    It's fully depending on what exactly was the last cat you got,
+    <a href="#hidden-track-switches-between-events"><strong>even across the events</strong></a>!
+  </li>
+  <li>
+    Here's an example showing you coming from 4B so 5B is not a consecutive
+    duplicated rare cat, therefore you'll go through it without switching to
+    the other track.
+  </li>
+</ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].go_straight_tracks, 7, 1) %>
 
-<%= header(3, 'Skipping with a platinum ticket') %>
+<%= header(2, 'Skipping with a platinum or legend ticket') %>
+<ul>
+  <li>
+    Remember again that the game will only re-roll a rare cat for you
+    if and only if you could get a consecutive duplicated rare cat.
+  </li>
+  <li>
+    What if you get an uber or legend in place of one of the consecutive
+    duplicated rare cats, at 3A or 4A? You will avoid getting consecutive
+    duplicated rare cats, therefore you will not switch to the other track.
+  </li>
+  <li>Example that we got Nekoluga at 3A with a platinum ticket, replacing the original Tin Cat, and we will not switch:</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].dodge_dupes_3a, 4, 0) %>
+
+<ul>
+  <li>Example that we got Marauder Cat at 4A with a platinum ticket, replacing the original Tin Cat, and we will not switch:</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].dodge_dupes_4a, 4, 0) %>
+
+<%= header(2, 'Guaranteed uber for the consecutive duplicated rare cats') %>
 <ul></ul>
 
-<%= header(3, 'Guaranteed uber for the consecutive duplicated rare cats?') %>
+<%= header(2, 'Hidden track switches between events') %>
 <ul></ul>
+
+<%= header(2, 'Marking the last cat to detect consecutive duplicated rare cats between events') %>
+<ul></ul>
+
+<%= header(2, 'Switching track is the effect of making a half roll') %>
+<ul>
+  <li>
+    For each regular rolls, or a roll of cat, the game will roll the
+    dice (seed) twice, once for deciding the rarity, and once for
+    deciding which cat for that rarity.
+  </li>
+  <li>
+    The game will only roll the dice (seed) once when it's rolling a
+    guaranteed uber, or when it's replacing your duplicated rare cat for
+    another rare cat.
+  </li>
+  <li>
+    In summary, this means:
+    <ul>
+      <li>A roll of cat = a roll of rarity + a roll of which cat (2 rolls of the seed)</li>
+      <li>A roll of guaranteed = a roll of which cat (1 roll of the seed)</li>
+      <li>A roll of replacing a dupe rare cat = a roll of another rare cat (1 roll of the seed)</li>
+    </ul>
+  </li>
+  <li>With this in mind, we can also say that a guaranteed roll is a half roll (of cat).</li>
+  <li>
+    We switch to the other track when the game makes a half roll
+    (or an odd number of half rolls when there are
+    <a href="#increased-rates-with-repeated-cats">increased rates with repeated cats</a>).
+  </li>
+  <li>Let's look at examples for both tracks A and B.</li>
+  <li>
+    For track A, we jump from 1A to 11B (1 + 10.5 = 11.5), and given that track B is 0.5 roll ahead,
+    11.5A = 11B.
+  </li>
+  <li>
+    Here's an example switching from B to A, and for the same offset that 1B
+    is actually 1.5A, we jump from 1B to <strong>12A</strong>
+    (1.5 + 10.5 = 12).
+  </li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].pick(arg[:help].guaranteed_tracks, 1, 0, true), 1, 1, true) %>
+
+<%= header(2, 'Marking the next position') %>
+<ul>
+  <li>
+    When we want to plan a few sequence of guaranteed rolls, to avoid
+    confusion, we likely do not want to advance the tracks just yet.
+  </li>
+  <li>
+    Marking the next position can come handy in this case. We can click on
+    the label of the position, for example 11B, to mark that as the next
+    position.
+  </li>
+  <li>
+    Highlighting following that, will start from 11B rather than 1A in that
+    case. This should help us visualize the paths better with multiple
+    tabs opened for each of the guaranteed rolls.
+  </li>
+</ul>
 
 <%= header(2, 'Find specific cat') %>
 <ul></ul>
