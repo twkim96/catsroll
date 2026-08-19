@@ -27,7 +27,7 @@
   First, you'll want to find your current seed. Watch the video or read the text explanation.
 </p>
 
-<%= header(2, %Q{<a href="#{route.seek_uri}">Seek the seed</a>}) %>
+<%= header(2, %Q{<a href="#{route.seek_uri}">Seeking the seed</a>}) %>
 <p style="width: 640px; height: 360px"><iframe src="https://streamable.com/s/02nrn/pmxcpt" frameborder="0" width="100%" height="100%" allowfullscreen></iframe></p>
 
 <ol>
@@ -87,9 +87,10 @@
 <ul>
   <li>A guaranteed uber is the last roll with 11 or 15 rolls in a guaranteed event.</li>
   <li>Even if you rolled an uber as the last roll, if it's not rolled in a guaranteed event, it's not a guaranteed uber.</li>
+  <li>An uber from platinum or legend event is not a guaranteed uber.</li>
 </ul>
 
-<%= header(2, 'Read the guaranteed tracks') %>
+<%= header(2, 'Reading the guaranteed tracks') %>
 <ul>
   <li>Ubers listed on the guaranteed column are the guaranteed ubers.</li>
   <li>Guaranteed ubers will only be displayed if we're looking at a guaranteed event.</li>
@@ -130,24 +131,26 @@
 <%= header(2, 'Switching tracks') %>
 <ul>
   <li>
-    There are two cases that you would switch between the tracks:
+    There are two cases that you will switch between the tracks:
     <ol>
       <li>
-        Perform guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.
+        Performing guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.
       </li>
       <li>
         Rolling a potentially <a href="#consecutive-duplicated-rare-cats">consecutive duplicated rare cat</a>.
       </li>
     </ol>
   </li>
-  <li>Beside that you always stay on the same track, regardless you're seeing it as track A or B. See <a href="#tracks-perspective">Tracks perspective</a> for details about perspective.</li>
-  <li>We already see an example switching from A to B above, let's see an example switching from B to A.</li>
-  <li>Due to the offset, we jump from 1B to <strong>12A</strong>. See <a href="#guaranteed-rolls-are-half-rolls">Guaranteed rolls are half rolls (to be written)</a></li>
+  <li>
+    Beside that you always stay on the same track, regardless you're seeing it
+    as track A or B. <a href="#tracks-are-perspective">Tracks are perspective</a>.
+  </li>
+  <li>Here's an example switching from B to A.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 1, true) %>
 
-<%= header(2, 'Tracks perspective') %>
+<%= header(2, 'Tracks are perspective') %>
 <ul>
   <li>Track A or B is purely perspective. You're always on track A, and the other track is the alternative track.</li>
   <li>To observe the perspective, let's look at this example. Suppose we click on <strong>2B rare cat</strong>'s cell, highlighting the rolls:</li>
@@ -234,6 +237,9 @@
 <%= header(1, 'Glossary') %>
 <ul>
   <li>Seed</li>
+  <li>Gacha (with an id)</li>
+  <li>Event (with a date range and a gacha)</li>
+  <li>Banner (a gacha family sharing the same series id)</li>
 </ul>
 
 <%= header(1, 'Table notes') %>
