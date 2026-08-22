@@ -16,8 +16,17 @@
   },
   {
     "action": "block",
-    "description": "Block bots accessing /",
+    "description": "AI Crawl Control - Block AI bots by User Agent",
     "enabled": true,
+    "expression": "(http.request.uri.path ne \"/robots.txt\" and ((http.user_agent contains \"meta-externalagent\") or (http.user_agent contains \"Applebot\")))",
+    "position": {
+      "index": 1
+    }
+  },
+  {
+    "action": "block",
+    "description": "Block bots accessing /",
+    "enabled": false,
     "expression": "(cf.client.bot and http.request.uri.path eq \"/\" and http.request.uri.query contains \"seed=\")"
   }
 ]

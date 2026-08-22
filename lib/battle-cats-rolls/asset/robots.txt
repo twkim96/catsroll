@@ -1,4 +1,5 @@
-User-agent: *
+User-agent: meta-externalagent
+User-agent: Applebot
 Disallow: /
 Allow: /cats
 Allow: /help
