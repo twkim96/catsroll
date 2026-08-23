@@ -14,6 +14,7 @@
 require_relative 'route'
 require_relative 'request'
 require_relative 'cat'
+require_relative 'event_series_names'
 
 require 'jellyfish'
 require 'json'
@@ -42,6 +43,7 @@ module BattleCatsRolls
     # Lightweight region event list for client-side region switching: lets the
     # browser repopulate the event dropdown without a full page reload.
     # GET /events.json?lang=...  -> { current, upcoming:[{value,label}], past:[..] }
+    # GET /events.json?lang=...&catalog=series -> { series:[{id,label,count,aliases}] }
     get '/events.json' do
       route = Route.new(Request.new(env))
 
@@ -49,7 +51,14 @@ module BattleCatsRolls
         'content-type' => 'application/json; charset=utf-8',
         'cache-control' => 'public, max-age=600'
 
-      body JSON.generate(TrackApi.events_data(route))
+      data =
+        if route.request.params_coercion_with_nil('catalog', :to_s) == 'series'
+          TrackApi.event_series_data(route)
+        else
+          TrackApi.events_data(route)
+        end
+
+      body JSON.generate(data)
     end
 
     def self.events_data route
@@ -63,6 +72,67 @@ module BattleCatsRolls
         upcoming: route.upcoming_events.map(&to_opt),
         past: route.past_events.reverse.map(&to_opt)
       }
+    end
+
+    def self.event_series_data route
+      series = {}
+
+      route.ball.events.each_value do |info|
+        series_id = route.ball.gacha.dig(info['id'], 'series_id')
+        next unless series_id
+
+        name = event_filter_name(info['name'])
+        item = series[series_id] ||= {
+          id: series_id,
+          label: name,
+          count: 0,
+          aliases: [],
+          latest: info['start_on']
+        }
+        item[:count] += 1
+        item[:aliases] << name unless item[:aliases].include?(name)
+
+        if item[:latest] <= info['start_on']
+          item[:latest] = info['start_on']
+          item[:label] = name
+        end
+      end
+
+      route.ball.gacha.each do |gacha_id, info|
+        series_id = info['series_id']
+        next unless series_id
+
+        name = event_filter_name(info['name'])
+        item = series[series_id] ||= {
+          id: series_id,
+          label: name.empty? ? "Series #{series_id}" : name,
+          count: 0,
+          aliases: [],
+          latest: nil
+        }
+        item[:aliases] << name if !name.empty? && !item[:aliases].include?(name)
+        id_alias = gacha_id.to_s
+        item[:aliases] << id_alias unless item[:aliases].include?(id_alias)
+      end
+
+      {
+        series: series.values.sort_by{ |item| [item[:latest] || Date.new, item[:id]] }.
+          reverse_each.map do |item|
+            if label = EventSeriesNames.korean(item[:id])
+              item[:label] = label
+              item[:aliases].unshift(label) unless item[:aliases].include?(label)
+            end
+            EventSeriesNames.shortcuts(item[:id]).reverse_each do |shortcut|
+              item[:aliases].unshift(shortcut) unless item[:aliases].include?(shortcut)
+            end
+            item.reject{ |key, _| key == :latest }
+          end
+      }
+    end
+
+    def self.event_filter_name name
+      name.to_s.gsub('★확률, 상세 내용은 배너를 클릭!★', '').
+        gsub(/\s+/, ' ').strip
     end
 
     def self.multi_data route
@@ -101,7 +171,8 @@ module BattleCatsRolls
               item = {
                 event: event[:event],
                 label: event[:label],
-                group: event[:group]
+                group: event[:group],
+                series_id: event[:series_id]
               }
               item[:pool] = pool_data_for(ball, event[:event]) if event[:preload]
               item
@@ -285,6 +356,7 @@ module BattleCatsRolls
           group: today <= info['end_on'] ? 'upcoming' : 'past',
           preload: today <= info['end_on'] || event_name == initial_event,
           platinum: info['platinum'],
+          series_id: ball.gacha.dig(info['id'], 'series_id'),
           label: multi_event_label(info)
         }
       end

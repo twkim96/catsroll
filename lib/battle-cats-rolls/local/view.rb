@@ -235,6 +235,18 @@ module BattleCatsRolls
           Digest::MD5.file(File.expand_path(
             '../asset/seed-view-admin.js', __dir__)).hexdigest
       end
+
+      def event_filter_digest
+        @event_filter_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/event-filter.js', __dir__)).hexdigest
+      end
+
+      def event_filter_css_digest
+        @event_filter_css_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/event-filter.css', __dir__)).hexdigest
+      end
     end
 
     prepend LocalView

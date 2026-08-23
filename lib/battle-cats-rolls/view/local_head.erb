@@ -1,4 +1,17 @@
 <script src="/asset/recent-seeds.js?<%= self.class.recent_seeds_digest %>" defer></script>
+<%- if route.path_info == '/multi' -%>
+<script>
+  document.querySelector('meta[name="viewport"]').
+    setAttribute('content', 'width=1200');
+</script>
+<%- end -%>
 <%- if BattleCatsRolls::ExpandCompareSupported -%>
 <script src="/asset/track-compare.js?<%= self.class.track_compare_digest %>" defer></script>
+<%- end -%>
+<%- if route.path_info.match?(%r{\A/(?:seek|multi)?\z}) -%>
+<link href="/asset/event-filter.css?<%= self.class.event_filter_css_digest %>"
+  rel="stylesheet" type="text/css">
+<%- end -%>
+<%- if route.path_info.match?(%r{\A/(?:seek)?\z}) -%>
+<script src="/asset/event-filter.js?<%= self.class.event_filter_digest %>" defer></script>
 <%- end -%>

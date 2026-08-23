@@ -32,7 +32,52 @@
     <button id="multi_add" class="multi-add-row" type="button" aria-label="Add track">+</button>
   </div>
   <div id="multi_notice" class="multi-notice" role="status"></div>
+  <details id="multi_found" class="multi-found">
+    <summary>Found cats</summary>
+    <div id="multi_found_cats" class="multi-found-content"></div>
+  </details>
   <div id="multi_tables" class="multi-tables"></div>
+
+  <dialog id="multi_event_filter_dialog" class="event-filter-dialog"
+    aria-labelledby="multi_event_filter_title">
+    <div class="event-filter-backdrop" data-multi-filter-backdrop
+      aria-hidden="true"></div>
+    <div class="event-filter-panel">
+      <div class="event-filter-header">
+        <h2 id="multi_event_filter_title">시리즈 필터</h2>
+        <button type="button" class="event-filter-close"
+          data-multi-filter-close aria-label="닫기">&times;</button>
+      </div>
+
+      <div class="event-filter-search-wrap">
+        <label for="multi_event_filter_search">시리즈 검색</label>
+        <input id="multi_event_filter_search" type="search"
+          placeholder="이벤트명, 캐릭터명, 시리즈 ID">
+      </div>
+
+      <div class="event-filter-section event-filter-selected-section"
+        role="group" aria-labelledby="multi_event_filter_selected_title">
+        <div class="event-filter-selected-toolbar">
+          <h3 id="multi_event_filter_selected_title">선택한 태그</h3>
+          <button type="button" class="event-filter-reset"
+            data-multi-filter-reset>초기화</button>
+        </div>
+        <div class="event-filter-tags" data-multi-filter-selected></div>
+        <p class="event-filter-empty" data-multi-filter-selected-empty>
+          선택한 필터가 없습니다.</p>
+      </div>
+
+      <div class="event-filter-section event-filter-series-section"
+        role="group" aria-labelledby="multi_event_filter_series_title">
+        <h3 id="multi_event_filter_series_title">시리즈</h3>
+        <p class="event-filter-status" data-multi-filter-status
+          role="status" aria-live="polite">불러오는 중…</p>
+        <div class="event-filter-tags" data-multi-filter-available></div>
+        <p class="event-filter-empty" data-multi-filter-no-results hidden>
+          검색 결과가 없습니다.</p>
+      </div>
+    </div>
+  </dialog>
 
   <script id="multi_track_data" type="application/json"><%= json_script(arg[:multi_data]) %></script>
   <script src="/asset/track-engine.js" defer></script>
@@ -107,7 +152,7 @@
     background: var(--multi-soft);
   }
   .multi-row {
-    grid-template-columns: 1.55rem 4.05rem minmax(19.8rem, 1fr) 3.4rem 6.5rem;
+    grid-template-columns: 1.55rem 1.55rem 4.05rem minmax(18.25rem, 1fr) 3.4rem 6.5rem;
     margin-bottom: .45rem;
     padding: .45rem .35rem .5rem;
     border: 0;
@@ -205,6 +250,25 @@
     height: .95rem;
     stroke: currentColor;
   }
+  .multi-row .multi-filter-button {
+    position: relative;
+    width: 1.35rem;
+    border: 1px solid transparent;
+    color: var(--multi-muted);
+  }
+  .multi-row .multi-filter-button:hover,
+  .multi-row .multi-filter-button.is-active {
+    border-color: var(--multi-accent);
+    background: #eaf2fa;
+    color: var(--multi-accent);
+  }
+  .multi-row .multi-filter-button .event-filter-count {
+    top: -7px;
+    right: -9px;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+  }
   .multi-add-row {
     display: block;
     width: 100%;
@@ -237,6 +301,83 @@
     outline: 2px solid var(--multi-accent);
     outline-offset: 3px;
     border-radius: 4px;
+  }
+  .multi-found {
+    margin: .2rem 0 .9rem;
+  }
+  .multi-found summary {
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+    width: max-content;
+    margin: 0 0 .4rem;
+    color: var(--multi-muted);
+    cursor: pointer;
+    font-size: .86rem;
+    font-weight: 700;
+    letter-spacing: 0;
+    list-style: none;
+  }
+  .multi-found summary::-webkit-details-marker {
+    display: none;
+  }
+  .multi-found summary::before {
+    display: inline-grid;
+    place-items: center;
+    width: 1.05rem;
+    height: 1.05rem;
+    border: 1px solid var(--multi-line);
+    border-radius: 3px;
+    background: var(--multi-soft-2);
+    color: var(--multi-muted);
+    content: "+";
+    font-size: .9rem;
+    line-height: 1;
+  }
+  .multi-found[open] summary::before {
+    content: "−";
+  }
+  .multi-found summary:focus-visible {
+    outline: 2px solid var(--multi-accent);
+    outline-offset: 3px;
+    border-radius: 3px;
+  }
+  .multi-found-content {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: .55rem .85rem;
+    padding: .65rem .75rem;
+    border: 1px solid var(--multi-line);
+    border-radius: 8px;
+    background: var(--multi-soft-2);
+  }
+  .multi-found-group {
+    min-width: 0;
+  }
+  .multi-found-group h3 {
+    margin: 0 0 .25rem;
+    color: var(--multi-muted);
+    font-size: .76rem;
+    font-weight: 700;
+  }
+  .multi-found-group ul {
+    margin: 0 0 0 1.2rem;
+  }
+  .multi-found-group li {
+    margin: .12rem 0;
+    font-size: .76rem;
+    line-height: 1.35;
+  }
+  .multi-found-group a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .multi-found-empty,
+  .multi-found-loading {
+    margin: 0;
+    color: var(--multi-muted);
+    font-size: .76rem;
   }
   .multi-track-pair {
     display: grid;
@@ -316,27 +457,7 @@
   .multi-cat-switch {
     box-shadow: inset 3px 0 0 var(--multi-accent);
   }
-  @media (max-width: 820px) {
-    .multi-hero {
-      align-items: start;
-      flex-direction: column;
-    }
-    .multi-summary {
-      text-align: left;
-      white-space: normal;
-    }
-    .multi-controls,
-    .multi-row {
-      grid-template-columns: 1fr;
-    }
-    .multi-row button {
-      width: 100%;
-    }
-    .multi-track-pair {
-      grid-template-columns: minmax(0, 1fr);
-    }
-    .multi-track-table {
-      min-width: 0;
-    }
+  .multi-inline-exclusive {
+    background-color: var(--exclusive);
   }
 </style>

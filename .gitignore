@@ -3,6 +3,7 @@
 *.apk
 *.zip
 .DS_Store
+temp/
 /data/**/app/*.tsv
 /extract
 /.env

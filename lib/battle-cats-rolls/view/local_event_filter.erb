@@ -1,0 +1,62 @@
+<% if route.path_info.match?(%r{\A/(?:seek)?\z}) %>
+<template id="event_filter_template">
+  <button type="button" id="event_filter_button" class="event-filter-button"
+    data-event-filter-open
+    aria-haspopup="dialog" aria-controls="event_filter_dialog"
+    title="이벤트 시리즈 필터">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M4 5h16l-6.5 7.2v5.3l-3 1.5v-6.8z"></path>
+    </svg>
+    <span class="event-filter-count"
+      <%= 'hidden' if route.event_series.empty? %>><%= route.event_series.size %></span>
+    <span class="visually-hidden">이벤트 시리즈 필터</span>
+  </button>
+
+  <span id="event_filter_inputs">
+    <% route.event_series.each do |series_id| %>
+    <input type="hidden" name="event_series" value="<%= series_id %>">
+    <% end %>
+  </span>
+
+  <dialog id="event_filter_dialog" class="event-filter-dialog"
+    aria-labelledby="event_filter_title">
+    <div class="event-filter-backdrop" data-event-filter-backdrop
+      aria-hidden="true"></div>
+    <div class="event-filter-panel">
+      <div class="event-filter-header">
+        <h2 id="event_filter_title">시리즈 필터</h2>
+        <button type="button" class="event-filter-close"
+          data-event-filter-close aria-label="닫기">&times;</button>
+      </div>
+
+      <div class="event-filter-search-wrap">
+        <label for="event_filter_search">시리즈 검색</label>
+        <input id="event_filter_search" type="search"
+          placeholder="이벤트명, 캐릭터명, 시리즈 ID">
+      </div>
+
+      <section class="event-filter-section event-filter-selected-section"
+        aria-labelledby="event_filter_selected_title">
+        <div class="event-filter-selected-toolbar">
+          <h3 id="event_filter_selected_title">선택한 태그</h3>
+          <button type="button" class="event-filter-reset"
+            data-event-filter-reset>초기화</button>
+        </div>
+        <div class="event-filter-tags" data-event-filter-selected></div>
+        <p class="event-filter-empty" data-event-filter-selected-empty>
+          선택한 필터가 없습니다.</p>
+      </section>
+
+      <section class="event-filter-section event-filter-series-section"
+        aria-labelledby="event_filter_series_title">
+        <h3 id="event_filter_series_title">시리즈</h3>
+        <p class="event-filter-status" data-event-filter-status
+          role="status" aria-live="polite">불러오는 중…</p>
+        <div class="event-filter-tags" data-event-filter-available></div>
+        <p class="event-filter-empty" data-event-filter-no-results hidden>
+          검색 결과가 없습니다.</p>
+      </section>
+    </div>
+  </dialog>
+</template>
+<% end %>

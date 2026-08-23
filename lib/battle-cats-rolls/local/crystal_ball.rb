@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'set'
+
 module BattleCatsRolls
   module LocalCrystalBallClassMethods
     def deep_dup data
@@ -15,6 +17,15 @@ module BattleCatsRolls
   end
 
   module LocalCrystalBall
+    def each_custom_gacha name_index, series_ids: [], &block
+      return super(name_index, &block) if series_ids.empty?
+
+      selected = series_ids.to_set
+      super(name_index) do |id, name|
+        block.call(id, name) if selected.member?(gacha.dig(id, 'series_id'))
+      end
+    end
+
     def with_cat_names_from source
       copied_data = self.class.deep_dup(data)
 
