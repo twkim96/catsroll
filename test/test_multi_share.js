@@ -69,4 +69,22 @@ assert.strictEqual(codec.fromHash("#unrelated=value"), null);
 assert.strictEqual(codec.normalize({ v: 2, t: [], r: [] }), null,
   "unknown versions fail closed");
 
+const nineRows = Array.from({ length: 9 }, function (_unused, index) {
+  return {
+    lang: "kr",
+    event: "event_" + index,
+    ubers: 0,
+    customName: "banner " + index,
+    customNameAuto: false,
+    seriesIds: []
+  };
+});
+const eightRowPayload = codec.makePayload(Object.assign({}, track, {
+  rows: nineRows
+}), find, 50, track.formIndex);
+assert.strictEqual(eightRowPayload.r.length, 8,
+  "share payload keeps up to eight banners");
+assert.strictEqual(codec.trackState(eightRowPayload).rows[7].event, "event_7",
+  "the eighth banner survives a share round trip");
+
 console.log("multi-share: ok");

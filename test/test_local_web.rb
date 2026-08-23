@@ -63,6 +63,7 @@ describe 'local web features' do
       response.body.index('multi_event_filter_series_title'))
 
     payload = JSON.parse(response.body[/<script id="multi_track_data"[^>]*>(.*?)<\/script>/m, 1])
+    expect(payload.dig('limits', 'rows')).eq 8
     event = payload.dig('regions', 'kr', 'events').find{ |item| item['series_id'] }
     expect(event['series_id']).eq(
       BattleCatsRolls::Route.ball_kr.gacha.dig(
@@ -151,8 +152,13 @@ describe 'local web features' do
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
     expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
     expect(multi_track.include?('getShareState: function')).eq true
+    expect(multi_track.include?('outputs.length > 5')).eq true
+    expect(multi_track.include?('scrollTrackPage')).eq true
+    expect(multi_track.include?('data-multi-track-scroll')).eq true
     expect(multi_track.include?('MultiShareApp.setTrackState')).eq true
+    expect(multi_share.include?('payload.r.slice(0, 8)')).eq true
     expect(multi_share.include?('url.hash = "share=" + codec.encode(payload)')).eq true
+    expect(table_share.include?('fullTableWidth')).eq true
     expect(multi_share.include?('공유 링크로 연 임시 세션')).eq false
   end
 

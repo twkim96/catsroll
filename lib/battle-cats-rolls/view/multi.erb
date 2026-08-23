@@ -525,20 +525,83 @@
     margin-top: .9rem;
   }
   .multi-track-section {
+    width: auto;
+    max-width: none;
+    margin-right: 0;
+    margin-left: 0;
     min-width: 0;
   }
-  .multi-track-section h2 {
+  .multi-track-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem;
+    min-height: 1.4rem;
     margin: 0 0 .4rem;
+  }
+  .multi-track-section h2 {
+    margin: 0;
     color: var(--multi-muted);
     font-size: .86rem;
     font-weight: 700;
     letter-spacing: 0;
+  }
+  .multi-track-scroll-controls {
+    display: flex;
+    align-items: center;
+    gap: .28rem;
+    color: var(--multi-muted);
+    font-size: .7rem;
+    font-weight: 700;
+  }
+  .multi-track-scroll-controls span {
+    min-width: 4.6rem;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .multi-track-scroll-controls button {
+    display: inline-grid;
+    place-items: center;
+    width: 1.35rem;
+    min-height: 1.35rem;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--multi-line);
+    border-radius: 5px;
+    background: var(--multi-soft-2);
+    color: var(--multi-muted);
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .multi-track-scroll-controls button:hover,
+  .multi-track-scroll-controls button:focus-visible {
+    border-color: var(--multi-accent);
+    color: var(--multi-accent);
+  }
+  .multi-track-scroll-controls button:disabled {
+    border-color: var(--multi-line);
+    color: var(--multi-line);
+    cursor: default;
   }
   .multi-table-wrap {
     overflow: visible;
     border: 1px solid var(--multi-line);
     border-radius: 8px;
     background: var(--multi-panel);
+  }
+  #multi_tables.is-track-paged {
+    overflow-x: clip;
+  }
+  .multi-track-pair.is-scrollable {
+    position: relative;
+    width: calc(200% + .85rem);
+    max-width: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    transition: transform .24s ease;
+    will-change: transform;
+  }
+  .multi-track-pair.is-scrollable .multi-track-section {
+    min-width: 0;
   }
   .multi-track-table {
     width: 100%;

@@ -152,7 +152,7 @@ module BattleCatsRolls
           name: route.name
         },
         limits: {
-          rows: 5,
+          rows: 8,
           count: 500
         },
         last_cats: multi_last_cats(route.name),
