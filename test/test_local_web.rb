@@ -40,6 +40,7 @@ describe 'local web features' do
     expect(response.body.include?('value="balance">균형')).eq true
     expect(response.body.include?('id="multi_find_title"')).eq false
     expect(response.body.include?('id="multi_find_targets" type="text" readonly')).eq true
+    expect(response.body.include?('aria-label="선택한 캐릭터 필터 열기"')).eq true
     expect(response.body.index('id="multi_find_filter"')).lt(
       response.body.index('id="multi_find_optimization"'))
     expect(response.body.include?('Use ticket')).eq false
@@ -146,6 +147,8 @@ describe 'local web features' do
     expect(recent_seeds.include?('isSharedMultiSession()')).eq true
     expect(multi_find.include?('getDestination: function')).eq true
     expect(multi_find.include?('getShareSettings: function')).eq true
+    expect(multi_find.include?('els.targets.addEventListener("click", openFilterDialog)')).eq true
+    expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
     expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
     expect(multi_track.include?('getShareState: function')).eq true
     expect(multi_track.include?('MultiShareApp.setTrackState')).eq true
