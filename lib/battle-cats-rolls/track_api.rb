@@ -156,6 +156,7 @@ module BattleCatsRolls
           count: 500
         },
         last_cats: multi_last_cats(route.name),
+        find_cats: multi_find_cats(route.name),
         regions: MultiLangs.each_with_object({}) do |lang, result|
           ball = Route.public_send("ball_#{lang}")
           initial_event = route.event if lang == initial_lang
@@ -163,10 +164,20 @@ module BattleCatsRolls
           current = events.find do |event|
             event[:group] == 'upcoming' && !event[:platinum]
           end || events.first
+          series_names = events.each_with_object({}) do |event, names|
+            next unless event[:series_id]
+
+            names[event[:series_id]] ||= event[:series_name]
+          end
 
           result[lang] = {
             label: MultiLabels.fetch(lang),
             current: current&.fetch(:event, nil),
+            tickets: {
+              platinum: multi_ticket_pool(ball, 'platinum'),
+              legend: multi_ticket_pool(ball, 'legend')
+            }.compact,
+            series_names: series_names,
             events: events.map do |event|
               item = {
                 event: event[:event],
@@ -200,6 +211,71 @@ module BattleCatsRolls
         }.compact
         result[id] = names if names.any?
       end
+    end
+
+    def self.multi_find_cats name_index
+      balls = {
+        'kr' => Route.ball_kr,
+        'jp' => raw_ball_jp
+      }
+      ids = balls.values.flat_map{ |ball| ball.cats.keys }.uniq.sort
+
+      ids.filter_map do |id|
+        kr_info = balls['kr'].cats[id]
+        jp_info = balls['jp'].cats[id]
+        rarity = kr_info&.dig('rarity') || jp_info&.dig('rarity')
+        next unless [Cat::Supa, Cat::Uber, Cat::Legend].include?(rarity)
+
+        kr = pick_cat_name(kr_info, name_index)
+        jp = pick_cat_name(jp_info, name_index)
+        {
+          id: id,
+          rarity: rarity,
+          name: kr || jp || id.to_s,
+          kr: kr,
+          jp: jp
+        }.compact
+      end
+    end
+
+    # Find uses one concrete default pool for each special ticket resource.
+    # A selected special-ticket event can override this default in the client,
+    # while platinum and legend tickets retain independent usage limits.
+    def self.multi_ticket_pool ball, kind
+      today = Date.today
+      candidates = ball.events.select do |_, info|
+        info['platinum'] == kind
+      end
+      active = candidates.select do |_, info|
+        info['start_on'] <= today && today <= info['end_on']
+      end
+      started = candidates.select do |_, info|
+        info['start_on'] <= today
+      end
+      selected = active.max_by{ |_, info| info['start_on'] } ||
+        started.max_by{ |_, info| info['start_on'] } ||
+        candidates.min_by{ |_, info| info['start_on'] }
+      return unless selected
+
+      event_name, info = selected
+      {
+        event: event_name,
+        kind: kind,
+        label: multi_event_label(info),
+        start_on: info['start_on'].to_s,
+        end_on: info['end_on'].to_s,
+        pool: compact_find_pool_data(ball, event_name)
+      }
+    end
+
+    def self.compact_find_pool_data ball, event_name
+      data = pool_data_for(ball, event_name)
+      return data unless data[:exist]
+
+      data.merge(
+        cats: data[:cats].transform_values do |cat|
+          {name: cat[:name], rarity: cat[:rarity]}
+        end)
     end
 
     def self.pick_cat_name info, index
@@ -351,12 +427,18 @@ module BattleCatsRolls
       end
 
       entries.map do |event_name, info|
+        series_id = ball.gacha.dig(info['id'], 'series_id')
+        series_name = EventSeriesNames.korean(series_id)
+        series_name ||= event_filter_name(ball.gacha.dig(info['id'], 'name'))
+        series_name = event_filter_name(info['name']) if series_name.empty?
+
         {
           event: event_name,
           group: today <= info['end_on'] ? 'upcoming' : 'past',
           preload: today <= info['end_on'] || event_name == initial_event,
           platinum: info['platinum'],
-          series_id: ball.gacha.dig(info['id'], 'series_id'),
+          series_id: series_id,
+          series_name: series_name,
           label: multi_event_label(info)
         }
       end

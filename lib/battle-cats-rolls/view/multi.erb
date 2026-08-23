@@ -1,4 +1,7 @@
-<section id="multi-track-app" class="multi-track-app">
+<section id="multi-track-app" class="multi-track-app"
+  data-find-worker="/asset/multi-find-worker.js?<%= self.class.multi_find_worker_digest %>"
+  data-find-engine="/asset/multi-find-engine.js?<%= self.class.multi_find_engine_digest %>">
+  <link rel="stylesheet" href="/asset/multi-find.css?<%= self.class.multi_find_css_digest %>">
   <div class="multi-hero">
     <div>
       <p class="multi-kicker">Local multi</p>
@@ -6,6 +9,10 @@
     </div>
     <div class="multi-summary" id="multi_summary"></div>
   </div>
+
+  <p id="multi_share_notice" class="multi-share-notice" hidden>
+    공유 링크로 연 임시 세션입니다. 여기서 수정해도 기존 브라우저 설정은 바뀌지 않습니다.
+  </p>
 
   <form id="multi_form" class="multi-controls" autocomplete="off">
     <label>
@@ -27,6 +34,47 @@
     <button id="multi_apply" class="multi-apply" type="submit">Apply</button>
   </form>
 
+  <section class="multi-find-panel" aria-label="경로 검색 설정">
+    <div class="multi-find-controls">
+      <button id="multi_find_filter" class="multi-find-filter" type="button"
+        aria-haspopup="dialog" aria-controls="multi_find_dialog"
+        aria-label="목표 캐릭터 선택">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+          <path d="M4 5h16l-6.5 7.2v5.3l-3 1.5v-6.8z"></path>
+        </svg>
+        <span id="multi_find_count" hidden>0</span>
+      </button>
+      <label>
+        <span>검색 기준</span>
+        <select id="multi_find_optimization">
+          <option value="cost" selected>최소코스트</option>
+          <option value="distance">최단거리</option>
+          <option value="balance">균형</option>
+        </select>
+      </label>
+      <label>
+        <span>확뽑 최대</span>
+        <input id="multi_find_max_guaranteed" type="number" min="0" max="20" value="0">
+      </label>
+      <label>
+        <span>플래티넘 최대</span>
+        <input id="multi_find_max_platinum" type="number" min="0" max="99" value="0">
+      </label>
+      <label>
+        <span>레전드티켓 최대</span>
+        <input id="multi_find_max_legend_ticket" type="number" min="0" max="99" value="0">
+      </label>
+      <label class="multi-find-summary-field">
+        <span>선택한 캐릭터</span>
+        <input id="multi_find_targets" type="text" readonly
+          placeholder="필터 버튼에서 캐릭터를 선택하세요.">
+      </label>
+      <button id="multi_find_help" class="multi-find-help" type="button"
+        aria-haspopup="dialog" aria-controls="multi_find_help_dialog"
+        aria-label="검색 기준 설명">?</button>
+    </div>
+  </section>
+
   <div class="multi-list-panel">
     <div id="multi_rows" class="multi-rows"></div>
     <button id="multi_add" class="multi-add-row" type="button" aria-label="Add track">+</button>
@@ -36,7 +84,80 @@
     <summary>Found cats</summary>
     <div id="multi_found_cats" class="multi-found-content"></div>
   </details>
+  <section id="multi_find_result" class="multi-find-result" hidden
+    aria-live="polite"></section>
   <div id="multi_tables" class="multi-tables"></div>
+
+  <dialog id="multi_find_dialog" class="event-filter-dialog multi-find-dialog"
+    aria-labelledby="multi_find_dialog_title">
+    <div class="event-filter-backdrop" data-multi-find-backdrop
+      aria-hidden="true"></div>
+    <div class="event-filter-panel">
+      <div class="event-filter-header">
+        <h2 id="multi_find_dialog_title">목표 캐릭터</h2>
+        <button type="button" class="event-filter-close"
+          data-multi-find-close aria-label="닫기">&times;</button>
+      </div>
+
+      <div class="event-filter-search-wrap">
+        <label for="multi_find_search">캐릭터 검색</label>
+        <input id="multi_find_search" type="search"
+          placeholder="한국어명, 일본어명, 캐릭터 ID">
+      </div>
+
+      <div class="event-filter-section event-filter-selected-section"
+        role="group" aria-labelledby="multi_find_selected_title">
+        <div class="event-filter-selected-toolbar">
+          <h3 id="multi_find_selected_title">선택한 캐릭터</h3>
+          <button type="button" class="event-filter-reset"
+            data-multi-find-reset>초기화</button>
+        </div>
+        <div id="multi_find_selected" class="multi-find-selected"></div>
+        <p id="multi_find_selected_empty" class="event-filter-empty">
+          선택한 캐릭터가 없습니다.</p>
+      </div>
+
+      <div class="event-filter-section event-filter-series-section"
+        role="group" aria-labelledby="multi_find_available_title">
+        <h3 id="multi_find_available_title">캐릭터</h3>
+        <p class="multi-find-catalog-note">
+          현재 선택한 이벤트에 포함된 캐릭터가 먼저 표시됩니다.</p>
+        <div id="multi_find_available" class="event-filter-tags"></div>
+        <p id="multi_find_no_results" class="event-filter-empty" hidden>
+          검색 결과가 없습니다.</p>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="multi_find_help_dialog"
+    class="event-filter-dialog multi-find-help-dialog"
+    aria-labelledby="multi_find_help_title">
+    <div class="event-filter-backdrop" data-multi-find-help-backdrop
+      aria-hidden="true"></div>
+    <div class="event-filter-panel">
+      <div class="event-filter-header">
+        <h2 id="multi_find_help_title">검색 기준 안내</h2>
+        <button type="button" class="event-filter-close"
+          data-multi-find-help-close aria-label="닫기">&times;</button>
+      </div>
+      <div class="multi-find-help-content">
+        <dl>
+          <dt>최소코스트</dt>
+          <dd>목표를 모두 얻는 경로 중 유료 재화 점수가 가장 낮은 경로입니다.
+            동점이면 더 짧은 경로를 선택합니다.</dd>
+          <dt>최단거리</dt>
+          <dd>목표를 모두 얻은 뒤의 도착 위치가 가장 앞선 경로입니다.
+            동점이면 코스트가 낮은 경로를 선택합니다.</dd>
+          <dt>균형</dt>
+          <dd>최소코스트를 기준으로, 경로에서 얻는 울슈레마다 0.2점,
+            레전드레어마다 2점을 빼서 좋은 고등급 획득을 가볍게 우대합니다.</dd>
+        </dl>
+        <p>기본 점수: 레어티켓 1회 0.03 · 확뽑 1회 1 ·
+          플래티넘/레전드 티켓 1회 2</p>
+        <p>각 최대 횟수는 검색 중 넘을 수 없는 사용 한도입니다.</p>
+      </div>
+    </div>
+  </dialog>
 
   <dialog id="multi_event_filter_dialog" class="event-filter-dialog"
     aria-labelledby="multi_event_filter_title">
@@ -81,7 +202,9 @@
 
   <script id="multi_track_data" type="application/json"><%= json_script(arg[:multi_data]) %></script>
   <script src="/asset/track-engine.js" defer></script>
+  <script src="/asset/multi-share.js?<%= self.class.multi_share_digest %>" defer></script>
   <script src="/asset/multi-track.js?<%= self.class.multi_track_digest %>" defer></script>
+  <script src="/asset/multi-find.js?<%= self.class.multi_find_digest %>" defer></script>
 </section>
 
 <style>
@@ -108,6 +231,17 @@
     margin: .9rem 0 1.05rem;
     padding: .15rem 0 .8rem;
     border-bottom: 1px solid var(--multi-line);
+  }
+  .multi-share-notice {
+    box-sizing: border-box;
+    margin: 0 0 1rem;
+    padding: .65rem .8rem;
+    border: 1px solid #9dc5ee;
+    border-radius: 7px;
+    background: #eef6ff;
+    color: #244d7e;
+    font-size: .82rem;
+    font-weight: 600;
   }
   .multi-kicker {
     margin: 0 0 .2rem;
@@ -152,7 +286,7 @@
     background: var(--multi-soft);
   }
   .multi-row {
-    grid-template-columns: 1.55rem 1.55rem 4.05rem minmax(18.25rem, 1fr) 3.4rem 6.5rem;
+    grid-template-columns: 1.55rem 1.55rem 4.05rem minmax(16rem, 1fr) 3.4rem 11rem;
     margin-bottom: .45rem;
     padding: .45rem .35rem .5rem;
     border: 0;
@@ -224,7 +358,8 @@
   .multi-last-hint {
     overflow-wrap: anywhere;
   }
-  .multi-row select[data-field="event"] {
+  .multi-row select[data-field="event"],
+  .multi-row input[data-field="customName"] {
     font-size: .85rem;
   }
   .multi-row button {

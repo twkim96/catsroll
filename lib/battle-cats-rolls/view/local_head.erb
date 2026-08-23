@@ -1,3 +1,7 @@
+<%- if ['/', '/multi'].include?(route.path_info) -%>
+<script src="/asset/table-share.js?<%= self.class.table_share_digest %>"
+  data-html2canvas="/asset/html2canvas.min.js?1.4.1" defer></script>
+<%- end -%>
 <script src="/asset/recent-seeds.js?<%= self.class.recent_seeds_digest %>" defer></script>
 <%- if route.path_info == '/multi' -%>
 <script>

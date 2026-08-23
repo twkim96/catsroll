@@ -218,6 +218,12 @@ module BattleCatsRolls
             '../asset/recent-seeds.js', __dir__)).hexdigest
       end
 
+      def table_share_digest
+        @table_share_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/table-share.js', __dir__)).hexdigest
+      end
+
       def track_compare_digest
         @track_compare_digest ||=
           Digest::MD5.file(File.expand_path(
@@ -228,6 +234,36 @@ module BattleCatsRolls
         @multi_track_digest ||=
           Digest::MD5.file(File.expand_path(
             '../asset/multi-track.js', __dir__)).hexdigest
+      end
+
+      def multi_share_digest
+        @multi_share_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-share.js', __dir__)).hexdigest
+      end
+
+      def multi_find_digest
+        @multi_find_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-find.js', __dir__)).hexdigest
+      end
+
+      def multi_find_engine_digest
+        @multi_find_engine_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-find-engine.js', __dir__)).hexdigest
+      end
+
+      def multi_find_worker_digest
+        @multi_find_worker_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-find-worker.js', __dir__)).hexdigest
+      end
+
+      def multi_find_css_digest
+        @multi_find_css_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-find.css', __dir__)).hexdigest
       end
 
       def seed_view_admin_digest

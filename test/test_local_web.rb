@@ -26,8 +26,36 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_found"')).eq true
     expect(response.body.include?('id="multi_found_cats"')).eq true
     expect(response.body.include?('id="multi_event_filter_dialog"')).eq true
+    expect(response.body.include?('id="multi_find_dialog"')).eq true
+    expect(response.body.include?('id="multi_find_result"')).eq true
+    expect(response.body.include?('id="multi_find_optimization"')).eq true
+    expect(response.body.include?('id="multi_find_max_guaranteed"')).eq true
+    expect(response.body.include?('id="multi_find_max_platinum"')).eq true
+    expect(response.body.include?('id="multi_find_max_legend_ticket"')).eq true
+    expect(response.body.include?('id="multi_find_help"')).eq true
+    expect(response.body.include?('id="multi_find_help_dialog"')).eq true
+    expect(response.body.include?('검색 기준 안내')).eq true
+    expect(response.body.include?('value="cost" selected>최소코스트')).eq true
+    expect(response.body.include?('value="distance">최단거리')).eq true
+    expect(response.body.include?('value="balance">균형')).eq true
+    expect(response.body.include?('id="multi_find_title"')).eq false
+    expect(response.body.include?('id="multi_find_targets" type="text" readonly')).eq true
+    expect(response.body.index('id="multi_find_filter"')).lt(
+      response.body.index('id="multi_find_optimization"'))
+    expect(response.body.include?('Use ticket')).eq false
+    expect(response.body.include?('1A부터 목표 캐릭터 최적 경로 계산')).eq false
+    expect(response.body.include?('/asset/multi-find.js?')).eq true
+    expect(response.body.include?('/asset/multi-share.js?')).eq true
+    expect(response.body.include?('/asset/multi-find.css?')).eq true
+    expect(response.body.include?('/asset/table-share.js?')).eq true
+    expect(response.body.include?(
+      'data-html2canvas="/asset/html2canvas.min.js?1.4.1"')).eq true
+    expect(response.body.include?('data-find-worker="/asset/multi-find-worker.js?')).eq true
+    expect(response.body.include?('data-find-engine="/asset/multi-find-engine.js?')).eq true
     expect(response.body.include?('/asset/event-filter.css?')).eq true
     expect(response.body.include?('@media (max-width: 820px)')).eq false
+    expect(response.body.include?('id="multi_share_notice"')).eq true
+    expect(response.body.include?('기존 브라우저 설정은 바뀌지 않습니다')).eq true
     expect(response.body.index('multi_event_filter_selected_title')).lt(
       response.body.index('data-multi-filter-reset'))
     expect(response.body.index('data-multi-filter-reset')).lt(
@@ -38,6 +66,91 @@ describe 'local web features' do
     expect(event['series_id']).eq(
       BattleCatsRolls::Route.ball_kr.gacha.dig(
         BattleCatsRolls::Route.ball_kr.events[event['event']]['id'], 'series_id'))
+    named_event = payload.dig('regions', 'kr', 'events').find do |item|
+      item['series_id'] == 6
+    end
+    expect(payload.dig('regions', 'kr', 'series_names', '6')).
+      eq '초고대 전설의 용사 울트라 소울즈'
+    expect(named_event.key?('series_name')).eq false
+
+    find_cats = payload['find_cats']
+    expect(find_cats.empty?).eq false
+    expect(find_cats.all?{ |cat| [3, 4, 5].include?(cat['rarity']) }).eq true
+    expect(find_cats.find{ |cat| cat['id'] == 564 }['name']).eq '아쿠아슈터 사키'
+
+    ticket = payload.dig('regions', 'kr', 'tickets', 'platinum')
+    expect(ticket['kind']).eq 'platinum'
+    expect(ticket.dig('pool', 'platinum')).eq 'platinum'
+    expect(ticket.dig('pool', 'rates', 'uber')).eq 10_000
+    expect(ticket.dig('pool', 'rates', 'legend')).eq 0
+
+    ball = BattleCatsRolls::Route.ball_kr
+    today = Date.today
+    candidates = ball.events.select{ |_, info| info['platinum'] == 'platinum' }
+    active = candidates.select do |_, info|
+      info['start_on'] <= today && today <= info['end_on']
+    end
+    started = candidates.select{ |_, info| info['start_on'] <= today }
+    expected_ticket = active.max_by{ |_, info| info['start_on'] } ||
+      started.max_by{ |_, info| info['start_on'] } ||
+      candidates.min_by{ |_, info| info['start_on'] }
+    expect(ticket['event']).eq expected_ticket.first
+
+    legend_ticket = payload.dig('regions', 'kr', 'tickets', 'legend')
+    expect(legend_ticket['kind']).eq 'legend'
+    expect(legend_ticket.dig('pool', 'platinum')).eq 'legend'
+    expect(legend_ticket.dig('pool', 'rates', 'uber')).eq 9_500
+    expect(legend_ticket.dig('pool', 'rates', 'legend')).eq 500
+    legend_candidates = ball.events.select{ |_, info| info['platinum'] == 'legend' }
+    legend_active = legend_candidates.select do |_, info|
+      info['start_on'] <= today && today <= info['end_on']
+    end
+    legend_started = legend_candidates.select do |_, info|
+      info['start_on'] <= today
+    end
+    expected_legend_ticket = legend_active.max_by{ |_, info| info['start_on'] } ||
+      legend_started.max_by{ |_, info| info['start_on'] } ||
+      legend_candidates.min_by{ |_, info| info['start_on'] }
+    expect(legend_ticket['event']).eq expected_legend_ticket.first
+  end
+
+  would 'load table sharing on the regular track page' do
+    response = Rack::MockRequest.new(web).get('/?lang=kr')
+
+    expect(response.status).eq 200
+    expect(response.body.include?('/asset/table-share.js?')).eq true
+    expect(response.body.include?(
+      'data-html2canvas="/asset/html2canvas.min.js?1.4.1"')).eq true
+  end
+
+  would 'offer PNG and isolated URL sharing behind an editable row limit modal' do
+    table_share = File.read('lib/battle-cats-rolls/asset/table-share.js')
+    recent_seeds = File.read('lib/battle-cats-rolls/asset/recent-seeds.js')
+    multi_find = File.read('lib/battle-cats-rolls/asset/multi-find.js')
+    multi_track = File.read('lib/battle-cats-rolls/asset/multi-track.js')
+    multi_share = File.read('lib/battle-cats-rolls/asset/multi-share.js')
+
+    expect(table_share.include?('몇 번까지 포함할까요?')).eq true
+    expect(table_share.include?('Find route 도착 위치')).eq true
+    expect(table_share.include?('left:-100000px')).eq true
+    expect(table_share.include?('trimMultiRows')).eq true
+    expect(table_share.include?('open: open')).eq true
+    expect(table_share.include?('data-table-share-action="save"')).eq true
+    expect(table_share.include?('data-table-share-action="copy"')).eq true
+    expect(table_share.include?('data-table-share-action="link"')).eq true
+    expect(table_share.include?('PNG 복사')).eq true
+    expect(table_share.include?('navigator.share')).eq true
+    expect(table_share.include?('>취소</button>')).eq false
+    expect(recent_seeds.include?('share.textContent = "공유"')).eq true
+    expect(recent_seeds.include?('CatsRollTableShare.open()')).eq true
+    expect(recent_seeds.include?('isSharedMultiSession()')).eq true
+    expect(multi_find.include?('getDestination: function')).eq true
+    expect(multi_find.include?('getShareSettings: function')).eq true
+    expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
+    expect(multi_track.include?('getShareState: function')).eq true
+    expect(multi_track.include?('MultiShareApp.setTrackState')).eq true
+    expect(multi_share.include?('url.hash = "share=" + codec.encode(payload)')).eq true
+    expect(multi_share.include?('공유 링크로 연 임시 세션')).eq false
   end
 
   would 'render the TSV admin controls on seed view stats' do
@@ -48,6 +161,7 @@ describe 'local web features' do
     expect(response.body.include?('/asset/seed-view-admin.js?')).eq true
     expect(response.body.include?('top: 42%')).eq true
     expect(response.body.include?('transform: translate(-50%, -50%)')).eq true
+    expect(response.body.include?('/asset/table-share.js?')).eq false
   end
 
   would 'render the event filter modal and its reset control' do
