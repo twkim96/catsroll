@@ -169,6 +169,7 @@ describe 'local web features' do
 
   would 'render the event filter modal and its reset control' do
     response = Rack::MockRequest.new(BattleCatsRolls::Server).get('/?lang=kr')
+    event_filter_css = File.read('lib/battle-cats-rolls/asset/event-filter.css')
 
     expect(response.status).eq 200
     expect(response.body.include?('id="event_filter_button"')).eq true
@@ -181,6 +182,10 @@ describe 'local web features' do
       response.body.index('data-event-filter-reset'))
     expect(response.body.index('data-event-filter-reset')).lt(
       response.body.index('event_filter_series_title'))
+    expect(event_filter_css.include?('align-items: flex-start')).eq true
+    expect(event_filter_css.include?(
+      'padding: max(9dvh, calc((100dvh - 760px) / 2)) 0')).eq true
+    expect(event_filter_css.include?('padding: 6dvh 0')).eq true
   end
 
   would 'show every event from the selected series without event pagination' do

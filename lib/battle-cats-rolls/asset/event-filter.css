@@ -49,14 +49,15 @@
   position: fixed;
   inset: 0;
   display: none;
-  align-items: center;
+  box-sizing: border-box;
+  align-items: flex-start;
   justify-content: center;
   width: 100%;
   height: 100dvh;
   max-width: none;
   max-height: none;
   margin: 0;
-  padding: 0;
+  padding: max(9dvh, calc((100dvh - 760px) / 2)) 0;
   border: 0;
   background: transparent;
 }
@@ -170,6 +171,7 @@
   .event-filter-dialog {
     width: 100%;
     max-height: none;
+    padding: 6dvh 0;
   }
   .event-filter-panel { width: calc(100% - 12px); max-height: 88dvh; }
   .event-filter-header,
