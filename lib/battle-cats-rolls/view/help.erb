@@ -12,12 +12,43 @@
   <li>The simulator is able to use the seed to calculate all the future rolling results.</li>
 </ol>
 
+<%= header(1, 'Frequently asked questions') %>
+<ol>
+  <li>
+    Will I ever need to find my seed a second time?
+    <ul>
+      <li>No, <strong>you only need to find your seed once</strong>. Your seed will never change without rolling, and you can <a href="#advancing-the-tracks">update it as you roll</a> in the game.</li>
+      <li>All events including platinum and legend ones share the same seed.</li>
+    </ul>
+  </li>
+  <li>
+    Can I go backward in my track?
+    <ul>
+      <li>No, your tracks can only be advanced forward.</li>
+    </ul>
+  </li>
+  <li><a href="#switching-tracks">How can I switch to the other track</a>?</li>
+  <li>
+    When will my tracks shuffle, or seed reset?
+    <ul>
+      <li><strong>Your tracks and seed will never shuffle or reset</strong>. Your tracks will only change when you select a different event, and the same banner comes in the future are different events.</li>
+      <li>The ubers in the uber positions can change when a new uber is added to the banner. Likewise, the legends in the legend positions can change when the banner has multiple legends.</li>
+    </ul>
+  </li>
+  <li>
+    Why the color sometimes doesn't match with the cat's rarity?
+    <ul>
+      <li>Colors are fixed at the positions to help you discover across events, and they're not meant to indicate the rarity of the cats. To also indicate the rarity of the cats, use <a href="#advanced-highlighting">advanced highlighting.</a></li>
+    </ul>
+  </li>
+</ol>
+
 <%= header(1, 'How to use') %>
 <p class="section">
   First, you'll want to find your current seed. Watch the video or read the text explanation.
 </p>
 
-<%= header(2, %Q{<a href="#{route.seek_uri}">Seek the seed</a>}) %>
+<%= header(2, %Q{<a href="#{route.seek_uri}">Seeking the seed</a>}) %>
 <p style="width: 640px; height: 360px"><iframe src="https://streamable.com/s/02nrn/pmxcpt" frameborder="0" width="100%" height="100%" allowfullscreen></iframe></p>
 
 <ol>
@@ -29,39 +60,39 @@
   </li>
 </ol>
 
-<%= header(2, 'Read the tracks') %>
+<%= header(2, 'Reading the tracks') %>
 <ul>
-  <li>Using the link, you'll see a table looks like below.</li>
+  <li>Using the link from the seek result, you'll see a table looks like below.</li>
   <li>Suppose you start at <strong>1A</strong>, then your next roll with rare ticket or cat food will be the cat located in 1A. It's a rare cat (<strong>1A rare cat</strong>) in this case.</li>
   <li>Your next roll will be located at <strong>2A</strong>, which is a super rare cat (<span class="supa">2A supa cat</span>).</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].mark_next_position(arg[:help].read_the_tracks) %>
 
-<%= header(2, 'Highlight rolls') %>
+<%= header(2, 'Highlighting rolls') %>
 <ul>
   <li>You can click on the cells, and it'll highlight the cats you'll roll out.</li>
   <li>Suppose we click on <span class="supa">2A supa cat</span>'s cell, and 2A + 3A will be <span class="picked">highlighted</span> in light grey.</li>
-  <li><strong>3A rare cat</strong> will also be <span class="next_position">highlighted</span> in zebra, indicating your next position after the rolls.</li>
+  <li><strong>3A rare cat</strong> will also be <span class="next_position">highlighted</span> in stripes, indicating your next position after the rolls.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].read_the_tracks, 2, 0) %>
 
-<%= header(2, 'Advance the tracks') %>
+<%= header(2, 'Advancing the tracks') %>
 <ul>
   <li>You can click on the cat's name, which will simulate that you rolled to that cat.</li>
   <li>Following the above example, let's click on the cat's name at 2A (i.e. <span class="supa">2A supa cat</span>) to simulate that you rolled to that cat. This will lead you to a table looks like below.</li>
-  <li>You can see that you advanced two rows. Previously <strong>3A rare cat</strong> was located at 3A, <span class="next_position">highlighted</span> in zebra, now it's located at 1A.</li>
+  <li>You can see that you advanced two rows. Previously <strong>3A rare cat</strong> was located at 3A, <span class="next_position">highlighted</span> in stripes, now it's located at 1A.</li>
   <li>Your new next roll will be <strong>3A rare cat</strong> located at <strong>1A</strong>.</li>
   <li>You can see that the other track will also advance, meaning that you can only pick one in the same row.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].mark_next_position(arg[:help].advance_the_tracks) %>
 
-<%= header(2, "Look up cat's data") %>
+<%= header(2, "Looking up cat's data") %>
 <ul>
   <li>You can click on <strong>🐾</strong> beside the cat's name, which will show you the cat's data.</li>
-  <li>If <strong>🐾</strong> isn't showing, click on the cat's name instead.</li>
+  <li>If <strong>🐾</strong> isn't showing up, click on the cat's name instead.</li>
 </ul>
 <%= erb :table, cats: arg[:help].lookup_cat_data %>
 
@@ -77,27 +108,204 @@
 <ul>
   <li>A guaranteed uber is the last roll with 11 or 15 rolls in a guaranteed event.</li>
   <li>Even if you rolled an uber as the last roll, if it's not rolled in a guaranteed event, it's not a guaranteed uber.</li>
+  <li>An uber from platinum or legend event is not a guaranteed uber.</li>
 </ul>
 
-<%= header(2, 'Read the guaranteed tracks') %>
+<%= header(2, 'Reading the guaranteed tracks') %>
 <ul>
   <li>Ubers listed on the guaranteed column are the guaranteed ubers.</li>
   <li>Guaranteed ubers will only be displayed if we're looking at a guaranteed event.</li>
-  <li>Here if you make 11 guaranteed rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong>, totally 11 cats.</li>
+  <li>Here if you make 11 guaranteed rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong> (1AG), totally 11 cats.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].mark_next_position(arg[:help].guaranteed_tracks) %>
 
-<%= header(2, 'Highlight guaranteed rolls') %>
+<%= header(2, 'Highlighting guaranteed rolls') %>
 <ul>
   <li>You can also click on the guaranteed cells, and all the cats you'll roll out will be highlighted.</li>
-  <li>Here we click on <strong>1A guaranteed uber</strong>'s cell, and 1A ~ 10A + 1A guaranteed uber are <span class="picked_consecutively">highlighted</span> in dark grey.</li>
-  <li><strong>11B</strong> will also be <span class="next_position">highlighted</span> in zebra, indicating your next position after the 11 rolls.</li>
+  <li>Here we click on <strong>1A guaranteed uber</strong>'s cell, and 1A ~ 10A + 1A guaranteed uber (1AG) are <span class="picked_consecutively">highlighted</span> in dark grey.</li>
+  <li><strong>11B</strong> will also be <span class="next_position">highlighted</span> in stripes, indicating your next position after the 11 rolls.</li>
   <li>This is also indicated on the 1A guaranteed uber's cell, shown as <em>-&gt; 11B</em>. Here we jump from 1A to 11B.</li>
-  <li>This will lead to the next topic: <a href="#switch-tracks">Switch tracks</a>.</li>
+  <li>This will lead to the next topic: <a href="#switching-tracks">Switching tracks</a>.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 0, true) %>
+
+<%= header(2, 'Switching tracks') %>
+<ul>
+  <li>
+    There are two cases that you will switch between the tracks:
+    <ol>
+      <li>
+        Performing guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.
+      </li>
+      <li>
+        Rolling a potentially <a href="#consecutive-duplicated-rare-cats">consecutive duplicated rare cat</a>.
+      </li>
+    </ol>
+  </li>
+  <li>
+    Beside that you always stay on the same track, regardless you're seeing it
+    as track A or B. <a href="#tracks-are-perspective">Tracks are perspective</a>.
+  </li>
+  <li>Here's an example switching from B to A.</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 1, true) %>
+
+<%= header(2, 'Tracks are perspective') %>
+<ul>
+  <li>Track A or B is purely perspective. You're always on track A, and the other track is the alternative track.</li>
+  <li>To observe the perspective, let's look at this example. Suppose we click on <strong>2B rare cat</strong>'s cell, highlighting the rolls:</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].read_the_tracks, 2, 1) %>
+
+<ul>
+  <li>And then we click on <strong>2B rare cat</strong>'s name to roll to that position.</li>
+  <li>We'll see that now the previous track B swapped to A, and A swapped to B.</li>
+  <li>You're staying on the same track, because the next roll is still <span class="uber">3B uber cat</span> and so on, but the perspective is changed and swapped.</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].mark_next_position(arg[:help].swap_the_tracks) %>
+
+<%= header(2, 'Consecutive duplicated rare cats') %>
+<ul>
+  <li>
+    The game does not allow you to get two consecutive duplicated rare cats
+    in a row. Whenever you could be getting a consecutive duplicated rare cat,
+    instead of giving you that, the game will instead make an additional
+    half roll, to roll another rare cat for you.
+  </li>
+  <li>
+    As a result, <strong>it'll move you to the other track</strong> upon
+    hitting into a consecutive duplicated rare cat, and you'll get a different
+    rare cat which is different than the previous one you got, based on the
+    result of this additional half roll.
+  </li>
+  <li>
+    The reason you'll switch to the other track is exactly the same as rolling
+    a guaranteed uber cat, that it'll make a half roll, and
+    <a href="#switching-track-is-the-effect-of-making-a-half-roll">switching track is the effect of making a half roll</a>.
+  </li>
+  <li>Let's look at an example where we have a consecutive duplicated rare cat at <strong>4A</strong>, a Tin Cat can turn into a <strong>Pogo Cat</strong>.</li>
+  <li>Assuming you're clicking on the cell for 4A, highlighting the path toward it.</li>
+  <li>You'll see that Pogo Cat was highlighted rather than the Tin Cat, and your next position will jump to <strong>5B</strong> instead of 5A.</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].dupe_rare_tracks, 4, 0) %>
+
+<%= header(2, 'Bouncing with consecutive duplicated rare cats') %>
+<ul>
+  <li>
+    It is not very common but it's possible that you could immediately get
+    another duplicated rare cat right after you switched to the other track.
+  </li>
+  <li>
+    When this happens, as you would expect, the same mechanism will kick in
+    and you would get another re-rolled rare cat and switch the track again.
+  </li>
+  <li>
+    Here's an example showing 3A -&gt; 4AR (4A re-rolled) -&gt;
+    5BR (5B re-rolled) -&gt; 7A
+  </li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].bouncing_tracks, 4, 0) %>
+
+<%= header(2, 'Not necessarily a consecutive duplicated rare cat') %>
+<ul>
+  <li>
+    Did you notice that in the above example, while 4B and 5B are different
+    rare cats, the track still shows a re-rolled cat at 5B? That's used
+    when you're coming from 4AR, but what if you're coming from 4B?
+  </li>
+  <li>
+    Remember again that the game will only re-roll a rare cat for you
+    if and only if you could get a consecutive duplicated rare cat.
+    It is not depending on the tracks themselves. Those are not fixed.
+    It's fully depending on what exactly was the last cat you got,
+    <a href="#hidden-track-switches-between-events"><strong>even across the events</strong></a>!
+  </li>
+  <li>
+    Here's an example showing you coming from 4B so 5B is not a consecutive
+    duplicated rare cat, therefore you'll go through it without switching to
+    the other track.
+  </li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].go_straight_tracks, 7, 1) %>
+
+<%= header(2, 'Skipping with a platinum or legend ticket') %>
+<ul>
+  <li>
+    Remember again that the game will only re-roll a rare cat for you
+    if and only if you could get a consecutive duplicated rare cat.
+  </li>
+  <li>
+    What if you get an uber or legend in place of one of the consecutive
+    duplicated rare cats, at 3A or 4A? You will avoid getting consecutive
+    duplicated rare cats, therefore you will not switch to the other track.
+  </li>
+  <li>Example that we got Nekoluga at 3A with a platinum ticket, replacing the original Tin Cat, and we will not switch:</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].dodge_dupes_3a, 4, 0) %>
+
+<ul>
+  <li>Example that we got Marauder Cat at 4A with a platinum ticket, replacing the original Tin Cat, and we will not switch:</li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].dodge_dupes_4a, 4, 0) %>
+
+<%= header(2, 'Guaranteed uber for the consecutive duplicated rare cats') %>
+<ul></ul>
+
+<%= header(2, 'Hidden track switches between events') %>
+<ul></ul>
+
+<%= header(2, 'Marking the last cat to detect consecutive duplicated rare cats between events') %>
+<ul></ul>
+
+<%= header(2, 'Switching track is the effect of making a half roll') %>
+<ul>
+  <li>
+    For each regular rolls, or a roll of cat, the game will roll the
+    dice (seed) twice, once for deciding the rarity, and once for
+    deciding which cat for that rarity.
+  </li>
+  <li>
+    The game will only roll the dice (seed) once when it's rolling a
+    guaranteed uber, or when it's replacing your duplicated rare cat for
+    another rare cat.
+  </li>
+  <li>
+    In summary, this means:
+    <ul>
+      <li>A roll of cat = a roll of rarity + a roll of which cat (2 rolls of the seed)</li>
+      <li>A roll of guaranteed = a roll of which cat (1 roll of the seed)</li>
+      <li>A roll of replacing a dupe rare cat = a roll of another rare cat (1 roll of the seed)</li>
+    </ul>
+  </li>
+  <li>With this in mind, we can also say that a guaranteed roll is a half roll (of cat).</li>
+  <li>
+    We switch to the other track when the game makes a half roll
+    (or an odd number of half rolls when there are
+    <a href="#increased-rates-with-repeated-cats">increased rates with repeated cats</a>).
+  </li>
+  <li>Let's look at examples for both tracks A and B.</li>
+  <li>
+    For track A, we jump from 1A to 11B (1 + 10.5 = 11.5), and given that track B is 0.5 roll ahead,
+    11.5A = 11B.
+  </li>
+  <li>
+    Here's an example switching from B to A, and for the same offset that 1B
+    is actually 1.5A, we jump from 1B to <strong>12A</strong>
+    (1.5 + 10.5 = 12).
+  </li>
+</ul>
+
+<%= erb :table, cats: arg[:help].pick(arg[:help].pick(arg[:help].guaranteed_tracks, 1, 0, true), 1, 1, true) %>
 
 <%= header(2, 'Marking the next position') %>
 <ul>
@@ -117,80 +325,10 @@
   </li>
 </ul>
 
-<%= header(2, 'Switch tracks') %>
-<ul>
-  <li>Switching tracks will happen whenever you made any guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.</li>
-  <li>Beside that you always stay on the same track, regardless you're seeing it as track A or B. See <a href="#tracks-perspective">Tracks perspective</a> for details about perspective.</li>
-  <li>We already see an example switching from A to B above, let's see an example switching from B to A.</li>
-  <li>Due to the offset, we jump from 1B to <strong>12A</strong>.</li>
-</ul>
-
-<%= erb :table, cats: arg[:help].pick(arg[:help].guaranteed_tracks, 1, 1, true) %>
-
-<%= header(2, 'Tracks perspective') %>
-<ul>
-  <li>Track A or B is purely perspective. You're always on track A, and the other track is the alternative track.</li>
-  <li>To observe the perspective, let's look at this example. Suppose we click on <strong>2B rare cat</strong>'s cell, highlighting the rolls:</li>
-</ul>
-
-<%= erb :table, cats: arg[:help].pick(arg[:help].read_the_tracks, 2, 1) %>
-
-<ul>
-  <li>And then we click on <strong>2B rare cat</strong>'s name to roll to that position.</li>
-  <li>We'll see that now the previous track B swapped to A, and A swapped to B.</li>
-  <li>You're staying on the same track, because the next roll is still <span class="uber">3B uber cat</span> and so on, but the perspective is changed and swapped.</li>
-</ul>
-
-<%= erb :table, cats: arg[:help].mark_next_position(arg[:help].swap_the_tracks) %>
-
-<%= header(2, 'Consecutive duplicated rare cats') %>
-<ul>
-  <li>
-    When there are consecutive duplicated rare cats in a row:
-    <ul>
-      <li>
-        Before 8.5-, the game will just shift the second rare cat you'll get,
-        avoiding consecutive duplicated rare cats. For example, suppose the
-        game rolled two Tin Cats in a row, the second Tin Cat will be changed
-        to Rocker Cat. You can predict the change by subtracting one to the
-        original slot code, like Tin Cat (slot 9) becomes Rocker Cat (slot 8).
-        Check <a href="#read-the-details">Read the details</a> to understand
-        what is a slot code.
-      </li>
-      <li>
-        <strong>After 8.6+</strong>, the game will instead consume the seed
-        again to roll another rare cat for you. As a result,
-        <strong>it'll move you to the other track</strong> upon hitting into a
-        consecutive duplicated rare cat. The reason you'll switch the track is
-        exactly the same as rolling a guaranteed uber cat, that it'll consume
-        the seed once, moving you half way forward, resulting track switch.
-      </li>
-    </ul>
-  </li>
-  <li>Let's look at an example for <strong>8.6+</strong>, where we have a consecutive duplicated rare cat at <strong>4A</strong>, a Tin Cat can turn into a <strong>Pogo Cat</strong>.</li>
-  <li>Assuming you're clicking on the cell for 4A, highlighting the path toward it.</li>
-  <li>You'll see that Pogo Cat was highlighted rather than the Tin Cat, and your next position will jump to <strong>5B</strong> instead of 5A.</li>
-</ul>
-
-<%= erb :table, cats: arg[:help].pick(arg[:help].dupe_rare_tracks, 4, 0) %>
-
-<%= header(3, 'Bouncing with consecutive duplicated rare cats') %>
-<ul></ul>
-
-<%= erb :table, cats: arg[:help].pick(arg[:help].bouncing_tracks, 4, 0) %>
-
-<%= header(3, 'Not necessarily a consecutive duplicated rare cat') %>
-<ul></ul>
-
-<%= erb :table, cats: arg[:help].pick(arg[:help].go_straight_tracks, 7, 1) %>
-
-<%= header(3, 'Skipping with a platinum ticket') %>
-<ul></ul>
-
-<%= header(3, 'Guaranteed uber for the consecutive duplicated rare cats?') %>
-<ul></ul>
-
 <%= header(2, 'Find specific cat') %>
+<ul></ul>
+
+<%= header(2, 'Advanced highlighting') %>
 <ul></ul>
 
 <%= header(2, 'Simulate guaranteed') %>
@@ -199,21 +337,21 @@
 <%= header(2, 'Add future ubers') %>
 <ul></ul>
 
+<%= header(2, 'Customized events') %>
+<ul></ul>
+
+<%= header(2, 'Increased rates with repeated cats') %>
+<ul></ul>
+
 <%= header(2, 'Read the details') %>
-<ul></ul>
-
-<%= header(2, 'Higher chances with repeated cats') %>
-<ul></ul>
-
-<%= header(1, 'How this works') %>
-<ul></ul>
-
-<%= header(1, 'How this was implemented') %>
 <ul></ul>
 
 <%= header(1, 'Glossary') %>
 <ul>
   <li>Seed</li>
+  <li>Gacha (with an id)</li>
+  <li>Event (with a date range and a gacha)</li>
+  <li>Banner (a gacha family sharing the same series id)</li>
 </ul>
 
 <%= header(1, 'Table notes') %>

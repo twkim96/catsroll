@@ -2,7 +2,7 @@
 
 * Add an advanced filter for forms. Useful to find all cats having ultra form
 * Add an advanced filter for having talents, and/or ultra talents
-* Add an advanced filter for banners/families
+* Add a separate filter for banners/families based on series id
 * Show surge duration
 * Show knockback distance
 * Show slow speed (7.5 r/s or 0.5 p/f)
@@ -14,9 +14,6 @@
 
 ## Bugs
 
-* Links with outdated platinum banners cannot be displayed.
-  We don't show outdated platinum banners in the drop down menu, but the
-  links should still work.
 * If there's a non-existing cat in a gacha, for now we show nothing because
   tracking can't be done due to missing rarity data. However, it'll be useful
   to show the gacha data so we know it's not just an empty gacha but a gacha
@@ -37,9 +34,9 @@
 
 ## Features and utilities
 
-* Add rarity indicator when slot rarity and cat rarity doesn't match
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
+* Add a dropdown menu for filtering events based on series id
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.

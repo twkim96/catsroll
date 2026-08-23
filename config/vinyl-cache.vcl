@@ -13,11 +13,6 @@ sub vcl_recv {
         set req.http.Cache-Control = "max-age=600";
         unset req.http.Cookie;
     }
-
-    if (req.http.referer &&
-        req.http.referer ~ "\b(t\.co|twitter\.com|x\.com|facebook\.com|youtube\.com)\b") {
-        return (pass);
-    }
 }
 
 sub vcl_backend_response {
