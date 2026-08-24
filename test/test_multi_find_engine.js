@@ -265,8 +265,8 @@ result = search({
 assert.strictEqual(result.status, "success");
 assert.strictEqual(result.baseCost, 1);
 assert.strictEqual(result.uberDraws, 1);
-assert.strictEqual(result.balanceCredit, 0.2);
-assert.strictEqual(result.cost, 0.8);
+assert.strictEqual(result.balanceCredit, 0.14);
+assert.strictEqual(result.cost, 0.86);
 
 const legendTargetPool = pool({
   rates: {rare: 0, supa: 0, uber: 0, legend: 10000},

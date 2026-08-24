@@ -60,7 +60,7 @@
         <select id="multi_find_optimization">
           <option value="cost" selected>최소코스트</option>
           <option value="distance">최단거리</option>
-          <option value="balance">균형</option>
+          <option value="balance">탐욕</option>
         </select>
       </label>
       <label>
@@ -117,7 +117,7 @@
           placeholder="플랜명을 입력하세요" autocomplete="off">
       </label>
       <div class="multi-plan-summary">
-        <span class="multi-plan-label">선택 울슈레·레레</span>
+        <span class="multi-plan-label">선택 슈레·울슈레·레레</span>
         <button id="multi_plan_selected_cats" type="button"
           class="multi-plan-summary-output is-empty"
           aria-haspopup="dialog" aria-controls="multi_plan_cats_dialog"
@@ -193,8 +193,8 @@
           <dt>최단거리</dt>
           <dd>목표를 모두 얻은 뒤의 도착 위치가 가장 앞선 경로입니다.
             동점이면 코스트가 낮은 경로를 선택합니다.</dd>
-          <dt>균형</dt>
-          <dd>최소코스트를 기준으로, 경로에서 얻는 울슈레마다 0.2점,
+          <dt>탐욕</dt>
+          <dd>최소코스트를 기준으로, 경로에서 얻는 울슈레마다 0.14점,
             레전드레어마다 2점을 빼서 좋은 고등급 획득을 가볍게 우대합니다.</dd>
         </dl>
         <p>기본 점수: 레어티켓 1회 0.02 · 확뽑 1회 1 ·
@@ -249,8 +249,16 @@
       <div class="multi-plan-cats-content">
         <div id="multi_plan_cats_list" class="multi-plan-cats-list"></div>
         <p id="multi_plan_cats_empty" class="multi-plan-cats-empty">
-          선택된 울슈레·레전드레어가 없습니다.</p>
+          선택된 비정규 슈퍼레어·울슈레·레전드레어가 없습니다.</p>
       </div>
+      <details id="multi_plan_log" class="multi-plan-log">
+        <summary>로그 <span id="multi_plan_log_count" hidden></span></summary>
+        <div class="multi-plan-log-content">
+          <ol id="multi_plan_log_list" class="multi-plan-log-list"></ol>
+          <p id="multi_plan_log_empty" class="multi-plan-log-empty">
+            특이사항이 없습니다.</p>
+        </div>
+      </details>
     </div>
   </dialog>
 

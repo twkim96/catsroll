@@ -91,6 +91,12 @@ assert.strictEqual(plans.summarizeCats([
   { id: 303, name: "슈퍼레어", rarity: 3 }
 ]), "가시루가 ×2, 레전드 냥코",
 "uber and legend selections are counted while other rarities are ignored");
+assert.strictEqual(plans.summarizeCats([
+  { id: 101, name: "가시루가", rarity: 4 },
+  { id: 303, name: "한정 슈퍼레어", rarity: 3 },
+  { id: 304, name: "정규 슈퍼레어", rarity: 3 }
+], [303]), "가시루가, 한정 슈퍼레어",
+"only Find-eligible non-regular super rares join the plan summary");
 assert.deepStrictEqual(plans.catSummaryEntries([
   { id: 101, name: "가시루가", rarity: 4 },
   { id: 101, name: "가시루가", rarity: 4, guaranteed: true },
@@ -239,6 +245,13 @@ assert.deepStrictEqual(plans.routeResourceUsage(
     { column: 0, position: "1A", kind: "guaranteed" }
   ]), { guaranteedPulls: 1, specialTickets: 0 },
 "guaranteed draws are reported separately from special tickets");
+assert.deepStrictEqual(plans.planLogEntries(
+  routeSnapshot([unsafePool]), guaranteedRoute, [
+    { column: 0, position: "1A", kind: "guaranteed" }
+  ], true), [
+    "Find route · 완료",
+    "1A · 배너 1 · 확정뽑기 → 11B"
+  ], "the expandable plan log reports Find completion and guaranteed travel");
 
 const guaranteedContinuation = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([safePool]), [
@@ -283,6 +296,12 @@ assert.strictEqual(rerollRoute.valid, true);
 assert.deepStrictEqual(rerollRoute.destinations, [
   { column: 0, position: "6B", kind: "reroll" }
 ], "choosing the R line marks its next-track destination");
+assert.deepStrictEqual(plans.planLogEntries(
+  routeSnapshot([unsafePool]), rerollRoute, [
+    { column: 0, position: "5A", kind: "reroll" }
+  ], false), [
+    "5A · 배너 1 · R 열변경 → 6B"
+  ], "the plan log identifies a selected rare-duplicate track switch");
 
 const guaranteedVariantEngine = Object.assign({}, fakeRouteEngine, {
   simulateGuaranteed(pool, seed, offset, lastRareId) {
@@ -407,6 +426,13 @@ assert.deepStrictEqual(plans.routeResourceUsage(
     { column: 0, position: "10A", kind: "regular" }
   ]), { guaranteedPulls: 0, specialTickets: 1 },
 "an explicitly selected platinum draw consumes one special ticket");
+assert.deepStrictEqual(plans.planLogEntries(
+  routeSnapshot([unsafePool, specialPool]), explicitlySelectedSpecial, [
+    { column: 1, position: "5A", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ], false), [
+    "5A · 배너 2 · 플래티넘 티켓 사용"
+  ], "the plan log distinguishes a manually selected platinum ticket");
 assert.strictEqual(plans.planProgressSummary(
   routeSnapshot([unsafePool, specialPool]), {
     valid: true,

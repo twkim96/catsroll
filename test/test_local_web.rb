@@ -46,6 +46,8 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_plan_dialog"')).eq true
     expect(response.body.include?('id="multi_plan_cats_dialog"')).eq true
     expect(response.body.include?('id="multi_plan_cats_list"')).eq true
+    expect(response.body.include?('id="multi_plan_log"')).eq true
+    expect(response.body.include?('id="multi_plan_log_list"')).eq true
     expect(response.body.include?('id="multi_plan_info_name"')).eq true
     expect(response.body.include?('id="multi_plan_info_status"')).eq true
     expect(response.body.include?('id="multi_plan_info_reset"')).eq true
@@ -65,7 +67,8 @@ describe 'local web features' do
     expect(response.body.include?('검색 기준 안내')).eq true
     expect(response.body.include?('value="cost" selected>최소코스트')).eq true
     expect(response.body.include?('value="distance">최단거리')).eq true
-    expect(response.body.include?('value="balance">균형')).eq true
+    expect(response.body.include?('value="balance">탐욕')).eq true
+    expect(response.body.include?('울슈레마다 0.14점')).eq true
     expect(response.body.include?('id="multi_find_title"')).eq false
     expect(response.body.include?('id="multi_find_targets" type="text" readonly')).eq true
     expect(response.body.include?('aria-label="선택한 캐릭터 필터 열기"')).eq true
@@ -202,6 +205,8 @@ describe 'local web features' do
     expect(recent_seeds.include?('isSharedMultiSession()')).eq true
     expect(recent_seeds.include?('plan.id = "recent-seeds-plan"')).eq true
     expect(recent_seeds.include?('plan.textContent = "플랜"')).eq true
+    expect(recent_seeds.include?('bottom:20vh')).eq true
+    expect(recent_seeds.include?('.recent-seeds-plan[hidden]')).eq true
     expect(recent_seeds.include?('MultiPlanApp.openInfo()')).eq true
     expect(multi_find.include?('getDestination: function')).eq true
     expect(multi_find.include?('getShareSettings: function')).eq true
@@ -252,7 +257,11 @@ describe 'local web features' do
     expect(multi_plan.include?('openInfo: openSelectedCatsDialog')).eq true
     expect(multi_plan.include?('multi_plan_info_status')).eq true
     expect(multi_plan.include?('getTargetIds')).eq true
+    expect(multi_plan.include?('getNonRegularSuperRareIds')).eq true
+    expect(multi_plan.include?('planLogEntries')).eq true
     expect(multi_plan.include?('openSelectedCatsDialog')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cat-tag.is-supa')).eq true
+    expect(multi_plan_css.include?('.multi-plan-log summary')).eq true
     expect(multi_plan.include?(
       'els.reset.addEventListener("click", requestPlanReset)')).eq true
     expect(multi_plan.include?('저장된 플랜은 변경되지 않았습니다')).eq true
