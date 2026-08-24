@@ -411,6 +411,9 @@ h1, h2, h3, h4, h5, h6 {
 .legend_fest a, .legend a,
 .major_legend_fest a, .major_legend a { color: #d8a56f; }
 
+.attack { background-color: lavender; }
+.triggered_attack { background-color: pink; }
+
 .navigate { cursor: help; }
 .pick { cursor: cell; }
 .picked,
