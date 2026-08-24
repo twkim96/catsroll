@@ -2807,9 +2807,9 @@ cats:
         minmax: [[5, 50], [60, 60]]
         ultra: 1
   197:
-    name: [キャットマンダディ, キャットマンダーク, キャットマンライジング]
-    desc: ["紫外線を完全に遮断する特殊スーツを華麗に着こなす\n昼ドラの英雄は決して知られてはならない闇の顔をもつ\nエイリアンと浮いてる敵に超ダメージを与える(範囲攻撃)", "夜に怪人へと姿を変えキャットシティの平和を守る英雄\nマダムたちに求められるサイン攻めには弱い\nエイリアンと天使に超ダメージを与える(範囲攻撃)", "映画デビューを目指しスーツを魔改造した超怪人\n不純な心をエネルギーに変えて悪を滅ぼす\nエイリアンと古代種に超ダメージを与える(範囲攻撃)"]
-    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}]
+    name: [キャットマンダディ, キャットマンダーク, キャットマンライジング, キャットマンフォーエバー]
+    desc: ["紫外線を完全に遮断する特殊スーツを華麗に着こなす\n昼ドラの英雄は決して知られてはならない闇の顔をもつ\nエイリアンと浮いてる敵に超ダメージを与える(範囲攻撃)", "夜に怪人へと姿を変えキャットシティの平和を守る英雄\nマダムたちに求められるサイン攻めには弱い\nエイリアンと天使に超ダメージを与える(範囲攻撃)", "映画デビューを目指しスーツを魔改造した超怪人\n不純な心をエネルギーに変えて悪を滅ぼす\nエイリアンと古代種に超ダメージを与える(範囲攻撃)", "主演映画のメガヒットで世界進出を果たした究極超人\n莫大な興行収入を投入し金の力で暗黒街を浄化する\n天使とエイリアンと古代種に超ダメージを与える(範囲攻撃)"]
+    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}, {health: 5250, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 1850, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 185}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -3940,6 +3940,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      wave_mini:
+        max_level: 10
+        minmax: [[28, 100], [2, 2]]
+      immune_surge: {}
+      immune_freeze: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   304:
     name: [ネコ屋台, ネコの宅配便, ネコ給食当番]
     desc: ["イカゲソたっぷりの斬新な明石焼き風たこ焼きで\n一攫千金を狙う脱サラネコ\n天使に超ダメージを与える\nネコヤタイ", "着払いで神さまからの荷物を届ける神対応ネコ\n荷物の中身について口外すると天罰が下るらしい\n天使に超ダメージを与える\nネコノタクハイビン", "徹底的な手洗いと除菌の技術を身に着け\n給食をクラスまで届けるプロの運び屋\n天使に超ダメージを与え、たまに呪う\nネコキュウショクトウバン"]
@@ -4862,7 +4874,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   370:
     name: [ネコセイバー, 英霊ネコセイバー, ネコセイバーオルタ]
-    desc: ["ある夜に見た金髪の剣士に憧れるネコ\nまずは体力づくり、と竹刀を振り回す\n浮いてる敵にめっぽう強い", "誰かから召喚されることを夢見るネコ剣士\n冷静沈着と本人は思っている\n浮いてる敵にめっぽう強い\nエイレイネコセイバー", "いつまでたっても召喚されないので\nカッとなって黒く染めてみたネコ剣士\n浮いてる敵にめっぽう強く、全妨害効果を無効にする"]
+    desc: ["ある夜に見た金髪の剣士に憧れるネコ\nまずは体力づくり、と竹刀を振り回す\n浮いてる敵にめっぽう強い", "誰かから召喚されることを夢見るネコ剣士\n冷静沈着と本人は思っている\n浮いてる敵にめっぽう強い\nエイレイネコセイバー", "いつまでたっても召喚されないので\nカッとなって黒く染めてみたネコ剣士\n浮いてる敵にめっぽう強く、複数の妨害を無効にする"]
     stat: [{health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 1140, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, immune_knockback: 1, immune_warp: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, immune_curse: 1, immune_wave: 1, attack_duration: 40}]
     rarity: 1
     max_level: 50
@@ -5506,6 +5518,14 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      surge:
+        max_level: 10
+        minmax: [[5, 50], [1, 1], [1600, 1600], [1200, 1200]]
+        ultra: 1
+      immune_surge:
+        ultra: 1
+      colossus_slayer:
+        ultra: 1
   441:
     name: [ベベ, なぎさ＆ネコ, 円環の理の使者なぎさ]
     desc: ["魔法少女まどか☆マギカから参戦！\nチーズが大好物で、マミの相棒的な存在\nエイリアンとゾンビの攻撃力を一瞬下げる(範囲攻撃)", "魔法少女まどか☆マギカから参戦！\nまどか達の前に現れた新たな魔法少女\nエイリアンとゾンビの攻撃力を下げる(範囲攻撃)\nナギサアンドネコ", "魔法少女まどか☆マギカから参戦！マスコットの\nような姿と魔法少女の姿を併せ持つ円環の理の使者\nエイリアンとゾンビの攻撃力を下げたまに攻撃を無効化\nエンカンノコトワリノシシャナギサ"]
@@ -5613,7 +5633,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   456:
     name: [ワンダー・モモコ, キューティー・モモコ, スターライト・モモコ]
-    desc: ["異次元からやってきた宇宙をまたにかける刑事\nラブリー光線銃で宇宙の悪人を一網打尽！(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙戦艦に乗ってワルモノ退治をするセクシー刑事\n一撃必殺のキューティービームで星ごと爆破(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙をまたにかけるパーリー刑事。押収したガジェットで\n夜な夜なスペースディスコを盛り上げる。超生命体特効を持ち\n赤い敵と黒い敵と天使の動きを止める波動を放つ(範囲攻撃)\nスターライト・モモコ"]
+    desc: ["異次元からやってきた宇宙をまたにかける刑事\nラブリー光線銃で宇宙の悪人を一網打尽！(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙戦艦に乗ってワルモノ退治をするセクシー刑事\n一撃必殺のキューティービームで星ごと爆破(範囲攻撃)\n赤い敵と黒い敵と天使の動きを止める波動を放つ", "宇宙をまたにかけるパーリー刑事。押収したガジェットで\n夜な夜なスペースディスコを盛り上げる。超生命体特効を持ち\n赤い敵と黒い敵と天使の動きを止める波動を放つ(範囲攻撃)"]
     stat: [{health: 4000, knockbacks: 2, speed: 13, cost: 3000, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 2700, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 60, wave_chance: 100, wave_level: 8, immune_wave: 1, attack_duration: 200}, {health: 4000, knockbacks: 2, speed: 13, cost: 3000, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 2700, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 60, wave_chance: 100, wave_level: 8, immune_wave: 1, attack_duration: 200}, {health: 5200, knockbacks: 2, speed: 13, cost: 2500, production_cooldown: 2000, range: 375, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 28, trigger_effects_0: 1, damage_1: 600, attack_time_1: 55, damage_2: 3500, attack_time_2: 100, against_red: 1, against_black: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 90, colossus_slayer: 1, wave_chance: 100, wave_level: 8, immune_freeze: 1, immune_weaken: 1, immune_wave: 1, attack_duration: 200}]
     rarity: 5
     max_level: 59
@@ -6077,8 +6097,8 @@ cats:
     desc: ["新人ネコに泥棒のアレコレを教える世話好きおやじ\n口は悪いがサングラスの奥につぶらな瞳を隠している\n敵を倒したときにお金を多くもらえる\nオヤジネコテンシュ", "自称、伝説の泥棒団を束ねていたリーダー\nガマトトの脱退直後に膝を痛めて自らも引退\n敵を倒したときにお金を多くもらえる\nオヤジネコゲンエキ"]
     stat: [{health: 500, knockbacks: 5, speed: 8, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}, {health: 500, knockbacks: 5, speed: 16, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}]
     rarity: 1
-    max_level: 50
-    growth: [20, 20, 20, 20, 20]
+    max_level: 55
+    growth: [20, 20, 20, 20, 20, 20]
   506:
     name: [角龍グラディオス, 角龍王グラディオス, 角龍皇帝グラディオス]
     desc: ["天を貫く巨大な矛を携え、地を闊歩する伝説の角龍族\n圧倒的な破壊力で敵を攻撃する(範囲攻撃)\nたまに属性を持たない敵をふっとばして遅くする\nカクリュウグラディオス", "輝ける滅びの光を自らの力に変えた伝説の角龍族\n圧倒的な破壊力で敵を攻撃する(範囲攻撃)\nたまに属性を持たない敵をふっとばして遅くする\nカクリュウオウグラディオス", "龍角山で滅びの光を浴び真の力に目覚めた角龍皇帝\n激しい咆哮で全ての生命を破滅へいざなう(範囲攻撃)\n必ず属性を持たない敵をふっとばして遅くする\nカクリュウコウテイグラディオス"]
@@ -7509,6 +7529,22 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      slow:
+        max_level: 10
+        minmax: [[12, 30]]
+      resistant_freeze:
+        max_level: 10
+        minmax: [[16, 70]]
+      reduce_cost:
+        max_level: 10
+        minmax: [[30, 300]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   657:
     name: ['古びたタマゴ:N001', '謎のタマゴ:N001', ネコはにわ]
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N001」と小さく刻まれているように見えるが…\nフルビタタマゴ", "白いボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\n属性を持たない敵に打たれ強い\nナゾノタマゴ", "にゃんこ軍団の基地の庭から出土したネコ型の埴輪\n考古学的価値が高く、留守番が得意\n属性を持たない敵に打たれ強く、超獣特効を持つ"]
@@ -8021,8 +8057,8 @@ cats:
     desc: ["世界中に散らばったメダルを11年間集め続けるネコ\n安く出品されてないかネットオークションを毎日確認\n必ず動きを一瞬遅くする烈波を放つ\nネコメダルオウ", "世界中に散らばったメダルを探すために11兆円使った王様\n国の予算を使い果たしたことで王座を奪われ放浪中\n必ず動きを一瞬遅くする烈波を放つ\nネコメダルダイオウ"]
     stat: [{health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}, {health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}]
     rarity: 1
-    max_level: 70
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   728:
     name: [ソル・デ・ロカ, ソル・デ・ロカCC]
     desc: ["メタルスラッグシリーズから参戦！\n塔の上で遺跡を守護する謎の存在\n赤、天使、エイリアンに超ダメージを与える(全方位攻撃)", "メタルスラッグシリーズから参戦！\n強烈な青白い炎を吐き、遺跡の侵入者を焼き尽くす\n赤、天使、エイリアンに超ダメージを与える(全方位攻撃)"]
@@ -8066,9 +8102,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   734:
-    name: [鉄籠のペガサ, 鉄籠のペガサν]
-    desc: ["帝国の名だたる公爵家出身の病弱少女\n即断即決で放たれるレーザーはいかなる者も退ける\n召喚能力を持ち、浮いてる敵とゾンビの攻撃力を下げる\nテツカゴノペガサ", "大人の思惑や謀略に心を閉ざし付き従う少女\n外から聞こえる少女たちの声に自由への渇望を抱く\n召喚能力を持ち、浮いてる敵とゾンビの攻撃力を下げる\nテツカゴノペガサニュー"]
-    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}]
+    name: [鉄籠のペガサ, 鉄籠のペガサν, 白籠のペガサν]
+    desc: ["帝国の名だたる公爵家出身の病弱少女\n即断即決で放たれるレーザーはいかなる者も退ける\n召喚能力を持ち、浮いてる敵とゾンビの攻撃力を下げる\nテツカゴノペガサ", "大人の思惑や謀略に心を閉ざし付き従う少女\n外から聞こえる少女たちの声に自由への渇望を抱く\n召喚能力を持ち、浮いてる敵とゾンビの攻撃力を下げる\nテツカゴノペガサニュー", "自由を手にするために戦うことを選んだ少女。揺るぎない\n意志で立ちはだかる全ての障壁を撃ち抜く。召喚能力を持ち\n浮いてる敵とゾンビに超ダメージを与え、攻撃力を下げる\nシロカゴノペガサニュー"]
+    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3960, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, massive_damage: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 876, immune_freeze: 1, attack_duration: 100}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -8371,7 +8407,7 @@ cats:
     desc: ["戦国の世で成り上がることを夢見るネコ\n戦場では真っ先に敵陣に突撃する勇猛さを見せる\n赤い敵と浮いてる敵の動きを必ず止める小波動を放つ\nミナライムシャネコ", "数々の戦で功績を収めて武将まで上り詰めたネコ\n後は振り返らない突撃作戦で味方を置き去りにする\n赤い敵と浮いてる敵の動きを必ず止める小波動を放つ\nブショウネコ"]
     stat: [{health: 100, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 100, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}, {health: 120, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 112, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}]
     rarity: 1
-    max_level: 55
+    max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   778:
     name: [冬将軍・成田甲斐, 冬大将軍・成田甲斐]
@@ -8935,14 +8971,14 @@ cats:
     growth: [20, 20, 20, 20, 20]
   858:
     name: [バリスタにゃんこ, シルバーにゃんこ]
-    desc: ["レンジャー御用達の「喫茶にゃんこ」のマスター\n裏の顔は作戦を練るにゃんこレンジャーの副司令官\n天使にめっぽう強く、たまに渾身の一撃を放つ\nバリスタニャンコ", "タヌキソウルを宿し、にゃんこレンジャー変身！\n「シロガネドリル」で勝利への筋道を示す\n天使にめっぽう強く、たまに渾身の一撃を放つ\nシルバーニャンコ"]
+    desc: ["レンジャー御用達の「喫茶にゃんこ」のマスター\n裏の顔は作戦を練るにゃんこレンジャーの副司令官\n天使にめっぽう強く、たまに渾身の一撃を放つ", "タヌキソウルを宿し、にゃんこレンジャー変身！\n「シロガネドリル」で勝利への筋道を示す\n天使にめっぽう強く、たまに渾身の一撃を放つ"]
     stat: [{health: 1120, knockbacks: 2, speed: 20, cost: 750, production_cooldown: 470, range: 290, width: 320, damage_0: 52, attack_time_0: 1, trigger_effects_0: 1, against_angel: 1, strong: 1, savage_blow_chance: 10, savage_blow_modifier: 200, attack_duration: 10}, {health: 1400, knockbacks: 2, speed: 20, cost: 750, production_cooldown: 470, range: 290, width: 320, damage_0: 65, attack_time_0: 1, trigger_effects_0: 1, against_angel: 1, strong: 1, savage_blow_chance: 10, savage_blow_modifier: 200, attack_duration: 10}]
     rarity: 1
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   859:
     name: [司令官にゃんこ, ゴールドにゃんこ]
-    desc: ["にゃんこレンジャーを率いる才色兼備な司令官\n作戦会議にはリモートで出席。天使と悪魔を\nたまにふっとばし、必ず波動を放つ(範囲攻撃)\nシレイカンニャンコ", "フォックスソウルを宿し、にゃんこレンジャー変身！\n「コガネロッド」に込めた祈りで悪しき力を祓う\n天使と悪魔をたまにふっとばし、必ず波動を放つ(範囲攻撃)\nゴールドニャンコ"]
+    desc: ["にゃんこレンジャーを率いる才色兼備な司令官\n作戦会議にはリモートで出席。天使と悪魔を\nたまにふっとばし、必ず波動を放つ(範囲攻撃)\nシレイカンニャンコ", "フォックスソウルを宿し、にゃんこレンジャー変身！\n「コガネロッド」に込めた祈りで悪しき力を祓う\n天使と悪魔をたまにふっとばし、必ず波動を放つ(範囲攻撃)"]
     stat: [{health: 560, knockbacks: 3, speed: 10, cost: 500, production_cooldown: 510, attack_cooldown: 30, range: 310, width: 320, area_effect: 1, damage_0: 120, attack_time_0: 45, trigger_effects_0: 1, against_angel: 1, against_aku: 1, knockback_chance: 40, dodge_chance: 30, dodge_duration: 60, wave_chance: 100, wave_level: 2, attack_duration: 85}, {health: 700, knockbacks: 3, speed: 10, cost: 500, production_cooldown: 510, attack_cooldown: 30, range: 310, width: 320, area_effect: 1, damage_0: 150, attack_time_0: 45, trigger_effects_0: 1, against_angel: 1, against_aku: 1, knockback_chance: 40, dodge_chance: 30, dodge_duration: 60, wave_chance: 100, wave_level: 2, attack_duration: 85}]
     rarity: 1
     max_level: 50
@@ -8998,21 +9034,21 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   867:
     name: [パックマン, パックマンネコ]
-    desc: ["「パックマン」から参戦！いつも元気でハッピー\nなんでもパクパクと食べるのが大好き！\n赤い敵とゾンビに打たれ強い\nパックマン", "いつも元気でハッピーな黄色くてまるい体のネコ\nネコカンばかりパクパクと食べるのが大好き！\n赤い敵とゾンビに打たれ強い\nパックマンネコ"]
+    desc: ["「パックマン」から参戦！いつも元気でハッピー\nなんでもパクパクと食べるのが大好き！\n赤い敵とゾンビに打たれ強い", "いつも元気でハッピーな黄色くてまるい体のネコ\nネコカンばかりパクパクと食べるのが大好き！\n赤い敵とゾンビに打たれ強い"]
     stat: [{health: 2400, knockbacks: 2, speed: 28, cost: 820, production_cooldown: 300, range: 100, width: 320, damage_0: 28, attack_time_0: 5, trigger_effects_0: 1, against_red: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, attack_duration: 8}, {health: 2400, knockbacks: 2, speed: 28, cost: 820, production_cooldown: 300, range: 100, width: 320, damage_0: 28, attack_time_0: 5, trigger_effects_0: 1, against_red: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, attack_duration: 8}]
     rarity: 1
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   868:
     name: [ネコブリンキー, ネコブリンキーCC]
-    desc: ["すばやいブリンキーになりきる被り物をしたネコ\n見た目は変わっても移動速度はそのまま\nたまにエイリアンの攻撃を無効化する\nネコブリンキー", "ブリンキーの速さに憧れて筋肉を鍛えたネコ\n腕を振ると前よりすばやくなった気がする\nたまにエイリアンの攻撃を無効化する\nネコブリンキーシーシー"]
+    desc: ["すばやいブリンキーになりきる被り物をしたネコ\n見た目は変わっても移動速度はそのまま\nたまにエイリアンの攻撃を無効化する", "ブリンキーの速さに憧れて筋肉を鍛えたネコ\n腕を振ると前よりすばやくなった気がする\nたまにエイリアンの攻撃を無効化する\nネコブリンキーシーシー"]
     stat: [{health: 200, knockbacks: 3, speed: 10, cost: 70, production_cooldown: 110, attack_cooldown: 15, range: 130, width: 320, damage_0: 8, attack_time_0: 8, trigger_effects_0: 1, against_alien: 1, dodge_chance: 10, dodge_duration: 60, attack_duration: 17}, {health: 200, knockbacks: 3, speed: 10, cost: 70, production_cooldown: 110, attack_cooldown: 15, range: 130, width: 320, damage_0: 8, attack_time_0: 8, trigger_effects_0: 1, against_alien: 1, dodge_chance: 10, dodge_duration: 60, attack_duration: 15}]
     rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   869:
     name: [ネコインキー, ネコインキーCC]
-    desc: ["シャイなインキーの被り物をしたタンクネコ\n近付かれるとおじぎで目線をそらす\n爆波によるダメージを無効にする\nネコインキー", "行動が読めないインキーに憧れるネコカベ\n気まぐれで立ったり倒れたりする\n爆波によるダメージを無効にする\nネコインキーシーシー"]
+    desc: ["シャイなインキーの被り物をしたタンクネコ\n近付かれるとおじぎで目線をそらす\n爆波によるダメージを無効にする", "行動が読めないインキーに憧れるネコカベ\n気まぐれで立ったり倒れたりする\n爆波によるダメージを無効にする\nネコインキーシーシー"]
     stat: [{health: 600, knockbacks: 1, speed: 8, cost: 150, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 4, attack_time_0: 8, trigger_effects_0: 1, immune_explosion: 1, attack_duration: 15}, {health: 600, knockbacks: 1, speed: 8, cost: 150, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 4, attack_time_0: 8, trigger_effects_0: 1, immune_explosion: 1, attack_duration: 15}]
     rarity: 1
     max_level: 60
@@ -9033,18 +9069,39 @@ cats:
     growth: [20, 20, 20, 20, 20, 20]
   872:
     name: ['古びたタマゴ:N208', '緑のタマゴ:N208', アサルトザリガニネコ]
-    desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N208」と小さく刻まれているように見えるが…\nフルビタタマゴ", "緑のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\n浮いてる敵と天使に打たれ強い\nミドリノタマゴ", "田んぼや池などの浅い水辺に生息するネコ\nハサミで掴んだ物は決して放さないガッツを見せる\n超獣特効を持ち、浮いてる敵と天使に打たれ強い\nアサルトザリガニネコ"]
+    desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N208」と小さく刻まれているように見えるが…\nフルビタタマゴ", "緑のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\n浮いてる敵と天使に打たれ強い\nミドリノタマゴ", "田んぼや池などの浅い水辺に生息するネコ\nハサミで掴んだ物は決して放さないガッツを見せる\n超獣特効を持ち、浮いてる敵と天使に打たれ強い"]
     stat: [{health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1}, {health: 100, knockbacks: 1, speed: 5, cost: 120, production_cooldown: 100, attack_cooldown: 220, range: 100, width: 320, damage_0: 2, attack_time_0: 32, trigger_effects_0: 1, against_float: 1, against_angel: 1, resistant: 1}, {health: 600, knockbacks: 2, speed: 33, cost: 320, production_cooldown: 220, attack_cooldown: 40, range: 160, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, against_angel: 1, resistant: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, attack_duration: 60}]
     rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   873:
     name: [ジャングルハンタートモエ, ジャングルマスタートモエ]
-    desc: ["潜入任務でジャングルを訪れた忍者娘。甘いバナナの匂いを\n頼りに任務そっちのけで奥地へ突き進む。超生命体特効を持ち\n赤い敵と天使とエイリアンにめっぽう強くたまに動きを止める\nジャングルハンタートモエ", "ジャングル生活を楽しむ忍者娘。食料が充実し\n永住も視野に入れている。超生命体特効を持ち\n赤い敵と天使とエイリアンにめっぽう強くたまに動きを止める\nジャングルマスタートモエ"]
+    desc: ["潜入任務でジャングルを訪れた忍者娘。甘いバナナの匂いを\n頼りに任務そっちのけで奥地へ突き進む。超生命体特効を持ち\n赤い敵と天使とエイリアンにめっぽう強くたまに動きを止める", "ジャングル生活を楽しむ忍者娘。食料が充実し\n永住も視野に入れている。超生命体特効を持ち\n赤い敵と天使とエイリアンにめっぽう強くたまに動きを止める"]
     stat: [{health: 3300, knockbacks: 4, speed: 20, cost: 2900, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1120, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 460, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_red: 1, against_angel: 1, against_alien: 1, strong: 1, freeze_chance: 50, freeze_duration: 120, colossus_slayer: 1, immune_wave: 1, attack_duration: 89}, {health: 3800, knockbacks: 4, speed: 20, cost: 2900, production_cooldown: 1800, attack_cooldown: 60, range: 420, width: 320, area_effect: 1, damage_0: 1320, long_range_0: 1, long_range_offset_0: 420, attack_time_0: 57, trigger_effects_0: 1, damage_1: 660, long_range_1: 550, long_range_offset_1: 300, attack_time_1: 62, trigger_effects_1: 1, against_red: 1, against_angel: 1, against_alien: 1, strong: 1, freeze_chance: 50, freeze_duration: 120, colossus_slayer: 1, immune_wave: 1, attack_duration: 89}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  874:
+    name: [ロックこねこ, ロックスターこねこ]
+    desc: ["可愛いだけでは生き残れないアイドル業界を生き抜くため\nまさかのジャンルに飛び込んだこねこ\nピュアな思いを全力で叫ぶ姿にファンが急増中", "新たな境地でアイドル革命を起こしたこねこ\nライブでは覚悟を決めた全力のシャウトで\n観客みんなを熱狂の渦に巻き込んでいく"]
+    stat: [{health: 2150, knockbacks: 2, speed: 10, cost: 99, production_cooldown: 999, range: 250, width: 320, damage_0: 160, attack_time_0: 30, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1000, immune_freeze: 1, immune_curse: 1, attack_duration: 56}, {health: 4500, knockbacks: 3, speed: 10, cost: 1400, production_cooldown: 2999, range: 450, width: 320, damage_0: 240, attack_time_0: 20, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1800, immune_freeze: 1, immune_curse: 1, attack_duration: 33}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  875:
+    name: [りゅういち, りゅういち＆りゅうじ]
+    desc: ["熱血硬派くにおくんシリーズから参戦！\n服部学園から転校してきた最強兄弟のひとり\nたまに属性を持つ敵の攻撃力を下げる(範囲攻撃)", "熱血硬派くにおくんシリーズから参戦！忍者の教育を\n受けて育った最強のダブルドラゴン兄弟(遠方範囲攻撃)\nたまに属性を持つ敵の攻撃力を下げ、渾身の一撃を放つ\nリュウイチアンドリュウジ"]
+    stat: [{health: 2000, knockbacks: 4, speed: 20, cost: 2000, production_cooldown: 1650, attack_cooldown: 40, range: 550, width: 320, area_effect: 1, damage_0: 770, attack_time_0: 21, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_metal: 1, weaken_chance: 30, weaken_duration: 120, weaken_multiplier: 50, attack_duration: 48}, {health: 6600, knockbacks: 3, speed: 20, cost: 2000, production_cooldown: 1400, attack_cooldown: 30, range: 250, width: 320, area_effect: 1, damage_0: 250, long_range_0: 1, long_range_offset_0: 250, attack_time_0: 9, trigger_effects_0: 1, damage_1: 250, long_range_1: 1, long_range_offset_1: 250, attack_time_1: 17, trigger_effects_1: 1, damage_2: 320, long_range_2: 1, long_range_offset_2: 550, attack_time_2: 36, trigger_effects_2: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_metal: 1, weaken_chance: 20, weaken_duration: 120, weaken_multiplier: 50, savage_blow_chance: 30, savage_blow_modifier: 200, attack_duration: 63}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  876:
+    name: ['735_1']
+    desc: [精霊：敵の動きを遅くします]
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 250, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14812,6 +14869,39 @@ gacha:
     series_id: 65
     name: 新キャラ登場！開放的な夏限定のキャラクターをGET！★詳細はバナーをタップ!!
     rate: no_legend
+  1075:
+    cats: [276, 355, 439, 564, 667, 821, 646, 668, 685, 277, 566, 567, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
+    series_id: 64
+    name: 開放的な夏限定のキャラクターをGETしよう！★詳細はバナーをタップ!!
+    rate: no_legend
+  1076:
+    cats: [873, 495, 760, 715, 615, 565, 275, 655, 689, 695, 277, 566, 567, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
+    series_id: 65
+    name: 新キャラ登場！開放的な夏限定のキャラクターをGET！★詳細はバナーをタップ!!
+    rate: no_legend
+  1077:
+    cats: [449, 450, 451, 452, 456, 462, 464, 479, 482, 494, 545, 874, 74, 35, 734, 77, 361, 60, 144, 88, 136, 197, 812, 608, 418, 675, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 70
+    name: 限定超激レアキャラクター「こねこ」参戦！1億ダウンロード記念の特別なガチャ！
+    similarity: 68
+  1078:
+    cats: [873, 863, 821, 787, 778, 774, 773, 760, 757, 738, 737, 715, 712, 700, 694, 688, 684, 667, 662, 649, 645, 615, 596, 590, 589, 588, 587, 585, 571, 567, 566, 565, 564, 527, 495, 439, 355, 333, 332, 331, 315, 311, 303, 277, 276, 275, 244, 243, 242, 231, 230, 229, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 47
+    name: 季節キャラクターが一堂に集結!!★超激レア出現率アップの「超国王祭」!!
+    rate: dynastyfest
+    similarity: 98
+  1079:
+    cats: [497, 170, 831, 360, 44, 87, 526, 775, 272, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 57
+    name: 熱血キャラクターが揃う「熱血!大運動会」ガチャ登場！★詳細はバナーをタップ!!
+    rate: no_legend
+    similarity: 76
+  1080:
+    cats: [73, 172, 106, 720, 764, 86, 693, 195, 273, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 75
+    name: 熱血キャラクターが揃う「熱血!大運動会」ガチャ新登場！★詳細はバナーをタップ!!
+    rate: no_legend
+    similarity: 80
 events:
   2018-09-15_320:
     start_on: 2018-09-15
