@@ -99,7 +99,7 @@ function search(overrides) {
 // ticket result costs +2 and only wins when the primary destination improves.
 let result = search();
 assert.strictEqual(result.status, "success");
-assert.strictEqual(result.cost, 0.03);
+assert.strictEqual(result.cost, 0.02);
 assert.strictEqual(result.regularUses, 1);
 assert.strictEqual(result.ticketUses, 0);
 assert.strictEqual(result.actions[0].type, "roll");
@@ -158,7 +158,7 @@ assert.strictEqual(result.status, "success");
 assert.strictEqual(result.actions[0].type, "roll");
 assert.strictEqual(result.ticketUses, 0);
 assert.strictEqual(result.regularUses, 2);
-assert.strictEqual(result.cost, 0.06,
+assert.strictEqual(result.cost, 0.04,
   "minimum-cost mode prefers a farther event result over platinum");
 
 result = search({
@@ -282,7 +282,7 @@ result = search({
 });
 assert.strictEqual(result.status, "success");
 assert.strictEqual(result.legendDraws, 1);
-assert.strictEqual(result.rawCost, -1.97);
+assert.strictEqual(result.rawCost, -1.98);
 assert.strictEqual(result.cost, 0,
   "balanced score is floored at zero to avoid farming negative cost");
 
@@ -408,7 +408,7 @@ function exhaustive(seed, count, last, optimization) {
         offset: rolled.nextOffset,
         last: rolled.lastRareId,
         mask: eventMask(state.mask, rolled.id),
-        costUnits: state.costUnits + 3,
+        costUnits: state.costUnits + 2,
         ticketUsed: state.ticketUsed
       });
     });

@@ -231,6 +231,11 @@ assert.deepStrictEqual(guaranteedRoute.selections, [
 ], "a normal guaranteed pull selects the G line");
 assert.strictEqual(plans.summarizeCats(guaranteedRoute.cats),
   "중간 울슈레, 확정 울슈레");
+assert.deepStrictEqual(plans.routeResourceUsage(
+  routeSnapshot([unsafePool]), guaranteedRoute, [
+    { column: 0, position: "1A", kind: "guaranteed" }
+  ]), { guaranteedPulls: 1, specialTickets: 0 },
+"guaranteed draws are reported separately from special tickets");
 
 const guaranteedContinuation = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([safePool]), [
@@ -336,8 +341,8 @@ assert.deepStrictEqual(middleOverride.auto.filter((step) =>
   plans.positionOffset(step.position) < plans.positionOffset("5A"))
   .map((step) => step.column), [0, 0, 0, 0],
 "an equal-cost middle override keeps the already drawn prefix unchanged");
-assert.strictEqual(middleOverride.costUnits, 30,
-  "plan routes use the same 0.03 regular-draw cost units as Find");
+assert.strictEqual(middleOverride.costUnits, 20,
+  "plan routes use the same 0.02 regular-draw cost units as Find");
 
 const reloadedMiddleOverride = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([safePool, safePool]), [
@@ -363,7 +368,7 @@ const minimumCostRoute = plans.buildRoutePlan(fakeRouteEngine,
 assert.strictEqual(minimumCostRoute.valid, true);
 assert(minimumCostRoute.auto.every((step) => step.column === 0),
   "minimum cost beats preservation when the old path used special tickets");
-assert.strictEqual(minimumCostRoute.costUnits, 12);
+assert.strictEqual(minimumCostRoute.costUnits, 8);
 
 const automaticSpecialBlocked = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool, specialPool]), [
@@ -393,6 +398,27 @@ assert.strictEqual(explicitlySelectedSpecial.valid, true,
   "an explicitly selected special-ticket cell remains a valid route step");
 assert(!explicitlySelectedSpecial.auto.some((step) => step.column === 1),
   "the selected special-ticket step is not disguised as automatic fill");
+assert.deepStrictEqual(plans.routeResourceUsage(
+  routeSnapshot([unsafePool, specialPool]), explicitlySelectedSpecial, [
+    { column: 1, position: "5A", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ]), { guaranteedPulls: 0, specialTickets: 1 },
+"an explicitly selected platinum draw consumes one special ticket");
+assert.strictEqual(plans.planProgressSummary(
+  routeSnapshot([unsafePool, specialPool]), {
+    valid: true,
+    auto: new Array(34).fill({ column: 0, position: "1A", kind: "regular" }),
+    selections: [
+      { column: 0, position: "1A", kind: "guaranteed" },
+      { column: 0, position: "12B", kind: "guaranteed" }
+    ]
+  }, [
+    { column: 0, position: "1A", kind: "guaranteed" },
+    { column: 0, position: "12B", kind: "guaranteed" },
+    { column: 1, position: "20A", kind: "regular" }
+  ]),
+"강조 좌표 3개 · 자동 경로 34칸 · 확정뽑기 2회 · 특수티켓 1회",
+"the plan status includes both kinds of paid resource usage");
 
 const legendPool = Object.assign({}, specialPool, {
   key: "legend", platinum: "legend"
