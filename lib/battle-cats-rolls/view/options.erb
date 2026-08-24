@@ -63,7 +63,8 @@
   <label for="theme_select" title="Color theme for highlighting">Theme:</label>
   <select id="theme_select" name="theme" onchange="roll(this)">
     <option value="" <%= selected_theme('') %>>Default</option>
-    <option value="mkweb" <%= selected_theme('mkweb') %>>mkweb</option>
+    <option value="alternate" <%= selected_theme('alternate') %>>Alternate</option>
+    <option value="mkweb" <%= selected_theme('mkweb') %>>mkweb (colorblind friendly)</option>
   </select>
   <% else %>
   <%= hidden_inputs('theme') %>
