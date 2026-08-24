@@ -25,7 +25,7 @@ module BattleCatsRolls
     def lookup_cat_data
       @lookup_cat_data ||= [[
         fake_cat(319, 'Miko Mitama', 1, 0),
-        fake_cat(-1, 'Cat', 1, 1)
+        fake_cat(-10, 'Cat', 1, 1)
       ]]
     end
 
@@ -33,11 +33,11 @@ module BattleCatsRolls
       @guaranteed_tracks ||= begin
         tracks = fake_tracks.map(&:dup)
 
-        fake_1AG = fake_cat(-1, '(1A guaranteed uber)', 1, 0)
+        fake_1AG = fake_cat(-10, '(1A guaranteed uber)', 1, 0)
         fake_1AG.next = tracks.dig(10, 1)
         tracks[0][0] = tracks.dig(0, 0).new_with(guaranteed: fake_1AG)
 
-        fake_1BG = fake_cat(-1, '(1B guaranteed uber)', 1, 1)
+        fake_1BG = fake_cat(-10, '(1B guaranteed uber)', 1, 1)
         fake_1BG.next = tracks.dig(11, 0)
         tracks[0][1] = tracks.dig(0, 1).new_with(guaranteed: fake_1BG)
 
@@ -144,7 +144,7 @@ module BattleCatsRolls
           sequence = index + 1
           track_label = (track + 'A'.ord).chr
           name = "(#{sequence}#{track_label} #{rarity_label} cat)"
-          fake_cat(-1, name, sequence, track,
+          fake_cat(-10, name, sequence, track,
             score_rarity_label: rarity_label,
             score: 0, rarity: rarities.index(rarity_label) + Cat::Rare)
         end
