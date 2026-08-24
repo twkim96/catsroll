@@ -110,6 +110,7 @@ describe 'local web features' do
     soul_series = find_series.find{ |series| series['id'] == 6 }
     platinum_series = find_series.find{ |series| series['id'] == 21 }
     expect(soul_series['label']).eq '초고대 전설의 용사 울트라 소울즈'
+    expect(soul_series['aliases']).include?('울소')
     expect(platinum_series['cat_ids'].size).gt soul_series['cat_ids'].size
 
     ticket = payload.dig('regions', 'kr', 'tickets', 'platinum')

@@ -279,6 +279,7 @@ module BattleCatsRolls
           id: item[:id],
           label: EventSeriesNames.korean(item[:id]) || item[:kr_label] ||
             item[:fallback_label] || "시리즈 #{item[:id]}",
+          aliases: EventSeriesNames.shortcuts(item[:id]),
           cat_ids: cat_ids
         }
       end
