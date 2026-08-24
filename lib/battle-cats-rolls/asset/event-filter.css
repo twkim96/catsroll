@@ -114,6 +114,14 @@
   font-size: .82rem;
   font-weight: 600;
 }
+.event-filter-search-wrap > input[type="search"] {
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 10px;
+}
 .event-filter-query {
   position: relative;
   z-index: 3;

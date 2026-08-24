@@ -292,6 +292,8 @@ describe 'local web features' do
       response.body.index('event_filter_series_title'))
     expect(event_filter_css.include?('align-items: flex-start')).eq true
     expect(event_filter_css.include?(
+      '.event-filter-search-wrap > input[type="search"]')).eq true
+    expect(event_filter_css.include?(
       'padding: max(9dvh, calc((100dvh - 760px) / 2)) 0')).eq true
     expect(event_filter_css.include?('padding: 6dvh 0')).eq true
   end
