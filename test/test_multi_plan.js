@@ -49,9 +49,9 @@ assert.deepStrictEqual(saved.plan.marks, [
   { column: 1, position: "20B", kind: "regular" }
 ], "marks are deduplicated and constrained to the saved array");
 
-const onePerColumn = plans.normalizePlan({
-  id: "one-per-column",
-  name: "열당 하나",
+const multiplePerBanner = plans.normalizePlan({
+  id: "multiple-per-banner",
+  name: "배너당 여러 좌표",
   track: track,
   marks: [
     { column: 0, position: "2A" },
@@ -59,10 +59,24 @@ const onePerColumn = plans.normalizePlan({
     { column: 0, position: "7B" }
   ]
 });
-assert.deepStrictEqual(onePerColumn.marks, [
+assert.deepStrictEqual(multiplePerBanner.marks, [
+  { column: 0, position: "2A", kind: "regular" },
   { column: 0, position: "7B", kind: "regular" },
   { column: 1, position: "20B", kind: "regular" }
-], "the latest mark replaces an older mark in the same banner column");
+], "one banner can keep checkpoints at several different positions");
+
+const onePerPosition = plans.normalizePlan({
+  id: "one-per-position",
+  name: "좌표당 하나",
+  track: track,
+  marks: [
+    { column: 0, position: "7A" },
+    { column: 1, position: "7A" }
+  ]
+});
+assert.deepStrictEqual(onePerPosition.marks, [
+  { column: 1, position: "7A", kind: "regular" }
+], "choosing another banner at the same position replaces only that choice");
 
 assert.strictEqual(plans.summarizeCats([
   { id: 101, name: "가시루가", rarity: 4 },
@@ -171,6 +185,18 @@ assert.deepStrictEqual(guaranteedRoute.destinations, [
 assert.strictEqual(plans.summarizeCats(guaranteedRoute.cats),
   "중간 울슈레, 확정 울슈레");
 
+const guaranteedContinuation = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool]), [
+    { column: 0, position: "2A", kind: "guaranteed" },
+    { column: 0, position: "13B", kind: "regular" }
+  ]);
+assert.strictEqual(guaranteedContinuation.valid, true,
+  "the same banner can continue from a guaranteed destination to a later checkpoint");
+assert(guaranteedContinuation.auto.some((step) => step.position === "12B"),
+  "the guaranteed destination is also consumed as the next automatic draw");
+assert(guaranteedContinuation.destinations.some((step) =>
+  step.position === "12B" && step.kind === "guaranteed"));
+
 const rerollRoute = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool]), [
     { column: 0, position: "5A", kind: "reroll" }
@@ -190,6 +216,90 @@ assert(extendedRoute.auto.some((step) => step.position === "8A"));
 assert(extendedRoute.auto.some((step) => step.position === "9A"));
 assert(!extendedRoute.auto.some((step) => step.position === "7A" ||
   step.position === "10A"), "selected checkpoints are not repainted as auto cells");
+
+const originalTenA = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool, safePool]), [
+    { column: 0, position: "10A", kind: "regular" }
+  ]);
+const middleOverride = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool, safePool]), [
+    { column: 1, position: "5A", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ], { preferredAuto: originalTenA.auto });
+assert.strictEqual(middleOverride.valid, true);
+assert.deepStrictEqual(middleOverride.auto.filter((step) =>
+  plans.positionOffset(step.position) < plans.positionOffset("5A"))
+  .map((step) => step.column), [0, 0, 0, 0],
+"an equal-cost middle override keeps the already drawn prefix unchanged");
+assert.strictEqual(middleOverride.costUnits, 30,
+  "plan routes use the same 0.03 regular-draw cost units as Find");
+
+const reloadedMiddleOverride = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool, safePool]), [
+    { column: 1, position: "5A", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ]);
+assert.deepStrictEqual(reloadedMiddleOverride.auto.filter((step) =>
+  plans.positionOffset(step.position) < plans.positionOffset("5A"))
+  .map((step) => step.column), [0, 0, 0, 0],
+"reloading the same checkpoints keeps the final destination banner as tie-breaker");
+
+const specialPool = Object.assign({}, safePool, {
+  key: "platinum", platinum: "platinum"
+});
+const minimumCostRoute = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool, specialPool]), [
+    { column: 0, position: "4A", kind: "regular" }
+  ], { preferredAuto: [
+    { column: 1, position: "1A", kind: "regular" },
+    { column: 1, position: "2A", kind: "regular" },
+    { column: 1, position: "3A", kind: "regular" }
+  ] });
+assert.strictEqual(minimumCostRoute.valid, true);
+assert(minimumCostRoute.auto.every((step) => step.column === 0),
+  "minimum cost beats preservation when the old path used special tickets");
+assert.strictEqual(minimumCostRoute.costUnits, 12);
+
+function switchingEngine(returnToA) {
+  return {
+    positionLabel: routeLabel,
+    simulateRegular(pool, _seed, offset) {
+      const rerolled = offset === 2 || (returnToA && offset === 13);
+      const nextOffset = offset + (rerolled ? 3 : 2);
+      return {
+        id: pool.id,
+        name: pool.name,
+        rarity: 2,
+        rerolled: rerolled,
+        nextOffset: nextOffset,
+        next: routeLabel(nextOffset),
+        lastRareId: pool.id
+      };
+    }
+  };
+}
+
+const roundTripRoute = plans.buildRoutePlan(switchingEngine(true),
+  routeSnapshot([safePool, safePool]), [
+    { column: 1, position: "5B", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ]);
+assert.strictEqual(roundTripRoute.valid, true,
+  "a 5B checkpoint is compatible when rerolls later return to the 10A track");
+assert(roundTripRoute.auto.some((step) =>
+  step.position === "2A" && step.kind === "reroll"));
+assert(roundTripRoute.auto.some((step) =>
+  step.position === "7B" && step.kind === "reroll"));
+assert(roundTripRoute.destinations.some((step) => step.position === "3B"));
+assert(roundTripRoute.destinations.some((step) => step.position === "9A"));
+
+const contradictoryRoute = plans.buildRoutePlan(switchingEngine(false),
+  routeSnapshot([safePool, safePool]), [
+    { column: 1, position: "5B", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ]);
+assert.strictEqual(contradictoryRoute.valid, false,
+  "a middle checkpoint is rejected when the later saved choice cannot be reached");
 
 const updated = plans.upsertPlan(saved.library, {
   name: "수정한 플랜",

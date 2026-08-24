@@ -201,11 +201,13 @@ describe 'local web features' do
     expect(multi_plan.include?('buildRoutePlan')).eq true
     expect(multi_plan.include?('data-plan-pick-kind')).eq true
     expect(multi_plan.include?('현재 구성으로 도달 불가')).eq true
+    expect(multi_plan.include?('저장되지 않은 플랜 변경사항이 있습니다')).eq true
     expect(multi_plan_css.include?('.multi-plan-marked::after')).eq true
     expect(multi_plan_css.include?('.multi-plan-delete')).eq true
     expect(multi_plan_css.include?('.multi-plan-summary-output')).eq true
     expect(multi_plan_css.include?('.multi-plan-route')).eq true
     expect(multi_plan_css.include?('.multi-plan-next')).eq true
+    expect(multi_plan_css.include?('.multi-plan-route-line')).eq true
     expect(multi_plan_css.include?('.multi-plan-cell-notice')).eq true
     expect(multi_plan_css.include?('max-width: none')).eq true
     expect(table_share.include?('MultiTrackApp.getRowCount()')).eq true
