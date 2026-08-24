@@ -334,7 +334,7 @@ module BattleCatsRolls
     end
 
     def ubers
-      @ubers ||= request.params_coercion('ubers', :to_i)
+      @ubers ||= [request.params_coercion('ubers', :to_i), 9].min
     end
 
     def details
