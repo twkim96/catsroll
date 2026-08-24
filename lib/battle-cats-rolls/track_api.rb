@@ -142,6 +142,7 @@ module BattleCatsRolls
         else
           'kr'
         end
+      find_cats = multi_find_cats(route.name)
 
       {
         initial: {
@@ -156,7 +157,8 @@ module BattleCatsRolls
           count: 500
         },
         last_cats: multi_last_cats(route.name),
-        find_cats: multi_find_cats(route.name),
+        find_cats: find_cats,
+        find_series: multi_find_series(find_cats),
         regions: MultiLangs.each_with_object({}) do |lang, result|
           ball = Route.public_send("ball_#{lang}")
           initial_event = route.event if lang == initial_lang
@@ -235,6 +237,50 @@ module BattleCatsRolls
           kr: kr,
           jp: jp
         }.compact
+      end
+    end
+
+    def self.multi_find_series find_cats
+      allowed = find_cats.each_with_object({}) do |cat, result|
+        result[cat[:id]] = true
+      end
+      series = {}
+      balls = {
+        'kr' => Route.ball_kr,
+        'jp' => raw_ball_jp
+      }
+
+      balls.each do |lang, ball|
+        ball.gacha.each_value do |info|
+          series_id = info['series_id']
+          next if series_id.nil?
+
+          item = series[series_id] ||= {
+            id: series_id,
+            cat_ids: {}
+          }
+          label = event_filter_name(info['name'])
+          unless label.empty?
+            key = lang == 'kr' ? :kr_label : :fallback_label
+            item[key] = label
+          end
+          Array(info['cats']).each do |cat_id|
+            cat_id = cat_id.to_i
+            item[:cat_ids][cat_id] = true if allowed[cat_id]
+          end
+        end
+      end
+
+      series.values.filter_map do |item|
+        cat_ids = item[:cat_ids].keys.sort
+        next if cat_ids.empty?
+
+        {
+          id: item[:id],
+          label: EventSeriesNames.korean(item[:id]) || item[:kr_label] ||
+            item[:fallback_label] || "시리즈 #{item[:id]}",
+          cat_ids: cat_ids
+        }
       end
     end
 

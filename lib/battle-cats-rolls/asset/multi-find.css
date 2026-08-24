@@ -209,6 +209,60 @@
   margin: -.1rem 0 .5rem;
 }
 
+#multi_find_available {
+  display: block;
+  margin-top: .35rem;
+}
+
+.multi-find-series-group + .multi-find-series-group {
+  margin-top: .8rem;
+}
+
+.multi-find-series-heading {
+  display: flex;
+  align-items: center;
+  gap: .38rem;
+  margin-bottom: .38rem;
+}
+
+.multi-find-series-heading h4 {
+  min-width: 0;
+  margin: 0;
+  color: var(--multi-ink);
+  font-size: .78rem;
+  line-height: 1.35;
+}
+
+.multi-find-series-selected,
+.multi-find-series-count {
+  flex: 0 0 auto;
+  color: var(--multi-muted);
+  font-size: .66rem;
+  line-height: 1.35;
+}
+
+.multi-find-series-selected {
+  padding: .08rem .3rem;
+  border-radius: 4px;
+  background: #eaf2fa;
+  color: var(--multi-accent);
+  font-weight: 600;
+}
+
+.multi-find-series-count::before {
+  content: "(";
+}
+
+.multi-find-series-count::after {
+  content: ")";
+}
+
+.multi-find-series-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
 .multi-find-dialog .event-filter-tag.is-supa,
 .multi-find-dialog .event-filter-tag.is-uber,
 .multi-find-dialog .event-filter-tag.is-legend {

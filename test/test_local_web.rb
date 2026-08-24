@@ -42,6 +42,8 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_plan_save"')).eq true
     expect(response.body.include?('id="multi_plan_selected_cats"')).eq true
     expect(response.body.include?('id="multi_plan_dialog"')).eq true
+    expect(response.body.include?('id="multi_plan_cats_dialog"')).eq true
+    expect(response.body.include?('id="multi_plan_cats_list"')).eq true
     expect(response.body.include?('id="multi_plan_confirm_dialog"')).eq true
     expect(response.body.index('id="multi_find_result"')).lt(
       response.body.index('id="multi_plan_panel"'))
@@ -61,6 +63,7 @@ describe 'local web features' do
     expect(response.body.include?('Use ticket')).eq false
     expect(response.body.include?('1A부터 목표 캐릭터 최적 경로 계산')).eq false
     expect(response.body.include?('/asset/multi-find.js?')).eq true
+    expect(response.body.include?('/asset/multi-find-catalog.js?')).eq true
     expect(response.body.include?('/asset/multi-share.js?')).eq true
     expect(response.body.include?('/asset/multi-track-virtual.js?')).eq true
     expect(response.body.include?('/asset/multi-find.css?')).eq true
@@ -98,6 +101,16 @@ describe 'local web features' do
     expect(find_cats.empty?).eq false
     expect(find_cats.all?{ |cat| [3, 4, 5].include?(cat['rarity']) }).eq true
     expect(find_cats.find{ |cat| cat['id'] == 564 }['name']).eq '아쿠아슈터 사키'
+
+    find_series = payload['find_series']
+    expect(find_series.empty?).eq false
+    expect(find_series.all? do |series|
+      series['cat_ids'].uniq.size == series['cat_ids'].size
+    end).eq true
+    soul_series = find_series.find{ |series| series['id'] == 6 }
+    platinum_series = find_series.find{ |series| series['id'] == 21 }
+    expect(soul_series['label']).eq '초고대 전설의 용사 울트라 소울즈'
+    expect(platinum_series['cat_ids'].size).gt soul_series['cat_ids'].size
 
     ticket = payload.dig('regions', 'kr', 'tickets', 'platinum')
     expect(ticket['kind']).eq 'platinum'
@@ -212,9 +225,14 @@ describe 'local web features' do
     expect(multi_plan.include?('도달할 수 없는 뒤쪽 좌표')).eq true
     expect(multi_plan.include?('현재 구성으로 도달 불가')).eq true
     expect(multi_plan.include?('저장되지 않은 플랜 변경사항이 있습니다')).eq true
+    expect(multi_plan.include?('공유받은 임시 플랜입니다')).eq true
+    expect(multi_plan.include?('getShareState: sharePlanState')).eq true
+    expect(multi_plan.include?('openSelectedCatsDialog')).eq true
     expect(multi_plan_css.include?('.multi-plan-marked::after')).eq true
     expect(multi_plan_css.include?('.multi-plan-delete')).eq true
     expect(multi_plan_css.include?('.multi-plan-summary-output')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cats-dialog')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cat-tag.is-uber')).eq true
     expect(multi_plan_css.include?('.multi-plan-route')).eq true
     expect(multi_plan_css.include?('.multi-plan-next')).eq true
     expect(multi_plan_css.include?('.multi-plan-route-line')).eq true
@@ -226,6 +244,8 @@ describe 'local web features' do
     expect(multi_view.include?('position: -webkit-sticky')).eq true
     expect(multi_track.include?('MultiShareApp.setTrackState')).eq true
     expect(multi_share.include?('payload.r.slice(0, 8)')).eq true
+    expect(multi_share.include?('getPlanState: function')).eq true
+    expect(multi_share.include?('setPlanState: setPlanState')).eq true
     expect(multi_share.include?('url.hash = "share=" + codec.encode(payload)')).eq true
     expect(table_share.include?('fullTableWidth')).eq true
     expect(multi_share.include?('공유 링크로 연 임시 세션')).eq false

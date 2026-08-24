@@ -91,6 +91,14 @@ assert.strictEqual(plans.summarizeCats([
   { id: 303, name: "슈퍼레어", rarity: 3 }
 ]), "가시루가 ×2, 레전드 냥코",
 "uber and legend selections are counted while other rarities are ignored");
+assert.deepStrictEqual(plans.catSummaryEntries([
+  { id: 101, name: "가시루가", rarity: 4 },
+  { id: 101, name: "가시루가", rarity: 4, guaranteed: true },
+  { id: 202, name: "레전드 냥코", rarity: 5 }
+]), [
+  { id: 101, name: "가시루가", rarity: 4, count: 2 },
+  { id: 202, name: "레전드 냥코", rarity: 5, count: 1 }
+], "the expanded selected-cat view retains rarity and duplicate counts");
 
 assert.deepStrictEqual(plans.routeDecorationState({
   visible: true,

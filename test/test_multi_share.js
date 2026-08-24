@@ -37,8 +37,16 @@ const find = {
     { cat_id: 591, allow_ticket: true }
   ]
 };
+const plan = {
+  name: "루노스 획득 플랜",
+  marks: [
+    { column: 0, position: "2A", kind: "regular" },
+    { column: 1, position: "20B", kind: "guaranteed", variant: "rerolled" },
+    { column: 0, position: "94A", kind: "regular" }
+  ]
+};
 
-const payload = codec.makePayload(track, find, 93, track.formIndex);
+const payload = codec.makePayload(track, find, 93, track.formIndex, plan);
 assert(payload, "payload should be created");
 assert.strictEqual(payload.t[2], 93, "share count overrides rendered count");
 
@@ -64,6 +72,15 @@ assert.strictEqual(restoredFind.maxPlatinum, 3);
 assert.strictEqual(restoredFind.maxLegendTicket, 1);
 assert.deepStrictEqual(restoredFind.targets, find.targets);
 
+const restoredPlan = codec.planState(decoded);
+assert.strictEqual(restoredPlan.name, plan.name);
+assert.deepStrictEqual(restoredPlan.marks, plan.marks.slice(0, 2),
+  "plan marks round trip and coordinates beyond the shared count are removed");
+
+const legacyPayload = codec.makePayload(track, find, 93, track.formIndex);
+assert.strictEqual(codec.planState(codec.decode(codec.encode(legacyPayload))), null,
+  "links without a plan remain valid and do not invent plan state");
+
 assert.strictEqual(codec.decode("not!base64"), null);
 assert.strictEqual(codec.fromHash("#unrelated=value"), null);
 assert.strictEqual(codec.normalize({ v: 2, t: [], r: [] }), null,
@@ -81,7 +98,7 @@ const nineRows = Array.from({ length: 9 }, function (_unused, index) {
 });
 const eightRowPayload = codec.makePayload(Object.assign({}, track, {
   rows: nineRows
-}), find, 50, track.formIndex);
+}), find, 50, track.formIndex, plan);
 assert.strictEqual(eightRowPayload.r.length, 8,
   "share payload keeps up to eight banners");
 assert.strictEqual(codec.trackState(eightRowPayload).rows[7].event, "event_7",

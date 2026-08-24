@@ -254,6 +254,12 @@ module BattleCatsRolls
             '../asset/multi-find.js', __dir__)).hexdigest
       end
 
+      def multi_find_catalog_digest
+        @multi_find_catalog_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-find-catalog.js', __dir__)).hexdigest
+      end
+
       def multi_find_engine_digest
         @multi_find_engine_digest ||=
           Digest::MD5.file(File.expand_path(
