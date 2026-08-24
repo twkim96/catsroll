@@ -131,6 +131,7 @@ describe 'local web features' do
     multi_find = File.read('lib/battle-cats-rolls/asset/multi-find.js')
     multi_track = File.read('lib/battle-cats-rolls/asset/multi-track.js')
     multi_share = File.read('lib/battle-cats-rolls/asset/multi-share.js')
+    multi_view = File.read('lib/battle-cats-rolls/view/multi.erb')
 
     expect(table_share.include?('몇 번까지 포함할까요?')).eq true
     expect(table_share.include?('Find route 도착 위치')).eq true
@@ -155,6 +156,10 @@ describe 'local web features' do
     expect(multi_track.include?('outputs.length > 5')).eq true
     expect(multi_track.include?('scrollTrackPage')).eq true
     expect(multi_track.include?('data-multi-track-scroll')).eq true
+    expect(multi_track.include?('navigator.maxTouchPoints > 1')).eq true
+    expect(multi_track.include?('root.classList.toggle("is-ipad", isIPad)')).eq true
+    expect(multi_view.include?('.multi-track-app.is-ipad .multi-track-table th')).eq true
+    expect(multi_view.include?("position: static;\n    box-shadow: none;")).eq true
     expect(multi_track.include?('MultiShareApp.setTrackState')).eq true
     expect(multi_share.include?('payload.r.slice(0, 8)')).eq true
     expect(multi_share.include?('url.hash = "share=" + codec.encode(payload)')).eq true
