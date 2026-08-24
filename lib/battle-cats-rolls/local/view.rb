@@ -236,6 +236,12 @@ module BattleCatsRolls
             '../asset/multi-track.js', __dir__)).hexdigest
       end
 
+      def multi_track_virtual_digest
+        @multi_track_virtual_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-track-virtual.js', __dir__)).hexdigest
+      end
+
       def multi_share_digest
         @multi_share_digest ||=
           Digest::MD5.file(File.expand_path(

@@ -206,6 +206,7 @@
   <script id="multi_track_data" type="application/json"><%= json_script(arg[:multi_data]) %></script>
   <script src="/asset/track-engine.js" defer></script>
   <script src="/asset/multi-share.js?<%= self.class.multi_share_digest %>" defer></script>
+  <script src="/asset/multi-track-virtual.js?<%= self.class.multi_track_virtual_digest %>" defer></script>
   <script src="/asset/multi-track.js?<%= self.class.multi_track_digest %>" defer></script>
   <script src="/asset/multi-find.js?<%= self.class.multi_find_digest %>" defer></script>
 </section>
@@ -632,9 +633,14 @@
     box-shadow: 0 1px 0 var(--multi-line);
     color: var(--multi-ink);
   }
-  .multi-track-app.is-ipad .multi-track-table th {
-    position: static;
-    box-shadow: none;
+  .multi-virtual-spacer,
+  .multi-virtual-spacer td {
+    border: 0 !important;
+    width: auto !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    pointer-events: none;
   }
   .multi-track-table th:first-child,
   .multi-track-table td:first-child {

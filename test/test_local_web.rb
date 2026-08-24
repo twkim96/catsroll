@@ -47,6 +47,7 @@ describe 'local web features' do
     expect(response.body.include?('1A부터 목표 캐릭터 최적 경로 계산')).eq false
     expect(response.body.include?('/asset/multi-find.js?')).eq true
     expect(response.body.include?('/asset/multi-share.js?')).eq true
+    expect(response.body.include?('/asset/multi-track-virtual.js?')).eq true
     expect(response.body.include?('/asset/multi-find.css?')).eq true
     expect(response.body.include?('/asset/table-share.js?')).eq true
     expect(response.body.include?(
@@ -149,6 +150,7 @@ describe 'local web features' do
     expect(recent_seeds.include?('isSharedMultiSession()')).eq true
     expect(multi_find.include?('getDestination: function')).eq true
     expect(multi_find.include?('getShareSettings: function')).eq true
+    expect(multi_find.include?('decorateRouteMarks: function')).eq true
     expect(multi_find.include?('els.targets.addEventListener("click", openFilterDialog)')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
     expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
@@ -156,10 +158,16 @@ describe 'local web features' do
     expect(multi_track.include?('outputs.length > 5')).eq true
     expect(multi_track.include?('scrollTrackPage')).eq true
     expect(multi_track.include?('data-multi-track-scroll')).eq true
-    expect(multi_track.include?('navigator.maxTouchPoints > 1')).eq true
-    expect(multi_track.include?('root.classList.toggle("is-ipad", isIPad)')).eq true
-    expect(multi_view.include?('.multi-track-app.is-ipad .multi-track-table th')).eq true
-    expect(multi_view.include?("position: static;\n    box-shadow: none;")).eq true
+    multi_virtual = File.read('lib/battle-cats-rolls/asset/multi-track-virtual.js')
+    expect(multi_virtual.include?('Number(navigator.maxTouchPoints || 0) > 1')).eq true
+    expect(multi_virtual.include?('return "iphone"')).eq true
+    expect(multi_track.include?('virtualizedAppleSafariDevices = { ipad: true }')).eq true
+    expect(multi_track.include?('bufferChunks: 2')).eq true
+    expect(multi_track.include?('multi-track:window-updated')).eq true
+    expect(multi_track.include?('populateCaptureClone')).eq true
+    expect(table_share.include?('MultiTrackApp.getRowCount()')).eq true
+    expect(multi_view.include?('.multi-track-app.is-ipad .multi-track-table th')).eq false
+    expect(multi_view.include?('position: -webkit-sticky')).eq true
     expect(multi_track.include?('MultiShareApp.setTrackState')).eq true
     expect(multi_share.include?('payload.r.slice(0, 8)')).eq true
     expect(multi_share.include?('url.hash = "share=" + codec.encode(payload)')).eq true
