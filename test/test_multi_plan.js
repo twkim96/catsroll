@@ -236,6 +236,29 @@ assert(guaranteedContinuation.auto.some((step) => step.position === "12B"),
 assert(guaranteedContinuation.destinations.some((step) =>
   step.position === "12B" && step.kind === "guaranteed"));
 
+const orphanedAfterGuaranteedRemoval = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool]), [
+    { column: 0, position: "13B", kind: "regular" },
+    { column: 0, position: "14B", kind: "regular" },
+    { column: 0, position: "15A", kind: "regular" }
+  ], { pruneInvalid: true });
+assert.strictEqual(orphanedAfterGuaranteedRemoval.valid, true);
+assert.deepStrictEqual(orphanedAfterGuaranteedRemoval.pruned, [
+  { column: 0, position: "13B", kind: "regular" },
+  { column: 0, position: "14B", kind: "regular" }
+], "removing a guaranteed switch prunes only unreachable downstream B marks");
+assert(orphanedAfterGuaranteedRemoval.auto.some((step) =>
+  step.position === "14A"),
+"a later A mark that remains reachable survives orphan cleanup");
+
+const contradictoryWithoutCleanup = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool]), [
+    { column: 0, position: "13B", kind: "regular" },
+    { column: 0, position: "15A", kind: "regular" }
+  ]);
+assert.strictEqual(contradictoryWithoutCleanup.valid, false,
+  "ordinary selection still fails closed unless cleanup is explicitly requested");
+
 const rerollRoute = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool]), [
     { column: 0, position: "5A", kind: "reroll" }
@@ -333,6 +356,61 @@ assert.strictEqual(minimumCostRoute.valid, true);
 assert(minimumCostRoute.auto.every((step) => step.column === 0),
   "minimum cost beats preservation when the old path used special tickets");
 assert.strictEqual(minimumCostRoute.costUnits, 12);
+
+const automaticSpecialBlocked = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([unsafePool, specialPool]), [
+    { column: 0, position: "10A", kind: "regular" }
+  ]);
+assert.strictEqual(automaticSpecialBlocked.valid, false,
+  "plan autofill never inserts a platinum or legend ticket on its own");
+
+const automaticSpecialHintRoute = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([unsafePool, specialPool]), [
+    { column: 0, position: "10A", kind: "regular" }
+  ], { allowAutomaticSpecial: true });
+assert.strictEqual(automaticSpecialHintRoute.valid, true,
+  "a separate hint search may inspect a special-ticket defense");
+assert(automaticSpecialHintRoute.auto.some((step) =>
+  step.position === "5A" && step.column === 1));
+assert.strictEqual(plans.specialTicketRouteHint(
+  routeSnapshot([unsafePool, specialPool]), automaticSpecialHintRoute),
+"5A 구간에서 특수뽑기 시 도달 가능");
+
+const explicitlySelectedSpecial = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([unsafePool, specialPool]), [
+    { column: 1, position: "5A", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ]);
+assert.strictEqual(explicitlySelectedSpecial.valid, true,
+  "an explicitly selected special-ticket cell remains a valid route step");
+assert(!explicitlySelectedSpecial.auto.some((step) => step.column === 1),
+  "the selected special-ticket step is not disguised as automatic fill");
+
+const legendPool = Object.assign({}, specialPool, {
+  key: "legend", platinum: "legend"
+});
+assert.strictEqual(plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([unsafePool, legendPool]), [
+    { column: 0, position: "10A", kind: "regular" }
+  ]).valid, false, "legend tickets are excluded from automatic fill too");
+assert.strictEqual(plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([unsafePool, legendPool]), [
+    { column: 1, position: "5A", kind: "regular" },
+    { column: 0, position: "10A", kind: "regular" }
+  ]).valid, true, "an explicitly selected legend-ticket cell remains valid");
+
+const orphanedAfterSpecialRemoval = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([unsafePool, specialPool]), [
+    { column: 0, position: "10A", kind: "regular" }
+  ], { pruneInvalid: true });
+assert.strictEqual(orphanedAfterSpecialRemoval.valid, true);
+assert.deepStrictEqual(orphanedAfterSpecialRemoval.pruned, [
+  { column: 0, position: "10A", kind: "regular" }
+], "removing a manual special-ticket defense prunes its unreachable target");
+
+assert.strictEqual(plans.specialTicketRouteHint(
+  routeSnapshot([unsafePool, safePool]), defendedRoute), "",
+"ordinary banners with different pools remain valid defenses without a special hint");
 
 function switchingEngine(returnToA) {
   return {

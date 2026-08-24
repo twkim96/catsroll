@@ -15,7 +15,7 @@
 
 .multi-find-controls {
   display: grid;
-  grid-template-columns: 2.2rem 7.2rem 5.2rem 6.2rem 7rem minmax(18rem, 1fr) 2.1rem;
+  grid-template-columns: 2.2rem 7.2rem 5.2rem 6.2rem 7rem minmax(18rem, 1fr) 2.1rem 2.1rem;
   gap: .65rem;
   align-items: end;
 }
@@ -116,6 +116,7 @@
   line-height: 1;
 }
 
+.multi-find-reset,
 .multi-find-help {
   display: grid;
   place-items: center;
@@ -131,11 +132,23 @@
   font-weight: 800;
 }
 
+.multi-find-reset svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.multi-find-reset:hover:not(:disabled),
+.multi-find-reset:focus-visible,
 .multi-find-help:hover,
 .multi-find-help:focus-visible {
   border-color: var(--multi-accent);
   background: #eaf2fa;
   color: var(--multi-accent);
+}
+
+.multi-find-reset:disabled {
+  cursor: default;
+  opacity: .38;
 }
 
 .multi-find-dialog .event-filter-panel {

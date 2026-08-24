@@ -32,6 +32,7 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_find_max_guaranteed"')).eq true
     expect(response.body.include?('id="multi_find_max_platinum"')).eq true
     expect(response.body.include?('id="multi_find_max_legend_ticket"')).eq true
+    expect(response.body.include?('id="multi_find_reset"')).eq true
     expect(response.body.include?('id="multi_find_help"')).eq true
     expect(response.body.include?('id="multi_find_help_dialog"')).eq true
     expect(response.body.include?('id="multi_plan_panel"')).eq true
@@ -55,6 +56,8 @@ describe 'local web features' do
     expect(response.body.include?('aria-label="선택한 캐릭터 필터 열기"')).eq true
     expect(response.body.index('id="multi_find_filter"')).lt(
       response.body.index('id="multi_find_optimization"'))
+    expect(response.body.index('id="multi_find_reset"')).lt(
+      response.body.index('id="multi_find_help"'))
     expect(response.body.include?('Use ticket')).eq false
     expect(response.body.include?('1A부터 목표 캐릭터 최적 경로 계산')).eq false
     expect(response.body.include?('/asset/multi-find.js?')).eq true
@@ -169,6 +172,7 @@ describe 'local web features' do
     expect(multi_find.include?('getShareSettings: function')).eq true
     expect(multi_find.include?('decorateRouteMarks: function')).eq true
     expect(multi_find.include?('els.targets.addEventListener("click", openFilterDialog)')).eq true
+    expect(multi_find.include?('els.reset.addEventListener("click", resetTargets)')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
     expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
     expect(multi_track.include?('getShareState: function')).eq true
@@ -202,6 +206,10 @@ describe 'local web features' do
     expect(multi_plan.include?('summarizeCats')).eq true
     expect(multi_plan.include?('buildRoutePlan')).eq true
     expect(multi_plan.include?('data-plan-pick-kind')).eq true
+    expect(multi_plan.include?('allowAutomaticSpecial: true')).eq true
+    expect(multi_plan.include?('pruneInvalid: removing')).eq true
+    expect(multi_plan.include?('특수뽑기 시 도달 가능')).eq true
+    expect(multi_plan.include?('도달할 수 없는 뒤쪽 좌표')).eq true
     expect(multi_plan.include?('현재 구성으로 도달 불가')).eq true
     expect(multi_plan.include?('저장되지 않은 플랜 변경사항이 있습니다')).eq true
     expect(multi_plan_css.include?('.multi-plan-marked::after')).eq true

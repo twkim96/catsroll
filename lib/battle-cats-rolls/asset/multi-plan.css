@@ -225,7 +225,7 @@
   text-align: center;
   white-space: normal;
   transform: translate(-50%, -50%);
-  animation: multi-plan-cell-notice 1.9s ease both;
+  animation: multi-plan-cell-notice var(--multi-plan-notice-duration, 1.9s) ease both;
   pointer-events: none;
 }
 
