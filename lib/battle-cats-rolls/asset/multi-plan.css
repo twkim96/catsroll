@@ -172,6 +172,7 @@
 
 .multi-track-app.is-plan-mode td[data-plan-column-index][data-route-position] {
   position: relative;
+  z-index: 0;
   cursor: crosshair;
 }
 

@@ -78,6 +78,12 @@ assert.deepStrictEqual(onePerPosition.marks, [
   { column: 1, position: "7A", kind: "regular" }
 ], "choosing another banner at the same position replaces only that choice");
 
+assert.deepStrictEqual(plans.normalizeMark({
+  column: 0, position: "6B", kind: "guaranteed", variant: "rerolled"
+}, track), {
+  column: 0, position: "6B", kind: "guaranteed", variant: "rerolled"
+}, "RG selections preserve their rerolled guaranteed variant");
+
 assert.strictEqual(plans.summarizeCats([
   { id: 101, name: "가시루가", rarity: 4 },
   { id: 101, name: "가시루가", rarity: 4, guaranteed: true },
@@ -212,6 +218,9 @@ assert.deepStrictEqual(guaranteedRoute.auto.map((step) => step.position),
 assert.deepStrictEqual(guaranteedRoute.destinations, [
   { column: 0, position: "11B", kind: "guaranteed" }
 ]);
+assert.deepStrictEqual(guaranteedRoute.selections, [
+  { column: 0, position: "1A", kind: "guaranteed", variant: "base" }
+], "a normal guaranteed pull selects the G line");
 assert.strictEqual(plans.summarizeCats(guaranteedRoute.cats),
   "중간 울슈레, 확정 울슈레");
 
@@ -235,6 +244,41 @@ assert.strictEqual(rerollRoute.valid, true);
 assert.deepStrictEqual(rerollRoute.destinations, [
   { column: 0, position: "6B", kind: "reroll" }
 ], "choosing the R line marks its next-track destination");
+
+const guaranteedVariantEngine = Object.assign({}, fakeRouteEngine, {
+  simulateGuaranteed(pool, seed, offset, lastRareId) {
+    const result = fakeRouteEngine.simulateGuaranteed(pool, seed, offset);
+    const rerolled = pool.key === "unsafe" && offset === 11 &&
+      lastRareId === pool.id;
+    result.guaranteedLabel = routeLabel(offset) + (rerolled ? "RG" : "G");
+    const guaranteed = result.pulls[result.pulls.length - 1];
+    guaranteed.start = result.guaranteedLabel;
+    guaranteed.id = rerolled ? 138 : 770;
+    guaranteed.name = rerolled ? "석공 냥돌이" : "냥꽃 할배";
+    return result;
+  }
+});
+
+const rerolledGuaranteedRoute = plans.buildRoutePlan(guaranteedVariantEngine,
+  routeSnapshot([unsafePool]), [
+    { column: 0, position: "5A", kind: "reroll" },
+    { column: 0, position: "6B", kind: "guaranteed", variant: "rerolled" }
+  ]);
+assert.strictEqual(rerolledGuaranteedRoute.valid, true);
+assert.deepStrictEqual(rerolledGuaranteedRoute.selections, [
+  { column: 0, position: "6B", kind: "guaranteed", variant: "rerolled" }
+], "an R-path guaranteed pull selects the RG line");
+assert(plans.summarizeCats(rerolledGuaranteedRoute.cats)
+  .includes("석공 냥돌이"));
+
+const mismatchedGuaranteedRoute = plans.buildRoutePlan(guaranteedVariantEngine,
+  routeSnapshot([unsafePool]), [
+    { column: 0, position: "5A", kind: "reroll" },
+    { column: 0, position: "6B", kind: "guaranteed", variant: "base" }
+  ]);
+assert.strictEqual(mismatchedGuaranteedRoute.valid, false,
+  "the G line is rejected when the saved route necessarily reaches RG");
+assert.strictEqual(mismatchedGuaranteedRoute.invalid.position, "6B");
 
 const extendedRoute = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([safePool, safePool]), [

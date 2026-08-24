@@ -188,6 +188,8 @@ describe 'local web features' do
     expect(multi_track.include?('isolatedPlanSession')).eq true
     expect(multi_track.include?('MultiPlanApp.decorateMarks(copy)')).eq true
     expect(multi_track.include?('getPlanSelectedCats: function')).eq true
+    expect(multi_track.include?('data-plan-pick-variant')).eq true
+    expect(multi_track.include?('cat.rerolled.guaranteed, row, "RG"')).eq true
     expect(multi_plan.include?('battle-cats-rolls.multiPlans.v1')).eq true
     expect(multi_plan.include?('변경 내용은 플랜 저장을 누를 때만 반영됩니다')).eq true
     expect(multi_plan.include?('event.stopPropagation()')).eq true
@@ -209,6 +211,7 @@ describe 'local web features' do
     expect(multi_plan_css.include?('.multi-plan-next')).eq true
     expect(multi_plan_css.include?('.multi-plan-route-line')).eq true
     expect(multi_plan_css.include?('.multi-plan-cell-notice')).eq true
+    expect(multi_plan_css.include?('z-index: 0')).eq true
     expect(multi_plan_css.include?('max-width: none')).eq true
     expect(table_share.include?('MultiTrackApp.getRowCount()')).eq true
     expect(multi_view.include?('.multi-track-app.is-ipad .multi-track-table th')).eq false
