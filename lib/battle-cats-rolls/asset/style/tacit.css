@@ -471,8 +471,11 @@ h1, h2, h3, h4, h5, h6 {
 .cat { vertical-align: bottom; }
 #notice { background-color: pink; }
 #seed_input { width: 10em; }
-#count_input, #level_input { width: 3.5em; }
-#rare_input, #supa_input, #uber_input, #ui_select { width: 5em; }
+#rare_input, #supa_input, #uber_input { width: 5em; }
+#ui_select, #theme_select { width: 4.3em; }
+#highlighting_select { width: 3.6em; }
+#name_select, #count_input, #level_input { width: 3.5em; }
+#display_select { width: 3.2em; }
 .track_avatar_wrap {
   display: flex;
   align-items: flex-end;
