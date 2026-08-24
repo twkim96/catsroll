@@ -37,6 +37,8 @@ assert.strictEqual(virtual.appleSafariDevice(ipadChrome), "");
 assert.strictEqual(virtual.appleSafariDevice(macSafari), "");
 assert.strictEqual(virtual.enabledFor("ipad", { ipad: true }), true);
 assert.strictEqual(virtual.enabledFor("iphone", { ipad: true }), false);
+assert.strictEqual(virtual.enabledFor("iphone",
+  { ipad: true, iphone: true }), true);
 
 const model = virtual.create(500, {
   chunkSize: 40,

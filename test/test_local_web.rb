@@ -161,7 +161,8 @@ describe 'local web features' do
     multi_virtual = File.read('lib/battle-cats-rolls/asset/multi-track-virtual.js')
     expect(multi_virtual.include?('Number(navigator.maxTouchPoints || 0) > 1')).eq true
     expect(multi_virtual.include?('return "iphone"')).eq true
-    expect(multi_track.include?('virtualizedAppleSafariDevices = { ipad: true }')).eq true
+    expect(multi_track.include?(
+      'virtualizedAppleSafariDevices = { ipad: true, iphone: true }')).eq true
     expect(multi_track.include?('bufferChunks: 2')).eq true
     expect(multi_track.include?('multi-track:window-updated')).eq true
     expect(multi_track.include?('populateCaptureClone')).eq true
