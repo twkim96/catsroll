@@ -46,6 +46,11 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_plan_dialog"')).eq true
     expect(response.body.include?('id="multi_plan_cats_dialog"')).eq true
     expect(response.body.include?('id="multi_plan_cats_list"')).eq true
+    expect(response.body.include?('id="multi_plan_info_name"')).eq true
+    expect(response.body.include?('id="multi_plan_info_status"')).eq true
+    expect(response.body.include?('id="multi_plan_info_reset"')).eq true
+    expect(response.body.include?('id="multi_plan_info_save"')).eq true
+    expect(response.body.include?('id="multi_plan_cats_title">플랜 정보')).eq true
     expect(response.body.include?('id="multi_plan_confirm_dialog"')).eq true
     expect(response.body.index('id="multi_find_result"')).lt(
       response.body.index('id="multi_plan_panel"'))
@@ -195,6 +200,9 @@ describe 'local web features' do
     expect(recent_seeds.include?('share.textContent = "공유"')).eq true
     expect(recent_seeds.include?('CatsRollTableShare.open()')).eq true
     expect(recent_seeds.include?('isSharedMultiSession()')).eq true
+    expect(recent_seeds.include?('plan.id = "recent-seeds-plan"')).eq true
+    expect(recent_seeds.include?('plan.textContent = "플랜"')).eq true
+    expect(recent_seeds.include?('MultiPlanApp.openInfo()')).eq true
     expect(multi_find.include?('getDestination: function')).eq true
     expect(multi_find.include?('getShareSettings: function')).eq true
     expect(multi_find.include?('decorateRouteMarks: function')).eq true
@@ -241,6 +249,9 @@ describe 'local web features' do
     expect(multi_plan.include?('저장되지 않은 플랜 변경사항이 있습니다')).eq true
     expect(multi_plan.include?('공유받은 임시 플랜입니다')).eq true
     expect(multi_plan.include?('getShareState: sharePlanState')).eq true
+    expect(multi_plan.include?('openInfo: openSelectedCatsDialog')).eq true
+    expect(multi_plan.include?('multi_plan_info_status')).eq true
+    expect(multi_plan.include?('getTargetIds')).eq true
     expect(multi_plan.include?('openSelectedCatsDialog')).eq true
     expect(multi_plan.include?(
       'els.reset.addEventListener("click", requestPlanReset)')).eq true
@@ -250,6 +261,7 @@ describe 'local web features' do
     expect(multi_plan_css.include?('.multi-plan-summary-output')).eq true
     expect(multi_plan_css.include?('.multi-plan-cats-dialog')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-uber')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cat-target')).eq true
     expect(multi_plan_css.include?(
       'grid-template-columns: repeat(4, minmax(0, 1fr))')).eq true
     expect(multi_plan_css.include?('overflow-x: hidden')).eq true

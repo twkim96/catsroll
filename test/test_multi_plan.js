@@ -99,6 +99,9 @@ assert.deepStrictEqual(plans.catSummaryEntries([
   { id: 101, name: "가시루가", rarity: 4, count: 2 },
   { id: 202, name: "레전드 냥코", rarity: 5, count: 1 }
 ], "the expanded selected-cat view retains rarity and duplicate counts");
+assert.deepStrictEqual(plans.normalizeTargetCatIds([
+  101, "202", 101, null, -1, "invalid"
+]), [101, 202], "plan target badges use unique valid character IDs");
 
 assert.deepStrictEqual(plans.routeDecorationState({
   visible: true,

@@ -227,10 +227,25 @@
       aria-hidden="true"></div>
     <div class="event-filter-panel">
       <div class="event-filter-header">
-        <h2 id="multi_plan_cats_title">선택 울슈레·레전드레어</h2>
+        <h2 id="multi_plan_cats_title">플랜 정보</h2>
         <button type="button" class="event-filter-close"
           data-multi-plan-cats-close aria-label="닫기">&times;</button>
       </div>
+      <div class="multi-plan-info-controls">
+        <label class="multi-plan-info-name" for="multi_plan_info_name">
+          <span>플랜명</span>
+          <input id="multi_plan_info_name" type="text" maxlength="80"
+            placeholder="플랜명을 입력하세요" autocomplete="off">
+        </label>
+        <div class="multi-plan-info-actions">
+          <button id="multi_plan_info_reset" class="multi-plan-button"
+            type="button">초기화</button>
+          <button id="multi_plan_info_save"
+            class="multi-plan-button is-primary" type="button">저장</button>
+        </div>
+      </div>
+      <p id="multi_plan_info_status" class="multi-plan-info-status"
+        role="status" aria-live="polite"></p>
       <div class="multi-plan-cats-content">
         <div id="multi_plan_cats_list" class="multi-plan-cats-list"></div>
         <p id="multi_plan_cats_empty" class="multi-plan-cats-empty">

@@ -299,7 +299,62 @@
 }
 
 .multi-plan-cats-dialog .event-filter-panel {
-  width: min(42rem, calc(100vw - 2rem));
+  width: min(48rem, calc(100vw - 2rem));
+}
+
+.multi-plan-info-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: .65rem;
+  align-items: end;
+  padding: .72rem .8rem .45rem;
+}
+
+.multi-plan-info-name {
+  display: grid;
+  gap: .18rem;
+  min-width: 0;
+  color: var(--multi-muted);
+  font-size: .66rem;
+  font-weight: 700;
+}
+
+.multi-plan-info-name input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 1.7rem;
+  padding: .16rem 0 .06rem;
+  border: 0;
+  border-bottom: 1px solid var(--multi-ink);
+  border-radius: 0;
+  background: transparent;
+  color: var(--multi-ink);
+  font: inherit;
+  font-size: .84rem;
+  font-weight: 400;
+}
+
+.multi-plan-info-actions {
+  display: flex;
+  gap: .42rem;
+}
+
+.multi-plan-info-actions .multi-plan-button {
+  min-width: 4.15rem;
+}
+
+.multi-plan-info-status {
+  margin: 0;
+  padding: 0 .8rem .7rem;
+  border-bottom: 1px solid var(--multi-line);
+  color: var(--multi-muted);
+  font-size: .7rem;
+  font-weight: 650;
+  line-height: 1.4;
+}
+
+.multi-plan-info-status.is-error {
+  color: var(--multi-warn);
 }
 
 .multi-plan-cats-content {
@@ -398,6 +453,19 @@
   color: var(--multi-accent);
   font-size: .68rem;
   font-weight: 800;
+  white-space: nowrap;
+}
+
+.multi-plan-cat-target {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: .08rem .3rem;
+  border-radius: 4px;
+  background: var(--multi-accent);
+  color: #fff;
+  font-size: .58rem;
+  font-weight: 800;
+  line-height: 1.35;
   white-space: nowrap;
 }
 
