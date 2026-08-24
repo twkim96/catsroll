@@ -86,6 +86,36 @@ assert.strictEqual(plans.summarizeCats([
 ]), "가시루가 ×2, 레전드 냥코",
 "uber and legend selections are counted while other rarities are ignored");
 
+assert.deepStrictEqual(plans.routeDecorationState({
+  visible: true,
+  active: false,
+  positionSelected: false,
+  destinationKind: "guaranteed",
+  positionHasDestination: true,
+  routeStep: null
+}), { selected: false, destination: true, route: false },
+"the orange destination remains visible at its own banner cell");
+
+assert.deepStrictEqual(plans.routeDecorationState({
+  visible: true,
+  active: false,
+  positionSelected: false,
+  destinationKind: null,
+  positionHasDestination: true,
+  routeStep: { column: 1, position: "12B", kind: "regular" }
+}), { selected: false, destination: false, route: false },
+"an orange destination anywhere in a position suppresses blue route boxes");
+
+assert.deepStrictEqual(plans.routeDecorationState({
+  visible: true,
+  active: true,
+  positionSelected: true,
+  destinationKind: "guaranteed",
+  positionHasDestination: true,
+  routeStep: { column: 0, position: "12B", kind: "regular" }
+}), { selected: true, destination: false, route: false },
+"a manual black selection suppresses destination and route boxes in its position");
+
 function routeLabel(offset) {
   return (Math.floor(offset / 2) + 1) + (offset % 2 ? "B" : "A");
 }
