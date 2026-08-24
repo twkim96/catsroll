@@ -34,6 +34,18 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_find_max_legend_ticket"')).eq true
     expect(response.body.include?('id="multi_find_help"')).eq true
     expect(response.body.include?('id="multi_find_help_dialog"')).eq true
+    expect(response.body.include?('id="multi_plan_panel"')).eq true
+    expect(response.body.include?('id="multi_plan_mode"')).eq true
+    expect(response.body.include?('id="multi_plan_load"')).eq true
+    expect(response.body.include?('id="multi_plan_name"')).eq true
+    expect(response.body.include?('id="multi_plan_save"')).eq true
+    expect(response.body.include?('id="multi_plan_selected_cats"')).eq true
+    expect(response.body.include?('id="multi_plan_dialog"')).eq true
+    expect(response.body.include?('id="multi_plan_confirm_dialog"')).eq true
+    expect(response.body.index('id="multi_find_result"')).lt(
+      response.body.index('id="multi_plan_panel"'))
+    expect(response.body.index('id="multi_plan_panel"')).lt(
+      response.body.index('id="multi_tables"'))
     expect(response.body.include?('검색 기준 안내')).eq true
     expect(response.body.include?('value="cost" selected>최소코스트')).eq true
     expect(response.body.include?('value="distance">최단거리')).eq true
@@ -49,6 +61,9 @@ describe 'local web features' do
     expect(response.body.include?('/asset/multi-share.js?')).eq true
     expect(response.body.include?('/asset/multi-track-virtual.js?')).eq true
     expect(response.body.include?('/asset/multi-find.css?')).eq true
+    expect(response.body.include?('/asset/multi-find-engine.js?')).eq true
+    expect(response.body.include?('/asset/multi-plan.js?')).eq true
+    expect(response.body.include?('/asset/multi-plan.css?')).eq true
     expect(response.body.include?('/asset/table-share.js?')).eq true
     expect(response.body.include?(
       'data-html2canvas="/asset/html2canvas.min.js?1.4.1"')).eq true
@@ -132,6 +147,8 @@ describe 'local web features' do
     multi_find = File.read('lib/battle-cats-rolls/asset/multi-find.js')
     multi_track = File.read('lib/battle-cats-rolls/asset/multi-track.js')
     multi_share = File.read('lib/battle-cats-rolls/asset/multi-share.js')
+    multi_plan = File.read('lib/battle-cats-rolls/asset/multi-plan.js')
+    multi_plan_css = File.read('lib/battle-cats-rolls/asset/multi-plan.css')
     multi_view = File.read('lib/battle-cats-rolls/view/multi.erb')
 
     expect(table_share.include?('몇 번까지 포함할까요?')).eq true
@@ -166,6 +183,31 @@ describe 'local web features' do
     expect(multi_track.include?('bufferChunks: 2')).eq true
     expect(multi_track.include?('multi-track:window-updated')).eq true
     expect(multi_track.include?('populateCaptureClone')).eq true
+    expect(multi_track.include?('data-plan-column-index')).eq true
+    expect(multi_track.include?('loadPlanState: function')).eq true
+    expect(multi_track.include?('isolatedPlanSession')).eq true
+    expect(multi_track.include?('MultiPlanApp.decorateMarks(copy)')).eq true
+    expect(multi_track.include?('getPlanSelectedCats: function')).eq true
+    expect(multi_plan.include?('battle-cats-rolls.multiPlans.v1')).eq true
+    expect(multi_plan.include?('변경 내용은 플랜 저장을 누를 때만 반영됩니다')).eq true
+    expect(multi_plan.include?('event.stopPropagation()')).eq true
+    expect(multi_plan.include?('els.mode.checked = true')).eq true
+    expect(multi_plan.include?('플랜 덮어쓰기')).eq true
+    expect(multi_plan.include?('findPlanByName')).eq true
+    expect(multi_plan.include?('removePlan')).eq true
+    expect(multi_plan.include?('data-plan-locked')).eq true
+    expect(multi_plan.include?('trackFingerprint')).eq true
+    expect(multi_plan.include?('summarizeCats')).eq true
+    expect(multi_plan.include?('buildRoutePlan')).eq true
+    expect(multi_plan.include?('data-plan-pick-kind')).eq true
+    expect(multi_plan.include?('현재 구성으로 도달 불가')).eq true
+    expect(multi_plan_css.include?('.multi-plan-marked::after')).eq true
+    expect(multi_plan_css.include?('.multi-plan-delete')).eq true
+    expect(multi_plan_css.include?('.multi-plan-summary-output')).eq true
+    expect(multi_plan_css.include?('.multi-plan-route')).eq true
+    expect(multi_plan_css.include?('.multi-plan-next')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cell-notice')).eq true
+    expect(multi_plan_css.include?('max-width: none')).eq true
     expect(table_share.include?('MultiTrackApp.getRowCount()')).eq true
     expect(multi_view.include?('.multi-track-app.is-ipad .multi-track-table th')).eq false
     expect(multi_view.include?('position: -webkit-sticky')).eq true

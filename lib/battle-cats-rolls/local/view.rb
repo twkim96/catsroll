@@ -272,6 +272,18 @@ module BattleCatsRolls
             '../asset/multi-find.css', __dir__)).hexdigest
       end
 
+      def multi_plan_digest
+        @multi_plan_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-plan.js', __dir__)).hexdigest
+      end
+
+      def multi_plan_css_digest
+        @multi_plan_css_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/multi-plan.css', __dir__)).hexdigest
+      end
+
       def seed_view_admin_digest
         @seed_view_admin_digest ||=
           Digest::MD5.file(File.expand_path(

@@ -2,6 +2,7 @@
   data-find-worker="/asset/multi-find-worker.js?<%= self.class.multi_find_worker_digest %>"
   data-find-engine="/asset/multi-find-engine.js?<%= self.class.multi_find_engine_digest %>">
   <link rel="stylesheet" href="/asset/multi-find.css?<%= self.class.multi_find_css_digest %>">
+  <link rel="stylesheet" href="/asset/multi-plan.css?<%= self.class.multi_plan_css_digest %>">
   <div class="multi-hero">
     <div>
       <p class="multi-kicker">Local multi</p>
@@ -89,6 +90,37 @@
   </details>
   <section id="multi_find_result" class="multi-find-result" hidden
     aria-live="polite"></section>
+  <section id="multi_plan_panel" class="multi-plan-panel" aria-label="플랜 모드">
+    <div class="multi-plan-controls">
+      <label class="multi-plan-toggle-field">
+        <span class="multi-plan-label">플랜 모드</span>
+        <span class="multi-plan-switch">
+          <input id="multi_plan_mode" type="checkbox">
+          <span class="multi-plan-switch-ui" aria-hidden="true"></span>
+        </span>
+      </label>
+      <div class="multi-plan-action">
+        <span class="multi-plan-label">플랜</span>
+        <button id="multi_plan_load" class="multi-plan-button" type="button"
+          aria-haspopup="dialog" aria-controls="multi_plan_dialog">불러오기</button>
+      </div>
+      <label class="multi-plan-field">
+        <span class="multi-plan-label">플랜명</span>
+        <input id="multi_plan_name" type="text" maxlength="80"
+          placeholder="플랜명을 입력하세요" autocomplete="off">
+      </label>
+      <div class="multi-plan-summary">
+        <span class="multi-plan-label">선택 울슈레·레레</span>
+        <output id="multi_plan_selected_cats"
+          class="multi-plan-summary-output is-empty"
+          aria-live="polite">선택 없음</output>
+      </div>
+      <button id="multi_plan_save" class="multi-plan-button is-primary"
+        type="button">저장</button>
+    </div>
+    <p id="multi_plan_status" class="multi-plan-status" role="status"
+      aria-live="polite" hidden></p>
+  </section>
   <div id="multi_tables" class="multi-tables"></div>
 
   <dialog id="multi_find_dialog" class="event-filter-dialog multi-find-dialog"
@@ -162,6 +194,46 @@
     </div>
   </dialog>
 
+  <dialog id="multi_plan_dialog" class="event-filter-dialog multi-plan-dialog"
+    aria-labelledby="multi_plan_dialog_title">
+    <div class="event-filter-backdrop" data-multi-plan-backdrop
+      aria-hidden="true"></div>
+    <div class="event-filter-panel">
+      <div class="event-filter-header">
+        <h2 id="multi_plan_dialog_title">플랜 불러오기</h2>
+        <button type="button" class="event-filter-close"
+          data-multi-plan-close aria-label="닫기">&times;</button>
+      </div>
+      <div id="multi_plan_list" class="multi-plan-list"></div>
+      <p id="multi_plan_empty" class="multi-plan-empty">
+        저장된 플랜이 없습니다.</p>
+    </div>
+  </dialog>
+
+  <dialog id="multi_plan_confirm_dialog"
+    class="event-filter-dialog multi-plan-confirm-dialog"
+    aria-labelledby="multi_plan_confirm_title"
+    aria-describedby="multi_plan_confirm_message">
+    <div class="event-filter-backdrop" data-multi-plan-confirm-backdrop
+      aria-hidden="true"></div>
+    <div class="event-filter-panel">
+      <div class="event-filter-header">
+        <h2 id="multi_plan_confirm_title">플랜 확인</h2>
+        <button type="button" class="event-filter-close"
+          data-multi-plan-confirm-close aria-label="닫기">&times;</button>
+      </div>
+      <div class="multi-plan-confirm-content">
+        <p id="multi_plan_confirm_message"></p>
+        <div class="multi-plan-confirm-actions">
+          <button type="button" class="multi-plan-button"
+            data-multi-plan-confirm-cancel>취소</button>
+          <button id="multi_plan_confirm_accept" type="button"
+            class="multi-plan-button is-danger">확인</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="multi_event_filter_dialog" class="event-filter-dialog"
     aria-labelledby="multi_event_filter_title">
     <div class="event-filter-backdrop" data-multi-filter-backdrop
@@ -205,10 +277,12 @@
 
   <script id="multi_track_data" type="application/json"><%= json_script(arg[:multi_data]) %></script>
   <script src="/asset/track-engine.js" defer></script>
+  <script src="/asset/multi-find-engine.js?<%= self.class.multi_find_engine_digest %>" defer></script>
   <script src="/asset/multi-share.js?<%= self.class.multi_share_digest %>" defer></script>
   <script src="/asset/multi-track-virtual.js?<%= self.class.multi_track_virtual_digest %>" defer></script>
   <script src="/asset/multi-track.js?<%= self.class.multi_track_digest %>" defer></script>
   <script src="/asset/multi-find.js?<%= self.class.multi_find_digest %>" defer></script>
+  <script src="/asset/multi-plan.js?<%= self.class.multi_plan_digest %>" defer></script>
 </section>
 
 <style>
