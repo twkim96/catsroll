@@ -40,6 +40,7 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_plan_mode"')).eq true
     expect(response.body.include?('id="multi_plan_load"')).eq true
     expect(response.body.include?('id="multi_plan_name"')).eq true
+    expect(response.body.include?('id="multi_plan_reset"')).eq true
     expect(response.body.include?('id="multi_plan_save"')).eq true
     expect(response.body.include?('id="multi_plan_selected_cats"')).eq true
     expect(response.body.include?('id="multi_plan_dialog"')).eq true
@@ -54,6 +55,8 @@ describe 'local web features' do
       response.body.index('id="multi_find_result"'))
     expect(response.body.index('id="multi_plan_panel"')).lt(
       response.body.index('id="multi_tables"'))
+    expect(response.body.index('id="multi_plan_reset"')).lt(
+      response.body.index('id="multi_plan_save"'))
     expect(response.body.include?('검색 기준 안내')).eq true
     expect(response.body.include?('value="cost" selected>최소코스트')).eq true
     expect(response.body.include?('value="distance">최단거리')).eq true
@@ -239,6 +242,9 @@ describe 'local web features' do
     expect(multi_plan.include?('공유받은 임시 플랜입니다')).eq true
     expect(multi_plan.include?('getShareState: sharePlanState')).eq true
     expect(multi_plan.include?('openSelectedCatsDialog')).eq true
+    expect(multi_plan.include?(
+      'els.reset.addEventListener("click", requestPlanReset)')).eq true
+    expect(multi_plan.include?('저장된 플랜은 변경되지 않았습니다')).eq true
     expect(multi_plan_css.include?('.multi-plan-marked::after')).eq true
     expect(multi_plan_css.include?('.multi-plan-delete')).eq true
     expect(multi_plan_css.include?('.multi-plan-summary-output')).eq true

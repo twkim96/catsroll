@@ -12,7 +12,7 @@
 .multi-plan-controls {
   display: grid;
   grid-template-columns: 4.8rem 5.5rem minmax(9rem, .75fr)
-    minmax(16rem, 1.35fr) 5.25rem;
+    minmax(16rem, 1.35fr) 4.4rem 4.35rem;
   gap: .42rem;
   align-items: end;
 }
