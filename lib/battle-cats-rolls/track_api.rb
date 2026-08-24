@@ -29,6 +29,13 @@ module BattleCatsRolls
       'kr' => 'KR',
       'jp' => 'JP'
     }.freeze
+    # Cat metadata only exposes rarity. Keep the regular rare-capsule Super
+    # Rare roster by stable unit ID so limited/collaboration Super Rares remain
+    # available as Find targets.
+    RegularSupaCatIds = [
+      31, 32, 33, 34, 36, 37, 40, 41, 62,
+      151, 152, 153, 154, 200, 308, 378, 523
+    ].freeze
 
     get '/track.json' do
       route = Route.new(Request.new(env))
@@ -76,6 +83,7 @@ module BattleCatsRolls
 
     def self.event_series_data route
       series = {}
+      cat_aliases = event_series_cat_aliases(route.ball)
 
       route.ball.events.each_value do |info|
         series_id = route.ball.gacha.dig(info['id'], 'series_id')
@@ -125,9 +133,39 @@ module BattleCatsRolls
             EventSeriesNames.shortcuts(item[:id]).reverse_each do |shortcut|
               item[:aliases].unshift(shortcut) unless item[:aliases].include?(shortcut)
             end
+            Array(cat_aliases[item[:id]]).each do |name|
+              item[:aliases] << name unless item[:aliases].include?(name)
+            end
             item.reject{ |key, _| key == :latest }
           end
       }
+    end
+
+    def self.event_series_cat_aliases ball
+      kr_cats = (Route.ball_kr || ball).cats
+      aliases = Hash.new{ |hash, key| hash[key] = [] }
+
+      ball.gacha.each_value do |info|
+        series_id = info['series_id']
+        next if series_id.nil?
+
+        Array(info['cats']).each do |id|
+          kr_info = kr_cats[id]
+          local_info = ball.cats[id]
+          rarity = kr_info&.dig('rarity') || local_info&.dig('rarity')
+          next unless [Cat::Uber, Cat::Legend].include?(rarity)
+
+          [kr_info, local_info].compact.each do |cat|
+            Array(cat['name']).each do |name|
+              next if name.to_s.empty? || aliases[series_id].include?(name)
+
+              aliases[series_id] << name
+            end
+          end
+        end
+      end
+
+      aliases
     end
 
     def self.event_filter_name name
@@ -227,6 +265,7 @@ module BattleCatsRolls
         jp_info = balls['jp'].cats[id]
         rarity = kr_info&.dig('rarity') || jp_info&.dig('rarity')
         next unless [Cat::Supa, Cat::Uber, Cat::Legend].include?(rarity)
+        next if rarity == Cat::Supa && RegularSupaCatIds.include?(id)
 
         kr = pick_cat_name(kr_info, name_index)
         jp = pick_cat_name(jp_info, name_index)

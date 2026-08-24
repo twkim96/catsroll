@@ -5,12 +5,12 @@ const catalog = require(
   "../lib/battle-cats-rolls/asset/multi-find-catalog.js");
 
 const cats = [
-  { id: 1, name: "나비 고양이" },
-  { id: 2, name: "가시루가" },
-  { id: 3, name: "다크 캣" },
-  { id: 4, name: "가네샤" },
-  { id: 5, name: "플래티넘 전용" },
-  { id: 6, name: "기타 고양이" }
+  { id: 1, name: "나비 고양이", rarity: 3 },
+  { id: 2, name: "가시루가", rarity: 4 },
+  { id: 3, name: "다크 캣", rarity: 3 },
+  { id: 4, name: "가네샤", rarity: 5 },
+  { id: 5, name: "플래티넘 전용", rarity: 4 },
+  { id: 6, name: "기타 고양이", rarity: 3 }
 ];
 const series = [
   { id: 21, label: "플래티넘 뽑기", aliases: ["플뽑"],
@@ -28,11 +28,13 @@ const selected = [
 const groups = catalog.organize(cats, series, selected);
 assert.deepStrictEqual(groups.map((group) => group.id),
   [21, 21, 1, 2, 21, null]);
-assert.deepStrictEqual(groups[0].cats.map((cat) => cat.id), [4, 2, 1, 3, 5]);
-assert.deepStrictEqual(groups[1].cats.map((cat) => cat.id), [2, 1]);
+assert.deepStrictEqual(groups.slice(0, 2).map((group) => group.label),
+  ["두 번째 비교", "첫 번째 비교"]);
+assert.deepStrictEqual(groups[0].cats.map((cat) => cat.id), [2, 1]);
+assert.deepStrictEqual(groups[1].cats.map((cat) => cat.id), [4, 2, 5, 1, 3]);
 assert.deepStrictEqual(groups[2].cats.map((cat) => cat.id), [2, 1]);
 assert.deepStrictEqual(groups[3].cats.map((cat) => cat.id), [4, 2, 3]);
-assert.deepStrictEqual(groups[4].cats.map((cat) => cat.id), [4, 2, 1, 3, 5]);
+assert.deepStrictEqual(groups[4].cats.map((cat) => cat.id), [4, 2, 5, 1, 3]);
 assert.deepStrictEqual(groups[5].cats.map((cat) => cat.id), [6]);
 
 const renderedIds = groups.flatMap((group) => group.cats.map((cat) => cat.id));

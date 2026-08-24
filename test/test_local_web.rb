@@ -100,6 +100,10 @@ describe 'local web features' do
     find_cats = payload['find_cats']
     expect(find_cats.empty?).eq false
     expect(find_cats.all?{ |cat| [3, 4, 5].include?(cat['rarity']) }).eq true
+    expect(find_cats.none? do |cat|
+      BattleCatsRolls::TrackApi::RegularSupaCatIds.include?(cat['id'])
+    end).eq true
+    expect(find_cats.find{ |cat| cat['id'] == 132 }['name']).eq '귀요미'
     expect(find_cats.find{ |cat| cat['id'] == 564 }['name']).eq '아쿠아슈터 사키'
 
     find_series = payload['find_series']
@@ -351,6 +355,16 @@ describe 'local web features' do
     expect(ultra_souls['label']).eq '초고대 전설의 용사 울트라 소울즈'
     expect(ultra_souls['aliases'].any?{ |name| name.include?('냥꽃 할배') }).eq true
     expect(ultra_souls['aliases'].include?('울소')).eq true
+    expect(ultra_souls['aliases'].include?('석공 냥돌이')).eq true
+    expect(ultra_souls['aliases'].include?('이동요새 카무이')).eq true
+    expect(ultra_souls['aliases'].include?('고양이 보살')).eq false
+
+    jp_response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
+      '/events.json?lang=jp&catalog=series')
+    jp_data = JSON.parse(jp_response.body)
+    jp_ultra_souls = jp_data['series'].find{ |item| item['id'] == 6 }
+    expect(jp_response.status).eq 200
+    expect(jp_ultra_souls['aliases'].include?('석공 냥돌이')).eq true
 
     shortcuts = {
       1 => '다군', 3 => '갤걸', 4 => '드엠', 18 => '갓즈',
