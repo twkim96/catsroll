@@ -250,6 +250,9 @@ describe 'local web features' do
     expect(multi_plan_css.include?('.multi-plan-summary-output')).eq true
     expect(multi_plan_css.include?('.multi-plan-cats-dialog')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-uber')).eq true
+    expect(multi_plan_css.include?(
+      'grid-template-columns: repeat(4, minmax(0, 1fr))')).eq true
+    expect(multi_plan_css.include?('overflow-x: hidden')).eq true
     expect(multi_plan_css.include?('.multi-plan-route')).eq true
     expect(multi_plan_css.include?('.multi-plan-next')).eq true
     expect(multi_plan_css.include?('.multi-plan-route-line')).eq true
