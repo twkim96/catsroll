@@ -302,6 +302,12 @@ module BattleCatsRolls
             '../asset/event-filter.js', __dir__)).hexdigest
       end
 
+      def event_series_search_digest
+        @event_series_search_digest ||=
+          Digest::MD5.file(File.expand_path(
+            '../asset/event-series-search.js', __dir__)).hexdigest
+      end
+
       def event_filter_css_digest
         @event_filter_css_digest ||=
           Digest::MD5.file(File.expand_path(

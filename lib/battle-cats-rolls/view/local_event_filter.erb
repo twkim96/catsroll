@@ -31,8 +31,18 @@
 
       <div class="event-filter-search-wrap">
         <label for="event_filter_search">시리즈 검색</label>
-        <input id="event_filter_search" type="search"
-          placeholder="이벤트명, 캐릭터명, 시리즈 ID">
+        <div class="event-filter-query" data-event-filter-query>
+          <div class="event-filter-search-box">
+            <span class="event-filter-search-chips"
+              data-event-filter-search-chips></span>
+            <input id="event_filter_search" type="search"
+              autocomplete="off" aria-autocomplete="list"
+              aria-controls="event_filter_suggestions" aria-expanded="false"
+              placeholder="이벤트명, 캐릭터명, 시리즈 ID">
+          </div>
+          <div id="event_filter_suggestions" class="event-filter-suggestions"
+            data-event-filter-suggestions role="listbox" hidden></div>
+        </div>
       </div>
 
       <section class="event-filter-section event-filter-selected-section"

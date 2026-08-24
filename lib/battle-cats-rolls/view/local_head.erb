@@ -15,6 +15,8 @@
 <%- if route.path_info.match?(%r{\A/(?:seek|multi)?\z}) -%>
 <link href="/asset/event-filter.css?<%= self.class.event_filter_css_digest %>"
   rel="stylesheet" type="text/css">
+<script src="/asset/event-series-search.js?<%= self.class.event_series_search_digest %>"
+  defer></script>
 <%- end -%>
 <%- if route.path_info.match?(%r{\A/(?:seek)?\z}) -%>
 <script src="/asset/event-filter.js?<%= self.class.event_filter_digest %>" defer></script>

@@ -26,6 +26,7 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_found"')).eq true
     expect(response.body.include?('id="multi_found_cats"')).eq true
     expect(response.body.include?('id="multi_event_filter_dialog"')).eq true
+    expect(response.body.include?('id="multi_event_filter_suggestions"')).eq true
     expect(response.body.include?('id="multi_find_dialog"')).eq true
     expect(response.body.include?('id="multi_find_result"')).eq true
     expect(response.body.include?('id="multi_find_optimization"')).eq true
@@ -47,6 +48,10 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_plan_confirm_dialog"')).eq true
     expect(response.body.index('id="multi_find_result"')).lt(
       response.body.index('id="multi_plan_panel"'))
+    expect(response.body.index('id="multi_found"')).lt(
+      response.body.index('id="multi_find_panel"'))
+    expect(response.body.index('id="multi_find_panel"')).lt(
+      response.body.index('id="multi_find_result"'))
     expect(response.body.index('id="multi_plan_panel"')).lt(
       response.body.index('id="multi_tables"'))
     expect(response.body.include?('검색 기준 안내')).eq true
@@ -76,6 +81,7 @@ describe 'local web features' do
     expect(response.body.include?('data-find-worker="/asset/multi-find-worker.js?')).eq true
     expect(response.body.include?('data-find-engine="/asset/multi-find-engine.js?')).eq true
     expect(response.body.include?('/asset/event-filter.css?')).eq true
+    expect(response.body.include?('/asset/event-series-search.js?')).eq true
     expect(response.body.include?('@media (max-width: 820px)')).eq false
     expect(response.body.include?('id="multi_share_notice"')).eq true
     expect(response.body.include?('기존 브라우저 설정은 바뀌지 않습니다')).eq true
@@ -276,7 +282,9 @@ describe 'local web features' do
     expect(response.body.include?('id="event_filter_dialog"')).eq true
     expect(response.body.include?('data-event-filter-backdrop')).eq true
     expect(response.body.include?('data-event-filter-reset')).eq true
+    expect(response.body.include?('id="event_filter_suggestions"')).eq true
     expect(response.body.include?('/asset/event-filter.css?')).eq true
+    expect(response.body.include?('/asset/event-series-search.js?')).eq true
     expect(response.body.include?('/asset/event-filter.js?')).eq true
     expect(response.body.index('event_filter_selected_title')).lt(
       response.body.index('data-event-filter-reset'))
@@ -359,12 +367,28 @@ describe 'local web features' do
     expect(ultra_souls['aliases'].include?('이동요새 카무이')).eq true
     expect(ultra_souls['aliases'].include?('고양이 보살')).eq false
 
+    kachi = data['characters'].find{ |item| item['id'] == 138 }
+    agent = data['characters'].find{ |item| item['id'] == 811 }
+    expect(data['characters'].map{ |item| item['id'] }.uniq.size).
+      eq data['characters'].size
+    expect(data['characters'].all? do |item|
+      item['series_ids'].uniq.size == item['series_ids'].size
+    end).eq true
+    expect(kachi['name']).eq '석공 냥돌이'
+    expect(kachi['names']).include?('이동요새 카무이')
+    expect(kachi['series_ids']).include?(6)
+    expect(agent['names']).include?('에이전트 스탈')
+    expect(agent['series_ids']).include?(39)
+    expect(agent['series_ids']).include?(42)
+
     jp_response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
       '/events.json?lang=jp&catalog=series')
     jp_data = JSON.parse(jp_response.body)
     jp_ultra_souls = jp_data['series'].find{ |item| item['id'] == 6 }
     expect(jp_response.status).eq 200
     expect(jp_ultra_souls['aliases'].include?('석공 냥돌이')).eq true
+    expect(jp_data['characters'].find{ |item| item['id'] == 138 }['name']).
+      eq '석공 냥돌이'
 
     shortcuts = {
       1 => '다군', 3 => '갤걸', 4 => '드엠', 18 => '갓즈',

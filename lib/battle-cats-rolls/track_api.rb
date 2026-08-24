@@ -83,7 +83,8 @@ module BattleCatsRolls
 
     def self.event_series_data route
       series = {}
-      cat_aliases = event_series_cat_aliases(route.ball)
+      characters = event_series_characters(route.ball)
+      cat_aliases = event_series_cat_aliases(characters)
 
       route.ball.events.each_value do |info|
         series_id = route.ball.gacha.dig(info['id'], 'series_id')
@@ -137,13 +138,14 @@ module BattleCatsRolls
               item[:aliases] << name unless item[:aliases].include?(name)
             end
             item.reject{ |key, _| key == :latest }
-          end
+          end,
+        characters: characters
       }
     end
 
-    def self.event_series_cat_aliases ball
+    def self.event_series_characters ball
       kr_cats = (Route.ball_kr || ball).cats
-      aliases = Hash.new{ |hash, key| hash[key] = [] }
+      characters = {}
 
       ball.gacha.each_value do |info|
         series_id = info['series_id']
@@ -155,16 +157,38 @@ module BattleCatsRolls
           rarity = kr_info&.dig('rarity') || local_info&.dig('rarity')
           next unless [Cat::Uber, Cat::Legend].include?(rarity)
 
+          item = characters[id] ||= {
+            id: id,
+            rarity: rarity,
+            names: [],
+            series_ids: []
+          }
+          item[:series_ids] << series_id unless item[:series_ids].include?(series_id)
           [kr_info, local_info].compact.each do |cat|
             Array(cat['name']).each do |name|
-              next if name.to_s.empty? || aliases[series_id].include?(name)
+              next if name.to_s.empty? || item[:names].include?(name)
 
-              aliases[series_id] << name
+              item[:names] << name
             end
           end
         end
       end
 
+      characters.values.sort_by{ |item| item[:id] }.each do |item|
+        item[:name] = item[:names].first || item[:id].to_s
+        item[:series_ids].sort!
+      end
+    end
+
+    def self.event_series_cat_aliases characters
+      aliases = Hash.new{ |hash, key| hash[key] = [] }
+      characters.each do |character|
+        character[:series_ids].each do |series_id|
+          character[:names].each do |name|
+            aliases[series_id] << name unless aliases[series_id].include?(name)
+          end
+        end
+      end
       aliases
     end
 

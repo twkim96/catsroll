@@ -158,6 +158,10 @@
 .multi-find-selected {
   display: grid;
   gap: .4rem;
+  max-height: 11.8rem;
+  padding-right: .2rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .multi-find-selected-row {

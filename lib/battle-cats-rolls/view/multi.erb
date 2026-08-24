@@ -35,7 +35,17 @@
     <button id="multi_apply" class="multi-apply" type="submit">Apply</button>
   </form>
 
-  <section class="multi-find-panel" aria-label="경로 검색 설정">
+  <div class="multi-list-panel">
+    <div id="multi_rows" class="multi-rows"></div>
+    <button id="multi_add" class="multi-add-row" type="button" aria-label="Add track">+</button>
+  </div>
+  <div id="multi_notice" class="multi-notice" role="status"></div>
+  <details id="multi_found" class="multi-found">
+    <summary>Found cats</summary>
+    <div id="multi_found_cats" class="multi-found-content"></div>
+  </details>
+  <section id="multi_find_panel" class="multi-find-panel"
+    aria-label="경로 검색 설정">
     <div class="multi-find-controls">
       <button id="multi_find_filter" class="multi-find-filter" type="button"
         aria-haspopup="dialog" aria-controls="multi_find_dialog"
@@ -85,16 +95,6 @@
         aria-label="검색 기준 설명">?</button>
     </div>
   </section>
-
-  <div class="multi-list-panel">
-    <div id="multi_rows" class="multi-rows"></div>
-    <button id="multi_add" class="multi-add-row" type="button" aria-label="Add track">+</button>
-  </div>
-  <div id="multi_notice" class="multi-notice" role="status"></div>
-  <details id="multi_found" class="multi-found">
-    <summary>Found cats</summary>
-    <div id="multi_found_cats" class="multi-found-content"></div>
-  </details>
   <section id="multi_find_result" class="multi-find-result" hidden
     aria-live="polite"></section>
   <section id="multi_plan_panel" class="multi-plan-panel" aria-label="플랜 모드">
@@ -274,8 +274,20 @@
 
       <div class="event-filter-search-wrap">
         <label for="multi_event_filter_search">시리즈 검색</label>
-        <input id="multi_event_filter_search" type="search"
-          placeholder="이벤트명, 캐릭터명, 시리즈 ID">
+        <div class="event-filter-query" data-multi-filter-query>
+          <div class="event-filter-search-box">
+            <span class="event-filter-search-chips"
+              data-multi-filter-search-chips></span>
+            <input id="multi_event_filter_search" type="search"
+              autocomplete="off" aria-autocomplete="list"
+              aria-controls="multi_event_filter_suggestions"
+              aria-expanded="false"
+              placeholder="이벤트명, 캐릭터명, 시리즈 ID">
+          </div>
+          <div id="multi_event_filter_suggestions"
+            class="event-filter-suggestions" data-multi-filter-suggestions
+            role="listbox" hidden></div>
+        </div>
       </div>
 
       <div class="event-filter-section event-filter-selected-section"
