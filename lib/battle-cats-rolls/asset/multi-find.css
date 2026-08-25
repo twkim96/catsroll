@@ -360,6 +360,34 @@
   line-height: 1.4;
 }
 
+.multi-find-inline-apply {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #d46b65;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 750;
+  line-height: inherit;
+  text-decoration: underline;
+  text-decoration-color: #efaaa4;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.multi-find-inline-apply:hover {
+  color: #b94741;
+  text-decoration-color: #d46b65;
+}
+
+.multi-find-inline-apply:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid #efaaa4;
+  outline-offset: 2px;
+}
+
 .multi-find-result ol {
   margin: .45rem 0 .55rem 1.25rem;
   padding: 0;

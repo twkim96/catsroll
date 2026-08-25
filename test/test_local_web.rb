@@ -183,6 +183,7 @@ describe 'local web features' do
     table_share = File.read('lib/battle-cats-rolls/asset/table-share.js')
     recent_seeds = File.read('lib/battle-cats-rolls/asset/recent-seeds.js')
     multi_find = File.read('lib/battle-cats-rolls/asset/multi-find.js')
+    multi_find_css = File.read('lib/battle-cats-rolls/asset/multi-find.css')
     multi_track = File.read('lib/battle-cats-rolls/asset/multi-track.js')
     multi_share = File.read('lib/battle-cats-rolls/asset/multi-share.js')
     multi_plan = File.read('lib/battle-cats-rolls/asset/multi-plan.js')
@@ -213,6 +214,9 @@ describe 'local web features' do
     expect(multi_find.include?('decorateRouteMarks: function')).eq true
     expect(multi_find.include?('els.targets.addEventListener("click", openFilterDialog)')).eq true
     expect(multi_find.include?('els.reset.addEventListener("click", resetTargets)')).eq true
+    expect(multi_find.include?('data-action="apply-settings"')).eq true
+    expect(multi_find.include?('if (mainApply && !mainApply.disabled) mainApply.click()')).eq true
+    expect(multi_find_css.include?('.multi-find-inline-apply')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
     expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
     expect(multi_track.include?('getShareState: function')).eq true
@@ -232,6 +236,7 @@ describe 'local web features' do
     expect(multi_track.include?('isolatedPlanSession')).eq true
     expect(multi_track.include?('MultiPlanApp.decorateMarks(copy)')).eq true
     expect(multi_track.include?('getPlanSelectedCats: function')).eq true
+    expect(multi_track.include?('getPlanMarkLabel: function')).eq true
     expect(multi_track.include?('data-plan-pick-variant')).eq true
     expect(multi_track.include?('cat.rerolled.guaranteed, row, "RG"')).eq true
     expect(multi_plan.include?('battle-cats-rolls.multiPlans.v1')).eq true
@@ -248,6 +253,10 @@ describe 'local web features' do
     expect(multi_plan.include?('data-plan-pick-kind')).eq true
     expect(multi_plan.include?('allowAutomaticSpecial: true')).eq true
     expect(multi_plan.include?('pruneInvalid: removing')).eq true
+    expect(multi_plan.include?('title: "뒤쪽 선택 함께 해제"')).eq true
+    expect(multi_plan.include?('함께 사라지는 선택')).eq true
+    expect(multi_plan.include?('prunedMarks.map(markRemovalLabel)')).eq true
+    expect(multi_plan.include?('acceptLabel: "함께 해제"')).eq true
     expect(multi_plan.include?('특수뽑기 시 도달 가능')).eq true
     expect(multi_plan.include?('도달할 수 없는 뒤쪽 좌표')).eq true
     expect(multi_plan.include?('현재 구성으로 도달 불가')).eq true
@@ -257,10 +266,14 @@ describe 'local web features' do
     expect(multi_plan.include?('openInfo: openSelectedCatsDialog')).eq true
     expect(multi_plan.include?('multi_plan_info_status')).eq true
     expect(multi_plan.include?('getTargetIds')).eq true
+    expect(multi_find.include?('getTargetCats: function')).eq true
     expect(multi_plan.include?('getNonRegularSuperRareIds')).eq true
+    expect(multi_plan.include?('missingTargetCats')).eq true
+    expect(multi_plan.include?('못 먹은 목표')).eq true
     expect(multi_plan.include?('planLogEntries')).eq true
     expect(multi_plan.include?('openSelectedCatsDialog')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-supa')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cat-tag.is-missing-target')).eq true
     expect(multi_plan_css.include?('.multi-plan-log summary')).eq true
     expect(multi_plan.include?(
       'els.reset.addEventListener("click", requestPlanReset)')).eq true

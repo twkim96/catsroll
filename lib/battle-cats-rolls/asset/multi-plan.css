@@ -453,6 +453,11 @@
   background: #173f69;
 }
 
+.multi-plan-cat-tag.is-missing-target {
+  border-color: #e2aaa6;
+  background: #fff7f6;
+}
+
 .multi-plan-cat-count {
   color: var(--multi-accent);
   font-size: .68rem;
@@ -655,7 +660,9 @@
 }
 
 .multi-plan-confirm-content p {
+  max-height: min(55vh, 30rem);
   margin: 0;
+  overflow-y: auto;
   color: var(--multi-ink);
   font-size: .86rem;
   line-height: 1.55;

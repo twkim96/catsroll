@@ -108,6 +108,19 @@ assert.deepStrictEqual(plans.catSummaryEntries([
 assert.deepStrictEqual(plans.normalizeTargetCatIds([
   101, "202", 101, null, -1, "invalid"
 ]), [101, 202], "plan target badges use unique valid character IDs");
+assert.deepStrictEqual(plans.missingTargetCats([
+  { id: 303, name: "한정 슈퍼레어", rarity: 3 },
+  { id: 101, name: "가시루가", rarity: 4 },
+  { id: 102, name: "바라라가", rarity: 4 },
+  { id: 202, name: "레전드 냥코", rarity: 5 },
+  { id: 303, name: "중복 목표", rarity: 3 }
+], [
+  { id: 101, name: "가시루가", rarity: 4, count: 1 }
+]), [
+  { id: 202, name: "레전드 냥코", rarity: 5 },
+  { id: 102, name: "바라라가", rarity: 4 },
+  { id: 303, name: "한정 슈퍼레어", rarity: 3 }
+], "unacquired Find targets stay in one section sorted by rarity then name");
 
 assert.deepStrictEqual(plans.routeDecorationState({
   visible: true,
