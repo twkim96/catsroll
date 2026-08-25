@@ -236,6 +236,10 @@ assert.strictEqual(defendedRoute.auto.length, 9);
 assert(defendedRoute.auto.some((step) =>
   step.position === "5A" && step.column === 1),
 "the automatic route uses the safe banner at the duplicate position");
+assert(plans.planLogEntries(
+  routeSnapshot([unsafePool, safePool]), defendedRoute, [], [])
+  .some((line) => /5A .*R 방어를 위해/.test(line)),
+"the detailed plan route explains a banner choice that prevents an R switch");
 
 const guaranteedRoute = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool]), [
@@ -261,10 +265,23 @@ assert.deepStrictEqual(plans.routeResourceUsage(
 assert.deepStrictEqual(plans.planLogEntries(
   routeSnapshot([unsafePool]), guaranteedRoute, [
     { column: 0, position: "1A", kind: "guaranteed" }
-  ], true), [
-    "Find route · 완료",
-    "1A · 배너 1 · 확정뽑기 → 11B"
-  ], "the expandable plan log reports Find completion and guaranteed travel");
+  ], [999]), [
+    "1A~1AG · 배너 1 · 확뽑 · 확정 울슈레 @ 1AG 획득 [목표] [선택] → 11B"
+  ], "the detailed plan route keeps both target and selected badges on one pull");
+
+const repeatedTargetRoute = plans.buildRoutePlan(fakeRouteEngine,
+  routeSnapshot([safePool]), [
+    { column: 0, position: "2A", kind: "regular" },
+    { column: 0, position: "4A", kind: "regular" }
+  ]);
+const repeatedTargetEntries = plans.planRouteEntries(
+  routeSnapshot([safePool]), repeatedTargetRoute, [], [safePool.id]);
+const repeatedSelected = repeatedTargetEntries.filter((entry) =>
+  entry.position === "2A" || entry.position === "4A");
+assert.strictEqual(repeatedSelected.length, 2);
+assert(repeatedSelected.every((entry) => entry.segments.some((segment) =>
+  segment.cat && segment.target && segment.selected)),
+"the same target cat selected at different coordinates keeps both badges each time");
 
 const guaranteedContinuation = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([safePool]), [
@@ -312,9 +329,10 @@ assert.deepStrictEqual(rerollRoute.destinations, [
 assert.deepStrictEqual(plans.planLogEntries(
   routeSnapshot([unsafePool]), rerollRoute, [
     { column: 0, position: "5A", kind: "reroll" }
-  ], false), [
-    "5A · 배너 1 · R 열변경 → 6B"
-  ], "the plan log identifies a selected rare-duplicate track switch");
+  ], []), [
+    "1A~4A · 레어티켓 4회 → 5A",
+    "5A · 배너 1 · R 열변경 (중복 레어 → 중복 레어 [선택]) → 6B"
+  ], "the detailed plan route includes ticket runs and a selected R switch");
 
 const guaranteedVariantEngine = Object.assign({}, fakeRouteEngine, {
   simulateGuaranteed(pool, seed, offset, lastRareId) {
@@ -443,9 +461,12 @@ assert.deepStrictEqual(plans.planLogEntries(
   routeSnapshot([unsafePool, specialPool]), explicitlySelectedSpecial, [
     { column: 1, position: "5A", kind: "regular" },
     { column: 0, position: "10A", kind: "regular" }
-  ], false), [
-    "5A · 배너 2 · 플래티넘 티켓 사용"
-  ], "the plan log distinguishes a manually selected platinum ticket");
+  ], []), [
+    "1A~4A · 레어티켓 4회 → 5A",
+    "5A · 배너 2 · 플래티넘 티켓 · 안전 레어 [선택] → 6A",
+    "6A~9A · 레어티켓 4회 → 10A",
+    "10A · 배너 1 · 중복 레어 [선택] → 11A"
+  ], "the detailed plan route includes special tickets and selected checkpoints");
 assert.strictEqual(plans.planProgressSummary(
   routeSnapshot([unsafePool, specialPool]), {
     valid: true,

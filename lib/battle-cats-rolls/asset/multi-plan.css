@@ -490,6 +490,21 @@
   border-top: 1px solid var(--multi-line);
 }
 
+.multi-plan-route-details {
+  margin: .2rem 0 .9rem;
+  border-top: 0;
+}
+
+.multi-plan-log.multi-plan-route-details summary {
+  padding: 0 0 .4rem;
+  font-size: .86rem;
+}
+
+.multi-plan-route-details .multi-plan-log-content {
+  max-height: min(42vh, 22rem);
+  margin: 0;
+}
+
 .multi-plan-log summary {
   display: flex;
   align-items: center;
@@ -548,6 +563,35 @@
   color: var(--multi-ink);
   font-size: .74rem;
   line-height: 1.45;
+}
+
+.multi-plan-route-cat {
+  font-weight: 700;
+}
+
+.multi-plan-route-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1rem;
+  margin-left: .28rem;
+  padding: 0 .3rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: .62rem;
+  font-weight: 800;
+  line-height: 1.25;
+  vertical-align: .08rem;
+}
+
+.multi-plan-route-badge.is-target {
+  background: #eaf3ff;
+  color: #176fc1;
+}
+
+.multi-plan-route-badge.is-selected {
+  background: #2f3439;
+  border-color: #2f3439;
+  color: #fff;
 }
 
 .multi-plan-log-empty {

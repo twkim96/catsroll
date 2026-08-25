@@ -29,6 +29,8 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_event_filter_suggestions"')).eq true
     expect(response.body.include?('id="multi_find_dialog"')).eq true
     expect(response.body.include?('id="multi_find_result"')).eq true
+    expect(response.body.include?('id="multi_find_result_status"')).eq true
+    expect(response.body.include?('id="multi_find_result_content"')).eq true
     expect(response.body.include?('id="multi_find_optimization"')).eq true
     expect(response.body.include?('id="multi_find_max_guaranteed"')).eq true
     expect(response.body.include?('id="multi_find_max_platinum"')).eq true
@@ -48,6 +50,8 @@ describe 'local web features' do
     expect(response.body.include?('id="multi_plan_cats_list"')).eq true
     expect(response.body.include?('id="multi_plan_log"')).eq true
     expect(response.body.include?('id="multi_plan_log_list"')).eq true
+    expect(response.body.include?('id="multi_plan_route"')).eq true
+    expect(response.body.include?('id="multi_plan_route_list"')).eq true
     expect(response.body.include?('id="multi_plan_info_name"')).eq true
     expect(response.body.include?('id="multi_plan_info_status"')).eq true
     expect(response.body.include?('id="multi_plan_info_reset"')).eq true
@@ -61,7 +65,11 @@ describe 'local web features' do
     expect(response.body.index('id="multi_find_panel"')).lt(
       response.body.index('id="multi_find_result"'))
     expect(response.body.index('id="multi_plan_panel"')).lt(
+      response.body.index('id="multi_plan_route"'))
+    expect(response.body.index('id="multi_plan_route"')).lt(
       response.body.index('id="multi_tables"'))
+    expect(response.body.scan('Find route 플랜').length).eq 2
+    expect(response.body.include?('Find route 목표')).eq true
     expect(response.body.index('id="multi_plan_reset"')).lt(
       response.body.index('id="multi_plan_save"'))
     expect(response.body.include?('검색 기준 안내')).eq true
@@ -217,6 +225,10 @@ describe 'local web features' do
     expect(multi_find.include?('data-action="apply-settings"')).eq true
     expect(multi_find.include?('if (mainApply && !mainApply.disabled) mainApply.click()')).eq true
     expect(multi_find_css.include?('.multi-find-inline-apply')).eq true
+    expect(multi_find.include?('resultContent: doc.getElementById')).eq true
+    expect(multi_find.include?('showResult("완료"')).eq true
+    expect(multi_find_css.include?('.multi-find-result > summary::before')).eq true
+    expect(multi_find_css.include?('.multi-find-result[open] > summary::before')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
     expect(multi_find.include?('MultiShareApp.setFindSettings(settings)')).eq true
     expect(multi_track.include?('getShareState: function')).eq true
@@ -270,11 +282,17 @@ describe 'local web features' do
     expect(multi_plan.include?('getNonRegularSuperRareIds')).eq true
     expect(multi_plan.include?('missingTargetCats')).eq true
     expect(multi_plan.include?('못 먹은 목표')).eq true
+    expect(multi_plan.include?('planRouteEntries')).eq true
+    expect(multi_plan.include?('multi-plan-route-badge is-target')).eq true
+    expect(multi_plan.include?('multi-plan-route-badge is-selected')).eq true
     expect(multi_plan.include?('planLogEntries')).eq true
     expect(multi_plan.include?('openSelectedCatsDialog')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-supa')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-missing-target')).eq true
     expect(multi_plan_css.include?('.multi-plan-log summary')).eq true
+    expect(multi_plan_css.include?('.multi-plan-route-details')).eq true
+    expect(multi_plan_css.include?('.multi-plan-route-badge.is-target')).eq true
+    expect(multi_plan_css.include?('.multi-plan-route-badge.is-selected')).eq true
     expect(multi_plan.include?(
       'els.reset.addEventListener("click", requestPlanReset)')).eq true
     expect(multi_plan.include?('저장된 플랜은 변경되지 않았습니다')).eq true

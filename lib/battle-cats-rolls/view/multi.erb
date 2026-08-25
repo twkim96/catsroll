@@ -95,8 +95,14 @@
         aria-label="검색 기준 설명">?</button>
     </div>
   </section>
-  <section id="multi_find_result" class="multi-find-result" hidden
-    aria-live="polite"></section>
+  <details id="multi_find_result" class="multi-find-result" hidden>
+    <summary>
+      <span>Find route 목표</span>
+      <span id="multi_find_result_status" class="multi-route-summary-status"></span>
+    </summary>
+    <div id="multi_find_result_content" class="multi-find-result-content"
+      aria-live="polite"></div>
+  </details>
   <section id="multi_plan_panel" class="multi-plan-panel" aria-label="플랜 모드">
     <div class="multi-plan-controls">
       <label class="multi-plan-toggle-field">
@@ -131,6 +137,16 @@
     <p id="multi_plan_status" class="multi-plan-status" role="status"
       aria-live="polite" hidden></p>
   </section>
+  <details id="multi_plan_route"
+    class="multi-plan-log multi-plan-route-details" hidden>
+    <summary>Find route 플랜
+      <span id="multi_plan_route_count" hidden></span></summary>
+    <div class="multi-plan-log-content">
+      <ol id="multi_plan_route_list" class="multi-plan-log-list"></ol>
+      <p id="multi_plan_route_empty" class="multi-plan-log-empty">
+        플랜에서 선택한 경로가 없습니다.</p>
+    </div>
+  </details>
   <div id="multi_tables" class="multi-tables"></div>
 
   <dialog id="multi_find_dialog" class="event-filter-dialog multi-find-dialog"
@@ -252,11 +268,12 @@
           선택된 비정규 슈퍼레어·울슈레·레전드레어가 없습니다.</p>
       </div>
       <details id="multi_plan_log" class="multi-plan-log">
-        <summary>로그 <span id="multi_plan_log_count" hidden></span></summary>
+        <summary>Find route 플랜
+          <span id="multi_plan_log_count" hidden></span></summary>
         <div class="multi-plan-log-content">
           <ol id="multi_plan_log_list" class="multi-plan-log-list"></ol>
           <p id="multi_plan_log_empty" class="multi-plan-log-empty">
-            특이사항이 없습니다.</p>
+            플랜에서 선택한 경로가 없습니다.</p>
         </div>
       </details>
     </div>
