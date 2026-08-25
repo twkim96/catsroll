@@ -35377,3 +35377,45 @@ events:
     supa: 2500
     uber: 500
     legend: 30
+  2026-08-27_1000:
+    start_on: 2026-08-27
+    end_on: 2026-09-01
+    version: '150501'
+    name: "「厨房マンボウ」に本能追加！★詳細はバナーをタップ!!"
+    id: 1000
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-08-27_1043:
+    start_on: 2026-08-27
+    end_on: 2026-08-29
+    version: '150501'
+    name: 爆波攻撃を持つキャラクター「風魔小太郎」登場！★詳細はバナーをタップ!!
+    id: 1043
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-08-27_1074:
+    start_on: 2026-08-27
+    end_on: 2026-09-01
+    version: '150501'
+    name: 新キャラ登場！開放的な夏限定のキャラクターをGET！★詳細はバナーをタップ!!
+    id: 1074
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-08-29_1015:
+    start_on: 2026-08-29
+    end_on: 2026-09-01
+    version: '150501'
+    name: 召喚能力を持つキャラクター「魔導師シドミ」登場！★詳細はバナーをタップ!!
+    id: 1015
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
