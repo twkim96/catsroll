@@ -16,18 +16,30 @@
       /* https://mk.bcgsc.ca/colorblind/img/colorblindness.palettes.v11_4.png */
       :root {
         --rare: white;
-        --supa_fest: #AFFF2A;
-        --supa: #FFDC3D;
-        --uber_fest: #FF9DC8;
-        --uber: #F60239;
-        --legend_fest: #0079FA;
-        --legend: #8400CD;
-        --found: #00F407;
-        --owned: lightcyan;
-        --exclusive: #00E5F8;
+        --supa_fest: #00F407; /* radioactive green */
+        --supa: #00B408; /* kelly green */
+        --uber_fest: #FF9DC8; /* amaranth pink */
+        --uber: #EF0096; /* persian rose */
+        --legend_fest: #0079FA; /* azure */
+        --legend: #8400CD; /* french violet */
+        --found: #AFFF2A; /* lime */
+        --owned: #7CFFFA; /* eletric blue */
+        --exclusive: #00C2F9; /* capri */
       }
-      .attack { background-color: white; }
-      .triggered_attack { background-color: #FFCFE2; }
+      <% when 'alternate' %>
+      /* https://mk.bcgsc.ca/colorblind/img/colorblindness.palettes.v11_4.png */
+      :root {
+        --rare: white;
+        --supa_fest: #AFFF2A; /* lime */
+        --supa: #FFDC3D; /* gargoyle gas */
+        --uber_fest: #FF9DC8; /* amaranth pink */
+        --uber: #F60239; /* carmine */
+        --legend_fest: #0079FA; /* azure */
+        --legend: #8400CD; /* french violet */
+        --found: #00F407; /* radioactive green */
+        --owned: lightcyan;
+        --exclusive: #00E5F8; /* aqua blue */
+      }
       <% else %>
       /* https://htmlcolorcodes.com/color-names/ */
       :root {
@@ -42,8 +54,6 @@
         --owned: lightcyan;
         --exclusive: aqua;
       }
-      .attack { background-color: lavender; }
-      .triggered_attack { background-color: pink; }
       <% end %>
 
       <%= local_partial(:local_styles) %>

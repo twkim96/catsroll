@@ -242,7 +242,7 @@ module BattleCatsRolls
     def theme
       @theme ||=
         case value = request.params_coercion_with_nil('theme', :to_s)
-        when 'mkweb'
+        when 'alternate', 'mkweb'
           value
         else
           ''

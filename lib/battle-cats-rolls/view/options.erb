@@ -8,29 +8,6 @@
     <option value="kr" <%= selected_lang('kr') %>>BCKR</option>
   </select>
 
-  <% if route.path_info != '/logs' %>
-  <label for="name_select" title="Evolution form used for cat names and images">Form:</label>
-  <select id="name_select" name="name" onchange="roll(this)">
-    <option value="0" <%= selected_name(0) %>>Base</option>
-    <option value="1" <%= selected_name(1) %>>Evolved</option>
-    <option value="2" <%= selected_name(2) %>>True</option>
-    <option value="3" <%= selected_name(3) %>>Ultra</option>
-  </select>
-  <% else %>
-  <%= hidden_inputs('name') %>
-  <% end %>
-
-  <% if route.path_info == '/' %>
-  <label for="display_select" title="How to show predicted cats in the track table">Display:</label>
-  <select id="display_select" name="display" onchange="roll(this)">
-    <option value="text" <%= selected_display('text') %>>Text</option>
-    <option value="image" <%= selected_display('image') %>>Image</option>
-    <option value="both" <%= selected_display('both') %>>Both</option>
-  </select>
-  <% else %>
-  <%= hidden_inputs('display') %>
-  <% end %>
-
   <label for="ui_select" title="Default UI language will match the app region. You can pick a different language, too">UI language:</label>
   <select id="ui_select" name="ui" onchange="roll(this)">
     <option value="" <%= selected_ui('') %>>Default</option>
@@ -49,6 +26,29 @@
   </select>
 
   <% if route.path_info == '/' %>
+  <label for="display_select" title="How to show predicted cats in the track table">Display:</label>
+  <select id="display_select" name="display" onchange="roll(this)">
+    <option value="text" <%= selected_display('text') %>>Text</option>
+    <option value="image" <%= selected_display('image') %>>Image</option>
+    <option value="both" <%= selected_display('both') %>>Both</option>
+  </select>
+  <% else %>
+  <%= hidden_inputs('display') %>
+  <% end %>
+
+  <% if route.path_info != '/logs' %>
+  <label for="name_select" title="Evolution form used for cat names and images">Form:</label>
+  <select id="name_select" name="name" onchange="roll(this)">
+    <option value="0" <%= selected_name(0) %>>Base</option>
+    <option value="1" <%= selected_name(1) %>>Evolved</option>
+    <option value="2" <%= selected_name(2) %>>True</option>
+    <option value="3" <%= selected_name(3) %>>Ultra</option>
+  </select>
+  <% else %>
+  <%= hidden_inputs('name') %>
+  <% end %>
+
+  <% if route.path_info == '/' %>
   <label for="highlighting_select" title="How we highlight the cells">Highlighting:</label>
   <select id="highlighting_select" name="highlighting" onchange="roll(this)">
     <option value="basic" <%= selected_highlighting('basic') %>>Basic</option>
@@ -63,7 +63,8 @@
   <label for="theme_select" title="Color theme for highlighting">Theme:</label>
   <select id="theme_select" name="theme" onchange="roll(this)">
     <option value="" <%= selected_theme('') %>>Default</option>
-    <option value="mkweb" <%= selected_theme('mkweb') %>>mkweb</option>
+    <option value="alternate" <%= selected_theme('alternate') %>>Alternate</option>
+    <option value="mkweb" <%= selected_theme('mkweb') %>>mkweb (colorblind friendly)</option>
   </select>
   <% else %>
   <%= hidden_inputs('theme') %>
