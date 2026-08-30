@@ -356,7 +356,7 @@ module BattleCatsRolls
       title = h cat.pick_title(route.name)
       stat_uri = h route.uri_to_cat(cat) if cat.id > 0
       roll_uri = h route.uri_to_roll(cat) if cat.slot_seed
-      text_roll = roll_tag(roll_uri, title, name) if text
+      text_roll = roll_tag(roll_uri, title, name) if text || stat_uri.nil?
       stat = %Q{ <a href="#{stat_uri}">🐾</a>} if stat_uri
       content = "<span>#{prefix}#{text_roll}#{stat}#{suffix}</span>"
 
