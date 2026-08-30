@@ -7,4 +7,8 @@
   <%= erb :table_notes %>
 <% elsif route.event_missing_data? %>
   <p>Data only available in v<%= gacha.pool.version %>+</p>
+<% else %>
+  <%= erb :description %>
+
+  <p>Check the <a href="<%= route.help_uri %>">help page</a> for more details.</p>
 <% end %>
