@@ -401,10 +401,6 @@ module BattleCatsRolls
       'selected="selected"' if route.lang == lang_name
     end
 
-    def selected_pos pos
-      'selected="selected"' if route.pos == pos
-    end
-
     def selected_seeker seeker_name
       'selected="selected"' if route.seeker == seeker_name
     end
