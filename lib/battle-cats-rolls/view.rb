@@ -401,16 +401,20 @@ module BattleCatsRolls
       'selected="selected"' if route.lang == lang_name
     end
 
+    def selected_ui ui_name
+      'selected="selected"' if route.ui == ui_name
+    end
+
     def selected_seeker seeker_name
       'selected="selected"' if route.seeker == seeker_name
     end
 
-    def selected_name name_name
-      'selected="selected"' if route.name == name_name
-    end
-
     def selected_display display_name
       'selected="selected"' if route.display == display_name
+    end
+
+    def selected_name name_name
+      'selected="selected"' if route.name == name_name
     end
 
     def selected_highlighting highlighting_name
@@ -423,10 +427,6 @@ module BattleCatsRolls
 
     def checked_text_bg
       'checked="checked"' if route.text_bg
-    end
-
-    def selected_ui ui_name
-      'selected="selected"' if route.ui == ui_name
     end
 
     def selected_current_event event_name
