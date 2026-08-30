@@ -372,7 +372,7 @@ module BattleCatsRolls
       if href
         %Q{<a href="#{href}" title="#{title}">#{content}</a>}
       else
-        %Q{<span title="#{title}">#{content}</span>}
+        %Q{<a title="#{title}">#{content}</a>}
       end
     end
 
@@ -423,6 +423,10 @@ module BattleCatsRolls
 
     def selected_theme theme_name
       'selected="selected"' if route.theme == theme_name
+    end
+
+    def checked_text_bg
+      'checked="checked"' if route.text_bg
     end
 
     def selected_ui ui_name

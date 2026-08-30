@@ -55,6 +55,15 @@
       }
       <% end %>
 
+      <% if route.text_bg %>
+      .position a {
+        background: rgba(255, 255, 255, 0.6);
+      }
+      <% else %>
+      .legend_fest a, .legend a,
+      .major_legend_fest a, .major_legend a { color: #d8a56f; }
+      <% end %>
+
       <% unless show_details %>
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }
