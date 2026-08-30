@@ -133,7 +133,7 @@ module BattleCatsRolls
         'uberfest' => {name: 'Uberfest / Epicfest without legend',
           rate: [6500, 2600, 900]},
         'dynastyfest' => {name: 'Dynasty Fest', rate: [6770, 2500, 700]},
-        'royalfest' => {name: 'Royal Fest', rate: [6940, 2500, 500]},
+        'royalfest' => {name: 'Royalfest', rate: [6940, 2500, 500]},
         'superfest_legend' => {name: 'Superfest',
           rate: [6470, 2500, 1000]},
         'superfest' => {name: 'Superfest without legend',
