@@ -232,7 +232,7 @@
 
 <%= erb :table, cats: arg[:help].pick(arg[:help].go_straight_tracks, 7, 1) %>
 
-<%= header(2, 'Skipping with a platinum or legend ticket') %>
+<%= header(2, 'Dodging consecutive duplicated rare cat with a platinum or legend ticket') %>
 <ul>
   <li>
     Remember again that the game will only re-roll a rare cat for you
@@ -255,7 +255,60 @@
 <%= erb :table, cats: arg[:help].pick(arg[:help].dodge_dupes_4a, 4, 0) %>
 
 <%= header(2, 'Guaranteed uber for the consecutive duplicated rare cats') %>
-<ul></ul>
+<ul>
+  <li>
+    On positions with a consecutive duplicated rare cat, the re-rolled cat
+    will also come with a guaranteed uber on guaranteed events.
+  </li>
+  <li>
+    The guaranteed uber you will get on that particular position is
+    straightforward. You get the corresponding guaranteed uber depending on
+    which cat you get from the position.
+  </li>
+  <li>
+    Here's an example highlighting the path when you get Tin Cat at 3A by
+    making 3 single rolls and then make an 11-rolls at 4A on a guaranteed
+    event:
+    <ol>
+      <li>You get 1A, 2A, 3A (Tin Cat) by single rolls.</li>
+      <li>Since you get Tin Cat at 3A, the game won't give you another Tin Cat at 4A, you get Pogo Cat at 4AR (4A Re-rolled) instead.</li>
+      <li>Then you will switch to track B, and follow through.</li>
+      <li>Finally you will switch back to track A after getting the 4ARG (4A Re-rolled Guaranteed) uber.</li>
+    </ol>
+  </li>
+</ul>
+
+<%= erb :table, cats: arg[:help].guaranteed_on_dupe %>
+<ul>
+  <li>
+    What if your last rolled cat is not a Tin Cat before making 11-rolls
+    at 4A on a guaranteed event?
+    <ul>
+      <li>
+        What if you use a platinum ticket at 3A and get Nekoluga, rather than
+        Tin Cat? Recall <a href="#dodging-consecutive-duplicated-rare-cat-with-a-platinum-or-legend-ticket">Dodging consecutive duplicated rare cat with a platinum or legend ticket</a>
+      </li>
+      <li>
+        Or if it's not a consecutive duplicated rare cat from the same track?
+        Recall <a href="#not-necessarily-a-consecutive-duplicated-rare-cat">Not necessarily a consecutive duplicated rare cat</a>
+      </li>
+    </ul>
+  </li>
+  <li>
+    Here's an example highlighting the path when you get Nekoluga at 3A by
+    making 2 single rolls and 1 platinum roll, and then make an 11-rolls
+    at 4A on a guaranteed event:
+    <ol>
+      <li>You get 1A, 2A by single rolls.</li>
+      <li>You get 3A (Nekoluga) by a platinum roll.</li>
+      <li>Since you get Nekoluga at 3A, thus your last roll is not a Tin Cat, you get Tin Cat at 4A as usual.</li>
+      <li>Then you follow through as usual without switching track.</li>
+      <li>Finally you will switch to track B after getting the 4AG (4A Guaranteed) uber completely as usual as if there's no consecutive duplicated rare cat in the first place.</li>
+    </ol>
+  </li>
+</ul>
+
+<%= erb :table, cats: arg[:help].guaranteed_on_not_dupe %>
 
 <%= header(2, 'Hidden track switches between events') %>
 <ul></ul>

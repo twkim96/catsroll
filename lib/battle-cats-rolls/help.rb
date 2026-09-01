@@ -3,6 +3,8 @@
 require_relative 'cat'
 require_relative 'gacha'
 
+# This is a mess. Rewrite everything at some point...
+
 module BattleCatsRolls
   class Help
     def read_the_tracks
@@ -31,15 +33,10 @@ module BattleCatsRolls
 
     def guaranteed_tracks
       @guaranteed_tracks ||= begin
-        tracks = fake_tracks.map(&:dup)
+        tracks = fake_tracks.first(12).map(&:dup)
 
-        fake_1AG = fake_cat(-10, '(1A guaranteed uber)', 1, 0)
-        fake_1AG.next = tracks.dig(10, 1)
-        tracks[0][0] = tracks.dig(0, 0).new_with(guaranteed: fake_1AG)
-
-        fake_1BG = fake_cat(-10, '(1B guaranteed uber)', 1, 1)
-        fake_1BG.next = tracks.dig(11, 0)
-        tracks[0][1] = tracks.dig(0, 1).new_with(guaranteed: fake_1BG)
+        fill_guaranteed(tracks, 1, 0, ' guaranteed')
+        fill_guaranteed(tracks, 1, 1, ' guaranteed')
 
         tracks
       end
@@ -72,6 +69,46 @@ module BattleCatsRolls
 
         dup_modify(tracks, 4, 1, picked_label: :picked,
           rerolled: tracks.dig(4, 1).rerolled.new_with(picked_label: ''))
+
+        tracks
+      end
+    end
+
+    def guaranteed_on_dupe
+      @guaranteed_on_dupe ||= begin
+        tracks = fill_dupes(fake_tracks.first(15).map(&:dup))
+
+        (1..3).each{ |sequence| fill_guaranteed(tracks, sequence, 0, 'G', 1) }
+        guaranteed = fill_guaranteed(tracks, 4, 0, 'RG', 1)
+        tracks.dig(3, 0).rerolled.guaranteed = guaranteed
+        fill_guaranteed(tracks, 4, 0)
+
+        guaranteed.picked_label = :picked_consecutively
+        pick_sequence(tracks, 0, 3, 0, :picked)
+        pick_sequence(tracks, 3, 4, 0, :picked_consecutively)
+        pick_sequence(tracks, 4, 13, 1, :picked_consecutively)
+        pick_sequence(tracks, 14, 15, 0, :next_position)
+
+        tracks
+      end
+    end
+
+    def guaranteed_on_not_dupe
+      @guaranteed_on_not_dupe ||= begin
+        tracks = fill_dupes(fake_tracks.first(15).map(&:dup))
+
+        tracks[2][0] = fake_cat(35, 'Nekoluga', 3, 0)
+
+        (1..3).each{ |sequence| fill_guaranteed(tracks, sequence, 0, 'G', 1) }
+        tracks.dig(3, 0).rerolled.guaranteed =
+          fill_guaranteed(tracks, 4, 0, 'RG', 1)
+        guaranteed = fill_guaranteed(tracks, 4, 0)
+
+        tracks.dig(3, 0).picked_label = :picked_consecutively
+        guaranteed.picked_label = :picked_consecutively
+        pick_sequence(tracks, 0, 3, 0, :picked)
+        pick_sequence(tracks, 4, 13, 0, :picked_consecutively)
+        pick_sequence(tracks, 13, 14, 1, :next_position)
 
         tracks
       end
@@ -113,7 +150,8 @@ module BattleCatsRolls
         index = sequence - 1
         index_end = sequence + 9
 
-        pick_sequence(result, index_end, track, :picked_consecutively)
+        pick_sequence(result, 0, index, track, :picked)
+        pick_sequence(result, index, index_end, track, :picked_consecutively)
 
         dup_modify(result, index, track, guaranteed:
           result.dig(index, track).guaranteed.
@@ -122,7 +160,7 @@ module BattleCatsRolls
         dup_modify(result, index_end + track ^ 0, track ^ 1,
           picked_label: :next_position)
       else
-        pick_sequence(result, sequence, track, :picked)
+        pick_sequence(result, 0, sequence, track, :picked)
 
         # Handle rerolled case by case...
         if result.dig(sequence - 1, track).rerolled.nil?
@@ -136,17 +174,29 @@ module BattleCatsRolls
     private
 
     def fake_tracks
-      @fake_tracks ||= [
-        %i[rare supa rare rare supa supa rare uber supa rare legend rare],
-        %i[supa rare uber rare rare rare supa rare rare supa rare uber]
-      ].map.with_index do |column, track|
+      @fake_tracks ||= generate_fake_tracks([
+        %i[
+          rare supa rare rare supa supa rare uber supa rare
+          legend rare uber_fest rare supa_fest rare rare rare
+        ],
+        %i[
+          supa rare uber rare rare rare supa rare rare supa
+          rare uber rare rare legend_fest rare supa uber_fest
+        ]
+      ])
+    end
+
+    def generate_fake_tracks labels
+      labels.map.with_index do |column, track|
         column.map.with_index do |rarity_label, index|
           sequence = index + 1
           track_label = (track + 'A'.ord).chr
           name = "(#{sequence}#{track_label} #{rarity_label} cat)"
-          fake_cat(-10, name, sequence, track,
+          fake_cat(-10, name.tr('_', ' '), sequence, track,
             score_rarity_label: rarity_label,
-            score: 0, rarity: rarities.index(rarity_label) + Cat::Rare)
+            score: 0, rarity:
+              rarities.index(rarity_label.to_s.delete_suffix('_fest')) +
+              Cat::Rare)
         end
       end.transpose
     end
@@ -159,11 +209,11 @@ module BattleCatsRolls
     end
 
     def rarities
-      @rarities ||= %i[rare supa uber legend]
+      @rarities ||= %w[rare supa uber legend]
     end
 
-    def pick_sequence result, sequence, track, label
-      (0...sequence).each do |index|
+    def pick_sequence result, offset, sequence, track, label
+      (offset...sequence).each do |index|
         if rerolled = result.dig(index, track).rerolled
           if rerolled.picked_label.nil?
             dup_modify(result, index, track,
@@ -204,6 +254,20 @@ module BattleCatsRolls
           next: tracks.dig(4, 1)))
 
       tracks
+    end
+
+    def fill_guaranteed tracks, sequence, track, suffix='G', offset=0
+      label = (track + 'A'.ord).chr
+      guaranteed = fake_cat(-10, "(#{sequence}#{label}#{suffix} uber)",
+        sequence, track)
+      index = sequence - 1
+      guaranteed.next = tracks.dig(
+        index + 10 + track + offset,
+        offset.succ.times.inject(track){ _1 ^ 1 }
+      )
+      tracks[index][track] =
+        tracks.dig(index, track).new_with(guaranteed: guaranteed)
+      guaranteed
     end
   end
 end
