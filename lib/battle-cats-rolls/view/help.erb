@@ -59,7 +59,7 @@
 <%= header(2, 'Reading the tracks') %>
 <ul>
   <li>Using the link from the seek result, you'll see a table looks like below.</li>
-  <li>Suppose you start at <strong>1A</strong>, then your next roll with rare ticket or cat food will be the cat located in 1A. It's a rare cat (<strong>1A rare cat</strong>) in this case.</li>
+  <li>Suppose you start at <strong>1A</strong>, then your next roll with a rare ticket or 150 cat food will be the cat located at 1A. It's a rare cat (<strong>1A rare cat</strong>) in this case.</li>
   <li>Your next roll will be located at <strong>2A</strong>, which is a super rare cat (<span class="supa">2A supa cat</span>).</li>
 </ul>
 
@@ -76,11 +76,11 @@
 
 <%= header(2, 'Advancing the tracks') %>
 <ul>
-  <li>You can click on the cat's name, which will simulate that you rolled to that cat.</li>
-  <li>Following the above example, let's click on the cat's name at 2A (i.e. <span class="supa">2A supa cat</span>) to simulate that you rolled to that cat. This will lead you to a table looks like below.</li>
+  <li>You can click on the cat's name, which will simulate that you roll to that cat.</li>
+  <li>Following the above example, let's click on the cat's name at 2A (i.e. <span class="supa">2A supa cat</span>) to simulate that you roll to that cat. This will lead you to a table looks like below.</li>
   <li>You can see that you advanced two rows. Previously <strong>3A rare cat</strong> was located at 3A, <span class="next_position">highlighted</span> in stripes, now it's located at 1A.</li>
   <li>Your new next roll will be <strong>3A rare cat</strong> located at <strong>1A</strong>.</li>
-  <li>You can see that the other track will also advance, meaning that you can only pick one in the same row.</li>
+  <li>You can see that the other track also advanced, meaning that you can only pick one in the same row.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].mark_next_position(arg[:help].advance_the_tracks) %>
@@ -94,24 +94,28 @@
 
 <%= header(2, 'What is a guaranteed event') %>
 <ul>
-  <li>There are two kinds of guaranteed events.</li>
-  <li>One is 11 continuous rolls with 1500 cat food, which the 11st roll will be 100% uber regardless previous rolls, meaning that even if you rolled an uber cat earlier, the 11st will still be an uber cat.</li>
-  <li>The other one is 3+5+7 (15) step up events, or increasing capsules, which you first use 300 cat food to roll 3 times continuously, and then 750 cat food to roll 5 times continuously, and finally 1050 cat food to roll 7 times continuously. In total 15 (3+5+7) rolls. Similar to 11 rolls guaranteed events, the last 15th roll will be 100% uber.</li>
-  <li>Platinum gacha with platinum tickets for 100% uber <strong>IS NOT</strong> a guaranteed event. Only 11 rolls or 15 rolls can be a guaranteed event.</li>
+  <li>
+    There are two kinds of guaranteed events:
+    <ol>
+      <li>One is 11 continuous rolls with 1500 cat food, which the 11th roll will be 100% uber regardless previous rolls, meaning that even if you rolled an uber cat earlier, the 11th will still be an uber cat.</li>
+      <li>The other one is 3+5+7 (15) step up events, or increasing capsules, which you first use 300 cat food to roll 3 times continuously, and then 750 cat food to roll 5 times continuously, and finally 1050 cat food to roll 7 times continuously. In total 15 (3+5+7) rolls. Similar to 11-rolls guaranteed events, the last 15th roll will be 100% uber.</li>
+    </ol>
+  </li>
+  <li>Platinum banner with platinum tickets for 100% uber <strong>IS NOT</strong> a guaranteed event. Only 11-rolls or 15-rolls can be a guaranteed event.</li>
 </ul>
 
 <%= header(2, 'What is a guaranteed uber') %>
 <ul>
   <li>A guaranteed uber is the last roll with 11 or 15 rolls in a guaranteed event.</li>
   <li>Even if you rolled an uber as the last roll, if it's not rolled in a guaranteed event, it's not a guaranteed uber.</li>
-  <li>An uber from platinum or legend event is not a guaranteed uber.</li>
+  <li>An uber from platinum or legend banner is not a guaranteed uber.</li>
 </ul>
 
 <%= header(2, 'Reading the guaranteed tracks') %>
 <ul>
   <li>Ubers listed on the guaranteed column are the guaranteed ubers.</li>
   <li>Guaranteed ubers will only be displayed if we're looking at a guaranteed event.</li>
-  <li>Here if you make 11 guaranteed rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong> (1AG), totally 11 cats.</li>
+  <li>Here if you do guaranteed 11-rolls, you'll get 1A ~ 10A and lastly <strong>1A guaranteed uber</strong> (1AG), totally 11 cats.</li>
 </ul>
 
 <%= erb :table, cats: arg[:help].mark_next_position(arg[:help].guaranteed_tracks) %>
@@ -133,7 +137,7 @@
     There are two cases that you will switch between the tracks:
     <ol>
       <li>
-        Performing guaranteed rolls in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum gacha <strong>IS NOT</strong> a guaranteed event.
+        Rolling a guaranteed uber in a <a href="#what-is-a-guaranteed-event">guaranteed event</a>. Note that platinum banner <strong>IS NOT</strong> a guaranteed event.
       </li>
       <li>
         Rolling a potentially <a href="#consecutive-duplicated-rare-cats">consecutive duplicated rare cat</a>.
@@ -170,7 +174,7 @@
   <li>
     The game does not allow you to get two consecutive duplicated rare cats
     in a row. Whenever you could be getting a consecutive duplicated rare cat,
-    instead of giving you that, the game will instead make an additional
+    instead of giving you that, the game will instead do an additional
     half roll, to roll another rare cat for you.
   </li>
   <li>
@@ -181,8 +185,8 @@
   </li>
   <li>
     The reason you'll switch to the other track is exactly the same as rolling
-    a guaranteed uber cat, that it'll make a half roll, and
-    <a href="#switching-track-is-the-effect-of-making-a-half-roll">switching track is the effect of making a half roll</a>.
+    a guaranteed uber cat, that it'll do a half roll, and
+    <a href="#switching-track-is-the-effect-of-making-a-half-roll">switching track is the effect of doing a half roll</a>.
   </li>
   <li>Let's look at an example where we have a consecutive duplicated rare cat at <strong>4A</strong>, a Tin Cat can turn into a <strong>Pogo Cat</strong>.</li>
   <li>Assuming you're clicking on the cell for 4A, highlighting the path toward it.</li>
@@ -267,13 +271,13 @@
   </li>
   <li>
     Here's an example highlighting the path when you get Tin Cat at 3A by
-    making 3 single rolls and then make an 11-rolls at 4A on a guaranteed
+    doing 3 single rolls and then doing an 11-rolls at 4A on a guaranteed
     event:
     <ol>
       <li>You get 1A, 2A, 3A (Tin Cat) by single rolls.</li>
-      <li>Since you get Tin Cat at 3A, the game won't give you another Tin Cat at 4A, you get Pogo Cat at 4AR (4A Re-rolled) instead.</li>
+      <li>Since you get Tin Cat at 3A, the game won't give you another Tin Cat at 4A, you get Pogo Cat at 4AR (4A re-rolled) instead.</li>
       <li>Then you will switch to track B, and follow through.</li>
-      <li>Finally you will switch back to track A after getting the 4ARG (4A Re-rolled Guaranteed) uber.</li>
+      <li>Finally you will switch back to track A after getting the 4ARG (4A re-rolled guaranteed) uber.</li>
     </ol>
   </li>
 </ul>
@@ -281,7 +285,7 @@
 <%= erb :table, cats: arg[:help].guaranteed_on_dupe %>
 <ul>
   <li>
-    What if your last rolled cat is not a Tin Cat before making 11-rolls
+    What if your last rolled cat is not a Tin Cat before doing 11-rolls
     at 4A on a guaranteed event?
     <ul>
       <li>
@@ -296,14 +300,14 @@
   </li>
   <li>
     Here's an example highlighting the path when you get Nekoluga at 3A by
-    making 2 single rolls and 1 platinum roll, and then make an 11-rolls
+    doing 2 single rolls and 1 platinum roll, and then doing an 11-rolls
     at 4A on a guaranteed event:
     <ol>
       <li>You get 1A, 2A by single rolls.</li>
       <li>You get 3A (Nekoluga) by a platinum roll.</li>
       <li>Since you get Nekoluga at 3A, thus your last roll is not a Tin Cat, you get Tin Cat at 4A as usual.</li>
       <li>Then you follow through as usual without switching track.</li>
-      <li>Finally you will switch to track B after getting the 4AG (4A Guaranteed) uber completely as usual as if there's no consecutive duplicated rare cat in the first place.</li>
+      <li>Finally you will switch to track B after getting the 4AG (4A guaranteed) uber completely as usual as if there's no consecutive duplicated rare cat in the first place.</li>
     </ol>
   </li>
 </ul>
@@ -338,7 +342,7 @@
   </li>
   <li>With this in mind, we can also say that a guaranteed roll is a half roll (of cat).</li>
   <li>
-    We switch to the other track when the game makes a half roll
+    We switch to the other track when the game does a half roll
     (or an odd number of half rolls when there are
     <a href="#increased-rates-with-repeated-cats">increased rates with repeated cats</a>).
   </li>
