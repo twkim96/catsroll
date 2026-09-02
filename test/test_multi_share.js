@@ -51,7 +51,8 @@ assert(payload, "payload should be created");
 assert.strictEqual(payload.t[2], 93, "share count overrides rendered count");
 
 const token = codec.encode(payload);
-assert(/^[A-Za-z0-9_-]+$/.test(token), "token is URL-safe base64");
+assert(/^(?:z1\.)?[A-Za-z0-9_-]+$/.test(token),
+  "token uses a URL-safe legacy or compressed transport");
 const decoded = codec.decode(token);
 assert.deepStrictEqual(decoded, payload, "payload round trips");
 assert.deepStrictEqual(codec.fromHash("#share=" + token), payload,
@@ -76,6 +77,13 @@ const restoredPlan = codec.planState(decoded);
 assert.strictEqual(restoredPlan.name, plan.name);
 assert.deepStrictEqual(restoredPlan.marks, plan.marks.slice(0, 2),
   "plan marks round trip and coordinates beyond the shared count are removed");
+assert.deepStrictEqual(restoredFind.targets, find.targets,
+  "Find targets survive in the same payload as a plan");
+
+const legacyToken = Buffer.from(JSON.stringify(payload), "utf8")
+  .toString("base64url");
+assert.deepStrictEqual(codec.decode(legacyToken), payload,
+  "existing uncompressed links remain readable");
 
 const legacyPayload = codec.makePayload(track, find, 93, track.formIndex);
 assert.strictEqual(codec.planState(codec.decode(codec.encode(legacyPayload))), null,
@@ -103,5 +111,52 @@ assert.strictEqual(eightRowPayload.r.length, 8,
   "share payload keeps up to eight banners");
 assert.strictEqual(codec.trackState(eightRowPayload).rows[7].event, "event_7",
   "the eighth banner survives a share round trip");
+
+const largeRows = Array.from({ length: 8 }, function (_unused, index) {
+  return {
+    lang: "kr",
+    event: "2026-09-" + String(index + 1).padStart(2, "0") + "_" +
+      String(1100 + index),
+    ubers: index % 2,
+    customName: "한국어 공유 배너 " + (index + 1),
+    customNameAuto: false,
+    seriesIds: [10 + index, 20 + index]
+  };
+});
+const largeFind = {
+  optimization: "cost",
+  maxGuaranteed: 3,
+  maxPlatinum: 2,
+  maxLegendTicket: 1,
+  targets: Array.from({ length: 50 }, function (_unused, index) {
+    return { cat_id: 100 + index, allow_ticket: index % 3 === 0 };
+  })
+};
+const largePlan = {
+  name: "압축 Find + Plan 공유",
+  marks: Array.from({ length: 160 }, function (_unused, index) {
+    return {
+      column: index % 8,
+      position: (index + 1) + (index % 2 ? "B" : "A"),
+      kind: index % 11 === 0 ? "guaranteed" : "regular"
+    };
+  })
+};
+const largePayload = codec.makePayload(Object.assign({}, track, {
+  rows: largeRows
+}), largeFind, 500, track.formIndex, largePlan);
+const largeLegacyToken = Buffer.from(JSON.stringify(largePayload), "utf8")
+  .toString("base64url");
+const largeToken = codec.encode(largePayload);
+assert(largeToken.startsWith("z1."), "large shares use compressed transport");
+assert(largeToken.length < largeLegacyToken.length * 0.55,
+  "a large Find + Plan link is materially shorter");
+const largeDecoded = codec.decode(largeToken);
+assert.deepStrictEqual(codec.findSettings(largeDecoded).targets,
+  largeFind.targets, "compressed links retain all Find targets");
+assert.deepStrictEqual(codec.planState(largeDecoded), largePlan,
+  "compressed links retain the plan alongside Find targets");
+assert.strictEqual(codec.decode("z1.AA"), null,
+  "truncated compressed links fail closed");
 
 console.log("multi-share: ok");
