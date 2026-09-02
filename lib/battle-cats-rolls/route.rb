@@ -249,6 +249,12 @@ module BattleCatsRolls
         end
     end
 
+    def text_bg
+      return @text_bg if instance_variable_defined?(:@text_bg)
+
+      @text_bg = request.params_coercion_true_or_nil('text_bg')
+    end
+
     MaxSeed = 2 ** 32
 
     # This is the seed from the seed input field
@@ -781,7 +787,7 @@ module BattleCatsRolls
         seed pos last
         event event_page custom rate c_rare c_supa c_uber
         level speed_unit lang ui
-        seeker name display highlighting theme count find
+        seeker name display highlighting theme text_bg count find
         no_guaranteed force_guaranteed ubers details
         advanced_filters exclude_talents sum_no_wave dps_no_critical
         hide_wave

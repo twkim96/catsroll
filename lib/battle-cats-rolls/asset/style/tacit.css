@@ -408,11 +408,11 @@ h1, h2, h3, h4, h5, h6 {
 .major_found { --major: var(--found); }
 .major_exclusive { --major: var(--exclusive); }
 
-.legend_fest a, .legend a,
-.major_legend_fest a, .major_legend a { color: #d8a56f; }
-
 .attack { background-color: lavender; }
 .triggered_attack { background-color: pink; }
+.augmented { padding: 0 4px; border-radius: 4px; }
+.augmented_regular, .talents { background-color: khaki; }
+.augmented_ultra, .ultra_talents { background-color: salmon; }
 
 .navigate { cursor: help; }
 .pick { cursor: cell; }
@@ -459,9 +459,6 @@ h1, h2, h3, h4, h5, h6 {
 .border_lower { border-top: none; }
 .border_middle { border-left: 2px solid; border-right: 2px solid; }
 .border_bottom { border-top: 2px solid; }
-.augmented { padding: 0 4px; border-radius: 4px; }
-.augmented_regular, .talents { background-color: khaki; }
-.augmented_ultra, .ultra_talents { background-color: greenyellow; }
 .for { width: 6em; }
 @media (max-width: 767px) {
   .for { width: auto; }

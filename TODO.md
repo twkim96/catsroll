@@ -36,6 +36,7 @@
 
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Finishing the help page
+* Refactor `lib/battle-cats-rolls/help.rb`. It's a mess! Need DSL.
 * Add a dropdown menu for filtering events based on series id
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at

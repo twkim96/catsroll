@@ -356,7 +356,7 @@ module BattleCatsRolls
       title = h cat.pick_title(route.name)
       stat_uri = h route.uri_to_cat(cat) if cat.id > 0
       roll_uri = h route.uri_to_roll(cat) if cat.slot_seed
-      text_roll = roll_tag(roll_uri, title, name) if text
+      text_roll = roll_tag(roll_uri, title, name) if text || stat_uri.nil?
       stat = %Q{ <a href="#{stat_uri}">🐾</a>} if stat_uri
       content = "<span>#{prefix}#{text_roll}#{stat}#{suffix}</span>"
 
@@ -372,7 +372,7 @@ module BattleCatsRolls
       if href
         %Q{<a href="#{href}" title="#{title}">#{content}</a>}
       else
-        %Q{<span title="#{title}">#{content}</span>}
+        %Q{<a title="#{title}">#{content}</a>}
       end
     end
 
@@ -401,20 +401,20 @@ module BattleCatsRolls
       'selected="selected"' if route.lang == lang_name
     end
 
-    def selected_pos pos
-      'selected="selected"' if route.pos == pos
+    def selected_ui ui_name
+      'selected="selected"' if route.ui == ui_name
     end
 
     def selected_seeker seeker_name
       'selected="selected"' if route.seeker == seeker_name
     end
 
-    def selected_name name_name
-      'selected="selected"' if route.name == name_name
-    end
-
     def selected_display display_name
       'selected="selected"' if route.display == display_name
+    end
+
+    def selected_name name_name
+      'selected="selected"' if route.name == name_name
     end
 
     def selected_highlighting highlighting_name
@@ -425,8 +425,8 @@ module BattleCatsRolls
       'selected="selected"' if route.theme == theme_name
     end
 
-    def selected_ui ui_name
-      'selected="selected"' if route.ui == ui_name
+    def checked_text_bg
+      'checked="checked"' if route.text_bg
     end
 
     def selected_current_event event_name

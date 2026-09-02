@@ -55,19 +55,21 @@
     <option value="advanced" <%= selected_highlighting('advanced') %>>Advanced</option>
     <option value="consistent" <%= selected_highlighting('consistent') %>>Consistent</option>
   </select>
-  <% else %>
-  <%= hidden_inputs('highlighting') %>
-  <% end %>
 
-  <% if route.path_info == '/' || route.path_info.start_with?('/cats') %>
   <label for="theme_select" title="Color theme for highlighting">Theme:</label>
   <select id="theme_select" name="theme" onchange="roll(this)">
     <option value="" <%= selected_theme('') %>>Default</option>
     <option value="alternate" <%= selected_theme('alternate') %>>Alternate</option>
     <option value="mkweb" <%= selected_theme('mkweb') %>>mkweb (colorblind friendly)</option>
   </select>
+
+  <label for="text_bg_input" title="Add background color for text to improve readability">Text background:
+    <input type="checkbox" id="text_bg_input" name="text_bg"
+      <%= checked_text_bg %>
+      onchange="roll(this)">
+  </label>
   <% else %>
-  <%= hidden_inputs('theme') %>
+  <%= hidden_inputs('highlighting', 'theme', 'text_bg') %>
   <% end %>
 
   <% if route.path_info.start_with?('/cats/') && arg[:cat] %>
