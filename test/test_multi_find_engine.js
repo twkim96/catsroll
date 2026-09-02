@@ -96,7 +96,7 @@ function search(overrides) {
 }
 
 // A platinum-allowed target is still satisfied by an event result first; the
-// ticket result costs +2 and only wins when the primary destination improves.
+// ticket result costs +1 and only wins when the primary destination improves.
 let result = search();
 assert.strictEqual(result.status, "success");
 assert.strictEqual(result.cost, 0.02);
@@ -109,9 +109,10 @@ result = search({
   targets: [{cat_id: 200, allow_ticket: true}]
 });
 assert.strictEqual(result.status, "success");
-assert.strictEqual(result.cost, 2);
+assert.strictEqual(result.cost, 1);
 assert.strictEqual(result.ticketUses, 1);
 assert.strictEqual(result.actions[0].type, "ticket");
+assert.strictEqual(result.actions[0].cost, 1);
 
 result = search({
   targets: [{cat_id: 200, allow_ticket: false}]
@@ -144,7 +145,7 @@ result = search({
 });
 assert.strictEqual(result.status, "success");
 assert.strictEqual(result.actions[0].type, "ticket");
-assert.strictEqual(result.cost, 2,
+assert.strictEqual(result.cost, 1,
   "a closer platinum result beats a farther low-cost event result");
 
 result = search({
@@ -180,7 +181,7 @@ assert.strictEqual(result.status, "impossible",
   "the platinum maximum is an actual usage limit");
 
 // Platinum and legend-ticket banners are separate paid resources. Neither can
-// masquerade as an ordinary rare-ticket event, and both retain a +2 base cost.
+// masquerade as an ordinary rare-ticket event; platinum costs +1, legend +2.
 const legendTicket = pool({
   platinum: "legend",
   rates: {rare: 0, supa: 0, uber: 0, legend: 10000},
@@ -211,6 +212,7 @@ assert.strictEqual(result.cost, 2);
 assert.strictEqual(result.platinumUses, 0);
 assert.strictEqual(result.legendTicketUses, 1);
 assert.strictEqual(result.actions[0].ticketKind, "legend");
+assert.strictEqual(result.actions[0].cost, 2);
 
 result = search({
   maxPlatinum: 1,
@@ -225,7 +227,8 @@ result = search({
   ]
 });
 assert.strictEqual(result.status, "success");
-assert.strictEqual(result.cost, 4);
+assert.strictEqual(result.cost, 3);
+assert.strictEqual(result.baseCost, 3);
 assert.strictEqual(result.ticketUses, 2);
 assert.strictEqual(result.platinumUses, 1);
 assert.strictEqual(result.legendTicketUses, 1);
@@ -419,7 +422,7 @@ function exhaustive(seed, count, last, optimization) {
         offset: ticketRoll.nextOffset,
         last: 0,
         mask: ticketRoll.id === 100 ? state.mask | 1 : state.mask,
-        costUnits: state.costUnits + 200,
+        costUnits: state.costUnits + 100,
         ticketUsed: state.ticketUsed + 1
       });
     }

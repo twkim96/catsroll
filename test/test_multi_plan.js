@@ -451,6 +451,8 @@ assert.strictEqual(explicitlySelectedSpecial.valid, true,
   "an explicitly selected special-ticket cell remains a valid route step");
 assert(!explicitlySelectedSpecial.auto.some((step) => step.column === 1),
   "the selected special-ticket step is not disguised as automatic fill");
+assert.strictEqual(explicitlySelectedSpecial.costUnits, 118,
+  "a manually selected platinum ticket has a cost weight of 1");
 assert.deepStrictEqual(plans.routeResourceUsage(
   routeSnapshot([unsafePool, specialPool]), explicitlySelectedSpecial, [
     { column: 1, position: "5A", kind: "regular" },
@@ -490,11 +492,15 @@ assert.strictEqual(plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool, legendPool]), [
     { column: 0, position: "10A", kind: "regular" }
   ]).valid, false, "legend tickets are excluded from automatic fill too");
-assert.strictEqual(plans.buildRoutePlan(fakeRouteEngine,
+const explicitlySelectedLegend = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool, legendPool]), [
     { column: 1, position: "5A", kind: "regular" },
     { column: 0, position: "10A", kind: "regular" }
-  ]).valid, true, "an explicitly selected legend-ticket cell remains valid");
+  ]);
+assert.strictEqual(explicitlySelectedLegend.valid, true,
+  "an explicitly selected legend-ticket cell remains valid");
+assert.strictEqual(explicitlySelectedLegend.costUnits, 218,
+  "legend tickets retain their cost weight of 2");
 
 const orphanedAfterSpecialRemoval = plans.buildRoutePlan(fakeRouteEngine,
   routeSnapshot([unsafePool, specialPool]), [
