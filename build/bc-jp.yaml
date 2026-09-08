@@ -35510,3 +35510,45 @@ events:
     supa: 2500
     uber: 500
     legend: 30
+  2026-09-10_1079:
+    start_on: 2026-09-10
+    end_on: 2026-09-15
+    version: '150600'
+    name: 熱血キャラクターが揃う「熱血!大運動会」ガチャ登場！★詳細はバナーをタップ!!
+    id: 1079
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-09-10_1080:
+    start_on: 2026-09-10
+    end_on: 2026-09-15
+    version: '150600'
+    name: "「りゅういち」参戦！「熱血!大運動会」ガチャ登場！★詳細はバナーをタップ!!"
+    id: 1080
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-09-10_986:
+    start_on: 2026-09-10
+    end_on: 2026-09-12
+    version: '150600'
+    name: 進化後に召喚能力を持つキャラクター「マモルガ」登場！★詳細はバナーをタップ!!
+    id: 986
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-09-12_1021:
+    start_on: 2026-09-12
+    end_on: 2026-09-15
+    version: '150600'
+    name: 浮いてる敵にめっぽう強いキャラ「獅子番長ラクレス」登場！★詳細はバナーをタップ!!
+    id: 1021
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
