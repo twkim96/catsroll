@@ -12,6 +12,7 @@ require 'yaml'
 
 require_relative '../lib/battle-cats-rolls/crystal_ball'
 require_relative '../lib/battle-cats-rolls/tsv_reader'
+require_relative '../lib/battle-cats-rolls/official_events'
 
 module BattleCatsRolls
   class LiveEventsUpdater
@@ -98,12 +99,15 @@ module BattleCatsRolls
     private
 
     def update_lang lang
-      url = @url || "https://bc-seek.godfat.org/seek/#{lang}/gatya.tsv"
-
       puts "[info] lang: #{lang}"
-      puts "[info] url: #{url}"
+      puts "[info] source: #{@url ? 'custom TSV URL' : 'PONOS official server'}"
 
-      tsv = download_tsv(url)
+      tsv = if @url
+        download_tsv(@url)
+      else
+        OfficialEvents.new(repo: @repo).read(lang)
+      end
+      validate_tsv!(tsv)
       reader = TsvReader.new(tsv)
       live_events = reader.gacha
       fail!('downloaded TSV has no rare gacha events') if live_events.empty?
@@ -129,8 +133,13 @@ module BattleCatsRolls
     end
 
     def download_tsv url
-      data = URI.open(url, 'User-Agent' => USER_AGENT,
+      URI.open(url, 'User-Agent' => USER_AGENT,
         open_timeout: 10, read_timeout: 20, &:read)
+    rescue StandardError => e
+      fail!("custom TSV download failed (#{e.class}); URL omitted")
+    end
+
+    def validate_tsv! data
       unless data.include?("[start]\n") && data.include?("[end]\n")
         fail!('downloaded data does not look like gatya.tsv')
       end
@@ -277,4 +286,4 @@ module BattleCatsRolls
   end
 end
 
-exit(BattleCatsRolls::LiveEventsUpdater.main(ARGV))
+exit(BattleCatsRolls::LiveEventsUpdater.main(ARGV)) if $PROGRAM_NAME == __FILE__

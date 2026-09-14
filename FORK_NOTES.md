@@ -82,6 +82,16 @@ Relevant commit history:
 Purpose:
 
 - Pull live event TSV data directly instead of waiting for upstream GitLab event commits.
+- The default source is the PONOS official event server. Each region obtains
+  a fresh JWT using its configured `Runner` app version, then downloads `gatya.tsv`.
+- `INQUIRY_CODE` and `PASSWORD` are read from process environment variables,
+  with the repository's private `.env` as a local fallback. Update/check never
+  creates an account. Missing credentials or rejected authentication fail visibly;
+  there is no silent fallback to the intermediary server.
+- Keep the same two credentials in GitHub Actions repository secrets and
+  Hugging Face Space secrets. Do not commit them or print JWT-bearing URLs.
+  `.dockerignore` also excludes local `.env` from Docker build contexts.
+- `--url URL` remains an explicit single-region alternative source.
 - Supports multiple languages, currently important for `kr` and `jp`.
 
 Operational note:
@@ -109,9 +119,10 @@ If upstream GitLab stops updating:
 2. Treat `missing gacha pools for ids` as an app-data problem, not a TSV
    problem. Update regional app data with `bin/build.rb jp` / `kr` and inspect
    `Runner` versions in `lib/battle-cats-rolls/runner.rb`.
-3. If `bc-seek.godfat.org` disappears, fetch PONOS directly using the existing
-   `NyankoAuth.event_url`, JWT, and `Web#request_tsv` path. Keep
-   `INQUIRY_CODE` and `PASSWORD` outside git.
+3. `bc-seek.godfat.org` is no longer required by the default live updater.
+   `OfficialEvents` uses `NyankoAuth.event_url` and JWT authentication directly.
+   The control-server commands and in-page admin check use this same updater;
+   the in-page deploy action dispatches the workflow with the same official source.
 4. If downloads fail after a game update, check app versions and PONOS auth
    first; if parsing fails, inspect `nyanko_auth.rb` and `tsv_reader.rb`.
 5. If generated tracks disagree with the game despite current data, investigate
