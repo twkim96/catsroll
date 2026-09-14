@@ -206,7 +206,9 @@ module BattleCatsRolls
         if names.any? && descs.any?
           # Cat 78 in TW has 3rd form but not indicated by unitforms
           # Here we try to use the number of animations to capture that
-          size = [unitforms[id], attack_animation[id]&.size || 0].max
+          # Also cat 876 in EN doesn't have unitforms data, but there's
+          # attack animation data which is giving 1 anyway.
+          size = [unitforms[id] || 0, attack_animation[id]&.size || 0].max
 
           result[id] = {
             'name' => names.first(size),

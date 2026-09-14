@@ -65,7 +65,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10, 10]
   10:
     name: [Actress Cat, Mother Cat, Beefcake Cat]
-    desc: ["Maintains a high level of professionalism.\nWorks very well with Sexy Legs Cat.\nExceptional Area Attack power and range.", "Her love is limitless!\nWorks very well with Sexy Legs Cat.\nExceptional Area Attack power and range.", "Dominated the bareknuckle boxing circuit with\nlong distance Area Attacks. Paired with legs\nthat float like a butterfly, really stings like a bee!"]
+    desc: ["A consummate professional, her most acclaimed\nworks are her collaborations with Sexy Legs Cat.\nExceptional Area Attack power and range.", "Overflowing with compassion and ever more\nbeautiful when paired with Sexy Legs Cat!\nExceptional Area Attack power and range.", "Prefers flexing for cameras to breaking a sweat.\nPair with Macho Legs to reveal the ideal Cat body.\nMore muscles for better defense & attack speed!"]
     stat: [{health: 400, knockbacks: 3, speed: 10, cost: 600, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 7, attack_duration: 11}, {health: 400, knockbacks: 3, speed: 10, cost: 600, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 7, attack_duration: 15}, {health: 650, knockbacks: 3, speed: 10, cost: 600, production_cooldown: 165, attack_cooldown: 40, range: 350, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 7, attack_duration: 15}]
     rarity: 1
     max_level: 50
@@ -86,7 +86,7 @@ cats:
         minmax: [[8, 80]]
   11:
     name: [Kung Fu Cat, Drunken Master Cat, Dancer Cat]
-    desc: ["Mid-range attack specialist. (Area Attack)\nCan fight off multiple enemies at once.", "Adopted Drunken Fist style ?\n… or just on a bender? (Area Attack)", "A legendary dancer who infuses his strikes\nwith fiery passion. So shy that he mastered\nwalking backwards to avoid eye contact. (Area)"]
+    desc: ["Mild-mannered martial artist hiding lethal\nmid-range Area strikes behind a peaceful smile.\nYou have much to learn, young one! (Area Attack)", "Drink more to overthink less! True masters\nfight on instinct alone... or is that just an\nexcuse to keep partying? (Area Attack)", "Legendary dancer who infuses their strikes\nwith fiery passion. So shy that they mastered\nwalking backwards to avoid eye contact. (Area)"]
     stat: [{health: 900, knockbacks: 1, speed: 9, cost: 1500, production_cooldown: 430, attack_cooldown: 100, range: 300, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 11, trigger_effects_0: 1, attack_duration: 40}, {health: 900, knockbacks: 1, speed: 9, cost: 1500, production_cooldown: 430, attack_cooldown: 88, range: 300, width: 320, area_effect: 1, damage_0: 242, attack_time_0: 11, trigger_effects_0: 1, damage_1: 60, attack_time_1: 15, trigger_effects_1: 1, damage_2: 908, attack_time_2: 35, trigger_effects_2: 1, attack_duration: 60}, {health: 900, knockbacks: 1, speed: 9, cost: 1500, production_cooldown: 430, attack_cooldown: 88, range: 330, width: 320, area_effect: 1, damage_0: 1210, attack_time_0: 35, trigger_effects_0: 1, immune_weaken: 1, attack_duration: 60}]
     rarity: 1
     max_level: 50
@@ -105,7 +105,7 @@ cats:
         minmax: [[8, 80]]
   12:
     name: [Mr., Super Mr., Hyper Mr.]
-    desc: ["Mr. is here from the popular \"Mr.\" series.\nThe series has trained his legs for speed,\nand he can shoot down all the enemies. (Area)", "Mr. is here from the popular \"Mr.\" series.\nThe series has trained his legs for speed,\nand now he has a bazooka. BAM. (Area)", "Mr. from the world-famous \"Mr.\" games!\nHe surges towards enemies, beating them down\nwith a homemade boxing-glove gun. (Area)"]
+    desc: ["From the smash-hit \"Mr.\" series!\nCloses the gap with a furious sprint before\nspraying and praying. (Area Attack)", "From the smash-hit \"Mr.\" series!\nCloses the gap with a furious sprint before\nfull-auto noob-tubing the battlefield (Area Attack)", "From the smash-hit \"Mr.\" series!\nCloses the gap with a practiced sprint before\nunleashing a boxing-glove beatdown. (Area)"]
     stat: [{health: 500, knockbacks: 5, speed: 31, cost: 550, production_cooldown: 240, attack_cooldown: 8, range: 140, width: 320, area_effect: 1, damage_0: 35, attack_time_0: 2, attack_duration: 17}, {health: 500, knockbacks: 5, speed: 31, cost: 550, production_cooldown: 240, attack_cooldown: 8, range: 140, width: 320, area_effect: 1, damage_0: 35, attack_time_0: 2, attack_duration: 15}, {health: 500, knockbacks: 5, speed: 47, cost: 550, production_cooldown: 240, attack_cooldown: 8, range: 140, width: 320, area_effect: 1, damage_0: 35, attack_time_0: 2, zombie_killer: 1, attack_duration: 15}]
     rarity: 1
     max_level: 50
@@ -167,7 +167,7 @@ cats:
         minmax: [[8, 80]]
   15:
     name: [Cats in a Box, Cat Gang, Heavy Assault C.A.T.]
-    desc: ["These poor guys have been abandoned.\nThey are now fending for themselves\nwith GREAT JUSTICE and speed (Area Attack)", "The hard life turned them towards\nthe wild side. We should avoid them now.\nWho knows what they'll do (Area Attack)", "An elite unit who keep the peace by rushing\nat the enemies of society. Might weaken\nDark enemy attacks (Area Attack)"]
+    desc: ["Adorable speedsters in affordable housing.\nReady to go in an instant to bash enemies\nwith an all-in blitz Area attack.", "Hard living on the streets turned them\ntowards the wild side, which makes their\nall-in blitz Area attacks even more fearsome.", "Joined a construction crew to re-enter society.\nPulverizes foes with a furious diesel rush.\nArea attacks might Weaken Dark."]
     stat: [{health: 800, knockbacks: 3, speed: 35, cost: 750, production_cooldown: 230, range: 140, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 8, attack_duration: 100}, {health: 800, knockbacks: 3, speed: 35, cost: 750, production_cooldown: 230, range: 140, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 8, attack_duration: 100}, {health: 800, knockbacks: 3, speed: 30, cost: 750, production_cooldown: 230, range: 199, width: 320, area_effect: 1, damage_0: 300, attack_time_0: 8, against_black: 1, weaken_chance: 30, weaken_duration: 200, weaken_multiplier: 50, attack_duration: 100}]
     rarity: 1
     max_level: 50
@@ -186,7 +186,7 @@ cats:
         minmax: [[8, 80]]
   16:
     name: [Panties Cat, Leaf Cat, Lollycat]
-    desc: ["The cold weather is nothing\nagainst the warm woolen material.\nAdvanced variation of Sexy Legs Cat", "Has the only important point covered.\nNot sure if it offers any protection.\nAdvanced variation of Sexy Legs Cat", "Used to be ashamed to go into battle exposed,\nbut a kind cat came along and lent a hand…\nerr… lollipop. Gained Area attacks!"]
+    desc: ["Equipped with performance gear for winter,\nto deliver long-range strikes no matter the\nweather. A silly Gross Cat variant.", "It's most critical weak point is well-defended,\nbut that doesn't contribute much in actual\ncombat. A silly Gross Cat variant.", "Dignity was but a dream until a kind stranger lent\nthem a giant lollipop, allowing them to perform\nArea Attacks without shaming themselves."]
     stat: [{health: 400, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, damage_0: 100, attack_time_0: 6, attack_duration: 11}, {health: 400, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, damage_0: 100, attack_time_0: 6, attack_duration: 12}, {health: 400, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 6, attack_duration: 11}]
     rarity: 1
     max_level: 50
@@ -207,22 +207,22 @@ cats:
         max_level: 10
         minmax: [[8, 80]]
   17:
-    name: [Moneko, Miss MONEKO, Superstar MONEKO]
-    desc: ["Hoping to become an idol.\nShe sings on the streets everyday.\nYou might see her around, please say hi.", "Thanks to everyone, she made it to stardom!\nNow she's everyone's favorite star!\nPlease support her! The future is still bright!", "Moneko is now the Cat Empire's Queen of Pop,\nbut she never forgets her precious fans from the\nearly days. Mini-Waves, with chance of Critical!"]
+    name: [Moneko, Miss Moneko, Superstar Moneko]
+    desc: ["Aspiring idol dreaming of the big stage!\nIf you see her around, please say \"Hi\".\nMight perform Critical attacks.", "The nation's top idol! Despite her fame, she\nstill treasures every single fan. A shining\nstar! Might perform Critical attacks.", "Moneko is now the Cat Empire's Queen of Pop,\nbut she never forgets her precious fans from the\nearly days. Mini-Waves, with chance of Critical!"]
     stat: [{health: 600, knockbacks: 4, speed: 5, cost: 99, production_cooldown: 999, attack_cooldown: 50, range: 160, width: 320, damage_0: 400, attack_time_0: 28, trigger_effects_0: 1, critical_chance: 15, attack_duration: 56}, {health: 1000, knockbacks: 4, speed: 5, cost: 99, production_cooldown: 999, attack_cooldown: 50, range: 160, width: 320, damage_0: 400, attack_time_0: 28, trigger_effects_0: 1, critical_chance: 15, attack_duration: 56}, {health: 1250, knockbacks: 4, speed: 5, cost: 99, production_cooldown: 666, attack_cooldown: 50, range: 160, width: 320, damage_0: 400, attack_time_0: 28, trigger_effects_0: 1, critical_chance: 20, wave_level: 3, wave_mini: 100, attack_duration: 56}]
     rarity: 1
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   18:
     name: [Tricycle Cat, Biker Cat, Unicycle Cat]
-    desc: ["The coolest Cat on the block. (Area Attack)\nCan't ride a real bike - parents said no.", "Born to be wild! (Area Attack)\nMoved out and finally got his motorcycle!", "Was forced to scale down the number of wheels\nthanks to a recession, but still stays positive.\nAttacks groups of enemies (Area attack)"]
+    desc: ["Cruises the streets on a tricked-out tricycle.\nCan't ride a real bike - parents said no.\nAttacks groups of enemies. (Area Attack)", "Wild Cat joyriding the highways on the chopper\nthey bought after moving out of mom's basement.\nAttacks groups of enemies. (Area Attack)", "Forced to scale down the number of wheels\nthanks to a recession, but still stays positive.\nAttacks groups of enemies. (Area Attack)"]
     stat: [{health: 400, knockbacks: 4, speed: 10, cost: 700, production_cooldown: 125, attack_cooldown: 20, range: 170, width: 320, area_effect: 1, damage_0: 180, attack_time_0: 20, attack_duration: 32}, {health: 400, knockbacks: 4, speed: 10, cost: 700, production_cooldown: 125, attack_cooldown: 22, range: 170, width: 320, area_effect: 1, damage_0: 180, attack_time_0: 16, attack_duration: 46}, {health: 400, knockbacks: 4, speed: 10, cost: 350, production_cooldown: 125, attack_cooldown: 22, range: 170, width: 320, area_effect: 1, damage_0: 180, attack_time_0: 16, attack_duration: 46}]
     rarity: 1
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   19:
-    name: [Ninja Cat, Ninja Frog Cat, Flying Ninja Cat]
-    desc: ["One of the strongest fighters.\nRivals with Axe Cat. 10 wins, 1 loss.\nStrong against Red enemies.", "Learned how to summon animals.\nRides a frog for better mobility.\nStrong against Red enemies.", "Dances across the sky, assaulting enemies\nusing advanced ninjutsu. Cheap to produce,\nvery strong against Red enemies!"]
+    name: [Ninja Cat, Frog Ninja Cat, Flying Ninja Cat]
+    desc: ["Mastered the shinobi arts in a hidden village.\nRivals Axe Cat, claiming a 10-1 win record.\nStrong vs. Red enemies.", "Allied with an ace amphibian for more mobility.\nStill claiming to outclass Axe Cat.\nStrong vs. Red enemies.", "Dances through the sky using advanced ninja arts!\nNow cost-effective enough for mass shinobi production.\nStrong vs. Red enemies."]
     stat: [{health: 240, knockbacks: 3, speed: 13, cost: 200, production_cooldown: 105, attack_cooldown: 4, range: 150, width: 320, damage_0: 14, attack_time_0: 6, trigger_effects_0: 1, damage_1: 14, attack_time_1: 14, trigger_effects_1: 1, against_red: 1, strong: 1, attack_duration: 17}, {health: 240, knockbacks: 3, speed: 13, cost: 200, production_cooldown: 105, attack_cooldown: 4, range: 150, width: 320, damage_0: 14, attack_time_0: 6, trigger_effects_0: 1, damage_1: 14, attack_time_1: 14, trigger_effects_1: 1, against_red: 1, strong: 1, attack_duration: 17}, {health: 240, knockbacks: 3, speed: 10, cost: 150, production_cooldown: 105, attack_cooldown: 8, range: 150, width: 320, damage_0: 28, attack_time_0: 6, trigger_effects_0: 1, against_red: 1, strong: 1, attack_duration: 17}]
     rarity: 1
     max_level: 50
@@ -243,7 +243,7 @@ cats:
         minmax: [[8, 80]]
   20:
     name: [Zombie Cat, Devil Cat, Skelecat]
-    desc: ["Studies at a certain film academy.\nMajors in special effects and makeup.\nStrong against Red enemies.", "Got an A in his makeup class with this.\nArgues that he does better than Fish Cat.\nStrong against Red enemies.", "Even a rusty nail can't stop the love in his heart\nfrom beating. More versatile than Fish Cat:\nstrong against Red/Zombies, with area attacks."]
+    desc: ["Studies at a well-regarded film school.\nSomehow more versatile than Fish Cat.\nStrong vs. Red enemies.", "Got an A in stage makeup class with this look.\nSomehow more versatile than Fish Cat.\nStrong vs. Red enemies.", "Even a rusty nail can't stop the love in their\nheart. Somehow more versatile than Fish Cat.\nStrong vs. Red/Zombies with Area attacks."]
     stat: [{health: 700, knockbacks: 3, speed: 8, cost: 750, production_cooldown: 200, attack_cooldown: 22, range: 150, width: 320, damage_0: 200, attack_time_0: 16, against_red: 1, strong: 1, attack_duration: 31}, {health: 700, knockbacks: 3, speed: 8, cost: 750, production_cooldown: 200, attack_cooldown: 22, range: 150, width: 320, damage_0: 200, attack_time_0: 16, against_red: 1, strong: 1, attack_duration: 31}, {health: 700, knockbacks: 3, speed: 8, cost: 750, production_cooldown: 200, attack_cooldown: 22, range: 150, width: 320, area_effect: 1, damage_0: 200, attack_time_0: 16, against_red: 1, against_zombie: 1, strong: 1, zombie_killer: 1, attack_duration: 31}]
     rarity: 1
     max_level: 50
@@ -266,7 +266,7 @@ cats:
         minmax: [[8, 80]]
   21:
     name: [Samurai Cat, Knight Cat, Pastry Cat]
-    desc: ["Sincerity is the way of the warrior.\nExceptional health and attack.\nA very well-rounded Cat.", "Added chivalry to his repertoire.\nExceptional health and attack.\nA very well-rounded Cat.", "Who says you can't love both cupcakes and\ncarnage? A kitchen pro who flings powerful\ngobs of whipped cream to slow enemies."]
+    desc: ["Their sword is guided by the noble code of\nBushido. A well-rounded frontline fighter \nboasting respectable health and attack power.", "Their lance is guided by the knightly code of\nchivalry. A well-rounded frontline fighter \nboasting respectable health and attack power.", "Their whisk is guided by the culinary code of\nthe patisserie. A kitchen pro who flings powerful\ngobs of whipped cream to Slow enemies."]
     stat: [{health: 540, knockbacks: 3, speed: 7, cost: 350, production_cooldown: 150, attack_cooldown: 20, range: 150, width: 320, damage_0: 130, attack_time_0: 18, trigger_effects_0: 1, attack_duration: 23}, {health: 540, knockbacks: 3, speed: 7, cost: 350, production_cooldown: 150, attack_cooldown: 20, range: 160, width: 320, damage_0: 130, attack_time_0: 18, trigger_effects_0: 1, attack_duration: 23}, {health: 540, knockbacks: 3, speed: 7, cost: 350, production_cooldown: 150, attack_cooldown: 20, range: 160, width: 320, damage_0: 130, attack_time_0: 18, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, slow_chance: 10, slow_duration: 60, attack_duration: 23}]
     rarity: 1
     max_level: 50
@@ -289,7 +289,7 @@ cats:
         minmax: [[8, 80]]
   22:
     name: [Sumo Cat, Madame Sumo, Riceball Cat]
-    desc: ["Tank Cat didn't listen\nwhen they said that size doesn’t matter.\nNow with somewhat stronger attack (Area Attack)", "Found his calling feeding other Sumo Cats.\nMake sure you finish your food… or else.\nHas a somewhat stronger attack (Area Attack)", "Defense AND nutrition in a convenient hand-sized\npackage. More durable than Tank Cat, with\nquickness from intense training (Area Attack)"]
+    desc: ["A heavy defender running on pure carbs.\nA considerable upgrade on Tank Cat with\ndecent damage output from Area attacks!", "Found his calling feeding other Sumo Cats.\nMake sure you finish your food… or else.\nDecent damage output from Area attacks!", "Defense AND nutrition in a palm-sized\npackage. More durable than Tank Cat, with\nquickness from intense training. (Area Attack)"]
     stat: [{health: 600, knockbacks: 1, speed: 8, cost: 200, production_cooldown: 135, attack_cooldown: 3, range: 110, width: 320, area_effect: 1, damage_0: 3, attack_time_0: 12, trigger_effects_0: 1, damage_1: 3, attack_time_1: 20, trigger_effects_1: 1, damage_2: 3, attack_time_2: 28, trigger_effects_2: 1, attack_duration: 33}, {health: 600, knockbacks: 1, speed: 8, cost: 200, production_cooldown: 135, attack_cooldown: 3, range: 110, width: 320, area_effect: 1, damage_0: 3, attack_time_0: 12, trigger_effects_0: 1, damage_1: 3, attack_time_1: 20, trigger_effects_1: 1, damage_2: 3, attack_time_2: 28, trigger_effects_2: 1, attack_duration: 33}, {health: 600, knockbacks: 1, speed: 24, cost: 200, production_cooldown: 135, attack_cooldown: 3, range: 110, width: 320, area_effect: 1, damage_0: 3, attack_time_0: 12, trigger_effects_0: 1, damage_1: 3, attack_time_1: 20, trigger_effects_1: 1, damage_2: 3, attack_time_2: 28, trigger_effects_2: 1, immune_knockback: 1, attack_duration: 33}]
     rarity: 1
     max_level: 50
@@ -306,7 +306,7 @@ cats:
         minmax: [[8, 80]]
   23:
     name: [Boogie Cat, Samba Cat, Gato Amigo]
-    desc: ["No one can stop the beats!\nCheap to produce. Comes with bonus groove.\nIt's boogie time! Go! Go! Cat!", "Beats have brought this one to eleven!\nCheap and fast to produce. Everybody dance!\nDance til you drop! Sammmbaaaaa!!111one", "Out to bring joy to the senoritas of the world.\nHe's never been to Mexico, he's just a Mariachi\nnerd. Can send enemies flying!"]
+    desc: ["Dancing dynamo who never fails to bring the funk!\nMade to mass deploy for dance floor takeovers,\nspam them to catch the Saturday night fever!", "Champ of the carnival, bringing joy to the world.\nMade to mass deploy for dance floor takeovers,\nthey'll move and groove 'til the break of dawn.", "Out to bring joy to the senoritas of the world.\nNever been to Mexico, just a Mariachi\nnerd. Might Knockback enemies!"]
     stat: [{health: 200, knockbacks: 3, speed: 6, cost: 50, production_cooldown: 120, attack_cooldown: 15, range: 140, width: 320, damage_0: 20, attack_time_0: 14, trigger_effects_0: 1, attack_duration: 31}, {health: 200, knockbacks: 3, speed: 6, cost: 50, production_cooldown: 120, attack_cooldown: 15, range: 140, width: 320, damage_0: 20, attack_time_0: 14, trigger_effects_0: 1, attack_duration: 31}, {health: 200, knockbacks: 3, speed: 6, cost: 50, production_cooldown: 120, attack_cooldown: 15, range: 140, width: 320, damage_0: 20, attack_time_0: 14, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, knockback_chance: 5, attack_duration: 31}]
     rarity: 1
     max_level: 50
@@ -327,7 +327,7 @@ cats:
         minmax: [[8, 80]]
   24:
     name: [Skirt Cat, Tights Cat, Loincloth Cat]
-    desc: ["Found a nicely fitting skirt at a boutique.\nLikes to wear it out… all the time.\nAdvanced variation of Sexy Legs Cat", "Looking for some variety, stumbled across\na garter belt at the dollar store.\nAdvanced variation of Sexy Legs Cat", "Chose traditional undies to better show off\nshapely legs, and started a viral fashion trend.\nRapid attacks with chance to break Barriers!"]
+    desc: ["Found a lovely pleated skirt at the thrift store,\nnow absolutely refuses to wear anything else.\nA silly Gross Cat variant.", "Mistook a garter belt from the department store\nfor high-tier tactical leg armor.\nA silly Gross Cat variant.", "Chose traditional undies to better show off\nshapely legs, and started a viral fashion trend.\nRapid attacks may Break Barriers!"]
     stat: [{health: 400, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, damage_0: 100, attack_time_0: 6, trigger_effects_0: 1, attack_duration: 11}, {health: 400, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 165, attack_cooldown: 60, range: 350, width: 320, damage_0: 100, attack_time_0: 6, trigger_effects_0: 1, attack_duration: 11}, {health: 400, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 165, attack_cooldown: 40, range: 350, width: 320, damage_0: 100, attack_time_0: 6, trigger_effects_0: 1, break_barrier_chance: 30, attack_duration: 11}]
     rarity: 1
     max_level: 50
@@ -755,7 +755,7 @@ cats:
         ultra: 1
   45:
     name: [Lesser Demon Cat, Greater Demon Cat, Greater Balrog Cat]
-    desc: ["A mad cat that sacrificed itself to a\na demon from the netherworld.\nAttacks with extreme force.", "The mad cat managed to control\nthe demon from the netherworld.\nAttacks with extreme force.", "His wanderings through the abyss have\ndriven him mad with infernal ambitions.\nTremendous damage to a single enemy."]
+    desc: ["A mad cat that sacrificed itself to\na demon from the netherworld.\nAttacks with extreme force.", "The mad cat managed to control\nthe demon from the netherworld.\nAttacks with extreme force.", "His wanderings through the abyss have\ndriven him mad with infernal ambitions.\nTremendous damage to a single enemy."]
     stat: [{health: 2200, knockbacks: 3, speed: 12, cost: 2000, production_cooldown: 555, attack_cooldown: 20, range: 180, width: 320, damage_0: 1650, attack_time_0: 28, immune_weaken: 1, attack_duration: 67}, {health: 2900, knockbacks: 3, speed: 12, cost: 2000, production_cooldown: 555, attack_cooldown: 20, range: 180, width: 320, damage_0: 2250, attack_time_0: 28, immune_weaken: 1, attack_duration: 67}, {health: 3900, knockbacks: 3, speed: 12, cost: 2000, production_cooldown: 555, attack_cooldown: 20, range: 180, width: 320, damage_0: 3750, attack_time_0: 28, immune_weaken: 1, attack_duration: 67}]
     rarity: 4
     max_level: 130
@@ -1470,63 +1470,63 @@ cats:
     growth: [20, 20, 20, 20, 20]
   92:
     name: [Crazed Cat, Crazed Macho Cat, Manic Mohawk Cat]
-    desc: ["The Basic Cat.\nCrazed version obtains godspeed.\nBut his legs are too short…", "Charm Point: Muscle Definition.\nCrazed version obtains godspeed.\n… and a little bit more definition?", "His lovely 'do has driven him\na bit crazy, but he makes it work.\nManic version obtains godspeed."]
+    desc: ["A frenzied Basic Cat at a very reasonable price.\nCrazed form gains an extreme speed boost,\nbut can those tiny little legs handle the pace?", "Charm point: menacing muscle definition.\nCrazed form gains a monstrous speed boost!\nWeird that they don't use those arms to fight.", "Charm point: aggressively stellar hairdo.\nMuscle definition is now absolutely ludicrous.\nManic form gains even more glorious speed!"]
     stat: [{health: 360, knockbacks: 3, speed: 20, cost: 50, production_cooldown: 75, attack_cooldown: 15, range: 140, width: 320, damage_0: 28, attack_time_0: 8, attack_duration: 17}, {health: 360, knockbacks: 3, speed: 20, cost: 50, production_cooldown: 75, attack_cooldown: 15, range: 140, width: 320, damage_0: 28, attack_time_0: 8, attack_duration: 17}, {health: 440, knockbacks: 3, speed: 28, cost: 50, production_cooldown: 75, attack_cooldown: 15, range: 140, width: 320, damage_0: 34, attack_time_0: 8, attack_duration: 17}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   93:
     name: [Crazed Tank Cat, Crazed Wall Cat, Manic Eraser Cat]
-    desc: ["Tough. High health. (Area Attack)\nStrong enough to move a pebble.\nCrazed version grants godspeed.", "Rigid defense. Now with corners. (Area Attack)\nStrong enough to move a small rock.\nCrazed version grants godspeed.", "Can take a beating thanks to elasticity.\nManic version grants even more\nReally Good ™ Defense. (Area Attack)"]
+    desc: ["Acts as a frenzied shield with a large health pool.\nTheir Area attacks are strong enough to move a pebble.\nCrazed form gains extreme speed.", "Rigid defense, now with deadly sharp corners.\nTheir Area attacks are strong enough to move a small rock.\nCrazed form gains extreme speed.", "Their rubbery body can take a ruthless beating.\nManic form gains Wicked Good™ defense.\nArea attacks are strong enough to move two small rocks."]
     stat: [{health: 1080, knockbacks: 1, speed: 16, cost: 100, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 7, attack_time_0: 8, attack_duration: 15}, {health: 1080, knockbacks: 1, speed: 16, cost: 100, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 7, attack_time_0: 8, attack_duration: 15}, {health: 1310, knockbacks: 1, speed: 20, cost: 100, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 7, attack_time_0: 8, attack_duration: 15}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   94:
     name: [Crazed Axe Cat, Crazed Brave Cat, Manic Dark Cat]
-    desc: ["Combat maniac.\nStrong against Red enemies.\nCrazed version increases attack power.", "Hero wannabe.\nStrong against Red enemies.\nCrazed version increases attack power.", "A charismatic knight who thirsts for\nbattle, mighty against Red enemies.\nManic for better defense and attack."]
+    desc: ["Bloodthirsty berserker built purely for combat.\nStrong vs. Red enemies.\nCrazed form gains more attack power.", "Deranged hero wannabe, built purely for combat.\nStrong vs. Red enemies.\nCrazed form gains more attack power.", "Anti-hero apprentice to a dark knight, built purely\nfor combat. Strong vs. Red enemies. Manic\nform gains improved attack and Health."]
     stat: [{health: 720, knockbacks: 3, speed: 12, cost: 200, production_cooldown: 150, attack_cooldown: 10, range: 150, width: 320, damage_0: 130, attack_time_0: 8, against_red: 1, strong: 1, attack_duration: 15}, {health: 720, knockbacks: 3, speed: 12, cost: 200, production_cooldown: 150, attack_cooldown: 10, range: 150, width: 320, damage_0: 130, attack_time_0: 8, against_red: 1, strong: 1, attack_duration: 15}, {health: 870, knockbacks: 3, speed: 12, cost: 200, production_cooldown: 150, attack_cooldown: 10, range: 150, width: 320, damage_0: 220, attack_time_0: 8, against_red: 1, strong: 1, attack_duration: 15}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   95:
     name: [Crazed Gross Cat, Crazed Sexy Legs Cat, Manic Macho Legs]
-    desc: ["Able to do a very powerful long range attack\nCrazed version grants Wave Attack, but\nincreases production time.", "Has pride in his overly beautiful legs.\nCrazed version grants Wave Attack, but\nincreases production time.", "Frenzy has enhanced the beauty of his\nlegs and the power of his long-distance\nattacks even more. Popularity is down, though."]
+    desc: ["Far-reaching fighter dealing death from a distance.\nCrazed form gains Wave Attack, but\ndemands drastically slower production speed.", "Far-reaching fighter taking pride in their deadly legs.\nCrazed form gains Wave Attack, but\ndemands drastically slower production speed.", "Far-reaching fighter for whom legs are a brutal weapon.\nManic form gains increased Health and Wave\nrange, but at the cost of their entire fan following."]
     stat: [{health: 1440, knockbacks: 3, speed: 10, cost: 400, production_cooldown: 564, attack_cooldown: 60, range: 350, width: 320, damage_0: 360, attack_time_0: 6, wave_chance: 100, wave_level: 3, attack_duration: 15}, {health: 1440, knockbacks: 3, speed: 10, cost: 400, production_cooldown: 564, attack_cooldown: 60, range: 350, width: 320, damage_0: 360, attack_time_0: 6, wave_chance: 100, wave_level: 3, attack_duration: 11}, {health: 1750, knockbacks: 3, speed: 10, cost: 400, production_cooldown: 564, attack_cooldown: 60, range: 350, width: 320, damage_0: 360, attack_time_0: 6, wave_chance: 100, wave_level: 4, attack_duration: 11}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   96:
     name: [Crazed Cow Cat, Crazed Giraffe Cat, Manic Lion Cat]
-    desc: ["Thinks quick, acts quick, and uses his head.\nRuns like the wind!\nCrazed Version grants Area Attack", "Thinks quick, acts quick, and uses his head.\nHeadbangs only to Rock'n'Roll!\nCrazed Version grants Area Attack", "An excellent, agile character.\nThough Manic, his magnificent mane\nsomehow grants him godspeed (Area Atk)"]
+    desc: ["Fast, frantic, and highly mobile!\nUses their head to dish out a flurry of vicious attacks.\nCrazed version gains Area attack.", "Fast, frantic, and highly mobile!\nA proud metalhead, thrashing all day long.\nCrazed version gains Area attack.", "The frenetically fast King of Beasts!\nIntimidating mane supposedly grants mystic blessings.\nManic form gains extreme speed. (Area Attack)"]
     stat: [{health: 1800, knockbacks: 5, speed: 50, cost: 500, production_cooldown: 195, range: 140, width: 320, area_effect: 1, damage_0: 47, attack_time_0: 6, attack_duration: 9}, {health: 1800, knockbacks: 5, speed: 50, cost: 500, production_cooldown: 195, range: 140, width: 320, area_effect: 1, damage_0: 47, attack_time_0: 6, attack_duration: 9}, {health: 1800, knockbacks: 5, speed: 66, cost: 500, production_cooldown: 195, range: 140, width: 320, area_effect: 1, damage_0: 47, attack_time_0: 6, attack_duration: 9}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   97:
     name: [Crazed Bird Cat, Crazed UFO Cat, Manic Flying Cat]
-    desc: ["Has the health of a pea\nExceptional attack power (Area Attack)\nCrazed version increases attack range.", "Managed to overcome gravity.\nGood against multiple enemies (Area Attack)\nCrazed version increases attack range.", "This manic flying object shows no mercy,\nfiring light beams to destroy whole cities from\nrange. More power! More range! Muahaha!"]
+    desc: ["Health of a pea, but wields explosive might to wipe\nout whole crowds in one swoop. (Area Attack)\nCrazed form gains increased attack range.", "Unearthly Cat defying gravity all battle long.\nDrops punishing payloads on groups of foes. (Area Attack)\nCrazed form gains increased attack range.", "It is said they obliterated a nation\nonce with beams of light. \nManic form gains increased power and range!"]
     stat: [{health: 1080, knockbacks: 4, speed: 10, cost: 650, production_cooldown: 185, attack_cooldown: 20, range: 205, width: 320, area_effect: 1, damage_0: 480, attack_time_0: 10, attack_duration: 13}, {health: 1080, knockbacks: 4, speed: 10, cost: 650, production_cooldown: 185, attack_cooldown: 20, range: 205, width: 320, area_effect: 1, damage_0: 594, attack_time_0: 18, attack_duration: 40}, {health: 1080, knockbacks: 4, speed: 10, cost: 650, production_cooldown: 185, attack_cooldown: 20, range: 220, width: 320, area_effect: 1, damage_0: 724, attack_time_0: 20, attack_duration: 40}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   98:
     name: [Crazed Fish Cat, Crazed Whale Cat, Manic Island Cat]
-    desc: ["Strong against Red enemies.\nCrazed version decreases production time.\nMight perform critical attacks", "Managed to become a carnivorous whale.\nStrong against Red enemies.\nMight perform critical attacks", "Demons are rumored to live on this manic\nisland. Strong against Red, might critical.\nMania gives it extra offense and defense!"]
+    desc: ["Unhinged brawler with a taste for battle.\nCrazed form is deployable for less cost!\nStrong vs. Red enemies, might land Critical attacks.", "Evolved into a ravenous, meat-eating whale.\nStrong vs. Red enemies, might land Critical attacks.", "Morphed into a thermal resort rumored to house demons.\nStrong vs. Red enemies, might land Critical attacks.\nManic form gains a boost to health & attack."]
     stat: [{health: 2520, knockbacks: 3, speed: 13, cost: 490, production_cooldown: 255, attack_cooldown: 22, range: 150, width: 320, damage_0: 648, attack_time_0: 10, against_red: 1, strong: 1, critical_chance: 2, attack_duration: 17}, {health: 2520, knockbacks: 3, speed: 13, cost: 490, production_cooldown: 255, attack_cooldown: 22, range: 150, width: 320, damage_0: 648, attack_time_0: 10, against_red: 1, strong: 1, critical_chance: 2, attack_duration: 17}, {health: 3060, knockbacks: 3, speed: 13, cost: 490, production_cooldown: 255, attack_cooldown: 22, range: 150, width: 320, damage_0: 788, attack_time_0: 10, against_red: 1, strong: 1, critical_chance: 2, attack_duration: 17}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   99:
     name: [Crazed Lizard Cat, Crazed Dragon Cat, Manic King Dragon]
-    desc: ["Able to attack enemies from a distance.\nPowerful single shot long range attack.\nCrazed version supports High Definition.", "Found its way here from a fantasy world.\nPowerful single shot long range attack.\nCrazed version supports High Definition.", "Even his frenzy can't stop him from joining\nthe ranks of the elite! Unmatched attack and\nsuperior graphic power. At least he says so."]
+    desc: ["Able to brutally punish an enemy from a distance.\nDelivers unrivaled power with single-hit blows.\nCrazed version supports High Definition.", "Summoned from a fantasy novel to lay waste with flame.\nDelivers unrivaled power with single-hit blows.\nCrazed version supports High Definition.", "Slaughtered their way to the dragon throne.\nAttacks from distance with ruthless single-hit blows.\nManic form boosts stats and supports UHD."]
     stat: [{health: 1620, knockbacks: 3, speed: 10, cost: 1000, production_cooldown: 385, attack_cooldown: 60, range: 400, width: 320, damage_0: 720, attack_time_0: 8, attack_duration: 24}, {health: 1620, knockbacks: 3, speed: 10, cost: 1000, production_cooldown: 385, attack_cooldown: 60, range: 400, width: 320, damage_0: 720, attack_time_0: 8, attack_duration: 28}, {health: 1620, knockbacks: 3, speed: 10, cost: 1000, production_cooldown: 385, attack_cooldown: 60, range: 415, width: 320, damage_0: 880, attack_time_0: 8, attack_duration: 28}]
     rarity: 3
     max_level: 50
     growth: [20, 20, 10, 10, 10]
   100:
     name: [Crazed Titan Cat, Crazed M. Titan Cat, Manic Jamiera Cat]
-    desc: ["Blessed with extreme attack power\nand ridiculous amounts of health.\nArea Attacks have a small chance to unleash Wave afar.", "Blessed with extreme attack power and health,\nhas become the destruction incarnate.\nArea Attacks have a small chance to unleash Wave afar.", "Blessed with extreme attack power and health,\nnone can withstand his rampage! Being Manic grants more\nsturdy health and increased the chance of Wave."]
+    desc: ["Heavyweight champ with a terrifying Health\npool and bone-crunching blows. Area attacks\nhave a small chance to unleash Waves from afar.", "Celestial Cat of cataclysm of with a terrifying\nHealth pool and merciless fists. Furious Area\nattacks have a small chance to unleash Waves from afar.", "Titan of terror on an unstoppable rampage!\nNone will survive their Manic change with even\nmore health & increased chance of Waves from afar."]
     stat: [{health: 3600, knockbacks: 1, speed: 11, cost: 1300, production_cooldown: 465, range: 150, width: 320, area_effect: 1, damage_0: 1184, attack_time_0: 47, wave_chance: 10, wave_level: 10, attack_duration: 80}, {health: 3600, knockbacks: 1, speed: 11, cost: 1300, production_cooldown: 465, range: 150, width: 320, area_effect: 1, damage_0: 1184, attack_time_0: 47, wave_chance: 10, wave_level: 10, attack_duration: 80}, {health: 4400, knockbacks: 1, speed: 11, cost: 1300, production_cooldown: 465, range: 150, width: 320, area_effect: 1, damage_0: 1184, attack_time_0: 47, wave_chance: 15, wave_level: 10, attack_duration: 80}]
     rarity: 3
     max_level: 50
@@ -2667,9 +2667,9 @@ cats:
         minmax: [[5, 50], [60, 60]]
         ultra: 1
   197:
-    name: [Catman, Dark Catman, Ultimate Catman]
-    desc: ["Wears a special suit that blocks all UV light,\nbut it can't stop the papparazzi from following…\nMassive area damage against Floating/Aliens.", "Became a monster to fight the terrors of the night.\nStill, weak to autograph requests from nice old ladies.\nMassive area damage against Angels/Aliens.", "Gave in and took a three-movie deal to afford a\nhigh-tech suit powered by the fear of evildoers.\nMassive Area damage to Aliens and Relics."]
-    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}]
+    name: [Catman, Dark Catman, Ultimate Catman, Catman Forever]
+    desc: ["Wears a special suit that blocks all UV light,\nbut it can't stop the paparazzi from following…\nMassive area damage against Floating/Aliens.", "Became a monster to fight the terrors of the night.\nStill, weak to autograph requests from nice old ladies.\nMassive area damage against Angels/Aliens.", "Gave in and took a three-movie deal to afford a\nhigh-tech suit powered by the fear of evildoers.\nMassive Area damage to Aliens and Relics.", "Now a superstar with a global mega-hit under his\nbelt, uses box office profits to clean up the underworld.\nMassive Area damage vs. Angel/Alien/Relics."]
+    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}, {health: 5250, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 1850, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 185}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -3618,6 +3618,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      wave_mini:
+        max_level: 10
+        minmax: [[28, 100], [2, 2]]
+      immune_surge: {}
+      immune_freeze: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   304:
     name: [Food Stall Cat, Delivery Cat, Cafeteria Cat]
     desc: ["Planning to corner the grilled calamari market.\nForgot to pay taxes, so now business takes\nplace on the run. Massive damage vs Angels.", "Brings gifts from the Cat God for you! Of\ncourse, its all cash-on-delivery. Best pay up or\nrisk divine wrath. Massive damage vs Angels.", "Washes their hands and disinfects to perfection.\nDelivers school lunches directly to students without fail.\nDeals Massive damage to Angels and might Curse."]
@@ -3650,7 +3662,7 @@ cats:
         minmax: [[2, 20]]
   306:
     name: [Mighty Drednot, B.C.S. Lionheart, B.C.S. Tigerclaw, B.C.S. Beartooth]
-    desc: ["The spunky interns of Cat Corps of Engineers\nbuilt a retro battleship for marine dominance!\nArea atks deliver huge damage vs Red enemies.", "Boasting a complement of elite marines and a\ndrill able to punch through any hull, the Lionheart\ndelivers huge area damage vs Reds and Zombies.", "Cat Army Special Forces use this Nekonium drill-\nequipped destroyer to stage marine assaults.\nHuge area damage vs Reds and Zombies.", "Unsinkable destroyer that has seen endless sea\nbattle. Protects the seven seas even after war's end.\nHuge Area damage vs Red and Zombies."]
+    desc: ["The spunky interns of Cat Corps of Engineers\nbuilt a retro battleship for marine dominance!\nArea attacks deal Massive damage vs. Red and Zombies.", "Boasting a complement of elite marines and a\ndrill able to punch through any hull, the Lionheart\nArea attacks deal Massive damage vs. Red and Zombies.", "Cat Army Special Forces use this Nekonium drill-\nequipped destroyer to stage marine assaults.\nArea attacks deal Massive damage vs. Red and Zombies.", "Unsinkable destroyer that has seen endless sea\nbattle. Protects the seven seas even after war's end.\nArea attacks deal Massive damage vs. Red and Zombies."]
     stat: [{health: 4800, knockbacks: 3, speed: 7, cost: 3200, production_cooldown: 2800, attack_cooldown: 141, range: 440, width: 320, area_effect: 1, damage_0: 3800, attack_time_0: 114, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 200}, {health: 4800, knockbacks: 3, speed: 7, cost: 3200, production_cooldown: 2800, attack_cooldown: 141, range: 440, width: 320, area_effect: 1, damage_0: 3800, attack_time_0: 114, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 200}, {health: 4800, knockbacks: 3, speed: 7, cost: 3200, production_cooldown: 2800, attack_cooldown: 95, range: 440, width: 320, area_effect: 1, damage_0: 3800, attack_time_0: 114, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, attack_duration: 200}, {health: 5600, knockbacks: 3, speed: 7, cost: 3200, production_cooldown: 2300, attack_cooldown: 95, range: 480, width: 320, area_effect: 1, damage_0: 3800, attack_time_0: 74, trigger_effects_0: 1, against_red: 1, against_zombie: 1, massive_damage: 1, zombie_killer: 1, immune_knockback: 1, attack_duration: 160}]
     rarity: 4
     max_level: 130
@@ -4463,14 +4475,14 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   369:
     name: [Gilgamesh, Gilgamesh CC]
-    desc: ["Joining the fight from Fate/stay night [HF]! Inscrutible \nyoung man with an air of invincibility. Long-range\nArea atttacks gets stronger after taking damage!", "Joining the fight from Fate/stay night [HF]! 8th\nincarnation of a Spirit that shouldn't exist. Long-\nrange atttacks gets stronger after taking damage!"]
+    desc: ["Joining the fight from Fate/stay night [HF]! Inscrutible \nyoung man with an air of invincibility. Long-range\nArea attacks gets stronger after taking damage!", "Joining the fight from Fate/stay night [HF]! 8th\nincarnation of a Spirit that shouldn't exist. Long-\nrange attacks gets stronger after taking damage!"]
     stat: [{health: 2500, knockbacks: 4, speed: 10, cost: 3000, production_cooldown: 1900, attack_cooldown: 94, range: 390, width: 320, area_effect: 1, damage_0: 530, long_range_0: 325, long_range_offset_0: 400, attack_time_0: 64, trigger_effects_0: 1, damage_1: 530, attack_time_1: 68, trigger_effects_1: 1, damage_2: 530, attack_time_2: 74, trigger_effects_2: 1, strengthen_threshold: 75, strengthen_modifier: 50, attack_duration: 110}, {health: 3600, knockbacks: 4, speed: 10, cost: 3000, production_cooldown: 1900, attack_cooldown: 94, range: 390, width: 320, area_effect: 1, damage_0: 770, long_range_0: 325, long_range_offset_0: 400, attack_time_0: 64, trigger_effects_0: 1, damage_1: 770, attack_time_1: 68, trigger_effects_1: 1, damage_2: 770, attack_time_2: 74, trigger_effects_2: 1, strengthen_threshold: 75, strengthen_modifier: 50, attack_duration: 110}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   370:
     name: [Saber the Cat, Heroic Spirit Saber Cat, Saber Alter Cat]
-    desc: ["Golden-haired swordscat who appeared one\nfated night. Building strength by training with\na bamboo blade. Strong vs. Floating.", "Swordscat who dreams of being called by\na worthy Master. Maintains a calm \ndemeanor always. Strong vs. Floating.", "Despairing of never being summoned, this\nHeroic Spirit has wreathed herself in darkness.\nStrong vs. Floating, immune to negative effects."]
+    desc: ["Golden-haired swordscat who appeared one\nfated night. Building strength by training with\na bamboo blade. Strong vs. Floating.", "Swordscat who dreams of being called by\na worthy Master. Maintains a calm \ndemeanor always. Strong vs. Floating.", "Despairing of never being summoned, this\nHeroic Spirit has wreathed herself in darkness.\nStrong vs. Floating, Immune to many debuffs."]
     stat: [{health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 1140, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, immune_knockback: 1, immune_warp: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, immune_curse: 1, immune_wave: 1, attack_duration: 40}]
     rarity: 1
     max_level: 50
@@ -5065,6 +5077,14 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      surge:
+        max_level: 10
+        minmax: [[5, 50], [1, 1], [1600, 1600], [1200, 1200]]
+        ultra: 1
+      immune_surge:
+        ultra: 1
+      colossus_slayer:
+        ultra: 1
   441:
     name: [Bebe, Nagisa & Cat, Law of Cycles Nagisa]
     desc: ["From Madoka Magica The Movie -Rebellion-!\nMami's adorable, cheese-loving partner.\nArea attacks Weaken Aliens and Zombies.", "From Madoka Magica The Movie -Rebellion-!\nNew Magical Girl who appears before Madoka.\nArea attacks Weaken Aliens and Zombies.", "From Puella Magi Madoka Magica! Envoy of the Law of\nCycles, equal parts mascot and magical girl. Weakens\nAliens/Zombies, may nullify enemy attacks."]
@@ -5546,6 +5566,13 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+  505:
+    name: [Burgle Boss Cat (Retired), Burgle Boss Cat (Prime)]
+    desc: ["Salty old thief who schools rookies in the tricks of\nthe trade, while hiding kind eyes behind their shades.\nDouble Bounty when defeating enemies.", "Ex-ringleader of a \"top-tier crew\", a blown knee forced\nhim to hang up the lockpicks after protege Gamatoto quit.\nDouble Bounty when defeating enemies."]
+    stat: [{health: 500, knockbacks: 5, speed: 8, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}, {health: 500, knockbacks: 5, speed: 16, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}]
+    rarity: 1
+    max_level: 55
+    growth: [20, 20, 20, 20, 20, 20]
   506:
     name: [Relentless Gladios, Gladios the Annihilator, God-Emperor Gladios]
     desc: ["Gargantuan horned beast, spitting vicious\nthunderbolts that shake the very firmament.\nChance to Knockback/Slow Traitless enemies.", "None may stand against the horned king bearing\nthe soul of storms and impenetrable ebony armor.\nChance to Knockback/Slow Traitless enemies.", "Bathed in the light of obliteration at a holy mountain\nand realized the power to destroy all life. (Area Atk)\n100% Chance to Knockback/Slow Traitless."]
@@ -6272,7 +6299,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   589:
-    name: [First-Love Myrcia, First-Love Myrcia ξ]
+    name: [First-Love Myrcia, 'First-Love Myrcia, type ξ']
     desc: ["This year, our bourgeois princess has hired a 3-star\npatissier to teach her how to make homemade chocolate.\nMight Dodge Red/Floating attacks, with Wave Attack.", "Her chocolate perfected, she is now ready to confess\nher feelings... she just needs to find someone worthy of\nher love. Might Dodge Red/Floating, with Wave Attack."]
     stat: [{health: 3000, knockbacks: 4, speed: 10, cost: 2840, production_cooldown: 1500, attack_cooldown: 75, range: 330, width: 320, area_effect: 1, damage_0: 510, attack_time_0: 60, damage_1: 1020, attack_time_1: 92, trigger_effects_1: 1, against_red: 1, against_float: 1, dodge_chance: 30, dodge_duration: 60, wave_chance: 100, wave_level: 3, attack_duration: 140}, {health: 4000, knockbacks: 4, speed: 10, cost: 2840, production_cooldown: 1500, attack_cooldown: 75, range: 330, width: 320, area_effect: 1, damage_0: 670, attack_time_0: 60, damage_1: 1340, attack_time_1: 92, trigger_effects_1: 1, against_red: 1, against_float: 1, dodge_chance: 30, dodge_duration: 60, wave_chance: 100, wave_level: 3, attack_duration: 140}]
     rarity: 4
@@ -6885,6 +6912,22 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      slow:
+        max_level: 10
+        minmax: [[12, 30]]
+      resistant_freeze:
+        max_level: 10
+        minmax: [[16, 70]]
+      reduce_cost:
+        max_level: 10
+        minmax: [[30, 300]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   657:
     name: ['Ancient Egg: N001', 'Mystic Egg: N001', Haniwa Cat]
     desc: ["An otherworldly artifact in the shape of an egg,\ncoated in the grime of countless centuries.\nA small inscription reads \"N001\".", "An otherworldly egg with a gleaming white shell.\nSigns of life appear to be coming from the inside.\nResistant to Traitless enemy attacks.", "An object unearthed from the garden of a Cat base.\nHas great archeological value, and is a good lookout.\nBehemoth Slayer, and Tough against Traitless."]
@@ -6956,7 +6999,7 @@ cats:
     max_level: 75
     growth: [20, 20, 20, 20, 20, 20, 10, 10]
   667:
-    name: [Night Beach Lilin, Night Beach Lilinπ]
+    name: [Night Beach Lilin, 'Night Beach Lilin, type π']
     desc: ["Beauty with an aura of crazy. Stalks beaches for fun.\nLures in victims for experimentation with cocktails.\nStrong against Traitless and Aliens (Area Attack)", "Beauty stalking beaches for a chance at true love.\nPoisons unknowing victims with mixed cocktails.\nStrong against Traitless and Aliens (Area Attack)"]
     stat: [{health: 2600, knockbacks: 3, speed: 11, cost: 2600, production_cooldown: 1400, attack_cooldown: 62, range: 350, width: 320, area_effect: 1, damage_0: 1350, attack_time_0: 64, trigger_effects_0: 1, against_alien: 1, against_white: 1, strong: 1, dodge_chance: 20, dodge_duration: 60, break_barrier_chance: 100, immune_warp: 1, attack_duration: 126}, {health: 3100, knockbacks: 3, speed: 11, cost: 2600, production_cooldown: 1400, attack_cooldown: 62, range: 350, width: 320, area_effect: 1, damage_0: 1750, attack_time_0: 64, trigger_effects_0: 1, against_alien: 1, against_white: 1, strong: 1, dodge_chance: 20, dodge_duration: 60, break_barrier_chance: 100, immune_warp: 1, attack_duration: 126}]
     rarity: 4
@@ -7120,7 +7163,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   688:
-    name: [Reindeer Terun, Reindeer Terunζ]
+    name: [Reindeer Terun, 'Reindeer Terun, type ζ']
     desc: ["The genius gal decided to dress up for the holidays.\nStands against those that would ruin Christmas.\nStrong against Colossal, Dark, and Aliens.", "Genius hunter on her way to a Christmas party with a\nfriend. Her catch will be the centerpiece of dinner.\nStrong against Colossal, Dark, and Aliens."]
     stat: [{health: 1950, knockbacks: 4, speed: 8, cost: 2000, production_cooldown: 1050, attack_cooldown: 40, range: 430, width: 320, area_effect: 1, damage_0: 1150, attack_time_0: 92, trigger_effects_0: 1, against_black: 1, against_alien: 1, strong: 1, knockback_chance: 100, colossus_slayer: 1, immune_slow: 1, attack_duration: 140}, {health: 2250, knockbacks: 4, speed: 8, cost: 2000, production_cooldown: 1050, attack_cooldown: 40, range: 430, width: 320, area_effect: 1, damage_0: 1350, attack_time_0: 92, trigger_effects_0: 1, against_black: 1, against_alien: 1, strong: 1, knockback_chance: 100, colossus_slayer: 1, immune_slow: 1, attack_duration: 140}]
     rarity: 4
@@ -7369,8 +7412,8 @@ cats:
     desc: ["Avid collector of strange medals scattered about the land.\nScours online auction sites for rare finds at rock-bottom\nprices. Unleashes Surges with 100% chance to Slow.", "Spent so much of the royal coffers trying to find every\nSmall Medal that he was overthrown and exiled.\nUnleashes Surges with 100% chance to Slow."]
     stat: [{health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}, {health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}]
     rarity: 1
-    max_level: 65
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   728:
     name: [SOL DAE ROKKER, SOL DAE ROKKER CC]
     desc: ["Recruited from the Metal Slug series!\nA mysterious being that guards ruins atop a tower.\nOmnistrikes deal Massive dmg to Red, Angels, Aliens.", "Recruited from the Metal Slug series!\nIncinerates intruders with white-hot flames.\nOmnistrikes deal Massive dmg to Red, Angels, Aliens."]
@@ -7414,9 +7457,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   734:
-    name: [Pegasa, 'Pegasa, type ν']
-    desc: ["Daughter of a noble house, born frail of body but\ncapably wielding precision lasers to keep enemies\nat bay. Conjurer, Weakens Floating and Zombies.", "Uninterested in the plots and schemes of adults,\nshe admirably fulfills her duty while longing for\nfreedom. Conjurer, Weakens Floating/Zombies."]
-    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}]
+    name: [Pegasa, 'Pegasa, type ν', Divine Pegasa ν]
+    desc: ["Daughter of a noble house, born frail of body but\ncapably wielding precision lasers to keep enemies\nat bay. Conjurer, Weakens Floating and Zombies.", "Uninterested in the plots and schemes of adults,\nshe admirably fulfills her duty while longing for\nfreedom. Conjurer, Weakens Floating/Zombies.", "Embraced the fight to seize her own true freedom.\nWith unwavering will, her lasers pierce any obstacle. \nConjurer, Massive damage, Weakens Floating/Zombies."]
+    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3960, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, massive_damage: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 876, immune_freeze: 1, attack_duration: 100}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -7596,7 +7639,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   760:
-    name: [Music Fest Thundia, Music Fest Thundia β]
+    name: [Music Fest Thundia, 'Music Fest Thundia, type β']
     desc: ["Fun-loving regular of outdoor summer festivals, with\nsmooth beats that leave listeners' hearts quivering.\nArea atks deal Massive damage to Angels, may Freeze.", "Gives thunderous performances at live events with \nthe dial turned up to 11! Area attacks deal Massive\ndamage to Angels, 100% chance to Freeze."]
     stat: [{health: 2250, knockbacks: 5, speed: 10, cost: 3050, production_cooldown: 1750, attack_cooldown: 134, range: 430, width: 320, area_effect: 1, damage_0: 2600, attack_time_0: 90, trigger_effects_0: 1, against_angel: 1, massive_damage: 1, freeze_chance: 50, freeze_duration: 50, immune_weaken: 1, attack_duration: 150}, {health: 2800, knockbacks: 5, speed: 10, cost: 3050, production_cooldown: 1750, attack_cooldown: 134, range: 430, width: 320, area_effect: 1, damage_0: 3100, attack_time_0: 90, trigger_effects_0: 1, against_angel: 1, massive_damage: 1, freeze_chance: 100, freeze_duration: 50, immune_weaken: 1, attack_duration: 150}]
     rarity: 4
@@ -7712,7 +7755,7 @@ cats:
     desc: ["Wants to be a vaunted commander of the warring\nstates. Bravery is a reckless charge at the enemy, spear\nin paw! 100% Freeze to Red/Floating, Mini-Wave.", "Attained the title of Commander after many battles.\nCharges forward without care, leaving their troops \nin the dust. 100% Freeze to Red/Floating, Mini-Wave."]
     stat: [{health: 100, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 100, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}, {health: 120, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 112, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}]
     rarity: 1
-    max_level: 55
+    max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   778:
     name: [Winter General Kaihime, Winter Commander Kaihime]
@@ -8002,7 +8045,7 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   821:
-    name: [Seaside Pegasa, Seaside Pegasa v]
+    name: [Seaside Pegasa, 'Seaside Pegasa, type v']
     desc: ["Granted her first ever summer vacation, this young \nnoble is filled with joy at the sight of the ocean. Conjurer,\nWeakens Traitless/Dark, unleashes Mini-Waves.", "The dazzling grin on her face is an inspiration to the kids\nwho cheer her on from the seashore. Conjurer, \nWeakens Traitless/Dark, unleashes Mini-Waves."]
     stat: [{health: 3200, knockbacks: 5, speed: 9, cost: 2600, production_cooldown: 2300, attack_cooldown: 57, range: 460, width: 320, area_effect: 1, damage_0: 1000, attack_time_0: 46, trigger_effects_0: 1, against_black: 1, against_white: 1, weaken_chance: 100, weaken_duration: 100, weaken_multiplier: 50, conjure: 822, wave_level: 2, wave_mini: 100, immune_wave: 1, attack_duration: 100}, {health: 4000, knockbacks: 5, speed: 9, cost: 2600, production_cooldown: 2300, attack_cooldown: 57, range: 460, width: 320, area_effect: 1, damage_0: 1350, attack_time_0: 46, trigger_effects_0: 1, against_black: 1, against_white: 1, weaken_chance: 100, weaken_duration: 100, weaken_multiplier: 50, conjure: 822, wave_level: 3, wave_mini: 100, immune_wave: 1, attack_duration: 100}]
     rarity: 4
@@ -8281,6 +8324,20 @@ cats:
     rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
+  865:
+    name: [Shirou Emiya, Shirou Emiya CC]
+    desc: ["From Fate/stay night [HF]!\nYouth fighting in the Grail War to defend Sakura Matou.\nArea attacks unleash Waves.", "From Fate/stay night [HF]!\nInherited Archer's left arm after the loss of his own.\nArea attacks unleash Waves."]
+    stat: [{health: 3200, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 2400, attack_time_0: 154, trigger_effects_0: 1, damage_1: 2400, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}, {health: 4000, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 3000, attack_time_0: 154, trigger_effects_0: 1, damage_1: 3000, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  866:
+    name: [True Assassin, True Assassin CC]
+    desc: ["From Fate/stay night [HF]!\nHeroic Spirit of the Assassin, summoned by Zouken Matou.\nFreezes/Weakens Floating and Aliens.", "From Fate/stay night [HF]!\nWorks to realize his own goals behind the scenes.\nFreezes/Weakens Floating and Aliens."]
+    stat: [{health: 1360, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 480, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}, {health: 1700, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 600, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   870:
     name: [Akane Tounji, Let's Go! Akane]
     desc: ["Stumbled onto a perfectly-fitting high-tech mech suit!\nPatrols the neighboorhood after the school bell rings.\nOnly attacks Red/Dark but might Dodge attacks. (Area Atk)", "As evildoers rampaged through her maid cafe,\nupgraded her armor to better 86 the rough customers.\nOnly attacks Red/Dark but might Dodge attacks. (Area Atk)"]
@@ -8309,6 +8366,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  874:
+    name: [Metal Maiden Koneko, Sonic Siren Koneko]
+    desc: ["Cuteness didn't cut it in the ruthless idol industry,\nso she decided to go heavy! Gains more fans with\nevery gig she spends screaming her heart out on stage.", "A genre shift to extreme metal made Koneko the\nflagbearer for an idol revolution! Delivers heavy riffs\nto loyal fans, setting off raging circle pits!"]
+    stat: [{health: 2150, knockbacks: 2, speed: 10, cost: 99, production_cooldown: 999, range: 250, width: 320, damage_0: 160, attack_time_0: 30, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1000, immune_freeze: 1, immune_curse: 1, attack_duration: 56}, {health: 4500, knockbacks: 3, speed: 10, cost: 1400, production_cooldown: 2999, range: 450, width: 320, damage_0: 240, attack_time_0: 20, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1800, immune_freeze: 1, immune_curse: 1, attack_duration: 33}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  876:
+    name: ['735_1']
+    desc: ['Spirit: Slows enemies.']
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 250, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14079,6 +14150,35 @@ gacha:
     series_id: 65
     name: Limited Summer capsules with a new hero! Tap banner for info!
     rate: no_legend
+  1077:
+    cats: [449, 450, 451, 452, 456, 462, 464, 479, 482, 494, 545, 874, 74, 35, 734, 77, 361, 60, 144, 88, 136, 197, 812, 608, 418, 675, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 70
+    name: Limited Uber Rare unit Koneko added! 100M DL Special Capsules!
+    similarity: 68
+  1078:
+    cats: [873, 863, 821, 787, 778, 774, 773, 760, 757, 738, 737, 715, 712, 700, 694, 688, 684, 667, 662, 649, 645, 615, 596, 590, 589, 588, 587, 585, 571, 567, 566, 565, 564, 527, 495, 439, 355, 333, 332, 331, 315, 311, 303, 277, 276, 275, 244, 243, 242, 231, 230, 229, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 47
+    name: Joining forces from Seasonal sets, with higher drop rates!
+    rate: dynastyfest
+    similarity: 98
+  1079:
+    cats: [497, 170, 831, 360, 44, 87, 526, 775, 272, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 57
+    name: Pick up mighty teammates to fight by your side in a River City Clash!
+    rate: no_legend
+    similarity: 76
+  1080:
+    cats: [73, 172, 106, 720, 764, 86, 693, 195, 273, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 75
+    name: Pick up mighty teammates to fight by your side in a Hotblooded Clash!
+    rate: no_legend
+    similarity: 80
+  1081:
+    cats: [865, 866, 363, 364, 365, 366, 367, 368, 369, 457, 461, 371, 372, 373, 459, 460, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
+    series_id: 34
+    name: Fate/stay night [Heaven's Feel] Collab Event! ★ Tap the banner for info!
+    rate: no_legend
+    similarity: 97
 events:
   2018-06-06_245:
     start_on: 2018-06-06
