@@ -2645,7 +2645,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   195:
     name: [아키라, 쉐도우・아키라, 인펠・아키라]
-    desc: ["엊그제 꿈에선 본 에이리언의 습격에 대비해\n스스로의 몸을 인조인간과 같이 개조한 천재 소년\n가끔 에이리언의 움직임을 멈춘다 (범위 공격)", "소심한 성격이 궁극에 달해 사춘기의 모든 힘을 해방\n궁지에 몰리면 발휘하는 분노의 에너지로 정의를 지킨다!\n체력이 줄어들면 공격력이 대폭 상승한다 (범위 공격)", "「미래와 나 자신은 바꿀 수 있어」라는 신념을 가슴에 안고\n변하지 않는 사회에 저항하는 천재 소년 (범위 공격)\n에이리언에게 엄청 강하고 파동 데미지를 받지 않는다"]
+    desc: ["엊그제 꿈에선 본 에이리언의 습격에 대비해\n자신의 몸을 인조인간처럼 개조한 천재 소년\n가끔 에이리언의 움직임을 멈춘다 (범위 공격)", "소심한 성격이 궁극에 달해 사춘기의 모든 힘을 해방\n궁지에 몰리면 발휘하는 분노의 에너지로 정의를 지킨다!\n체력이 줄어들면 공격력이 대폭 상승한다 (범위 공격)", "「미래와 나 자신은 바꿀 수 있어」라는 신념을 가슴에 안고\n변하지 않는 사회에 저항하는 천재 소년 (범위 공격)\n에이리언에 엄청 강하고 파동 데미지를 무효화한다"]
     stat: [{health: 3000, knockbacks: 3, speed: 13, cost: 3240, production_cooldown: 2200, attack_cooldown: 25, range: 430, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 108, trigger_effects_0: 1, against_alien: 1, freeze_chance: 50, freeze_duration: 120, immune_weaken: 1, attack_duration: 151}, {health: 3000, knockbacks: 3, speed: 13, cost: 3240, production_cooldown: 2200, attack_cooldown: 25, range: 430, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 108, trigger_effects_0: 1, strengthen_threshold: 50, strengthen_modifier: 50, immune_weaken: 1, immune_wave: 1, attack_duration: 155}, {health: 3000, knockbacks: 3, speed: 13, cost: 3240, production_cooldown: 2200, attack_cooldown: 25, range: 430, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 108, trigger_effects_0: 1, against_alien: 1, strong: 1, immune_weaken: 1, immune_wave: 1, attack_duration: 151}]
     rarity: 4
     max_level: 130
@@ -2674,7 +2674,7 @@ cats:
         ultra: 1
   196:
     name: [메카소녀 진, 닥터 메카소녀 진, 스페이스 메카소녀 진]
-    desc: ["애독하는 로봇잡지의 부록을 모아 만든 로봇을\n스패너 하나로 살벌 머신으로 개조해버린 소녀 (범위 공격)\n에이리언과 검은 적에 맷집이 좋고 딱 1번 살아남을 수 있다", "심야 공항에 몰래 숨어들어 제트기를 드라이버 하나로 해체\n단 하룻밤만에 결전의 머신을 완성시킨 소녀 (범위 공격)\n가끔 에이리언을 날려버려 공격력을 다운시킨다", "국제 우주기지 NYASA의 우주선을 원격조작으로\n초변형 로봇으로 탈바꿈시킨 소녀 (범위 공격)\n에이리언에 초 데미지를 주고 움직임을 느리게 한다"]
+    desc: ["애독하는 로봇 잡지의 부록을 모아 만든 로봇을\n스패너 하나로 살벌 머신으로 개조한 소녀 (범위 공격)\n에이리언과 검은 적에 맷집이 좋고 딱 한 번 살아남는다", "심야 공항에 몰래 숨어들어 제트기를 드라이버 하나로 해체\n단 하룻밤 만에 결전 머신을 완성한 소녀 (범위 공격)\n가끔 에이리언을 날려버리고 공격력을 낮춘다", "원격 조작으로 국제 우주 기지 NYASA의 우주선을\n초 변신 로봇으로 탈바꿈시킨 소녀 (범위 공격)\n에이리언에 초 데미지를 입히고 움직임을 느리게 한다"]
     stat: [{health: 5700, knockbacks: 2, speed: 7, cost: 3950, production_cooldown: 2300, attack_cooldown: 75, range: 445, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 68, against_black: 1, against_alien: 1, resistant: 1, survive_chance: 100, attack_duration: 113}, {health: 5700, knockbacks: 2, speed: 7, cost: 3950, production_cooldown: 2300, attack_cooldown: 75, range: 445, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 68, against_alien: 1, knockback_chance: 50, weaken_chance: 50, weaken_duration: 250, weaken_multiplier: 50, attack_duration: 113}, {health: 5700, knockbacks: 2, speed: 7, cost: 3950, production_cooldown: 2300, attack_cooldown: 75, range: 445, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 68, against_alien: 1, massive_damage: 1, slow_chance: 100, slow_duration: 150, attack_duration: 113}]
     rarity: 4
     max_level: 130
@@ -2702,9 +2702,9 @@ cats:
         minmax: [[5, 50], [60, 60]]
         ultra: 1
   197:
-    name: [캣맨대디, 캣맨다크, 캣맨라이징]
-    desc: ["자외선을 차단하는 특수 슈트를 완벽히 빼입었다\n어린이들의 영웅은 남에게 보여서는 안될 어둠을 가지고 있다\n에이리언과 떠있는 적에 초 데미지를 입힌다 (범위 공격)", "밤이 되면 모습을 바꿔 캣시티의 평화를 지키는 영웅\n예쁜 여성이 눈을 반짝이며 쳐다보는 시선에 약하다\n에이리언과 천사에 초 데미지를 입힌다 (범위 공격)", "영화배우 데뷔를 목표를 위해 마법 슈트로 개조한 영웅\n마음속 어둠을 에너지로 바꿔 악의 무리를 소탕한다!\n에이리언과 고대종에 초 데미지를 입힌다 (범위 공격)"]
-    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}]
+    name: [캣맨대디, 캣맨다크, 캣맨라이징, 캣맨포에버]
+    desc: ["자외선을 차단하는 특수 슈트를 빼입었다\n어린이들의 영웅은 남에게 보여선 안 되는 어둠을 가지고 있다\n에이리언과 떠있는 적에 초 데미지를 입힌다 (범위 공격)", "밤이 되면 모습을 바꿔 캣시티의 평화를 지키는 영웅\n예쁜 여성이 눈을 반짝이며 쳐다보는 시선에 약하다\n에이리언과 천사에 초 데미지를 입힌다 (범위 공격)", "영화배우로 데뷔하기 위해 슈트를 마개조한 영웅\n마음속 어둠을 에너지로 바꿔 악의 무리를 소탕한다!\n에이리언과 고대종에 초 데미지를 입힌다 (범위 공격)", "주연 영화가 초대박이 나 글로벌 진출에 성공한 궁극의 초인\n흥행으로 얻은 막대한 돈의 힘으로 암흑가를 정화한다\n천사, 에이리언, 고대종에 초 데미지를 입힌다 (범위 공격)"]
+    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}, {health: 5250, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 1850, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 185}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -2900,7 +2900,7 @@ cats:
         minmax: [[2, 20]]
   213:
     name: [화이트 래빗, 블랙 캣, 그레이 폭스, 스펙트르 캣]
-    desc: ["비밀수사경찰 「래빗츠」의 멤버인 그녀는\n검거율 100%의 잠복수사에서 유명한 코스프레 형사\n에이리언과 빨간 적의 움직임을 반드시 느리게 한다 (범위 공격)", "암살흑고양이단「캣츠」의 멤버인 그녀는\n절대 흔적을 남기지 않는 화려한 살인 청부업자이다\n에이리언과 빨간 적에 엄청 강하다 (범위 공격)", "첩보기관 「폭스」의 지휘관인 그녀는 뛰어난 화술로\n부하들을 능수능란하게 다루는 베테랑 (범위 공격)\n에이리언과 빨간 적을 반드시 날려버려 공격력을 낮춘다", "다양한 신분을 이용하여 세계의 질서를 해치는 거대한 악을 추적해온\n진정한 히어로. 초현자 특효를 가지고, 에이리언과 빨간 적에\n엄청 강하며 공격력을 낮추고 움직임을 느리게 한다 (범위 공격)"]
+    desc: ["비밀경찰 「래빗츠」의 멤버\n검거율 100%의 함정 수사로 유명한 코스프레 형사\n반드시 에이리언과 빨간 적의 움직임을 느리게 한다 (범위 공격)", "암살 흑고양이단 「캣츠」의 멤버\n절대 흔적을 남기지 않는 화려한 살인 청부업자\n에이리언과 빨간 적에 엄청 강하다 (범위 공격)", "첩보 기관 「폭스」의 지휘관\n뛰어난 화술로 부하들을 능수능란하게 다루는 베테랑 (범위 공격)\n반드시 에이리언과 빨간 적을 날려버리고 공격력을 낮춘다", "다양한 신분을 이용해 세계의 질서를 해치는 거대한 악을 추적해 온\n진정한 히어로. 초현자 특효를 가지고 에이리언과 빨간 적에\n엄청 강하며 공격력을 낮추고 움직임을 느리게 한다 (범위 공격)"]
     stat: [{health: 2880, knockbacks: 6, speed: 11, cost: 3550, production_cooldown: 2250, attack_cooldown: 120, range: 465, width: 320, area_effect: 1, damage_0: 1980, attack_time_0: 43, trigger_effects_0: 1, against_red: 1, against_alien: 1, slow_chance: 100, slow_duration: 140, attack_duration: 94}, {health: 2880, knockbacks: 6, speed: 11, cost: 3550, production_cooldown: 2250, attack_cooldown: 120, range: 465, width: 320, area_effect: 1, damage_0: 1980, attack_time_0: 43, trigger_effects_0: 1, against_red: 1, against_alien: 1, strong: 1, attack_duration: 94}, {health: 2880, knockbacks: 6, speed: 11, cost: 3550, production_cooldown: 2250, attack_cooldown: 120, range: 465, width: 320, area_effect: 1, damage_0: 1980, attack_time_0: 43, trigger_effects_0: 1, against_red: 1, against_alien: 1, knockback_chance: 100, weaken_chance: 100, weaken_duration: 150, weaken_multiplier: 50, attack_duration: 96}, {health: 4000, knockbacks: 6, speed: 11, cost: 3550, production_cooldown: 2250, attack_cooldown: 100, range: 465, width: 320, area_effect: 1, damage_0: 1980, long_range_0: 1, long_range_offset_0: 465, attack_time_0: 43, trigger_effects_0: 1, damage_1: 460, long_range_1: 285, long_range_offset_1: 265, attack_time_1: 53, trigger_effects_1: 1, damage_2: 460, long_range_2: 385, long_range_offset_2: 265, attack_time_2: 63, trigger_effects_2: 1, against_red: 1, against_alien: 1, strong: 1, slow_chance: 100, slow_duration: 140, weaken_chance: 100, weaken_duration: 150, weaken_multiplier: 50, sage_slayer: 1, attack_duration: 105}]
     rarity: 4
     max_level: 130
@@ -3010,7 +3010,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   227:
     name: [주술사 데스삐에로, 암흑 상인 바빌, 과학자 클레이G]
-    desc: ["극악무도한 마법의 혼을 인형에 불어넣은 엄청난 주술사\n에이리언과 떠있는 적에게만 공격할 수 있지만\n초 파괴력을 가졌으며 성 파괴가 특기다 (범위 공격)", "요괴를 조종하여 죄인의 혼을 모아 파는 지옥의 상인\n에이리언과 천사 적만 공격하지만 초파괴력을 가졌으며\n적을 쓰러뜨렸을 때 머니를 많이 얻을 수 있다 (범위 공격)", "이상한 호기심으로 연구에 매진하는 광과학자\n누더기 육체에 혼을 불어넣는 실험을 계속하고 있다 (범위 공격)\n에이리언만 공격할 수 있지만 초파괴력을 가졌다."]
+    desc: ["극악무도한 악마의 혼을 인형에 불어넣은 엄청난 주술사\n에이리언과 떠있는 적만 공격할 수 있지만\n초 파괴력을 가졌으며 성 파괴가 특기다 (범위 공격)", "마물을 조종하여 죄인의 혼을 모아 파는 지옥의 상인\n에이리언과 천사만 공격할 수 있지만 초 파괴력을 가졌으며\n적을 쓰러뜨렸을 때 머니를 많이 얻을 수 있다 (범위 공격)", "호기심 가는 대로 연구에 매진하는 매드 사이언티스트\n누더기 육체에 혼을 불어넣는 실험을 계속하고 있다 (범위 공격)\n에이리언만 공격할 수 있지만 초 파괴력을 가졌다"]
     stat: [{health: 6200, knockbacks: 2, speed: 8, cost: 4090, production_cooldown: 2600, attack_cooldown: 85, range: 430, width: 320, area_effect: 1, damage_0: 6410, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, against_only: 1, base_destroyer: 1, attack_duration: 125}, {health: 6200, knockbacks: 2, speed: 8, cost: 4090, production_cooldown: 2600, attack_cooldown: 85, range: 430, width: 320, area_effect: 1, damage_0: 6410, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, against_only: 1, extra_money: 1, attack_duration: 125}, {health: 9300, knockbacks: 2, speed: 8, cost: 4090, production_cooldown: 2600, attack_cooldown: 85, range: 430, width: 320, area_effect: 1, damage_0: 9615, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_only: 1, immune_knockback: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, attack_duration: 120}]
     rarity: 4
     max_level: 130
@@ -3342,7 +3342,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   262:
     name: [천주 송골매, 마신 송골매, 섬멸 송골매]
-    desc: ["일족에 전해지는 퇴마의 검으로 악을 물리치는 닌자\n가슴의 에너지 코어에 의해 스피드한 이동으로 적을 베어버린다\n가끔씩 크리티컬 (원거리 범위공격)", "에너지 코어의 폭주로 인해 자아를 상실한 닌자는\n스스로의 영혼을 불태우며 어둠을 가른다. 가끔 \n에이리언을 날려버려 움직임을 느리게 한다 (원거리 범위공격)", "에너지 코어의 힘을 극도로 해방시킨 닌자\n검정색 갑옷을 몸에 두르고 어두운 밤을 질주한다. 가끔 \n좀비를 날려버려 움직임을 느리게 한다 (원거리 범위공격)"]
+    desc: ["일족에 전해지는 퇴마의 검으로 악을 물리치는 닌자\n가슴의 에너지 코어를 이용한 초고속 이동으로 적을 베어 버린다\n가끔 크리티컬을 낸다 (원거리 범위공격)", "에너지 코어의 폭주로 인해 자아를 상실한 닌자는\n스스로의 영혼을 불태우며 어둠을 가른다. 가끔 에이리언을\n날려버리고 움직임을 느리게 한다 (원거리 범위 공격)", "에너지 코어의 힘을 극도로 해방한 닌자\n흑요석 갑옷을 몸에 두르고 어두운 밤을 질주한다. 가끔 좀비를\n날려버리고 움직임을 느리게 한다 (원거리 범위 공격)"]
     stat: [{health: 2750, knockbacks: 7, speed: 25, cost: 2850, production_cooldown: 1750, attack_cooldown: 59, range: 365, width: 320, area_effect: 1, damage_0: 600, long_range_0: 250, long_range_offset_0: 400, attack_time_0: 32, trigger_effects_0: 1, critical_chance: 30, immune_slow: 1, attack_duration: 76}, {health: 2750, knockbacks: 7, speed: 25, cost: 2850, production_cooldown: 1750, attack_cooldown: 59, range: 365, width: 320, area_effect: 1, damage_0: 1200, long_range_0: 250, long_range_offset_0: 400, attack_time_0: 32, trigger_effects_0: 1, against_alien: 1, knockback_chance: 50, slow_chance: 50, slow_duration: 100, immune_slow: 1, attack_duration: 76}, {health: 2750, knockbacks: 7, speed: 25, cost: 2850, production_cooldown: 1750, attack_cooldown: 59, range: 365, width: 320, area_effect: 1, damage_0: 1200, long_range_0: 250, long_range_offset_0: 400, attack_time_0: 32, trigger_effects_0: 1, against_zombie: 1, knockback_chance: 50, slow_chance: 50, slow_duration: 100, zombie_killer: 1, immune_slow: 1, attack_duration: 76}]
     rarity: 4
     max_level: 130
@@ -3487,7 +3487,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   276:
     name: [한여름의 화이트 래빗, 한여름의 블랙 캣, 브라이트 서머 캣]
-    desc: ["여름 한정 스타일! 비밀경찰 「래빗츠」의 멤버\n최강의 코스프레는 수영복이라고 깨달은 코스프레형사\n반드시 천사와 검은 적의 움직임을 느리게 한다 (범위 공격)", "허니 트랩 강화 중! 암살흑고양이단 「캣츠」의 일원\n물가에서도 절대 발자국을 남기지 않는 요염한 킬러\n천사와 검은 적에 엄청 강하다 (범위 공격)", "섹시한 수영복을 입고 타켓을 추적하는 「캣츠」의 일원\n신속하게 임무를 완수하고 아지랑이처럼 사라진다 (범위 공격)\n천사와 검은 적에 엄청 강하고 반드시 날려버리며 느리게 한다"]
+    desc: ["여름 한정 스타일! 비밀경찰 「래빗츠」의 멤버\n최강의 코스프레는 수영복임을 깨달은 코스프레 형사\n반드시 천사와 검은 적의 움직임을 느리게 한다 (범위 공격)", "허니 트랩 강화 중! 암살 흑고양이단 「캣츠」의 멤버\n바닷가에서도 절대 발자국을 남기지 않는 요염한 킬러\n천사와 검은 적에 엄청 강하다 (범위 공격)", "섹시한 수영복을 입고 타깃을 추적하는 「캣츠」의 멤버\n신속하게 임무를 완수하고 아지랑이처럼 사라진다 (범위 공격)\n천사와 검은 적에 엄청 강하고 반드시 날려버리며 느리게 한다"]
     stat: [{health: 2880, knockbacks: 6, speed: 11, cost: 3300, production_cooldown: 2100, attack_cooldown: 120, range: 465, width: 320, area_effect: 1, damage_0: 2280, attack_time_0: 43, trigger_effects_0: 1, against_black: 1, against_angel: 1, slow_chance: 100, slow_duration: 140, attack_duration: 94}, {health: 2880, knockbacks: 6, speed: 11, cost: 3300, production_cooldown: 2100, attack_cooldown: 120, range: 465, width: 320, area_effect: 1, damage_0: 2280, attack_time_0: 43, trigger_effects_0: 1, against_black: 1, against_angel: 1, strong: 1, attack_duration: 94}, {health: 2880, knockbacks: 6, speed: 11, cost: 3300, production_cooldown: 2100, attack_cooldown: 120, range: 465, width: 320, area_effect: 1, damage_0: 2280, attack_time_0: 43, trigger_effects_0: 1, against_black: 1, against_angel: 1, strong: 1, knockback_chance: 100, slow_chance: 100, slow_duration: 140, immune_wave: 1, attack_duration: 94}]
     rarity: 4
     max_level: 130
@@ -3695,6 +3695,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      wave_mini:
+        max_level: 10
+        minmax: [[28, 100], [2, 2]]
+      immune_surge: {}
+      immune_freeze: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   304:
     name: [타코야끼냥, 냥택배, 고양이 급식당번]
     desc: ["문어가 가득 든 소스 듬뿍 타코야끼로\n일확천금을 노리는 전직 회사원\n천사에게 초 데미지를 입힌다", "착불로 신이 보낸 택배를 배달하는 신 전용 고양이\n뭐가 들었는지 말하는 순간 천벌이 내린다\n천사에게 초 데미지를 입힌다", "자주 손을 씻고 개인 위생 수칙을 준수하여\n급식을 교실까지 배달해주는 프로 급식당번\n천사에게 초 데미지를 입히며 가끔 저주한다"]
@@ -4058,7 +4070,7 @@ cats:
         minmax: [[2, 20]]
   332:
     name: [클라운 에그덕, 다크 사이코덕, 극악 클라운 매드 덕]
-    desc: ["순진무구한 아이의 영혼을 너무나 사랑하는 인형\n계란을 찾은 아이는 꿈의 나라로 초대한다 (범위 공격)\n빨간 적과 검은 적밖에 공격할 수 없지만 초파괴력을 가졌다", "아이가 찾은 이스타에그를 삭힌 계란으로\n몰래 바꿔치는 극악무도한 인형 (범위 공격)\n빨간 적과 좀비밖에 공격할 수 없지만 초파괴력을 가졌다", "봄이 찾아오면 지평선의 저편에서 부활하여\n아이들을 계란에 봉인하는 무서운 인형.\n빨간 적과 악마밖에 공격할 수 없지만 초파괴력을 가졌다"]
+    desc: ["순진무구한 아이의 영혼을 너무나 사랑하는 인형\n달걀을 찾은 아이를 꿈의 나라로 초대한다 (범위 공격)\n빨간 적과 검은 적만 공격할 수 있지만 초 파괴력을 가졌다", "아이가 찾은 이스타 에그를 삭힌 달걀로\n몰래 바꿔치는 극악무도한 인형 (범위 공격)\n빨간 적과 좀비만 공격할 수 있지만 초 파괴력을 가졌다", "봄이 찾아오면 지평선 너머에서 부활하여\n아이들을 달걀에 봉인하는 무서운 인형\n빨간 적과 악마만 공격할 수 있지만 초 파괴력을 가졌다"]
     stat: [{health: 6800, knockbacks: 2, speed: 8, cost: 3940, production_cooldown: 2500, attack_cooldown: 85, range: 430, width: 320, area_effect: 1, damage_0: 6410, attack_time_0: 70, trigger_effects_0: 1, against_red: 1, against_black: 1, against_only: 1, immune_freeze: 1, immune_slow: 1, attack_duration: 125}, {health: 6800, knockbacks: 2, speed: 8, cost: 3940, production_cooldown: 2500, attack_cooldown: 85, range: 430, width: 320, area_effect: 1, damage_0: 6410, attack_time_0: 70, trigger_effects_0: 1, against_red: 1, against_zombie: 1, against_only: 1, zombie_killer: 1, attack_duration: 125}, {health: 6800, knockbacks: 2, speed: 8, cost: 3940, production_cooldown: 2500, attack_cooldown: 85, range: 430, width: 320, area_effect: 1, damage_0: 6410, attack_time_0: 70, trigger_effects_0: 1, against_red: 1, against_aku: 1, against_only: 1, immune_surge: 1, immune_toxic: 1, attack_duration: 125}]
     rarity: 4
     max_level: 130
@@ -4513,8 +4525,8 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   363:
-    name: [세이버, 세이버 CC, 세이버 오르타CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n에미야 시로와 계약을 맺은 검사 영령\n떠있는 적에게 초 데미지를 입힌다 (원거리 범위공격)", "Fate/stay night[HF]에서 참전!\n최고급 클래스로 강력한 보구를 소지\n떠있는 적에게 초 데미지를 입힌다 (원거리 범위공격)", "Fate/stay night[HF]에서 참전!\n칠흑의 갑옷을 입은 미스터리 검사. 세이버를 닮았지만...\n떠있는 적에게 초 데미지를 입힌다 (원거리 범위공격)"]
+    name: [세이버, 세이버 CC, 세이버 얼터CC]
+    desc: ["Fate/stay night [HF]에서 참전!\n에미야 시로와 계약을 맺은 검사 클래스 영령\n떠있는 적에 초 데미지를 입힌다 (원거리 범위공격)", "Fate/stay night [HF]에서 참전!\n가장 우수한 클래스로 강력한 보구를 가졌다\n떠있는 적에 초 데미지를 입힌다 (원거리 범위공격)", "Fate/stay night [HF]에서 참전!\n칠흑의 갑옷을 입은 수수께끼의 검사. 세이버를 닮았지만…\n떠있는 적에 초 데미지를 입힌다 (원거리 범위공격)"]
     stat: [{health: 1800, knockbacks: 6, speed: 36, cost: 2600, production_cooldown: 1200, range: 325, width: 320, area_effect: 1, damage_0: 450, long_range_0: 150, long_range_offset_0: 325, attack_time_0: 15, trigger_effects_0: 1, against_float: 1, massive_damage: 1, attack_duration: 69}, {health: 2400, knockbacks: 6, speed: 36, cost: 2600, production_cooldown: 1200, range: 325, width: 320, area_effect: 1, damage_0: 600, long_range_0: 150, long_range_offset_0: 325, attack_time_0: 15, trigger_effects_0: 1, against_float: 1, massive_damage: 1, attack_duration: 69}, {health: 3000, knockbacks: 6, speed: 36, cost: 2600, production_cooldown: 1200, range: 350, width: 320, area_effect: 1, damage_0: 750, long_range_0: 150, long_range_offset_0: 350, attack_time_0: 15, trigger_effects_0: 1, against_float: 1, massive_damage: 1, attack_duration: 68}]
     rarity: 4
     max_level: 130
@@ -4533,84 +4545,84 @@ cats:
         minmax: [[2, 20]]
   364:
     name: [토오사카 린, 토오사카 린CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n아처를 소환하여 성배전쟁에 도전\n가끔 에이리언과 좀비를 날려버린다 (범위 공격)", "Fate/stay night[HF]에서 참전! 에미야 시로의 친구,\n후유키의 관리자・토오사카의 후계자.\n가끔 에이리언과 좀비를 날려버린다 (범위 공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n아처를 소환하여 성배전쟁에 참가한다\n가끔 에이리언과 좀비를 날려버린다 (범위 공격)", "Fate/stay night [HF]에서 참전! 에미야 시로의 친구이자\n후유키의 관리자이며 토오사카 가문의 후계자\n가끔 에이리언과 좀비를 날려버린다 (범위 공격)"]
     stat: [{health: 1850, knockbacks: 4, speed: 11, cost: 2840, production_cooldown: 2000, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 88, trigger_effects_0: 1, against_alien: 1, against_zombie: 1, knockback_chance: 50, zombie_killer: 1, attack_duration: 120}, {health: 2600, knockbacks: 4, speed: 11, cost: 2840, production_cooldown: 2000, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 2100, attack_time_0: 88, trigger_effects_0: 1, against_alien: 1, against_zombie: 1, knockback_chance: 50, zombie_killer: 1, attack_duration: 120}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   365:
     name: [이리야스필, 이리야스필CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n버서커와 계약을 맺은, 전투에 도전하는 소녀\n가끔 빨간 적과 메탈 적의 움직임을 느리게 한다 (범위 공격)", "Fate/stay night[HF]에서 참전!\n성배전쟁 3대 가문 중 하나인 아인츠베른 이름을 가졌다.\n가끔 빨간 적과 메탈 적의 움직임을 느리게 한다 (범위 공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n버서커와 계약을 맺고 전쟁에 참가한 소녀\n가끔 빨간 적과 메탈 적의 움직임을 느리게 한다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n성배전쟁 3대 가문 중 하나인 아인츠베른가의 이름을 가졌다\n가끔 빨간 적과 메탈 적의 움직임을 느리게 한다 (범위 공격)"]
     stat: [{health: 1790, knockbacks: 4, speed: 9, cost: 2960, production_cooldown: 1950, attack_cooldown: 95, range: 460, width: 320, area_effect: 1, damage_0: 930, attack_time_0: 71, trigger_effects_0: 1, damage_1: 930, attack_time_1: 89, trigger_effects_1: 1, against_red: 1, against_metal: 1, slow_chance: 50, slow_duration: 150, attack_duration: 117}, {health: 2560, knockbacks: 4, speed: 9, cost: 2960, production_cooldown: 1950, attack_cooldown: 95, range: 460, width: 320, area_effect: 1, damage_0: 1340, attack_time_0: 71, trigger_effects_0: 1, damage_1: 1340, attack_time_1: 89, trigger_effects_1: 1, against_red: 1, against_metal: 1, slow_chance: 50, slow_duration: 150, attack_duration: 117}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   366:
     name: [아처, 아처CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n토오사카 린과 계약을 맺은 궁병 영령\n파동에 의한 데미지를 받지 않는다 (원거리 범위공격)", "Fate/stay night[HF]에서 참전!\n에미야 시로를 적으로 인식. 진의는 불명.\n파동에 의한 데미지를 받지 않는다 (원거리 범위공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n토오사카 린과 계약을 맺은 궁병 클래스 영령\n파동 데미지를 무효화한다 (원거리 범위공격)", "Fate/stay night [HF]에서 참전!\n에미야 시로를 적대하고 있으나 이유는 알 수 없다\n파동 데미지를 무효화한다 (원거리 범위공격)"]
     stat: [{health: 1990, knockbacks: 3, speed: 15, cost: 3080, production_cooldown: 2150, attack_cooldown: 89, range: 500, width: 320, area_effect: 1, damage_0: 1320, long_range_0: 400, long_range_offset_0: 400, attack_time_0: 65, trigger_effects_0: 1, immune_wave: 1, attack_duration: 122}, {health: 2850, knockbacks: 3, speed: 15, cost: 3080, production_cooldown: 2150, attack_cooldown: 89, range: 500, width: 320, area_effect: 1, damage_0: 1900, long_range_0: 400, long_range_offset_0: 400, attack_time_0: 65, trigger_effects_0: 1, immune_wave: 1, attack_duration: 122}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   367:
     name: [랜서, 랜서CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n마스터 불명의 창병 영령\n반드시 베리어를 뚫어버린다 (범위 공격)", "Fate/stay night[HF]에서 참전!\n높은 민첩성을 자랑하며 세이버와 팽팽하게 대립\n반드시 베리어를 뚫어버린다 (범위 공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n마스터를 알 수 없는 창병 클래스 영령\n반드시 베리어를 뚫어버린다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n높은 민첩성을 자랑하며 세이버와 호각을 다툰다\n반드시 베리어를 뚫어버린다 (범위 공격)"]
     stat: [{health: 1900, knockbacks: 4, speed: 13, cost: 2900, production_cooldown: 2050, attack_cooldown: 46, range: 480, width: 320, area_effect: 1, damage_0: 900, attack_time_0: 44, trigger_effects_0: 1, break_barrier_chance: 100, attack_duration: 75}, {health: 2900, knockbacks: 4, speed: 13, cost: 2900, production_cooldown: 2050, attack_cooldown: 46, range: 480, width: 320, area_effect: 1, damage_0: 1350, attack_time_0: 44, trigger_effects_0: 1, break_barrier_chance: 100, attack_duration: 75}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   368:
     name: [라이더, 라이더CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n마토 신지와 계약을 맺은 기병 영령\n천사의 움직임을 잠깐 멈춘다 (범위 공격)", "Fate/stay night[HF]에서 참전!\n기동력이 좋고 결계를 치는 마술도 뛰어났다.\n천사의 움직임을 잠깐 멈춘다 (범위 공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n마토 신지와 계약을 맺은 기병 클래스 영령\n천사의 움직임을 잠깐 멈춘다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n기동력이 좋고 결계 마술에도 능통하다\n천사의 움직임을 잠깐 멈춘다 (범위 공격)"]
     stat: [{health: 1650, knockbacks: 3, speed: 12, cost: 2400, production_cooldown: 1200, attack_cooldown: 64, range: 400, width: 320, area_effect: 1, damage_0: 1050, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 90, attack_duration: 88}, {health: 2400, knockbacks: 3, speed: 12, cost: 2400, production_cooldown: 1200, attack_cooldown: 64, range: 400, width: 320, area_effect: 1, damage_0: 1500, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, freeze_chance: 100, freeze_duration: 90, attack_duration: 88}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   369:
-    name: [길가메쉬, 길가메쉬CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n불길한 미소로 나타난 미스터리 청년\n체력 저하로 공격력이 상승 (원거리 범위공격)", "Fate/stay night[HF]에서 참전!\n그 정체는 존재할 수 없는 8번째의 영령.\n체력 저하로 공격력이 상승 (원거리 범위공격)"]
+    name: [길가메시, 길가메시CC]
+    desc: ["Fate/stay night [HF]에서 참전!\n오만한 미소와 함께 나타난 수수께끼의 청년\n체력이 감소하면 공격력이 상승한다 (원거리 범위공격)", "Fate/stay night [HF]에서 참전!\n그 정체는 존재할 리 없는 8번째 영령\n체력이 감소하면 공격력이 상승한다 (원거리 범위공격)"]
     stat: [{health: 2500, knockbacks: 4, speed: 10, cost: 3000, production_cooldown: 1900, attack_cooldown: 94, range: 390, width: 320, area_effect: 1, damage_0: 530, long_range_0: 325, long_range_offset_0: 400, attack_time_0: 64, trigger_effects_0: 1, damage_1: 530, attack_time_1: 68, trigger_effects_1: 1, damage_2: 530, attack_time_2: 74, trigger_effects_2: 1, strengthen_threshold: 75, strengthen_modifier: 50, attack_duration: 110}, {health: 3600, knockbacks: 4, speed: 10, cost: 3000, production_cooldown: 1900, attack_cooldown: 94, range: 390, width: 320, area_effect: 1, damage_0: 770, long_range_0: 325, long_range_offset_0: 400, attack_time_0: 64, trigger_effects_0: 1, damage_1: 770, attack_time_1: 68, trigger_effects_1: 1, damage_2: 770, attack_time_2: 74, trigger_effects_2: 1, strengthen_threshold: 75, strengthen_modifier: 50, attack_duration: 110}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   370:
-    name: [고양이 세이버, 영령 고양이 세이버, 고양이 세이버 오르타]
-    desc: ["어느 날 저녁에 마추진 금발의 검사를 동경하는 고양이\n우선은 몸만들기와 죽도 휘두르기부터\n떠있는 적에 엄청 강하다", "누군가 소환해주길 꿈꾸는 고양이 검사\n스스로 냉정하고 침착하다고 생각하고 있다.\n떠있는 적에 엄청 강하다", "아무리 기다려도 소환하는 자가 없자\n욱하여 검은 색으로 물들인 고양이 검사\n떠있는 적에 엄청 강하고 전 방해 효과를 무효화 시킨다."]
+    name: [고양이 세이버, 영령 고양이 세이버, 고양이 세이버 얼터]
+    desc: ["어느 날 저녁에 마주친 금발의 검사를 동경하는 고양이\n우선은 체력 단련과 죽도 휘두르기부터\n떠있는 적에 엄청 강하다", "누군가 소환해 주길 꿈꾸는 고양이 검사\n스스로를 냉정하고 침착하다고 생각한다\n떠있는 적에 엄청 강하다", "아무리 기다려도 소환해 주지 않아\n홧김에 검은색으로 칠해 본 고양이 검사\n떠있는 적에 엄청 강하고 여러 방해 효과를 무효화한다"]
     stat: [{health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 1140, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, immune_knockback: 1, immune_warp: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, immune_curse: 1, immune_wave: 1, attack_duration: 40}]
     rarity: 1
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   371:
     name: [고양이 사쿠라, 앞치마 고양이 사쿠라, 꿈꾸는 고양이 사쿠라]
-    desc: ["차분한 소녀를 향한 속마음을 숨기고 있는 고양이\n필살기는 창작 양식 요리\n아주 가끔씩 크리티컬 공격을 낸다", "집안 살림에 열중하고 있는 고양이 \n매일 아침 「오하요고자이마쓰」는 빠뜨릴 수 없다\n아주 가끔씩 크리티컬 공격을 낸다", "한결같은 마음을 후라이팬에 담은 고양이\n풀 스윙으로 마음을 전한다\n아주 가끔씩 메탈 적을 날려버리고 크리티컬 공격을 낸다"]
+    desc: ["온화한 소녀를 향한 일편단심 속마음을 숨기고 있는 고양이\n필살기는 창작 양식 요리\n아주 가끔 크리티컬을 낸다", "언제나 살림 솜씨를 갈고닦는 고양이\n매일 아침 인사는 절대 빼먹지 않는다\n아주 가끔 크리티컬을 낸다", "한결같은 마음을 프라이팬에 담은 고양이\n풀 스윙으로 마음을 전한다\n아주 가끔 메탈 적을 날려버리고 크리티컬을 낸다"]
     stat: [{health: 820, knockbacks: 4, speed: 10, cost: 360, production_cooldown: 250, range: 165, width: 320, damage_0: 127, attack_time_0: 22, trigger_effects_0: 1, critical_chance: 5, attack_duration: 40}, {health: 820, knockbacks: 4, speed: 10, cost: 360, production_cooldown: 250, range: 165, width: 320, damage_0: 127, attack_time_0: 22, trigger_effects_0: 1, critical_chance: 5, attack_duration: 40}, {health: 1020, knockbacks: 4, speed: 10, cost: 360, production_cooldown: 250, range: 165, width: 320, damage_0: 127, attack_time_0: 22, trigger_effects_0: 1, against_metal: 1, knockback_chance: 20, critical_chance: 5, attack_duration: 40}]
     rarity: 2
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   372:
     name: [고양이 린, 마술사 고양이 린]
-    desc: ["어느 학원의 우아한 소녀를 동경하는 고양이\n우등생으로서 꼭 갖춰야 할 아름다운 거행부터 공부 중\n가끔 에이리언을 날려버린다", "우아함을 연마하고 있는 고양이\n실전에 약한 점이 가끔 상처로 되다\n가끔 에이리언을 날려버린다"]
+    desc: ["어느 학원의 우아한 소녀를 동경하는 고양이\n모범생이 꼭 갖춰야 할 아름다운 몸가짐부터 공부 중\n가끔 에이리언을 날려버린다", "우아함을 연마하고 있는 고양이\n실전에 약한 게 옥에 티\n가끔 에이리언을 날려버린다"]
     stat: [{health: 810, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 240, attack_cooldown: 40, range: 275, width: 320, damage_0: 150, attack_time_0: 12, trigger_effects_0: 1, against_alien: 1, knockback_chance: 50, attack_duration: 50}, {health: 810, knockbacks: 3, speed: 10, cost: 350, production_cooldown: 240, attack_cooldown: 40, range: 275, width: 320, damage_0: 150, attack_time_0: 12, trigger_effects_0: 1, against_alien: 1, knockback_chance: 50, attack_duration: 50}]
     rarity: 2
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   373:
     name: [고양이 이리야, 눈의 요정 고양이 이리야]
-    desc: ["은발과 빨간 눈동자를 가진 소녀를 동경하는 고양이\n우선 작은 새를 키워보다\n가끔 빨간적의 움직임을 느리게 한다", "오랜 혈통으로 귀족 가문의 이름을 가졌다고\n자부하고 있는 고양이. 최근 겨울 옷을 장만했다.\n가끔 빨간적의 움직임을 느리게 한다"]
+    desc: ["은발에 빨간 눈동자를 가진 소녀를 동경하는 고양이\n우선 작은 새를 키워 봤다\n가끔 빨간 적의 움직임을 느리게 한다", "유서 깊은 가문의 이름을 가졌다고 믿고 있는 고양이\n최근 겨울옷을 장만했다\n가끔 빨간 적의 움직임을 느리게 한다"]
     stat: [{health: 550, knockbacks: 3, speed: 9, cost: 340, production_cooldown: 200, attack_cooldown: 32, range: 200, width: 320, damage_0: 99, attack_time_0: 22, trigger_effects_0: 1, against_red: 1, slow_chance: 30, slow_duration: 90, attack_duration: 45}, {health: 550, knockbacks: 3, speed: 9, cost: 340, production_cooldown: 200, attack_cooldown: 33, range: 250, width: 320, damage_0: 99, attack_time_0: 20, trigger_effects_0: 1, against_red: 1, slow_chance: 30, slow_duration: 90, attack_duration: 45}]
     rarity: 2
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   374:
     name: [꼬마 시로, 꼬마 시로CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n양아버지의 영향으로 정의의 편에 서고자 하는 소년\n검은 적에 맷집이 좋다", "Fate/stay night[HF]에서 참전!\n우연히 세이버를 소환하여 성배전쟁에 휘말려들다\n검은 적에 맷집이 좋다"]
+    desc: ["Fate/stay night [HF]에서 참전!\n양아버지의 영향으로 정의의 사자가 되고자 하는 소년\n검은 적에 맷집이 좋다", "Fate/stay night [HF]에서 참전!\n우연히 세이버를 소환하여 성배전쟁에 휘말렸다\n검은 적에 맷집이 좋다"]
     stat: [{health: 750, knockbacks: 3, speed: 10, cost: 600, production_cooldown: 500, attack_cooldown: 53, range: 275, width: 320, damage_0: 150, attack_time_0: 28, trigger_effects_0: 1, damage_1: 150, attack_time_1: 33, trigger_effects_1: 1, against_black: 1, resistant: 1, attack_duration: 58}, {health: 750, knockbacks: 3, speed: 10, cost: 600, production_cooldown: 500, attack_cooldown: 53, range: 275, width: 320, damage_0: 150, attack_time_0: 28, trigger_effects_0: 1, damage_1: 150, attack_time_1: 33, trigger_effects_1: 1, against_black: 1, resistant: 1, attack_duration: 58}]
     rarity: 2
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   375:
     name: [꼬마 사쿠라, 꼬마 사쿠라CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n시로를 동경하는 소녀. 에미야 저택의 가사를 담당하고 있다.\n아주 가끔씩 크리티컬 공격을 낸다 (범위 공격)", "Fate/stay night[HF]에서 참전!\n「만약 제가 나쁜 사람이 되면 용서 못 하시죠?」\n아주 가끔씩 크리티컬 공격을 낸다 (범위 공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n시로를 동경하는 소녀. 에미야가의 가사를 담당하고 있다\n아주 가끔 크리티컬을 낸다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n「만약 제가 나쁜 사람이 된다면 용서 못 하시겠죠?」\n아주 가끔 크리티컬을 낸다 (범위 공격)"]
     stat: [{health: 600, knockbacks: 4, speed: 8, cost: 400, production_cooldown: 500, attack_cooldown: 43, range: 190, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 44, trigger_effects_0: 1, critical_chance: 10, attack_duration: 69}, {health: 600, knockbacks: 4, speed: 8, cost: 400, production_cooldown: 500, attack_cooldown: 43, range: 190, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 44, trigger_effects_0: 1, critical_chance: 10, attack_duration: 69}]
     rarity: 1
     max_level: 50
@@ -5068,7 +5080,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   432:
     name: [망자탐정 비그라, 마계탐정 그라비, 마신탐정 그라티비, 성마탐정 제로그라티비]
-    desc: ["마계 탐정사무소 「어둠SCOOP」의 최고 탐정\n666번째 의뢰를 조사하는 중에 추한 꼴이 되어 버렸다\n가끔 에이리언과 떠있는 적의 움직임을 멈추고 파동을 뿜어낸다", "금지된 마법의 힘으로 저주를 푼 실력파 탐정\n그 대가로 조직의 음모에 말려 들어간다...\n가끔 에이리언과 좀비의 움직임을 멈추고 파동을 뿜어낸다", "조직과의 격투 끝에 진정한 힘을 해방한 명탐정\n어둠 속 한줄기의 진실의 빛을 쫓아 마지막 결투에 임한다\n좀비에 엄청 강하고 반드시 움직임을 멈추고 파동을 뿜어낸다", "싸우던 와중에 자신의 출생의 비밀을 알아낸 초인 탐정\n날개에 잠들어 있던 힘이 각성하여 초현자 특효를 획득했다\n좀비에 엄청 강하고 반드시 움직임을 멈추고 파동을 뿜어낸다"]
+    desc: ["마계 탐정 사무소 「어둠SCOOP」의 실력파 탐정\n666번째 의뢰를 조사하는 중에 추한 꼴이 되어 버렸다\n가끔 에이리언과 떠있는 적의 움직임을 멈추고 파동을 낸다", "금지된 마법의 힘으로 저주를 푼 최고 탐정\n그 대가로 조직의 음모에 말려들어 간다…\n가끔 에이리언과 좀비의 움직임을 멈추고 파동을 낸다", "조직과의 격전 끝에 진정한 힘을 해방한 명탐정\n어둠 속 한 줄기 진실의 빛을 좇아 마지막 결전에 임한다\n좀비에 엄청 강하고 반드시 움직임을 멈추며 파동을 낸다", "결전 끝에 자신의 출생의 비밀을 밝혀낸 초인 탐정\n핏줄에 깃든 천익의 힘을 각성하여 초현자 특효를 얻었다\n좀비에 엄청 강하고 반드시 움직임을 멈추며 파동을 낸다"]
     stat: [{health: 2800, knockbacks: 6, speed: 15, cost: 2940, production_cooldown: 1600, range: 360, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 120, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 50, freeze_duration: 150, wave_chance: 100, wave_level: 3, attack_duration: 310}, {health: 2800, knockbacks: 6, speed: 15, cost: 2940, production_cooldown: 1600, range: 360, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 120, trigger_effects_0: 1, against_alien: 1, against_zombie: 1, freeze_chance: 50, freeze_duration: 150, zombie_killer: 1, wave_chance: 100, wave_level: 3, attack_duration: 310}, {health: 2800, knockbacks: 6, speed: 15, cost: 2940, production_cooldown: 1600, range: 360, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 100, trigger_effects_0: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 150, zombie_killer: 1, wave_chance: 100, wave_level: 3, attack_duration: 290}, {health: 3600, knockbacks: 6, speed: 19, cost: 2940, production_cooldown: 1600, range: 360, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 70, trigger_effects_0: 1, against_zombie: 1, strong: 1, freeze_chance: 100, freeze_duration: 150, zombie_killer: 1, sage_slayer: 1, wave_chance: 100, wave_level: 5, immune_wave: 1, attack_duration: 280}]
     rarity: 4
     max_level: 130
@@ -5177,6 +5189,14 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      surge:
+        max_level: 10
+        minmax: [[5, 50], [1, 1], [1600, 1600], [1200, 1200]]
+        ultra: 1
+      immune_surge:
+        ultra: 1
+      colossus_slayer:
+        ultra: 1
   441:
     name: [베베, 나기사&고양이, 원환의 이치의 사자 나기사]
     desc: ["마법소녀 마도카☆마기카에서 참전!\n치즈를 엄청 좋아하는 마미의 단짝\n에이리언과 좀비의 공격력을 순간 낮춘다 (범위 공격)", "마법소녀 마도카☆마기카에서 참전!\n마도카와 친구들 앞에 나타난 새 마법소녀\n에이리언과 좀비의 공격력을 낮춘다 (범위 공격)", "마법소녀 마도카☆마기카에서 참전! 마스코트같은 모습과\n마법소녀의 모습을 겸비한 원환의 이치의 사자\n에이리언과 좀비의 공격력을 낮추고 가끔 공격을 무효화한다"]
@@ -5277,7 +5297,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20]
   457:
     name: [마토 사쿠라, 마토 사쿠라CC, 흑화 사쿠라CC]
-    desc: ["Fate/stay night[HF]에서 참전!\n에미야 저택으로 통근하고 있는 가사 담당 소녀\n검은 적과 에이리언, 좀비에 맷집이 좋다 (범위 공격)", "Fate/stay night[HF]에서 참전!\n「성배전쟁」에서 다친 시로를 마음속으로부터 염려하다.\n검은 적과 에이리언, 좀비에 맷집이 좋다 (범위 공격)", "Fate/stay night[HF]에서 참전!\n그림자를 받아들여 변모한 소녀\n검은 적과 에이리언, 좀비에 맷집이 좋다 (범위 공격)"]
+    desc: ["Fate/stay night [HF]에서 참전!\n에미야가에 드나들며 가사를 담당하고 있는 소녀\n검은 적, 에이리언, 좀비에 맷집이 좋다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n「성배전쟁」으로 상처 입은 시로를 진심으로 걱정하고 있다\n검은 적, 에이리언, 좀비에 맷집이 좋다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n그림자를 받아들여 변모한 소녀\n검은 적, 에이리언, 좀비에 맷집이 좋다 (범위 공격)"]
     stat: [{health: 5400, knockbacks: 4, speed: 8, cost: 2800, production_cooldown: 1800, attack_cooldown: 88, range: 350, width: 320, area_effect: 1, damage_0: 1700, attack_time_0: 37, trigger_effects_0: 1, against_black: 1, against_alien: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, immune_wave: 1, attack_duration: 92}, {health: 7200, knockbacks: 4, speed: 8, cost: 2800, production_cooldown: 1800, attack_cooldown: 88, range: 350, width: 320, area_effect: 1, damage_0: 2100, attack_time_0: 37, trigger_effects_0: 1, against_black: 1, against_alien: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, immune_wave: 1, attack_duration: 92}, {health: 7200, knockbacks: 4, speed: 8, cost: 2800, production_cooldown: 1800, attack_cooldown: 69, range: 350, width: 320, area_effect: 1, damage_0: 2100, attack_time_0: 35, trigger_effects_0: 1, against_black: 1, against_alien: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, soul_strike: 1, immune_freeze: 1, immune_wave: 1, attack_duration: 92}]
     rarity: 4
     max_level: 130
@@ -5298,28 +5318,28 @@ cats:
         minmax: [[2, 20]]
   458:
     name: [고양이 시로, 마술사 견습생 고양이 시로]
-    desc: ["정의의 편에 서고자 하는 소년을 동경하는 고양이\n우선은 영령을 소환하려고 방에 틀어박혀 있다\n검은 적에게 엄청 강하다", "아직 영령을 소환하지 못한 고양이\n초심으로 돌아가 야간 순찰하러 밖에 나가다\n검은 적에게 엄청 강하다"]
+    desc: ["정의의 사자가 되고자 하는 소년을 동경하는 고양이\n우선은 영령을 소환하기 위해 계속 방에 틀어박혀 있다\n검은 적에 엄청 강하다", "아직 영령을 소환하지 못한 고양이\n초심으로 돌아가 야간 순찰을 하기 위해 외출했다\n검은 적에 엄청 강하다"]
     stat: [{health: 750, knockbacks: 3, speed: 10, cost: 360, production_cooldown: 265, range: 170, width: 320, damage_0: 130, attack_time_0: 36, trigger_effects_0: 1, against_black: 1, strong: 1, attack_duration: 57}, {health: 750, knockbacks: 3, speed: 10, cost: 360, production_cooldown: 265, range: 170, width: 320, damage_0: 130, attack_time_0: 36, trigger_effects_0: 1, against_black: 1, strong: 1, attack_duration: 57}]
     rarity: 1
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   459:
     name: [아처 고양이, 영령 아처 고양이]
-    desc: ["검을 다룰수 있는 공병 영령을 동경하는 고양이\n고양이 시로를 적대시하다. 진의는 불명.\n파동에 의한 데미지를 받지 않는다", "궁병답게 궁으로 싸우기 시작한 고양이\n고양이 시로를 너무 적대시한 나머지 불면증에 걸리다.\n파동에 의한 데미지를 받지 않는다 (원거리 공격)"]
+    desc: ["검도 다룰 수 있는 궁병 클래스 영령을 동경하는 고양이\n고양이 시로를 적대하고 있으나 이유는 알 수 없다\n파동 데미지를 무효화한다", "궁병답게 활로 싸우기 시작한 고양이\n밤에 잠도 못 잘 정도로 고양이 시로를 엄청 적대하고 있다\n파동 데미지를 무효화한다 (원거리 공격)"]
     stat: [{health: 660, knockbacks: 3, speed: 10, cost: 400, production_cooldown: 320, attack_cooldown: 33, range: 275, width: 320, damage_0: 120, attack_time_0: 26, trigger_effects_0: 1, immune_wave: 1, attack_duration: 52}, {health: 660, knockbacks: 3, speed: 10, cost: 400, production_cooldown: 320, attack_cooldown: 33, range: 275, width: 320, damage_0: 120, long_range_0: 200, long_range_offset_0: 150, attack_time_0: 26, trigger_effects_0: 1, immune_wave: 1, attack_duration: 52}]
     rarity: 2
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   460:
     name: [고양이 라이더, 영령 고양이 라이더]
-    desc: ["쇠사슬을 화려하게 다루는 여성을 동경하는 고양이\n눈가리개로 앞이 잘 보이지 않는다\n가끔 천사의 움직임을 멈춘다", "전설의 생물을 손에 넣은 고양이\n눈가리개와 페가수스의 뒤통수로 앞이 거의 보이지 않는다.\n가끔 천사의 움직임을 멈춘다"]
+    desc: ["쇠사슬을 화려하게 다루며 어른스러운 여성을 동경하는 고양이\n눈가리개 때문에 앞이 잘 보이지 않는다\n가끔 천사의 움직임을 멈춘다", "전설의 생물을 손에 넣은 고양이\n눈가리개와 페가수스의 뒤통수 때문에 앞이 거의 보이지 않는다\n가끔 천사의 움직임을 멈춘다"]
     stat: [{health: 900, knockbacks: 3, speed: 12, cost: 380, production_cooldown: 250, attack_cooldown: 38, range: 190, width: 320, damage_0: 200, attack_time_0: 27, trigger_effects_0: 1, against_angel: 1, freeze_chance: 40, freeze_duration: 60, attack_duration: 48}, {health: 900, knockbacks: 3, speed: 12, cost: 380, production_cooldown: 250, attack_cooldown: 38, range: 190, width: 320, damage_0: 200, attack_time_0: 27, trigger_effects_0: 1, against_angel: 1, freeze_chance: 40, freeze_duration: 60, attack_duration: 52}]
     rarity: 2
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   461:
-    name: [고양이 고토미네 & 고양이 길가메쉬, 고양이 길가메쉬 & 고양이 고토미네]
-    desc: ["매운 마파 두부를 완식한 신부를 동경하는 고양이와\n전황을 지키고 있는 영령을 동경하는 고양이 (범위 공격)\n가끔 검은 적의 공격력을 낮추고 체력 저하로 공격력이 상승", "전황 지켜보기에 지친 고양이와\n매운 마파 두부에 계속 도전하고 있는 고양이 (범위 공격)\n가끔 좀비의 공격력을 낮추고 체력 저하로 공격력이 상승"]
+    name: [고양이 코토미네 & 고양이 길가메시, 고양이 길가메시 & 고양이 코토미네]
+    desc: ["매운 마파두부를 맛있게 먹어 치우는 신부를 동경하는 고양이와\n전황을 지켜보는 영령을 동경하는 고양이 (범위 공격)\n가끔 검은 적의 공격력을 낮추고 체력이 줄면 공격력 상승", "전황을 지켜보는 것에 지친 고양이와\n매운 마파두부에 계속 도전하고 있는 고양이 (범위 공격)\n가끔 좀비의 공격력을 낮추고 체력이 줄면 공격력 상승"]
     stat: [{health: 1200, knockbacks: 4, speed: 8, cost: 780, production_cooldown: 380, attack_cooldown: 37, range: 300, width: 320, area_effect: 1, damage_0: 660, attack_time_0: 66, trigger_effects_0: 1, against_black: 1, weaken_chance: 50, weaken_duration: 150, weaken_multiplier: 50, strengthen_threshold: 50, strengthen_modifier: 50, attack_duration: 90}, {health: 1200, knockbacks: 4, speed: 8, cost: 780, production_cooldown: 380, attack_cooldown: 37, range: 300, width: 320, area_effect: 1, damage_0: 660, attack_time_0: 66, trigger_effects_0: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 150, weaken_multiplier: 50, strengthen_threshold: 50, strengthen_modifier: 50, zombie_killer: 1, attack_duration: 100}]
     rarity: 3
     max_level: 120
@@ -5459,7 +5479,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20]
   482:
     name: [천재 과학자 헤븐 박사, 시공 과학자 아비스 박사]
-    desc: ["이차원 에너지의 거대한 힘에 매혹된 저명한 과학자\n생명체를 파괴하여 크리스탈로 만드는 잔인한 기술을 가졌다\n검은 적과 에이리언에 초 맷집이 좋다 (범위 공격)", "크리스탈의 압도적인 능력에 홀려버린 명성 높은 과학자\n스스로 힘에 대한 갈망과 파괴의 충동을 멈출 수가 없다\n검은 적과 에이리언에 극 데미지를 입힌다 (범위 공격)"]
+    desc: ["이차원 에너지의 거대한 힘에 매혹된 저명한 과학자\n생명체를 파괴하여 크리스탈로 만드는 잔인한 기술을 가졌다\n검은 적과 에이리언에 초 맷집이 좋다 (범위 공격)", "크리스탈의 압도적인 힘에 홀려 버린 명성 높은 과학자\n스스로도 힘에 대한 갈망과 파괴의 충동을 멈출 수가 없다\n검은 적과 에이리언에 극 데미지를 입힌다 (범위 공격)"]
     stat: [{health: 11000, knockbacks: 3, speed: 8, cost: 3600, production_cooldown: 2650, attack_cooldown: 90, range: 400, width: 320, area_effect: 1, damage_0: 2710, attack_time_0: 61, trigger_effects_0: 1, against_black: 1, against_alien: 1, insane_resistant: 1, attack_duration: 150}, {health: 11000, knockbacks: 3, speed: 8, cost: 3600, production_cooldown: 2650, attack_cooldown: 90, range: 400, width: 320, area_effect: 1, damage_0: 2710, attack_time_0: 61, trigger_effects_0: 1, against_black: 1, against_alien: 1, insane_damage: 1, attack_duration: 150}]
     rarity: 5
     max_level: 59
@@ -5658,6 +5678,13 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+  505:
+    name: [두목 고양이(점주), 두목 고양이(현역)]
+    desc: ["신입 고양이에게 도둑질의 노하우를 가르치며 남을 잘 챙기는 두목\n입은 걸지만 선글라스 뒤에 귀여운 눈망울을 감추고 있다\n적을 쓰러뜨렸을 때 머니를 많이 얻을 수 있다", "자칭 전설의 도적단을 거느렸던 리더\n가마토토를 탈퇴한 직후에 무릎을 다쳐 은퇴했다\n적을 쓰러뜨렸을 때 머니를 많이 얻을 수 있다"]
+    stat: [{health: 500, knockbacks: 5, speed: 8, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}, {health: 500, knockbacks: 5, speed: 16, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}]
+    rarity: 1
+    max_level: 55
+    growth: [20, 20, 20, 20, 20, 20]
   506:
     name: [각룡 그라디오스, 각룡왕 그라디오스, 각룡황제 그라디오스]
     desc: ["하늘을 뚫는 거대한 창을 지고 활보하는 전설의 각룡족\n압도적인 파괴력으로 적을 공격한다 (범위 공격)\n가끔 속성을 가지지 않은 적을 날려버리고 느리게 한다", "빛나는 멸망의 빛을 자신의 힘으로 바꾼 전설의 각룡족\n압도적인 파괴력으로 적을 공격한다 (범위 공격)\n가끔 속성을 가지지 않은 적을 날려버리고 느리게 한다", "용각산에서 멸망의 빛을 뒤집어쓴 후 진정한 힘에 눈뜬 각룡황제\n격렬한 포효로 모든 생명을 파멸로 이끈다 (범위 공격)\n반드시 속성을 가지지 않은 적을 날려버리고 느리게 한다"]
@@ -5931,7 +5958,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   534:
     name: [매드슈터 사키, 나이트버스터 사키, 배드 블래스터 사키]
-    desc: ["하굣길에 임무를 수행하는 천재 저격 키즈\n전장에 나타나면 전투를 단 한 발의 탄으로 제압한다\n에이리언과 빨간 적에게만 공격할 수 있다 (원거리 범위공격)", "가정부와 암살 임무라는 투잡을 뛰는 천재 저격 키즈\n어둠이 깔린 거리에서 전투가 일어나면 단 한 발의 탄으로 진압한다\n에이리언과 좀비에게만 공격할 수 있다 (원거리 범위공격)", "바쁜 임무로 놀러 갈 시간도 없는 천재 저격 키즈\n친구와의 약속을 지키기 위해 초고속으로 전장을 제압한다\n에이리언과 고대종에게만 공격할 수 있다 (원거리 범위공격)"]
+    desc: ["하굣길에 임무를 수행하는 천재 저격 키즈\n전장에 나타나면 전투를 단 한 발의 탄으로 제압한다\n에이리언과 빨간 적만 공격할 수 있다 (원거리 범위공격)", "가정부와 암살 임무라는 투잡을 뛰는 천재 저격 키즈\n어둠이 깔린 거리에서 싸움이 일어나면 단 한 발의 탄으로 진압한다\n에이리언과 좀비만 공격할 수 있다 (원거리 범위공격)", "바쁜 임무로 놀러 갈 시간도 없는 천재 저격 키즈\n친구와의 약속을 지키기 위해 초고속으로 전장을 종식시킨다\n에이리언과 고대종만 공격할 수 있다 (원거리 범위공격)"]
     stat: [{health: 2700, knockbacks: 3, speed: 21, cost: 4200, production_cooldown: 1000, attack_cooldown: 96, range: 600, width: 320, area_effect: 1, damage_0: 4000, long_range_0: 500, long_range_offset_0: 400, attack_time_0: 79, trigger_effects_0: 1, against_red: 1, against_alien: 1, against_only: 1, attack_duration: 152}, {health: 2700, knockbacks: 3, speed: 21, cost: 4200, production_cooldown: 1000, attack_cooldown: 96, range: 600, width: 320, area_effect: 1, damage_0: 4000, long_range_0: 500, long_range_offset_0: 400, attack_time_0: 79, trigger_effects_0: 1, against_alien: 1, against_zombie: 1, against_only: 1, zombie_killer: 1, attack_duration: 152}, {health: 2700, knockbacks: 3, speed: 21, cost: 4200, production_cooldown: 1000, attack_cooldown: 96, range: 600, width: 320, area_effect: 1, damage_0: 4000, long_range_0: 500, long_range_offset_0: 400, attack_time_0: 79, trigger_effects_0: 1, against_alien: 1, against_relic: 1, against_only: 1, immune_curse: 1, attack_duration: 152}]
     rarity: 4
     max_level: 130
@@ -6193,7 +6220,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   564:
     name: [아쿠아슈터 사키, 아쿠아버스터 사키, 아쿠아 블래스터 사키]
-    desc: ["해안 근처 학교에서 바다로 온 천재 저격 키즈\n아직은 서툰 조작으로 친구들을 전부 헤드샷\n떠있는 적과 검은 적에게만 공격할 수 있다 (원거리 범위공격)", "밤의 해변에서 악을 심판하는 천재 저격 키즈\n백사장을 더럽히는 매너없는 불꽃놀이는 바로 진화\n떠있는 적과 천사에게만 공격할 수 있다 (원거리 범위공격)", "해변의 평화를 지키기 위해 암약하는 천재 저격 키즈\n허가 없이 고기를 낚는 사람들의 나쁜 마음을 정화시킨다\n떠있는 적과 천사에게만 공격할 수 있지만 엄청 강하다"]
+    desc: ["바다로 수련회를 온 천재 저격 키즈\n실력 조절에 실패해서 친구들을 전부 헤드샷\n떠있는 적과 검은 적만 공격할 수 있다 (원거리 범위공격)", "밤의 해변에서 악을 심판하는 천재 저격 키즈\n매너 없이 백사장을 더럽히는 불꽃놀이는 바로 진화\n떠있는 적과 천사만 공격할 수 있다 (원거리 범위공격)", "바닷가의 평화를 지키기 위해 암약하는 천재 저격 키즈\n물총으로 불법 어업을 하는 사람들의 나쁜 마음을 정화한다\n떠있는 적과 천사만 공격할 수 있지만 엄청 강하다"]
     stat: [{health: 2700, knockbacks: 3, speed: 21, cost: 4200, production_cooldown: 1000, attack_cooldown: 96, range: 600, width: 320, area_effect: 1, damage_0: 4000, long_range_0: 500, long_range_offset_0: 400, attack_time_0: 79, trigger_effects_0: 1, against_float: 1, against_black: 1, against_only: 1, attack_duration: 152}, {health: 2700, knockbacks: 3, speed: 21, cost: 4200, production_cooldown: 1000, attack_cooldown: 96, range: 600, width: 320, area_effect: 1, damage_0: 4000, long_range_0: 500, long_range_offset_0: 400, attack_time_0: 79, trigger_effects_0: 1, against_float: 1, against_angel: 1, against_only: 1, attack_duration: 152}, {health: 2700, knockbacks: 3, speed: 21, cost: 4200, production_cooldown: 1000, attack_cooldown: 96, range: 600, width: 320, area_effect: 1, damage_0: 4000, long_range_0: 500, long_range_offset_0: 400, attack_time_0: 79, trigger_effects_0: 1, against_float: 1, against_angel: 1, against_only: 1, strong: 1, attack_duration: 152}]
     rarity: 4
     max_level: 130
@@ -6817,7 +6844,7 @@ cats:
         minmax: [[2, 20]]
   635:
     name: [백기사 키클롭스, 흑기사 키클롭스, 신마기사 키클롭스]
-    desc: ["고결한 정신을 가진 약자를 구하기 위해 싸우는 백색 퇴마 기사\n번개와 같은 맹공으로 어둠 속에서 태어난 자들을 제거한다\n가끔 악마와 에이리언을 멈추게 하고 악마 쉴드를 뚫어버린다", "자신의 몸을 악마에게 바쳐 절대적인 힘을 얻은 정교 기사\n이 세상의 악을 모두 멸할 때까지 계속 싸울 것을 맹세.\n악마와 에이리언에 엄청 강하다", "강한 신념에 집어삼켜진 채 싸움을 그만두지 못하는 신마의 기사\n정의와 악의 애매한 경계선을 성스러운 메이스로 단죄한다\n악마에 초 데미지를 주고 가끔 악마 쉴드를 뚫어버린다"]
+    desc: ["고결한 정신을 가지고 약자를 구하기 위해 싸우는 백색 퇴마 기사\n번개와 같은 맹공으로 어둠 속에서 태어난 자들을 제거한다\n가끔 악마와 에이리언을 멈추고 악마 쉴드를 뚫어버린다", "자신의 몸을 악마에게 바쳐 절대적인 힘을 얻은 정교 기사\n이 세상의 악을 모두 멸할 때까지 계속 싸울 것을 맹세\n악마와 에이리언에 엄청 강하다", "강한 신념에 집어삼켜져 싸움을 멈출 수 없는 신마의 기사\n정의와 악의 애매한 경계선을 성스러운 철퇴로 단죄한다\n악마에 초 데미지를 입히고 가끔 악마 쉴드를 뚫어버린다"]
     stat: [{health: 2600, knockbacks: 3, speed: 15, cost: 3550, production_cooldown: 2400, attack_cooldown: 95, range: 460, width: 320, area_effect: 1, damage_0: 1030, attack_time_0: 45, trigger_effects_0: 1, damage_1: 1030, attack_time_1: 84, against_alien: 1, against_aku: 1, freeze_chance: 50, freeze_duration: 90, break_shield_chance: 50, attack_duration: 141}, {health: 2600, knockbacks: 3, speed: 15, cost: 3550, production_cooldown: 2400, attack_cooldown: 95, range: 460, width: 320, area_effect: 1, damage_0: 1030, attack_time_0: 45, trigger_effects_0: 1, damage_1: 1030, attack_time_1: 84, against_alien: 1, against_aku: 1, strong: 1, immune_wave: 1, attack_duration: 141}, {health: 2600, knockbacks: 3, speed: 15, cost: 3550, production_cooldown: 2400, attack_cooldown: 95, range: 460, width: 320, area_effect: 1, damage_0: 1030, attack_time_0: 45, trigger_effects_0: 1, damage_1: 1030, attack_time_1: 84, against_aku: 1, massive_damage: 1, break_shield_chance: 50, immune_freeze: 1, attack_duration: 141}]
     rarity: 4
     max_level: 130
@@ -6887,7 +6914,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 10, 10, 10]
   645:
     name: [하얀 연인 메카소녀 진, 비터 스위트 메카소녀 진, 민초단 메카소녀 진]
-    desc: ["사랑의 해석 데이터에 달콤한 초콜릿을 추가해\n발렌타인용 머신으로 마개조한 발명 소녀\n가끔 속성을 가지지 않는 적의 움직임을 멈춘다 (범위 공격)", "유일하게 해석 불가능한 사랑의 난해함에 도전하는 발명 소녀\n씁쓸한 경험을 학습시킨 머신과 함께 사랑에 재도전\n가끔 검은 적의 움직임을 멈춘다 (범위 공격)", "수제 초콜릿에는 사랑이 담겨있다고 밝혀낸 소녀\n개발한 초콜릿 제조 로봇으로 사랑을 대량으로 생산한다\n가끔 고대종의 움직임을 멈춘다 (범위 공격)"]
+    desc: ["사랑을 분석한 데이터에 달콤한 초콜릿을 추가해\n발렌타인용 머신으로 마개조한 발명 소녀\n가끔 속성을 가지지 않은 적의 움직임을 멈춘다 (범위 공격)", "유일하게 해석하지 못한 사랑의 난해함에 도전하는 발명 소녀\n씁쓸한 경험을 학습시킨 머신과 함께 사랑에 재도전\n가끔 검은 적의 움직임을 멈춘다 (범위 공격)", "수제 초콜릿에는 사랑이 담겨 있다고 밝혀낸 소녀\n개발한 초콜릿 제조 로봇으로 대량 생산한 사랑을 모두에게 전한다\n가끔 고대종의 움직임을 멈춘다 (범위 공격)"]
     stat: [{health: 5700, knockbacks: 2, speed: 7, cost: 3950, production_cooldown: 2300, attack_cooldown: 75, range: 445, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 68, trigger_effects_0: 1, against_white: 1, freeze_chance: 50, freeze_duration: 120, attack_duration: 113}, {health: 5700, knockbacks: 2, speed: 7, cost: 3950, production_cooldown: 2300, attack_cooldown: 75, range: 445, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 68, trigger_effects_0: 1, against_black: 1, freeze_chance: 50, freeze_duration: 120, attack_duration: 113}, {health: 5700, knockbacks: 2, speed: 7, cost: 3950, production_cooldown: 2300, attack_cooldown: 75, range: 445, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 68, trigger_effects_0: 1, against_relic: 1, freeze_chance: 50, freeze_duration: 120, immune_curse: 1, attack_duration: 113}]
     rarity: 4
     max_level: 130
@@ -6997,6 +7024,22 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      slow:
+        max_level: 10
+        minmax: [[12, 30]]
+      resistant_freeze:
+        max_level: 10
+        minmax: [[16, 70]]
+      reduce_cost:
+        max_level: 10
+        minmax: [[30, 300]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   657:
     name: ['오래된 알: N001', '신비한 알: N001', 고양이 토용]
     desc: ["알 모양을 한 정체불명의 물체\n오랜 세월 동안 흙이 달라붙어 풍화되었다\n「N001」이라고 작게 각인이 되어있는 듯한데...", "새하얀 모습을 드러낸 알 모양의 물체\n내부에 미약한 생명체 반응이 감지되고 있다\n속성을 가지지 않은 적에 맷집이 좋다", "냥코 군단 기지의 정원에서 출토된 고양이 모양 토용\n고고학적 가치가 높고, 집 보기가 특기\n속성을 가지지 않은 적에 맷집이 좋고, 초수 특효를 가졌다"]
@@ -7275,7 +7318,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   694:
     name: [백집사 탐정 비그라, 흑집사 탐정 그라비]
-    desc: ["조사를 위해 어느 저택의 아가씨의 집사로 잠입한\n마계 탐정. 「사적인 감정은 배제하라」가 탐정의 철칙\n가끔 빨간 적과 악마의 움직임을 멈추고 파동을 낸다", "잠입 조사도 거의 마무리되어 사건의 핵심에 다다른 탐정\n어느새 싹튼 사랑의 감정 때문에 최종 임무가 난항을 겪고 있다\n가끔 검은 적과 악마의 움직임을 멈추고 파동을 낸다"]
+    desc: ["어느 저택을 조사하기 위해 아가씨의 집사로 위장한 마계 탐정\n「사적인 감정은 배제하라」가 탐정의 철칙\n가끔 빨간 적과 악마의 움직임을 멈추고 파동을 낸다", "잠입 조사도 막바지에 이르러 사건의 핵심에 다다른 탐정\n어느새 싹튼 사랑의 감정 때문에 최종 임무가 난항을 겪고 있다\n가끔 검은 적과 악마의 움직임을 멈추고 파동을 낸다"]
     stat: [{health: 2800, knockbacks: 6, speed: 15, cost: 2940, production_cooldown: 1600, range: 360, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 120, trigger_effects_0: 1, against_red: 1, against_aku: 1, freeze_chance: 50, freeze_duration: 150, break_shield_chance: 50, wave_chance: 100, wave_level: 3, immune_surge: 1, attack_duration: 310}, {health: 2800, knockbacks: 6, speed: 15, cost: 2940, production_cooldown: 1600, range: 360, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 120, trigger_effects_0: 1, against_black: 1, against_aku: 1, freeze_chance: 50, freeze_duration: 150, break_shield_chance: 50, wave_chance: 100, wave_level: 3, immune_surge: 1, attack_duration: 310}]
     rarity: 4
     max_level: 130
@@ -7310,7 +7353,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   699:
     name: [썬더 잭, 블러디 잭, 라이트닝 잭]
-    desc: ["낙뢰를 맞고 초능력이 각성한 고등학생 히어로\n벼락 한방으로 에너지 충전, 전투 가능 시간은 2시간\n가끔 천사와 에이리언을 날려버린다", "전기 공격의 영향으로 영능력도 각성한 고등학생 히어로\n한밤중에 학교에 잠입하여 7대 불가사의를 주먹으로 해결\n가끔 에이리언과 좀비를 날려버린다", "이과 실험 중, 전력 증강에 성공한 고등학생 히어로\n학교에 숨어 들어온 수상한 사람을 전광석화와 같은 러쉬로 격퇴\n가끔 에이리언과 악마를 날려버린다"]
+    desc: ["벼락에 맞아 초능력을 각성한 고등학생 히어로\n벼락 한 방으로 에너지 충전 완료. 전투 가능 시간은 2시간\n가끔 천사와 에이리언을 날려버린다", "전기 공격의 영향으로 심령술에도 각성한 고등학생 히어로\n한밤중에 학교에 잠입하여 7대 불가사의를 주먹으로 해결\n가끔 에이리언과 좀비를 날려버린다", "과학 실험으로 전력 증강에 성공한 고등학생 히어로\n학교에 숨어든 수상한 사람을 전광석화와 같은 러쉬로 격퇴\n가끔 에이리언과 악마를 날려버린다"]
     stat: [{health: 7000, knockbacks: 1, speed: 30, cost: 2100, production_cooldown: 1300, range: 250, width: 320, damage_0: 500, attack_time_0: 8, trigger_effects_0: 1, damage_1: 500, attack_time_1: 16, trigger_effects_1: 1, damage_2: 500, attack_time_2: 24, trigger_effects_2: 1, against_angel: 1, against_alien: 1, knockback_chance: 50, immune_weaken: 1, attack_duration: 41}, {health: 7000, knockbacks: 1, speed: 30, cost: 2100, production_cooldown: 1300, range: 250, width: 320, damage_0: 500, attack_time_0: 8, trigger_effects_0: 1, damage_1: 500, attack_time_1: 16, trigger_effects_1: 1, damage_2: 500, attack_time_2: 24, trigger_effects_2: 1, against_alien: 1, against_zombie: 1, knockback_chance: 50, immune_freeze: 1, attack_duration: 41}, {health: 7000, knockbacks: 1, speed: 30, cost: 2100, production_cooldown: 1300, range: 250, width: 320, damage_0: 500, attack_time_0: 8, trigger_effects_0: 1, damage_1: 500, attack_time_1: 16, trigger_effects_1: 1, damage_2: 500, attack_time_2: 24, trigger_effects_2: 1, against_alien: 1, against_aku: 1, knockback_chance: 50, immune_surge: 1, attack_duration: 41}]
     rarity: 4
     max_level: 130
@@ -7481,8 +7524,8 @@ cats:
     desc: ["전세계에 흩어진 메달을 11년간 모아 온 고양이.\n싸게 중고 거래가 되고 있진 않은지 매일 같이 확인 중.\n반드시 움직임을 순간 느리게 하는 열파를 낸다", "전세계에 흩어진 메달을 찾기 위해 11조원을 쓴 왕.\n나라 예산을 낭비한 죄로 왕좌에서 쫓겨나 방랑 중.\n반드시 움직임을 순간 느리게 하는 열파를 낸다"]
     stat: [{health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}, {health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}]
     rarity: 1
-    max_level: 65
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   728:
     name: [솔 데 로카, 솔 데 로카CC]
     desc: ["메탈 슬러그 시리즈에서 참전!\n탑 위의 유적을 수호하는 수수께끼의 존재\n빨간 적, 천사, 에이리언에 초 데미지를 입힌다 (전방위 공격)", "메탈 슬러그 시리즈에서 참전!\n강렬한 청백색 불꽃을 내뿜어 유적에 침입한 자를 태워버린다\n빨간 적, 천사, 에이리언에 초 데미지를 입힌다 (전방위 공격)"]
@@ -7526,9 +7569,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   734:
-    name: [페가사, 페가사ν]
-    desc: ["제국 명문 공작가의 병약 소녀\n망설임 없이 쏘는 레이저로 어떤 적도 물리친다\n소환 능력을 가지고 떠있는 적과 좀비의 공격력을 낮춘다", "어른들의 권모술수에 마음을 닫고 인형이 되어 버린 소녀\n창밖에서 들려오는 소녀들의 말소리에 자유를 갈망하게 되었다\n소환 능력을 가지고 떠있는 적과 좀비의 공격력을 낮춘다"]
-    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}]
+    name: [페가사, 페가사ν, 요람의 페가사ν]
+    desc: ["제국 명문 공작가의 병약 소녀\n망설임 없이 쏘는 레이저로 어떤 적도 물리친다\n소환 능력을 가지고 떠있는 적과 좀비의 공격력을 낮춘다", "어른들의 권모술수에 마음을 닫고 인형이 되어 버린 소녀\n창밖에서 들려오는 소녀들의 말소리에 자유를 갈망하게 되었다\n소환 능력을 가지고 떠있는 적과 좀비의 공격력을 낮춘다", "자유를 위해 싸우기를 선택한 소녀. 흔들리지 않는 확고한 의지는\n가로막는 모든 장벽을 깨부순다. 소환 능력을 가지고\n떠있는 적과 좀비에 초 데미지를 입히며 공격력을 낮춘다"]
+    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3960, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, massive_damage: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 876, immune_freeze: 1, attack_duration: 100}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -7800,14 +7843,14 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5]
   775:
     name: [특수기동대 엑셀, 더티 엑셀]
-    desc: ["전세계 교통위반 근절이라는 특수 임무를 수행하는 사이보그 경찰\n소환 능력을 가지며 가끔 에이리언과 메탈 적을 날려버리고\n움직임을 느리게 하며 공격력을 낮춘다 (원거리 범위공격)", "심야의 폭주 차량을 발견 즉시 폐차시키는 하드코어 경찰.\n소환 능력과 메탈 킬러 능력을 가지고 가끔 에이리언과\n메탈 적의 움직임을 멈춘다 (원거리 범위공격)"]
+    desc: ["전 세계 교통 법규 위반 근절이라는 특명을 받은 사이보그 경찰\n소환 능력을 가지고 가끔 에이리언과 메탈 적을 날려버리며\n움직임을 느리게 하고 공격력을 낮춘다 (원거리 범위공격)", "심야의 폭주 차량을 발견 즉시 폐차시키는 하드코어 경찰\n소환 능력과 메탈 킬러 능력을 가지고\n가끔 에이리언과 메탈 적의 움직임을 멈춘다 (원거리 범위공격)"]
     stat: [{health: 3600, knockbacks: 3, speed: 12, cost: 2800, production_cooldown: 2000, attack_cooldown: 83, range: 450, width: 320, area_effect: 1, damage_0: 720, long_range_0: 250, long_range_offset_0: 400, attack_time_0: 45, trigger_effects_0: 1, damage_1: 720, attack_time_1: 55, trigger_effects_1: 1, damage_2: 720, attack_time_2: 65, trigger_effects_2: 1, against_alien: 1, against_metal: 1, knockback_chance: 30, slow_chance: 30, slow_duration: 120, weaken_chance: 30, weaken_duration: 120, weaken_multiplier: 50, conjure: 776, attack_duration: 121}, {health: 3600, knockbacks: 3, speed: 12, cost: 2800, production_cooldown: 2000, attack_cooldown: 83, range: 450, width: 320, area_effect: 1, damage_0: 720, long_range_0: 250, long_range_offset_0: 400, attack_time_0: 45, trigger_effects_0: 1, damage_1: 720, attack_time_1: 55, trigger_effects_1: 1, damage_2: 720, attack_time_2: 65, trigger_effects_2: 1, against_alien: 1, against_metal: 1, freeze_chance: 25, freeze_duration: 90, metal_killer: 10, conjure: 776, immune_warp: 1, attack_duration: 121}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   776:
     name: [776-1]
-    desc: ['정령: 메탈 킬러 능력을 가집니다.']
+    desc: ['정령: 메탈 킬러 능력을 가집니다']
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, metal_killer: 40, kamikaze: 2, attack_duration: 85}]
     rarity: 4
     max_level: 60
@@ -7817,7 +7860,7 @@ cats:
     desc: ["전란의 시대에 출세를 꿈꾸는 고양이\n전장에서 제일 먼저 적진으로 돌격하는 용맹함을 보여 준다\n반드시 빨간 적과 떠있는 적의 움직임을 멈추고 소파동을 낸다", "수많은 전투에서 공적을 쌓아 장수의 지위까지 올라간 고양이\n아군을 남겨 둔 채 뒤도 돌아보지 않고 돌격한다\n반드시 빨간 적과 떠있는 적의 움직임을 멈추고 소파동을 낸다"]
     stat: [{health: 100, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 100, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}, {health: 120, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 112, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}]
     rarity: 1
-    max_level: 55
+    max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   778:
     name: [동장군 미네르바, 한파장군 미네르바]
@@ -7863,7 +7906,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20]
   784:
     name: [꼬꼬미, 울트라 스타 꼬꼬미]
-    desc: ["모두에게 사랑받으며 자란\n아이돌을 꿈꾸는 개구쟁이 막내형 냥코\n항상 온 힘을 다한 퍼포먼스로 인기 급상승 중", "폭발적인 인기로 스타로 발돋움하기 시작한 꼬꼬미\n감사의 마음을 담아 온 힘을 다한 노래와 춤으로\n관객 모두에게 에너지를 선물!"]
+    desc: ["모두에게 사랑받으며 자란\n아이돌을 꿈꾸는 개구쟁이 막내형 냥코\n항상 온 힘을 다하는 퍼포먼스에 인기 급상승 중", "폭발적인 인기로 스타로 발돋움하기 시작한 꼬꼬미\n감사의 마음을 담아 온 힘을 쏟은 노래와 춤으로\n관객 모두에게 에너지를 선물!"]
     stat: [{health: 1950, knockbacks: 2, speed: 10, cost: 99, production_cooldown: 999, attack_cooldown: 22, range: 250, width: 320, damage_0: 315, attack_time_0: 30, trigger_effects_0: 1, against_relic: 1, against_white: 1, slow_chance: 100, slow_duration: 60, savage_blow_chance: 22, savage_blow_modifier: 200, critical_chance: 12, wave_chance: 22, wave_level: 2, surge_chance: 22, surge_level: 2, surge_range: 800, surge_range_offset: 800, explosion_chance: 22, explosion_range: 1000, immune_curse: 1, immune_wave: 1, attack_duration: 56}, {health: 4200, knockbacks: 3, speed: 10, cost: 1400, production_cooldown: 2999, attack_cooldown: 27, range: 450, width: 320, damage_0: 685, attack_time_0: 20, trigger_effects_0: 1, against_relic: 1, against_white: 1, slow_chance: 100, slow_duration: 60, savage_blow_chance: 22, savage_blow_modifier: 200, critical_chance: 12, wave_chance: 22, wave_level: 2, surge_chance: 22, surge_level: 2, surge_range: 1600, surge_range_offset: 800, explosion_chance: 22, explosion_range: 1800, immune_curse: 1, immune_wave: 1, attack_duration: 56}]
     rarity: 4
     max_level: 130
@@ -7877,7 +7920,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   787:
     name: [매지션 캣맨, 일루전 캣맨]
-    desc: ["화려한 마술쇼로 아이들을 즐겁게 해주는 순백의 신사\n눈 깜짝할 새에 순간이동하여 관객에게 사인을 해준다\n빨간 적과 떠있는 적에 초 데미지를 입힌다 (범위 공격)", "환상의 마술쇼로 어른들의 마음까지 매료시키는 칠흑의 신사\n불법 경매에 출품된 도난품을 순간이동시켜 원래 장소로 돌려준다\n빨간 적과 천사에 초 데미지를 입힌다 (범위 공격)"]
+    desc: ["화려한 마술 쇼로 아이들을 즐겁게 해 주는 순백의 신사\n눈 깜짝할 새에 순간 이동하여 관객에게 사인을 선물한다\n빨간 적과 떠있는 적에 초 데미지를 입힌다 (범위 공격)", "환상의 마술 쇼로 어른들의 마음까지 매료시키는 칠흑의 신사\n불법 경매에 출품된 도난품을 순간 이동시켜 원래 장소에 돌려놓는다\n빨간 적과 천사에 초 데미지를 입힌다 (범위 공격)"]
     stat: [{health: 3500, knockbacks: 5, speed: 15, cost: 3000, production_cooldown: 2350, attack_cooldown: 80, range: 440, width: 320, area_effect: 1, damage_0: 2100, attack_time_0: 70, trigger_effects_0: 1, against_red: 1, against_float: 1, massive_damage: 1, immune_wave: 1, attack_duration: 160}, {health: 3500, knockbacks: 5, speed: 15, cost: 3000, production_cooldown: 2350, attack_cooldown: 80, range: 440, width: 320, area_effect: 1, damage_0: 2100, attack_time_0: 70, trigger_effects_0: 1, against_red: 1, against_angel: 1, massive_damage: 1, immune_wave: 1, attack_duration: 160}]
     rarity: 4
     max_level: 130
@@ -8393,6 +8436,20 @@ cats:
     rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
+  865:
+    name: [에미야 시로, 에미야 시로CC]
+    desc: ["Fate/stay night [HF]에서 참전!\n마토 사쿠라를 지키기 위해 성배전쟁에 참가한 소년\n반드시 파동을 낸다 (범위 공격)", "Fate/stay night [HF]에서 참전!\n왼팔을 잃고 아처의 팔을 이어받았다\n반드시 파동을 낸다 (범위 공격)"]
+    stat: [{health: 3200, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 2400, attack_time_0: 154, trigger_effects_0: 1, damage_1: 2400, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}, {health: 4000, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 3000, attack_time_0: 154, trigger_effects_0: 1, damage_1: 3000, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  866:
+    name: [진 어새신, 진 어새신CC]
+    desc: ["Fate/stay night [HF]에서 참전!\n마토 조켄이 소환한 암살자 클래스 영령\n떠있는 적과 에이리언의 움직임을 순간 멈추고 공격력을 낮춘다", "Fate/stay night [HF]에서 참전!\n자신의 염원을 이루기 위해 암중비약한다\n떠있는 적과 에이리언의 움직임을 순간 멈추고 공격력을 낮춘다"]
+    stat: [{health: 1360, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 480, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}, {health: 1700, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 600, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   870:
     name: [변신소녀 단, 날아라 변신소녀 단]
     desc: ["아무도 다루지 못했던 파워 슈트의 유일한 적합자가 된 소녀\n학교가 끝나면 마을의 평화를 지키는 일을 돕고 있다 (범위 공격)\n빨간 적, 검은 적만 공격할 수 있지만 가끔 공격을 무효화한다", "메이드 카페에서 일하다 전투에 휘말린 소녀\n강화 파워 슈트로 악당 무리를 전부 강제 퇴점시킨다 (범위 공격)\n빨간 적, 검은 적만 공격할 수 있지만 가끔 공격을 무효화한다"]
@@ -8421,6 +8478,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  874:
+    name: [록 꼬꼬미, 록 스타 꼬꼬미]
+    desc: ["귀여움만으로는 힘든 아이돌 업계에서 살아남기 위해\n예상치 못한 장르에 도전한 꼬꼬미\n온 힘을 다해 순수한 마음을 외치는 모습에 인기 급상승 중", "새로운 장르에서 아이돌 혁명을 일으킨 꼬꼬미\n각오를 다지고 온 힘을 쏟은 샤우팅으로\n관객 모두를 열광의 도가니로 초대!"]
+    stat: [{health: 2150, knockbacks: 2, speed: 10, cost: 99, production_cooldown: 999, range: 250, width: 320, damage_0: 160, attack_time_0: 30, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1000, immune_freeze: 1, immune_curse: 1, attack_duration: 56}, {health: 4500, knockbacks: 3, speed: 10, cost: 1400, production_cooldown: 2999, range: 450, width: 320, damage_0: 240, attack_time_0: 20, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1800, immune_freeze: 1, immune_curse: 1, attack_duration: 33}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  876:
+    name: ['735_1']
+    desc: ['정령: 적의 움직임을 느리게 합니다']
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 250, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14250,6 +14321,35 @@ gacha:
     series_id: 65
     name: "★확률, 상세 내용은 배너를 클릭!★여름 스타일의 귀엽고 깜찍한 캐릭터들을 GET!"
     rate: no_legend
+  1077:
+    cats: [449, 450, 451, 452, 456, 462, 464, 479, 482, 494, 545, 874, 74, 35, 734, 77, 361, 60, 144, 88, 136, 197, 812, 608, 418, 675, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 70
+    name: "★확률, 상세 내용은 배너를 클릭!★한정 울슈레  '꼬꼬미' 참전! 1억 다운로드 기념 특별 뽑기!"
+    similarity: 68
+  1078:
+    cats: [873, 863, 821, 787, 778, 774, 773, 760, 757, 738, 737, 715, 712, 700, 694, 688, 684, 667, 662, 649, 645, 615, 596, 590, 589, 588, 587, 585, 571, 567, 566, 565, 564, 527, 495, 439, 355, 333, 332, 331, 315, 311, 303, 277, 276, 275, 244, 243, 242, 231, 230, 229, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 47
+    name: "★확률, 상세 내용은 배너를 클릭!★계절 한정 캐릭터 총집합! 울슈레 출현율 UP! 울트라 국왕 축제!"
+    rate: dynastyfest
+    similarity: 98
+  1079:
+    cats: [497, 170, 831, 360, 44, 87, 526, 775, 272, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 57
+    name: 열혈 캐릭터 대집결! '열혈경파 쿠니오군' 레어 뽑기가 새롭게 등장!★자세한 내용은 배너를 클릭!★
+    rate: no_legend
+    similarity: 76
+  1080:
+    cats: [73, 172, 106, 720, 764, 86, 693, 195, 273, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 75
+    name: 열혈 캐릭터 대 집결! '열혈경파 쿠니오군' 레어 뽑기가 새롭게 등장!★자세한 내용은 배너를 클릭!★
+    rate: no_legend
+    similarity: 80
+  1081:
+    cats: [865, 866, 363, 364, 365, 366, 367, 368, 369, 457, 461, 371, 372, 373, 459, 460, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
+    series_id: 34
+    name: "★극장판 「Fate/stay night [Heaven's Feel]」콜라보 뽑기!★자세한 내용은 배너를 클릭!!★"
+    rate: no_legend
+    similarity: 97
 events:
   2018-10-13_320:
     start_on: 2018-10-13

@@ -2674,9 +2674,9 @@ cats:
         minmax: [[5, 50], [60, 60]]
         ultra: 1
   197:
-    name: [貓俠大帝, 黑暗貓俠, 雷霆貓俠]
-    desc: ["穿著能夠完全遮蔽紫外線的華麗套裝\n有著午間連續劇絕對看不到的黑暗容顏\n給予異星戰士和飄浮敵人超大傷害（範圍攻擊）", "在夜晚化身為怪人之姿守護貓咪城和平的英雄\n對於師奶們熱情地要求簽名的攻勢很難拒絕\n給予異星戰士和天使敵人超大傷害（範圍攻擊）", "為了在電影選角獲選而大幅改造西裝的超級怪人\n把動的歪腦筋都化為能量來消滅邪惡\n給予異星戰士和古代種超大傷害（範圍攻擊）"]
-    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}]
+    name: [貓俠大帝, 黑暗貓俠, 雷霆貓俠, 永恆貓俠]
+    desc: ["穿著能夠完全遮蔽紫外線的華麗套裝\n有著午間連續劇絕對看不到的黑暗容顏\n給予異星戰士和飄浮敵人超大傷害（範圍攻擊）", "在夜晚化身為怪人之姿守護貓咪城和平的英雄\n對於師奶們熱情地要求簽名的攻勢很難拒絕\n給予異星戰士和天使敵人超大傷害（範圍攻擊）", "為了在電影選角獲選而大幅改造西裝的超級怪人\n把動的歪腦筋都化為能量來消滅邪惡\n給予異星戰士和古代種超大傷害（範圍攻擊）", "憑藉主演電影票房大賣，成功進軍全球的究極超人\n投入龐大票房收益，利用金錢的力量淨化黑暗勢力\n給予天使敵人、異星戰士和古代種超大傷害（範圍攻擊）"]
+    stat: [{health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_float: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, massive_damage: 1, attack_duration: 160}, {health: 3950, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 2350, attack_cooldown: 105, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 160}, {health: 5250, knockbacks: 5, speed: 12, cost: 3680, production_cooldown: 1850, range: 440, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 70, trigger_effects_0: 1, against_angel: 1, against_alien: 1, against_relic: 1, massive_damage: 1, immune_curse: 1, attack_duration: 185}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -3688,6 +3688,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      wave_mini:
+        max_level: 10
+        minmax: [[28, 100], [2, 2]]
+      immune_surge: {}
+      immune_freeze: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   304:
     name: [叫賣貓, 宅配貓, 打飯貓]
     desc: ["想靠著叫賣爆漿烏賊腳的明石燒風味章魚燒\n來大賺一筆的轉行上班族\n給予天使敵人超大傷害", "謹慎的配送來自神的貨到付款包裹\n萬一把包裹的秘密說出去可能就會遭到報應\n給予天使敵人超大傷害", "學會完美的洗手步驟與除菌技術\n負責將營養午餐送到班上的打飯專家\n給予天使敵人超大傷害，有時候可以詛咒敵人"]
@@ -4561,7 +4573,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   367:
     name: [Lancer, Lancer CC]
-    desc: ["從Fate/stay night [HF]來參戰！\nMaster不明，槍兵的英靈\n必定能破壞護盾(範圍攻擊)", "從Fate/stay night [HF]來參戰！\n敏捷性優秀，與Saber不相上下\n必定能破壞護盾(範圍攻擊)"]
+    desc: ["從Fate/stay night [HF]來參戰！\n御主不明，槍兵的英靈\n必定能破壞護盾(範圍攻擊)", "從Fate/stay night [HF]來參戰！\n敏捷性優秀，與Saber不相上下\n必定能破壞護盾(範圍攻擊)"]
     stat: [{health: 1900, knockbacks: 4, speed: 13, cost: 2900, production_cooldown: 2050, attack_cooldown: 46, range: 480, width: 320, area_effect: 1, damage_0: 900, attack_time_0: 44, trigger_effects_0: 1, break_barrier_chance: 100, attack_duration: 75}, {health: 2900, knockbacks: 4, speed: 13, cost: 2900, production_cooldown: 2050, attack_cooldown: 46, range: 480, width: 320, area_effect: 1, damage_0: 1350, attack_time_0: 44, trigger_effects_0: 1, break_barrier_chance: 100, attack_duration: 75}]
     rarity: 4
     max_level: 130
@@ -4582,7 +4594,7 @@ cats:
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   370:
     name: [貓Saber, 英靈貓Saber, 貓Saber Alter]
-    desc: ["崇拜著某晚見到的金髮劍士\n首先存體力、揮舞竹劍\n善於攻擊飄浮敵人", "幻想著哪天可以被誰召喚的貓咪劍士\n自認為沉著冷靜\n善於攻擊飄浮敵人", "等到天荒地老都沒被召喚\n所以試著染黑自己的貓咪劍士\n善於攻擊飄浮敵人、全妨害效果無效"]
+    desc: ["崇拜著某晚見到的金髮劍士\n首先存體力、揮舞竹劍\n善於攻擊飄浮敵人", "幻想著哪天可以被誰召喚的貓咪劍士\n自認為沉著冷靜\n善於攻擊飄浮敵人", "等到天荒地老都沒被召喚\n所以試著染黑自己的貓咪劍士\n善於攻擊飄浮敵人、多種妨害效果無效"]
     stat: [{health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 760, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, attack_duration: 40}, {health: 1140, knockbacks: 3, speed: 10, cost: 380, production_cooldown: 250, range: 155, width: 320, damage_0: 100, attack_time_0: 20, trigger_effects_0: 1, against_float: 1, strong: 1, immune_knockback: 1, immune_warp: 1, immune_freeze: 1, immune_slow: 1, immune_weaken: 1, immune_curse: 1, immune_wave: 1, attack_duration: 40}]
     rarity: 1
     max_level: 50
@@ -5191,6 +5203,14 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      surge:
+        max_level: 10
+        minmax: [[5, 50], [1, 1], [1600, 1600], [1200, 1200]]
+        ultra: 1
+      immune_surge:
+        ultra: 1
+      colossus_slayer:
+        ultra: 1
   441:
     name: [蓓蓓, 小渚＆貓咪, 圓環之理的使者渚]
     desc: ["從魔法少女小圓來參戰！\n愛吃乳酪，是麻美的好同伴！\n必定能使異星戰士和不死生物瞬間攻擊力下降", "從魔法少女小圓來參戰！\n出現在小圓們面前的新魔法少女\n必定能使異星戰士和不死生物攻擊力下降", "從魔法少女小圓來參戰！圓環之理的\n使者，有著吉祥物與魔法少女兩種姿態\n能使異星和不死攻擊力下降，有時候可使其攻擊無效化"]
@@ -5687,12 +5707,12 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   505:
-    name: [貓大叔【店主】, 貓大叔【現役】]
-    desc: ["喜歡照顧與教導新手貓咪\"小偷大小事\"的大叔\n嘴巴惡毒但墨鏡後隱藏著一雙深邃的眼睛\n打倒敵人的時候可以得到很多金錢", "自稱是掌管過傳說中小偷幫一團的頭頭\n在加碼多多脫隊後加上膝蓋舊傷就此引退\n打倒敵人的時候可以得到很多金錢"]
+    name: [貓大叔（店主）, 貓大叔（現役）]
+    desc: ["喜歡照顧與教導新手貓咪\"小偷大小事\"的大叔\n嘴巴惡毒但墨鏡後隱藏著一雙深邃的眼睛\n打倒敵人的時候可以得到很多金錢", "自稱是掌管過傳說中小偷幫一團的頭頭\n在加碼多多退出後加上膝蓋舊傷就此引退\n打倒敵人的時候可以得到很多金錢"]
     stat: [{health: 500, knockbacks: 5, speed: 8, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}, {health: 500, knockbacks: 5, speed: 16, cost: 360, production_cooldown: 320, attack_cooldown: 106, range: 200, width: 320, damage_0: 500, attack_time_0: 13, trigger_effects_0: 1, extra_money: 1, attack_duration: 97}]
     rarity: 1
-    max_level: 50
-    growth: [20, 20, 20, 20, 20]
+    max_level: 55
+    growth: [20, 20, 20, 20, 20, 20]
   506:
     name: [角龍格拉迪歐斯, 角龍王格拉迪歐斯, 角龍皇帝格拉迪歐斯]
     desc: ["有可貫穿天空的巨大矛，在地面大踏行走的傳說角龍族\n以壓倒性的破壞能力攻擊敵人（範圍攻擊）\n有時候能打飛無屬性敵人並使其動作變慢", "將閃耀光芒變成自己力量的傳說角龍族\n以壓倒性的破壞能力攻擊敵人（範圍攻擊）\n有時候能打飛無屬性敵人並使其動作變慢", "在龍角山沐浴毀滅的光芒後覺醒真正力量的角龍皇帝\n用激烈咆嘯就足以破滅全數的生命(範圍攻擊)\n必定能打飛無屬性敵人並使其動作變慢"]
@@ -7060,6 +7080,22 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      slow:
+        max_level: 10
+        minmax: [[12, 30]]
+      resistant_freeze:
+        max_level: 10
+        minmax: [[16, 70]]
+      reduce_cost:
+        max_level: 10
+        minmax: [[30, 300]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   657:
     name: [遠古的蛋：N001, 謎樣的蛋：N001, 埴輪貓]
     desc: ["外形像蛋的謎樣物體\n經年累月附著了塵土且遭受風化\n上頭似乎刻有「N001」的小小字樣", "現出白色外殼，如蛋一般的物體\n裡面似乎有微弱的生命跡象反應\n對上無屬性敵人很耐打", "從貓咪軍團基地的庭院所挖出來的貓咪型埴輪\n作為考古學的價值很高，擅長看家\n對上無屬性敵人很耐打，有超獸特效"]
@@ -7544,8 +7580,8 @@ cats:
     desc: ["持續收集散落在世界各地的徽章長達11年的貓咪\n每天都會確認二手網站有沒有便宜可以撿\n必定發射能使敵人瞬間動作變慢的烈波", "為尋找散落在世界各地的徽章而花掉11兆的國王\n因耗盡國家預算而失去王位，目前四處流浪中\n必定發射能使敵人瞬間動作變慢的烈波"]
     stat: [{health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}, {health: 800, knockbacks: 2, speed: 8, cost: 500, production_cooldown: 600, attack_cooldown: 80, range: 210, width: 320, damage_0: 80, attack_time_0: 33, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 30, surge_chance: 100, surge_level: 1, surge_range: 600, surge_range_offset: 1800, attack_duration: 65}]
     rarity: 1
-    max_level: 65
-    growth: [20, 20, 20, 20, 20, 20, 10]
+    max_level: 75
+    growth: [20, 20, 20, 20, 20, 20, 10, 10]
   728:
     name: [太陽神羅卡, 太陽神羅卡CC]
     desc: ["來自越南大戰METAL SLUG系列的狠角色！\n在塔頂守護著遺跡的神祕存在\n可以給予紅色、天使和異星戰士超大傷害(全方位攻擊)", "來自越南大戰METAL SLUG系列的狠角色！\n會發射強烈的藍白色火焰，將遺跡的入侵者燒盡\n可以給予紅色、天使和異星戰士超大傷害(全方位攻擊)"]
@@ -7589,9 +7625,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   734:
-    name: [鐵籠的姵卡薩, 鐵籠的姵卡薩ν]
-    desc: ["出身於帝國名門公爵家，體弱多病的少女\n會毫不猶豫地發射雷射來擊退任何敵人\n有召喚能力，能使飄浮敵人與不死生物的攻擊力下降", "關閉心門並遵從大人的想法與謀略的少女\n聽見外面傳來的少女們的聲音而對自由產生渴望\n有召喚能力，能使飄浮敵人與不死生物的攻擊力下降"]
-    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}]
+    name: [鐵籠的姵卡薩, 鐵籠的姵卡薩ν, 白籠的姵卡薩ν]
+    desc: ["出身於帝國名門公爵家，體弱多病的少女\n會毫不猶豫地發射雷射來擊退任何敵人\n有召喚能力，能使飄浮敵人與不死生物的攻擊力下降", "關閉心門並遵從大人的想法與謀略的少女\n聽見外面傳來的少女們的聲音而對自由產生渴望\n有召喚能力，能使飄浮敵人與不死生物的攻擊力下降", "為了獲得自由而選擇戰鬥的少女。以堅定不移的意志\n擊破所有阻擋在面前的障礙。有召喚能力\n給予飄浮敵人與不死生物超大傷害，使其攻擊力下降"]
+    stat: [{health: 2800, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3300, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 735, attack_duration: 100}, {health: 3960, knockbacks: 5, speed: 9, cost: 2700, production_cooldown: 2100, attack_cooldown: 57, range: 450, width: 320, area_effect: 1, damage_0: 1400, attack_time_0: 46, trigger_effects_0: 1, against_float: 1, against_zombie: 1, massive_damage: 1, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, zombie_killer: 1, conjure: 876, immune_freeze: 1, attack_duration: 100}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -7887,7 +7923,7 @@ cats:
     desc: ["夢想在日本戰國時代出人頭地的貓咪\n在戰場上總是率先衝向敵陣，非常勇猛\n必定能讓紅色和飄浮敵人動作停止並發射小波動", "在許多戰場立下功績，終於晉級至武將的貓咪\n一去不回頭的突襲作戰常常將友軍拋在後頭\n必定能讓紅色和飄浮敵人動作停止並發射小波動"]
     stat: [{health: 100, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 100, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}, {health: 120, knockbacks: 1, speed: 20, cost: 500, production_cooldown: 860, range: 140, width: 320, damage_0: 112, attack_time_0: 7, trigger_effects_0: 1, against_red: 1, against_float: 1, freeze_chance: 100, freeze_duration: 90, wave_level: 1, wave_mini: 100, attack_duration: 200}]
     rarity: 1
-    max_level: 55
+    max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   778:
     name: [冬將軍・成田甲斐, 冬大將軍・成田甲斐]
@@ -8395,7 +8431,7 @@ cats:
     growth: [20, 20, 20, 20, 20]
   853:
     name: [殺意牛鳥貓, 真・殺意牛鳥貓]
-    desc: ["解放野性本能的牛貓與鳥貓\n相撞之後所誕生的角色\n想要他聽話就得花錢(遠方範圍)", "無法停止本性覺醒的殺意牛鳥貓\n會揮動自傲的雙翼來攻擊遠方的敵人\n衝撞的威力與出擊的成本都是重量級"]
+    desc: ["解放野性本能的牛貓與鳥貓\n相撞之後所誕生的角色\n想要他聽話就得花錢（遠距攻擊）", "無法停止本性覺醒的殺意牛鳥貓\n會揮動自傲的雙翼來攻擊遠方的敵人\n衝撞的威力與出擊的成本都是重量級（遠距攻擊）"]
     stat: [{health: 300, knockbacks: 4, speed: 7, cost: 5000, production_cooldown: 125, range: 270, width: 320, damage_0: 140, long_range_0: 170, long_range_offset_0: 300, attack_time_0: 36, trigger_effects_0: 1, attack_duration: 90}, {health: 300, knockbacks: 4, speed: 7, cost: 5000, production_cooldown: 125, range: 270, width: 320, damage_0: 140, long_range_0: 170, long_range_offset_0: 300, attack_time_0: 36, trigger_effects_0: 1, attack_duration: 90}]
     rarity: 2
     max_level: 50
@@ -8456,6 +8492,20 @@ cats:
     rarity: 1
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
+  865:
+    name: [衛宮士郎, 衛宮士郎CC]
+    desc: ["從Fate/stay night [HF]來參戰！\n為了守護間桐櫻而參加聖杯戰爭的少年\n必定能發射波動(範圍攻擊)", "從Fate/stay night [HF]來參戰！\n失去左手，但繼承了Archer的手臂\n必定能發射波動(範圍攻擊)"]
+    stat: [{health: 3200, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 2400, attack_time_0: 154, trigger_effects_0: 1, damage_1: 2400, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}, {health: 4000, knockbacks: 3, speed: 12, cost: 3200, production_cooldown: 2700, attack_cooldown: 108, range: 560, width: 320, area_effect: 1, damage_0: 3000, attack_time_0: 154, trigger_effects_0: 1, damage_1: 3000, attack_time_1: 159, trigger_effects_1: 1, wave_chance: 100, wave_level: 4, immune_knockback: 1, immune_freeze: 1, attack_duration: 205}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  866:
+    name: [真Assassin, 真AssassinCC]
+    desc: ["從Fate/stay night [HF]來參戰！\n間桐臟硯召喚出的暗殺者英靈。能讓飄浮敵人\n和異星戰士瞬間動作停止，使其攻擊力下降", "從Fate/stay night [HF]來參戰！\n為了實現己願，持續於暗地中策劃與行動。能讓\n飄浮敵人和異星戰士瞬間動作停止，使其攻擊力下降"]
+    stat: [{health: 1360, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 480, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}, {health: 1700, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 600, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   870:
     name: [鐵腕女孩東雲寺茜, 打工女孩東雲寺茜]
     desc: ["偶然間與無人能駕馭的動力裝甲完美契合的女孩\n放學後也會協助守護街道和平（範圍攻擊）\n只能攻擊紅色和黑色敵人，但有時候可使其攻擊無效化", "在女僕咖啡廳打工時被捲入戰鬥的女孩\n使用強化後的動力裝甲強制讓壞蛋退場（範圍攻擊）\n只能攻擊紅色和黑色敵人，但有時候可使其攻擊無效化"]
@@ -8484,6 +8534,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  874:
+    name: [搖滾俏喵, 搖滾明星俏喵]
+    desc: ["為了在無法只靠可愛生存下去的偶像圈中闖出一片天\n俏喵毅然決然地挑戰了令人意想不到的全新風格\n拚盡全力吶喊的模樣讓她的粉絲人數急速飆升中", "在全新領域掀起偶像革命的俏喵\n在演唱會上豁出去般地全力嘶吼\n將所有觀眾捲入熱血沸騰的狂熱之中"]
+    stat: [{health: 2150, knockbacks: 2, speed: 10, cost: 99, production_cooldown: 999, range: 250, width: 320, damage_0: 160, attack_time_0: 30, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1000, immune_freeze: 1, immune_curse: 1, attack_duration: 56}, {health: 4500, knockbacks: 3, speed: 10, cost: 1400, production_cooldown: 2999, range: 450, width: 320, damage_0: 240, attack_time_0: 20, trigger_effects_0: 1, against_red: 1, against_float: 1, against_zombie: 1, knockback_chance: 22, slow_chance: 22, slow_duration: 90, curse_chance: 22, curse_duration: 90, zombie_killer: 1, colossus_slayer: 1, sage_slayer: 1, behemoth_slayer: 1, behemoth_dodge_chance: 5, behemoth_dodge_duration: 30, explosion_chance: 100, explosion_range: 1800, immune_freeze: 1, immune_curse: 1, attack_duration: 33}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  876:
+    name: ['735_1']
+    desc: [精靈：能讓敵人的動作變慢]
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 250, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14199,6 +14263,35 @@ gacha:
     series_id: 65
     name: 新角色追加！來GET滿滿開放感的夏日限定角色吧！★點圖確認詳細吧!!
     rate: no_legend
+  1077:
+    cats: [449, 450, 451, 452, 456, 462, 464, 479, 482, 494, 545, 874, 74, 35, 734, 77, 361, 60, 144, 88, 136, 197, 812, 608, 418, 675, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 70
+    name: 限定超激稀有角色「俏喵」參戰！慶祝1億下載的特別轉蛋登場！
+    similarity: 68
+  1078:
+    cats: [873, 863, 821, 787, 778, 774, 773, 760, 757, 738, 737, 715, 712, 700, 694, 688, 684, 667, 662, 649, 645, 615, 596, 590, 589, 588, 587, 585, 571, 567, 566, 565, 564, 527, 495, 439, 355, 333, 332, 331, 315, 311, 303, 277, 276, 275, 244, 243, 242, 231, 230, 229, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 47
+    name: 一舉集結季節角色們!!★超激稀有出現率上升的「超國王祭」來啦!!
+    rate: dynastyfest
+    similarity: 98
+  1079:
+    cats: [497, 170, 831, 360, 44, 87, 526, 775, 272, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 57
+    name: 熱血角色大集合的「熱血!大運動會」轉蛋新登場！★點圖確認詳細吧!!
+    rate: no_legend
+    similarity: 76
+  1080:
+    cats: [73, 172, 106, 720, 764, 86, 693, 195, 273, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 75
+    name: 熱血角色大集合的「熱血!大運動會」轉蛋新登場！★點圖確認詳細吧!!
+    rate: no_legend
+    similarity: 80
+  1081:
+    cats: [865, 866, 363, 364, 365, 366, 367, 368, 369, 457, 461, 371, 372, 373, 459, 460, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
+    series_id: 34
+    name: 劇場版「Fate/stay night [Heaven's Feel]」合作轉蛋★點圖可以看詳細內容！
+    rate: no_legend
+    similarity: 97
 events:
   2018-08-03_310:
     start_on: 2018-08-03
