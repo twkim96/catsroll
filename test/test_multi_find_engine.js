@@ -390,6 +390,94 @@ assert.strictEqual(result.rawCost, -0.12);
 assert.strictEqual(result.cost, 0,
   "balanced score is floored at zero to avoid farming negative cost");
 
+const balanceSupaPool = pool({
+  rates: {rare: 0, supa: 10000, uber: 0, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [700], 4: [], 5: []}
+});
+const balanceUberPool = pool({
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [], 4: [800], 5: []}
+});
+const balanceDelayedTargetPool = pool({
+  rates: {rare: 0, supa: 10000, uber: 0, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [500, 501], 4: [], 5: []}
+});
+const balanceBase = {
+  seed: 5,
+  count: 5,
+  optimization: "balance",
+  maxPlatinum: 0,
+  maxLegendTicket: 0,
+  maxGuaranteed: 0,
+  ticket: null,
+  targets: [{cat_id: 501, allow_ticket: false}]
+};
+const balanceSupaFirst = search(Object.assign({}, balanceBase, {
+  events: [
+    {lang: "kr", event: "supa", label: "Supa", pool: balanceSupaPool},
+    {lang: "kr", event: "uber", label: "Uber", pool: balanceUberPool},
+    {lang: "kr", event: "target", label: "Target", pool: balanceDelayedTargetPool}
+  ]
+}));
+const balanceUberFirst = search(Object.assign({}, balanceBase, {
+  events: [
+    {lang: "kr", event: "uber", label: "Uber", pool: balanceUberPool},
+    {lang: "kr", event: "supa", label: "Supa", pool: balanceSupaPool},
+    {lang: "kr", event: "target", label: "Target", pool: balanceDelayedTargetPool}
+  ]
+}));
+assert.strictEqual(balanceSupaFirst.status, "success");
+assert.strictEqual(balanceUberFirst.status, "success");
+assert.strictEqual(balanceSupaFirst.rawCost, -0.1);
+assert.strictEqual(balanceUberFirst.rawCost, -0.1,
+  "greedy equivalent-state dedupe must not depend on banner order");
+assert.strictEqual(balanceSupaFirst.actions[0].event, "uber");
+assert.strictEqual(balanceUberFirst.actions[0].event, "uber");
+
+const balanceGuaranteedUberIds = Array.from({length: 20}, (_, index) => 900 + index);
+const balanceGuaranteedSupaPool = pool({
+  rates: {rare: 0, supa: 10000, uber: 0, legend: 0},
+  guaranteedRolls: 11,
+  slots: {2: [], 3: [700], 4: balanceGuaranteedUberIds, 5: []}
+});
+const balanceGuaranteedUberPool = pool({
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 11,
+  slots: {2: [], 3: [], 4: balanceGuaranteedUberIds, 5: []}
+});
+const balanceGuaranteedBase = {
+  seed: 5,
+  count: 11,
+  optimization: "balance",
+  maxPlatinum: 0,
+  maxLegendTicket: 0,
+  maxGuaranteed: 1,
+  ticket: null,
+  targets: [{cat_id: 900, allow_ticket: false}]
+};
+const balanceGuaranteedSupaFirst = search(Object.assign({}, balanceGuaranteedBase, {
+  events: [
+    {lang: "kr", event: "g-supa", label: "G Supa", pool: balanceGuaranteedSupaPool},
+    {lang: "kr", event: "g-uber", label: "G Uber", pool: balanceGuaranteedUberPool}
+  ]
+}));
+const balanceGuaranteedUberFirst = search(Object.assign({}, balanceGuaranteedBase, {
+  events: [
+    {lang: "kr", event: "g-uber", label: "G Uber", pool: balanceGuaranteedUberPool},
+    {lang: "kr", event: "g-supa", label: "G Supa", pool: balanceGuaranteedSupaPool}
+  ]
+}));
+assert.strictEqual(balanceGuaranteedSupaFirst.status, "success");
+assert.strictEqual(balanceGuaranteedUberFirst.status, "success");
+assert.strictEqual(balanceGuaranteedSupaFirst.actions[0].event, "g-uber");
+assert.strictEqual(balanceGuaranteedUberFirst.actions[0].event, "g-uber",
+  "greedy guaranteed dedupe must not depend on banner order");
+assert.strictEqual(balanceGuaranteedSupaFirst.uberDraws, 11);
+assert.strictEqual(balanceGuaranteedUberFirst.rawCost, -0.54);
+
 const paretoTargetPool = pool({
   rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
   guaranteedRolls: 0,

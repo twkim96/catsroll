@@ -79,6 +79,7 @@ describe 'local web features' do
     expect(response.body.include?('value="pareto">파레토')).eq true
     expect(response.body.include?('울슈레와 레전드레어마다')).eq true
     expect(response.body.include?('각각 0.14점을 빼서')).eq true
+    expect(response.body.include?('탐욕 코스트는 0점 아래로 내려가지 않으므로')).eq true
     expect(response.body.include?('max(0.2, 최소코스트 × 15%)')).eq true
     expect(response.body.include?('id="multi_find_title"')).eq false
     expect(response.body.include?('id="multi_find_targets" type="text" readonly')).eq true
