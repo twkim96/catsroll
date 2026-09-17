@@ -15,7 +15,7 @@
 
 .multi-find-controls {
   display: grid;
-  grid-template-columns: 2.2rem 7.2rem 5.2rem 6.2rem 7rem minmax(18rem, 1fr) 2.1rem 2.1rem;
+  grid-template-columns: 2.2rem 7.2rem 5.2rem 2.2rem 5.2rem 5.8rem minmax(18rem, 1fr) 2.1rem 2.1rem;
   gap: .65rem;
   align-items: end;
 }
@@ -116,6 +116,7 @@
   line-height: 1;
 }
 
+.multi-find-schedule,
 .multi-find-reset,
 .multi-find-help {
   display: grid;
@@ -132,11 +133,15 @@
   font-weight: 800;
 }
 
+.multi-find-schedule svg,
 .multi-find-reset svg {
   width: 1rem;
   height: 1rem;
 }
 
+.multi-find-schedule:hover,
+.multi-find-schedule:focus-visible,
+.multi-find-schedule.is-active,
 .multi-find-reset:hover:not(:disabled),
 .multi-find-reset:focus-visible,
 .multi-find-help:hover,

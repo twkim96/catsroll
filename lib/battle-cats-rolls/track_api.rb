@@ -554,6 +554,8 @@ module BattleCatsRolls
           platinum: info['platinum'],
           series_id: series_id,
           series_name: series_name,
+          start_on: info['start_on'].to_s,
+          end_on: info['end_on'].to_s,
           label: multi_event_label(info)
         }
       end

@@ -67,6 +67,13 @@
         <span>확뽑 최대</span>
         <input id="multi_find_max_guaranteed" type="number" min="0" max="20" value="0">
       </label>
+      <button id="multi_find_schedule" class="multi-find-schedule" type="button"
+        aria-pressed="false" aria-label="배너 일정 순서 고려"
+        title="배너 일정 순서 고려: 켜면 선택한 배너의 실제 기간 순서대로만 검색하며, 미래 배너를 사용한 뒤 종료된 이전 배너로 돌아가지 않습니다.">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+          <path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2zm13 8H4v10h16V10zM4 8h16V6H4v2zm3 5h5v2H7v-2zm7 0h3v2h-3v-2zm-7 4h3v2H7v-2z"></path>
+        </svg>
+      </button>
       <label>
         <span>플래티넘 최대</span>
         <input id="multi_find_max_platinum" type="number" min="0" max="99" value="0">
@@ -123,7 +130,7 @@
           placeholder="플랜명을 입력하세요" autocomplete="off">
       </label>
       <div class="multi-plan-summary">
-        <span class="multi-plan-label">선택 슈레·울슈레·레레</span>
+        <span class="multi-plan-label">선택 레어·슈레·울슈레·레레</span>
         <button id="multi_plan_selected_cats" type="button"
           class="multi-plan-summary-output is-empty"
           aria-haspopup="dialog" aria-controls="multi_plan_cats_dialog"
@@ -212,10 +219,16 @@
           <dt>탐욕</dt>
           <dd>최소코스트를 기준으로, 경로에서 얻는 울슈레마다 0.14점,
             레전드레어마다 2점을 빼서 좋은 고등급 획득을 가볍게 우대합니다.</dd>
+          <dt>배너 일정 순서 고려</dt>
+          <dd>달력 아이콘을 켜면 선택한 배너의 시작일·종료일을 시간축으로 적용합니다.
+            미래 배너를 사용한 뒤에는 이미 종료된 이전 배너로 돌아갈 수 없습니다.
+            종료일과 다음 시작일이 같은 배너는 같은 날 11시 교체로 보고 겹치지 않는 것으로 처리하며,
+            날짜 구간이 실제로 겹치는 동안에는 두 배너를 함께 사용할 수 있습니다.</dd>
         </dl>
         <p>기본 점수: 레어티켓 1회 0.02 · 확뽑 1회 1 ·
           플래티넘 티켓 1회 1 · 레전드 티켓 1회 2</p>
         <p>각 최대 횟수는 검색 중 넘을 수 없는 사용 한도입니다.</p>
+        <p>달력 옵션은 기본적으로 꺼져 있습니다. 미래 일정의 배열만 자유롭게 비교하려면 끈 상태를 사용하세요.</p>
       </div>
     </div>
   </dialog>

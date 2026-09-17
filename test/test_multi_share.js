@@ -30,6 +30,7 @@ const track = {
 const find = {
   optimization: "balance",
   maxGuaranteed: 2,
+  scheduleAware: true,
   maxPlatinum: 3,
   maxLegendTicket: 1,
   targets: [
@@ -69,6 +70,7 @@ assert.deepStrictEqual(restoredTrack.rows[0].seriesIds, [24, 42]);
 const restoredFind = codec.findSettings(decoded);
 assert.strictEqual(restoredFind.optimization, "balance");
 assert.strictEqual(restoredFind.maxGuaranteed, 2);
+assert.strictEqual(restoredFind.scheduleAware, true);
 assert.strictEqual(restoredFind.maxPlatinum, 3);
 assert.strictEqual(restoredFind.maxLegendTicket, 1);
 assert.deepStrictEqual(restoredFind.targets, find.targets);
@@ -88,6 +90,11 @@ assert.deepStrictEqual(codec.decode(legacyToken), payload,
 const legacyPayload = codec.makePayload(track, find, 93, track.formIndex);
 assert.strictEqual(codec.planState(codec.decode(codec.encode(legacyPayload))), null,
   "links without a plan remain valid and do not invent plan state");
+
+const legacyFindPayload = JSON.parse(JSON.stringify(payload));
+legacyFindPayload.f = legacyFindPayload.f.slice(0, 5);
+assert.strictEqual(codec.findSettings(legacyFindPayload).scheduleAware, false,
+  "older shared Find settings default schedule ordering to off");
 
 assert.strictEqual(codec.decode("not!base64"), null);
 assert.strictEqual(codec.fromHash("#unrelated=value"), null);

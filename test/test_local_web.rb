@@ -121,6 +121,9 @@ describe 'local web features' do
     expect(payload.dig('regions', 'kr', 'series_names', '6')).
       eq '초고대 전설의 용사 울트라 소울즈'
     expect(named_event.key?('series_name')).eq false
+    event_info = BattleCatsRolls::Route.ball_kr.events[event['event']]
+    expect(event['start_on']).eq event_info['start_on'].to_s
+    expect(event['end_on']).eq event_info['end_on'].to_s
 
     find_cats = payload['find_cats']
     expect(find_cats.empty?).eq false
@@ -221,6 +224,12 @@ describe 'local web features' do
     expect(recent_seeds.include?('MultiPlanApp.openInfo()')).eq true
     expect(multi_find.include?('getDestination: function')).eq true
     expect(multi_find.include?('getShareSettings: function')).eq true
+    expect(multi_find.include?('scheduleAware: settings.scheduleAware')).eq true
+    expect(multi_find.include?('els.schedule.addEventListener("click"')).eq true
+    expect(multi_find_css.include?('.multi-find-schedule.is-active')).eq true
+    expect(multi_view.include?('id="multi_find_schedule"')).eq true
+    expect(multi_view.include?('배너 일정 순서 고려')).eq true
+    expect(multi_view.include?('미래 배너를 사용한 뒤에는 이미 종료된 이전 배너로 돌아갈 수 없습니다')).eq true
     expect(multi_find.include?('decorateRouteMarks: function')).eq true
     expect(multi_find.include?('els.targets.addEventListener("click", openFilterDialog)')).eq true
     expect(multi_find.include?('els.reset.addEventListener("click", resetTargets)')).eq true

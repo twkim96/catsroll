@@ -156,6 +156,50 @@ result = search({
 assert.strictEqual(result.status, "impossible",
   "a duplicated rare target is not credited when the actual result rerolls away");
 
+const earlySchedulePool = pool({
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [], 4: [100, 900], 5: []}
+});
+const lateSchedulePool = pool({
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [], 4: [901, 200], 5: []}
+});
+function scheduleSearch(scheduleAware, earlyEnd) {
+  return search({
+    seed: 4,
+    count: 2,
+    optimization: "distance",
+    maxPlatinum: 0,
+    maxLegendTicket: 0,
+    maxGuaranteed: 0,
+    scheduleAware: scheduleAware,
+    events: [
+      {lang: "kr", event: "early", label: "Early",
+        start_on: "2026-09-14", end_on: earlyEnd, pool: earlySchedulePool},
+      {lang: "kr", event: "late", label: "Late",
+        start_on: "2026-09-18", end_on: "2026-09-22", pool: lateSchedulePool}
+    ],
+    ticket: null,
+    targets: [
+      {cat_id: 100, allow_ticket: false},
+      {cat_id: 200, allow_ticket: false}
+    ]
+  });
+}
+result = scheduleSearch(false, "2026-09-18");
+assert.strictEqual(result.status, "success");
+assert.deepStrictEqual(result.actions.map((action) => action.event), ["late", "early"],
+  "free schedule search may look at future and earlier banners in either order");
+result = scheduleSearch(true, "2026-09-18");
+assert.strictEqual(result.status, "impossible",
+  "same-day end/start boundaries do not overlap in sequential schedule mode");
+result = scheduleSearch(true, "2026-09-19");
+assert.strictEqual(result.status, "success");
+assert.deepStrictEqual(result.actions.map((action) => action.event), ["late", "early"],
+  "banners with at least one real overlapping date may still be mixed");
+
 const eventLater = pool({
   rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
   guaranteedRolls: 0,
