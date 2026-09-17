@@ -91,6 +91,12 @@ const legacyPayload = codec.makePayload(track, find, 93, track.formIndex);
 assert.strictEqual(codec.planState(codec.decode(codec.encode(legacyPayload))), null,
   "links without a plan remain valid and do not invent plan state");
 
+const paretoPayload = codec.makePayload(track,
+  Object.assign({}, find, {optimization: "pareto"}), 93, track.formIndex);
+assert.strictEqual(codec.findSettings(
+  codec.decode(codec.encode(paretoPayload))).optimization, "pareto",
+"pareto optimization survives share round trips");
+
 const legacyFindPayload = JSON.parse(JSON.stringify(payload));
 legacyFindPayload.f = legacyFindPayload.f.slice(0, 5);
 assert.strictEqual(codec.findSettings(legacyFindPayload).scheduleAware, false,

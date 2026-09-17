@@ -390,6 +390,67 @@ assert.strictEqual(result.rawCost, -0.12);
 assert.strictEqual(result.cost, 0,
   "balanced score is floored at zero to avoid farming negative cost");
 
+const paretoTargetPool = pool({
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [], 4: [500], 5: []}
+});
+const paretoHarvestPool = pool({
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [], 4: [900], 5: []}
+});
+result = search({
+  count: 20,
+  optimization: "pareto",
+  maxPlatinum: 0,
+  maxLegendTicket: 0,
+  maxGuaranteed: 0,
+  events: [
+    {lang: "kr", event: "target", label: "Target", pool: paretoTargetPool},
+    {lang: "kr", event: "harvest", label: "Harvest", pool: paretoHarvestPool}
+  ],
+  ticket: null,
+  targets: [{cat_id: 500, allow_ticket: false}]
+});
+assert.strictEqual(result.status, "success");
+assert.strictEqual(result.optimization, "pareto");
+assert.strictEqual(result.paretoBaseCost, 0.02);
+assert.strictEqual(result.paretoAllowance, 0.2);
+assert.strictEqual(result.paretoBudget, 0.22);
+assert.strictEqual(result.cost, 0.22);
+assert.strictEqual(result.harvestDraws, 10,
+  "pareto spends only its allowed budget to maximize non-target high-rarity pulls");
+assert.strictEqual(result.actions[result.actions.length - 1].catId, 500,
+  "the target pull completes the route and is excluded from harvest scoring");
+assert.strictEqual(result.actions.filter((action) => action.harvestDraws).length, 10);
+
+const paretoLegendTarget = pool({
+  platinum: "legend",
+  rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [], 3: [], 4: [501], 5: []}
+});
+result = search({
+  count: 30,
+  optimization: "pareto",
+  maxPlatinum: 0,
+  maxLegendTicket: 1,
+  maxGuaranteed: 0,
+  events: [{lang: "kr", event: "harvest", label: "Harvest",
+    pool: paretoHarvestPool}],
+  tickets: [{event: "legend-target", label: "Legend target", kind: "legend",
+    pool: paretoLegendTarget}],
+  targets: [{cat_id: 501, allow_ticket: true}]
+});
+assert.strictEqual(result.status, "success");
+assert.strictEqual(result.paretoBaseCost, 2);
+assert.strictEqual(result.paretoAllowance, 0.3,
+  "pareto uses 15% once it exceeds the 0.2 minimum allowance");
+assert.strictEqual(result.paretoBudget, 2.3);
+assert.strictEqual(result.cost, 2.3);
+assert.strictEqual(result.harvestDraws, 15);
+
 const duplicateRarePool = pool({
   rates: {rare: 10000, supa: 0, uber: 0, legend: 0},
   guaranteedRolls: 0,

@@ -76,8 +76,10 @@ describe 'local web features' do
     expect(response.body.include?('value="cost" selected>최소코스트')).eq true
     expect(response.body.include?('value="distance">최단거리')).eq true
     expect(response.body.include?('value="balance">탐욕')).eq true
+    expect(response.body.include?('value="pareto">파레토')).eq true
     expect(response.body.include?('울슈레와 레전드레어마다')).eq true
     expect(response.body.include?('각각 0.14점을 빼서')).eq true
+    expect(response.body.include?('max(0.2, 최소코스트 × 15%)')).eq true
     expect(response.body.include?('id="multi_find_title"')).eq false
     expect(response.body.include?('id="multi_find_targets" type="text" readonly')).eq true
     expect(response.body.include?('aria-label="선택한 캐릭터 필터 열기"')).eq true
@@ -244,6 +246,8 @@ describe 'local web features' do
     expect(multi_find.include?('회 × 1 = 기본 코스트 ')).eq true
     expect(multi_find.include?('= 탐욕 코스트 ')).eq true
     expect(multi_find.include?("'회 × 0.14 = 탐욕 코스트 '")).eq true
+    expect(multi_find.include?('result.optimization === "pareto"')).eq true
+    expect(multi_find.include?('목표 외 울슈레·레전드레어')).eq true
     expect(multi_find_css.include?('.multi-find-result > summary::before')).eq true
     expect(multi_find_css.include?('.multi-find-result[open] > summary::before')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
