@@ -291,6 +291,7 @@ Build BCKR data:
 * forgothowtoreddid (@reddid)
 * Lin Jen-Shin (@godfat)
 * MandarinSmell
+* N-olla
 * ThanksFëanor
 * @VampireFlower
 * yuki2nd
