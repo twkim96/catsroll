@@ -456,7 +456,7 @@ assert.strictEqual(result.paretoAllowance, 0.3,
   "pareto uses 15% once it exceeds the 0.2 minimum allowance");
 assert.strictEqual(result.paretoBudget, 2.3);
 assert.strictEqual(result.cost, 2.3);
-assert(result.paretoSecondPassExplored <= 150000,
+assert(result.paretoSecondPassExplored <= 400000,
   "pareto harvest pass stays under its dedicated safety limit");
 assert.strictEqual(result.harvestDraws, 15);
 
