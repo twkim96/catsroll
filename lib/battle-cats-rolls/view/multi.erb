@@ -47,6 +47,13 @@
   <section id="multi_find_panel" class="multi-find-panel"
     aria-label="경로 검색 설정">
     <div class="multi-find-controls">
+      <button id="multi_find_schedule" class="multi-find-schedule" type="button"
+        aria-pressed="false" aria-label="배너 일정 순서 고려"
+        title="배너 일정 순서 고려: 켜면 선택한 배너의 실제 기간 순서대로만 검색하며, 미래 배너를 사용한 뒤 종료된 이전 배너로 돌아가지 않습니다.">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+          <path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2zm13 8H4v10h16V10zM4 8h16V6H4v2zm3 5h5v2H7v-2zm7 0h3v2h-3v-2zm-7 4h3v2H7v-2z"></path>
+        </svg>
+      </button>
       <button id="multi_find_filter" class="multi-find-filter" type="button"
         aria-haspopup="dialog" aria-controls="multi_find_dialog"
         aria-label="목표 캐릭터 선택">
@@ -67,13 +74,6 @@
         <span>확뽑 최대</span>
         <input id="multi_find_max_guaranteed" type="number" min="0" max="20" value="0">
       </label>
-      <button id="multi_find_schedule" class="multi-find-schedule" type="button"
-        aria-pressed="false" aria-label="배너 일정 순서 고려"
-        title="배너 일정 순서 고려: 켜면 선택한 배너의 실제 기간 순서대로만 검색하며, 미래 배너를 사용한 뒤 종료된 이전 배너로 돌아가지 않습니다.">
-        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
-          <path d="M7 2h2v2h6V2h2v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3V2zm13 8H4v10h16V10zM4 8h16V6H4v2zm3 5h5v2H7v-2zm7 0h3v2h-3v-2zm-7 4h3v2H7v-2z"></path>
-        </svg>
-      </button>
       <label>
         <span>플래티넘 최대</span>
         <input id="multi_find_max_platinum" type="number" min="0" max="99" value="0">

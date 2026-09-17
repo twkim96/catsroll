@@ -15,7 +15,7 @@
 
 .multi-find-controls {
   display: grid;
-  grid-template-columns: 2.2rem 7.2rem 5.2rem 2.2rem 5.2rem 5.8rem minmax(18rem, 1fr) 2.1rem 2.1rem;
+  grid-template-columns: 2.2rem 2.2rem 7.2rem 5.2rem 5.2rem 5.8rem minmax(18rem, 1fr) 2.1rem 2.1rem;
   gap: .65rem;
   align-items: end;
 }
