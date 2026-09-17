@@ -225,6 +225,8 @@ describe 'local web features' do
     expect(multi_find.include?('getDestination: function')).eq true
     expect(multi_find.include?('getShareSettings: function')).eq true
     expect(multi_find.include?('scheduleAware: settings.scheduleAware')).eq true
+    expect(multi_find.include?('routeScheduleValid')).eq true
+    expect(multi_find.include?('scheduleStartDay')).eq true
     expect(multi_find.include?('els.schedule.addEventListener("click"')).eq true
     expect(multi_find_css.include?('.multi-find-schedule.is-active')).eq true
     expect(multi_view.include?('id="multi_find_schedule"')).eq true

@@ -199,6 +199,24 @@ result = scheduleSearch(true, "2026-09-19");
 assert.strictEqual(result.status, "success");
 assert.deepStrictEqual(result.actions.map((action) => action.event), ["late", "early"],
   "banners with at least one real overlapping date may still be mixed");
+assert(result.actions.every((action) => action.scheduleDay != null &&
+  action.scheduleStartDay != null && action.scheduleEndDay != null),
+"schedule-aware actions carry their resolved day and banner window for route drawing");
+result = search({
+  seed: 4,
+  count: 2,
+  optimization: "distance",
+  maxPlatinum: 0,
+  maxLegendTicket: 0,
+  maxGuaranteed: 0,
+  scheduleAware: true,
+  events: [{lang: "kr", event: "undated", label: "Undated",
+    pool: earlySchedulePool}],
+  ticket: null,
+  targets: [{cat_id: 100, allow_ticket: false}]
+});
+assert.strictEqual(result.status, "impossible",
+  "schedule-aware search fails closed when a banner has no usable date window");
 
 const eventLater = pool({
   rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
