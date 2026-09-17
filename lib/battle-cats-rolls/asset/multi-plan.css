@@ -453,6 +453,10 @@
   background: #173f69;
 }
 
+.multi-plan-cat-tag.is-rare::before {
+  background: #8a8a8a;
+}
+
 .multi-plan-cat-tag.is-missing-target {
   border-color: #e2aaa6;
   background: #fff7f6;

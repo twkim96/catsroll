@@ -94,9 +94,11 @@ assert.strictEqual(plans.summarizeCats([
 assert.strictEqual(plans.summarizeCats([
   { id: 101, name: "가시루가", rarity: 4 },
   { id: 303, name: "한정 슈퍼레어", rarity: 3 },
-  { id: 304, name: "정규 슈퍼레어", rarity: 3 }
-], [303]), "가시루가, 한정 슈퍼레어",
-"only Find-eligible non-regular super rares join the plan summary");
+  { id: 304, name: "정규 슈퍼레어", rarity: 3 },
+  { id: 401, name: "한정 레어", rarity: 2 },
+  { id: 402, name: "정규 레어", rarity: 2 }
+], [303], [401]), "가시루가, 한정 슈퍼레어, 한정 레어",
+"only Find-eligible non-regular rare and super rare cats join the plan summary");
 assert.deepStrictEqual(plans.catSummaryEntries([
   { id: 101, name: "가시루가", rarity: 4 },
   { id: 101, name: "가시루가", rarity: 4, guaranteed: true },
@@ -113,13 +115,15 @@ assert.deepStrictEqual(plans.missingTargetCats([
   { id: 101, name: "가시루가", rarity: 4 },
   { id: 102, name: "바라라가", rarity: 4 },
   { id: 202, name: "레전드 냥코", rarity: 5 },
+  { id: 401, name: "한정 레어", rarity: 2 },
   { id: 303, name: "중복 목표", rarity: 3 }
 ], [
   { id: 101, name: "가시루가", rarity: 4, count: 1 }
 ]), [
   { id: 202, name: "레전드 냥코", rarity: 5 },
   { id: 102, name: "바라라가", rarity: 4 },
-  { id: 303, name: "한정 슈퍼레어", rarity: 3 }
+  { id: 303, name: "한정 슈퍼레어", rarity: 3 },
+  { id: 401, name: "한정 레어", rarity: 2 }
 ], "unacquired Find targets stay in one section sorted by rarity then name");
 
 assert.deepStrictEqual(plans.routeDecorationState({

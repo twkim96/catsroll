@@ -119,6 +119,43 @@ result = search({
 });
 assert.strictEqual(result.status, "impossible");
 
+const limitedRare = pool({
+  rates: {rare: 10000, supa: 0, uber: 0, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [777], 3: [], 4: [], 5: []}
+});
+result = search({
+  maxPlatinum: 0,
+  events: [{lang: "kr", event: "rare", label: "Rare", pool: limitedRare}],
+  ticket: null,
+  targets: [{cat_id: 777, allow_ticket: false}]
+});
+assert.strictEqual(result.status, "success",
+  "non-regular rare targets pass preflight and can be found");
+assert.strictEqual(result.actions[0].catId, 777);
+assert.strictEqual(result.actions[0].rarity, FindEngine.RARE);
+
+const rerolledRare = pool({
+  rates: {rare: 10000, supa: 0, uber: 0, legend: 0},
+  guaranteedRolls: 0,
+  slots: {2: [1, 2], 3: [], 4: [], 5: []}
+});
+const rerolledTarget = FindEngine.simulateRegular(rerolledRare, 2, 0, 1, 0);
+assert.strictEqual(rerolledTarget.originalId, 1);
+assert.strictEqual(rerolledTarget.id, 2);
+assert.strictEqual(rerolledTarget.rerolled, true);
+result = search({
+  seed: 2,
+  count: 1,
+  last: 1,
+  maxPlatinum: 0,
+  events: [{lang: "kr", event: "rare-r", label: "Rare R", pool: rerolledRare}],
+  ticket: null,
+  targets: [{cat_id: 1, allow_ticket: false}]
+});
+assert.strictEqual(result.status, "impossible",
+  "a duplicated rare target is not credited when the actual result rerolls away");
+
 const eventLater = pool({
   rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
   guaranteedRolls: 0,

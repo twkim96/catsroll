@@ -29,9 +29,13 @@ module BattleCatsRolls
       'kr' => 'KR',
       'jp' => 'JP'
     }.freeze
-    # Cat metadata only exposes rarity. Keep the regular rare-capsule Super
-    # Rare roster by stable unit ID so limited/collaboration Super Rares remain
+    # Cat metadata only exposes rarity. Keep the regular rare-capsule Rare and
+    # Super Rare rosters by stable unit ID so limited/collaboration units remain
     # available as Find targets.
+    RegularRareCatIds = [
+      38, 39, 42, 47, 48, 49, 50, 51, 52, 53, 56, 57, 59,
+      146, 147, 148, 149, 150, 198, 199, 309, 326, 377, 496, 524
+    ].freeze
     RegularSupaCatIds = [
       31, 32, 33, 34, 36, 37, 40, 41, 62,
       151, 152, 153, 154, 200, 308, 378, 523
@@ -288,7 +292,8 @@ module BattleCatsRolls
         kr_info = balls['kr'].cats[id]
         jp_info = balls['jp'].cats[id]
         rarity = kr_info&.dig('rarity') || jp_info&.dig('rarity')
-        next unless [Cat::Supa, Cat::Uber, Cat::Legend].include?(rarity)
+        next unless [Cat::Rare, Cat::Supa, Cat::Uber, Cat::Legend].include?(rarity)
+        next if rarity == Cat::Rare && RegularRareCatIds.include?(id)
         next if rarity == Cat::Supa && RegularSupaCatIds.include?(id)
 
         kr = pick_cat_name(kr_info, name_index)

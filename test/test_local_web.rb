@@ -124,10 +124,12 @@ describe 'local web features' do
 
     find_cats = payload['find_cats']
     expect(find_cats.empty?).eq false
-    expect(find_cats.all?{ |cat| [3, 4, 5].include?(cat['rarity']) }).eq true
+    expect(find_cats.all?{ |cat| [2, 3, 4, 5].include?(cat['rarity']) }).eq true
     expect(find_cats.none? do |cat|
-      BattleCatsRolls::TrackApi::RegularSupaCatIds.include?(cat['id'])
+      BattleCatsRolls::TrackApi::RegularRareCatIds.include?(cat['id']) ||
+        BattleCatsRolls::TrackApi::RegularSupaCatIds.include?(cat['id'])
     end).eq true
+    expect(find_cats.find{ |cat| cat['id'] == 111 }['name']).eq '세레스'
     expect(find_cats.find{ |cat| cat['id'] == 132 }['name']).eq '귀요미'
     expect(find_cats.find{ |cat| cat['id'] == 564 }['name']).eq '아쿠아슈터 사키'
 
@@ -279,6 +281,7 @@ describe 'local web features' do
     expect(multi_plan.include?('multi_plan_info_status')).eq true
     expect(multi_plan.include?('getTargetIds')).eq true
     expect(multi_find.include?('getTargetCats: function')).eq true
+    expect(multi_plan.include?('getNonRegularRareIds')).eq true
     expect(multi_plan.include?('getNonRegularSuperRareIds')).eq true
     expect(multi_plan.include?('missingTargetCats')).eq true
     expect(multi_plan.include?('못 먹은 목표')).eq true
@@ -287,6 +290,7 @@ describe 'local web features' do
     expect(multi_plan.include?('multi-plan-route-badge is-selected')).eq true
     expect(multi_plan.include?('planLogEntries')).eq true
     expect(multi_plan.include?('openSelectedCatsDialog')).eq true
+    expect(multi_plan_css.include?('.multi-plan-cat-tag.is-rare')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-supa')).eq true
     expect(multi_plan_css.include?('.multi-plan-cat-tag.is-missing-target')).eq true
     expect(multi_plan_css.include?('.multi-plan-log summary')).eq true
