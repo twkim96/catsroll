@@ -240,6 +240,8 @@ describe 'local web features' do
     expect(multi_find_css.include?('.multi-find-inline-apply')).eq true
     expect(multi_find.include?('resultContent: doc.getElementById')).eq true
     expect(multi_find.include?('showResult("완료"')).eq true
+    expect(multi_find.include?('회 × 1 = 기본 코스트 ')).eq true
+    expect(multi_find.include?('= 탐욕 코스트 ')).eq true
     expect(multi_find_css.include?('.multi-find-result > summary::before')).eq true
     expect(multi_find_css.include?('.multi-find-result[open] > summary::before')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true
