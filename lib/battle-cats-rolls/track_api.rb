@@ -251,7 +251,9 @@ module BattleCatsRolls
                 event: event[:event],
                 label: event[:label],
                 group: event[:group],
-                series_id: event[:series_id]
+                series_id: event[:series_id],
+                start_on: event[:start_on],
+                end_on: event[:end_on]
               }
               item[:pool] = pool_data_for(ball, event[:event]) if event[:preload]
               item
