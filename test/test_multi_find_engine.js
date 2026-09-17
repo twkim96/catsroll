@@ -384,7 +384,9 @@ result = search({
 });
 assert.strictEqual(result.status, "success");
 assert.strictEqual(result.legendDraws, 1);
-assert.strictEqual(result.rawCost, -1.98);
+assert.strictEqual(result.balanceCredit, 0.14,
+  "legend rares use the same greedy credit as ubers");
+assert.strictEqual(result.rawCost, -0.12);
 assert.strictEqual(result.cost, 0,
   "balanced score is floored at zero to avoid farming negative cost");
 
