@@ -34,7 +34,13 @@
 
 ## Features and utilities
 
+* Add text to the menu icons
+* What if we add /tracks and make /help the landing page?
+* A workflow guide for advanced usages with the golden cat CPU icon
+  * Utilizing multiple tabs with anchored positions
+* Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
+* Add a table of contents to the help page
 * Finishing the help page
 * Refactor `lib/battle-cats-rolls/help.rb`. It's a mess! Need DSL.
 * Add a dropdown menu for filtering events based on series id
@@ -46,6 +52,18 @@
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Normal gacha banners and tracks. Possibly with a new menu item
+
+## Onboarding seeking seeds
+
+* Use a checkbox to indicate if the user did 11-rolls with a guaranteed uber
+  or not, so we could just show the 2nd link or 3rd link. Possibly only show
+  this checkbox if the selected event is a guaranteed event.
+* For the 1st link with the starting seed, we could highlight the path for
+  the user input so it's visually clear that which were the cats they just
+  rolled and also promote the highlighting feature. This has to follow the
+  guaranteed or not checkbox.
+* We can consider showing only the starting seed with highlighted guaranteed
+  uber if it's fully accurate, forcing the user to try advancing their tracks.
 
 ## Architecture
 
