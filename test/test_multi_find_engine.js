@@ -419,6 +419,13 @@ assert.strictEqual(result.paretoBaseCost, 0.02);
 assert.strictEqual(result.paretoAllowance, 0.2);
 assert.strictEqual(result.paretoBudget, 0.22);
 assert.strictEqual(result.cost, 0.22);
+assert(result.paretoFirstPassExplored > 0,
+  "pareto first computes the minimum-cost baseline");
+assert(result.paretoSecondPassExplored > 0,
+  "pareto then runs a budget-constrained harvest pass");
+assert.strictEqual(result.explored,
+  result.paretoFirstPassExplored + result.paretoSecondPassExplored,
+  "pareto reports the combined work of both passes");
 assert.strictEqual(result.harvestDraws, 10,
   "pareto spends only its allowed budget to maximize non-target high-rarity pulls");
 assert.strictEqual(result.actions[result.actions.length - 1].catId, 500,
@@ -449,6 +456,8 @@ assert.strictEqual(result.paretoAllowance, 0.3,
   "pareto uses 15% once it exceeds the 0.2 minimum allowance");
 assert.strictEqual(result.paretoBudget, 2.3);
 assert.strictEqual(result.cost, 2.3);
+assert(result.paretoSecondPassExplored <= 150000,
+  "pareto harvest pass stays under its dedicated safety limit");
 assert.strictEqual(result.harvestDraws, 15);
 
 const duplicateRarePool = pool({
