@@ -380,6 +380,15 @@
   background: #fff7f6;
 }
 
+.multi-find-result.is-partial .multi-find-result-content {
+  border-color: #d8bd7a;
+  background: #fffaf0;
+}
+
+.multi-find-partial-note {
+  margin: 0 0 .55rem;
+}
+
 .multi-find-result-heading {
   display: flex;
   align-items: center;

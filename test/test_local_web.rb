@@ -249,6 +249,9 @@ describe 'local web features' do
     expect(multi_find.include?("'회 × 0.14 = 탐욕 코스트 '")).eq true
     expect(multi_find.include?('result.optimization === "pareto"')).eq true
     expect(multi_find.include?('목표 외 울슈레·레전드레어')).eq true
+    expect(multi_find.include?('result.status === "partial"')).eq true
+    expect(multi_find.include?('최적성 미확인')).eq true
+    expect(multi_find_css.include?('.multi-find-result.is-partial')).eq true
     expect(multi_find_css.include?('.multi-find-result > summary::before')).eq true
     expect(multi_find_css.include?('.multi-find-result[open] > summary::before')).eq true
     expect(multi_find.include?('"확뽑 후 도착 · " + action.next')).eq true

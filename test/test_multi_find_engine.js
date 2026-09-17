@@ -507,6 +507,8 @@ assert.strictEqual(result.paretoBaseCost, 0.02);
 assert.strictEqual(result.paretoAllowance, 0.2);
 assert.strictEqual(result.paretoBudget, 0.22);
 assert.strictEqual(result.cost, 0.22);
+assert(result.paretoPrunedTargetCost > 0,
+  "pareto prunes states that cannot finish remaining targets within budget");
 assert(result.paretoFirstPassExplored > 0,
   "pareto first computes the minimum-cost baseline");
 assert(result.paretoSecondPassExplored > 0,
@@ -544,9 +546,57 @@ assert.strictEqual(result.paretoAllowance, 0.3,
   "pareto uses 15% once it exceeds the 0.2 minimum allowance");
 assert.strictEqual(result.paretoBudget, 2.3);
 assert.strictEqual(result.cost, 2.3);
+assert(result.paretoPrunedTargetCost > 0,
+  "ticket-only targets reserve their minimum special-ticket cost in the lower bound");
 assert(result.paretoSecondPassExplored <= 400000,
   "pareto harvest pass stays under its dedicated safety limit");
 assert.strictEqual(result.harvestDraws, 15);
+
+const partialParetoEvents = [];
+const partialParetoTargets = [];
+for (let index = 0; index < 7; index += 1) {
+  const targetId = 600 + index;
+  const harvestId = 700 + index;
+  partialParetoEvents.push({
+    lang: "kr",
+    event: "partial-target-" + index,
+    label: "Partial target " + index,
+    pool: pool({
+      rates: {rare: 0, supa: 10000, uber: 0, legend: 0},
+      guaranteedRolls: 0,
+      slots: {2: [], 3: [targetId], 4: [], 5: []}
+    })
+  });
+  partialParetoEvents.push({
+    lang: "kr",
+    event: "partial-harvest-" + index,
+    label: "Partial harvest " + index,
+    pool: pool({
+      rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
+      guaranteedRolls: 0,
+      slots: {2: [], 3: [], 4: [harvestId], 5: []}
+    })
+  });
+  partialParetoTargets.push({cat_id: targetId, allow_ticket: false});
+}
+result = search({
+  seed: 5,
+  count: 35,
+  optimization: "pareto",
+  stateLimit: 1000,
+  maxPlatinum: 0,
+  maxLegendTicket: 0,
+  maxGuaranteed: 0,
+  events: partialParetoEvents,
+  tickets: [],
+  targets: partialParetoTargets
+});
+assert.strictEqual(result.status, "partial",
+  "pareto returns the best completed route found before the state limit");
+assert.strictEqual(result.targetAcquired, result.targetTotal);
+assert(result.actions.length > 0);
+assert(result.message.includes("최적성은 보장되지 않습니다"));
+assert(result.paretoSecondPassExplored >= 1000);
 
 const duplicateRarePool = pool({
   rates: {rare: 10000, supa: 0, uber: 0, legend: 0},
