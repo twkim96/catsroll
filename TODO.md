@@ -45,7 +45,6 @@
   and https://ampuri.github.io/godfat-multi/
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
-* Tracking history (by recording rolls we click)
 * Normal gacha banners and tracks. Possibly with a new menu item
 
 ## Architecture
