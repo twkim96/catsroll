@@ -74,6 +74,8 @@ describe 'local web features' do
       response.body.index('id="multi_plan_save"'))
     expect(response.body.include?('검색 기준 안내')).eq true
     expect(response.body.include?('value="cost" selected>최소코스트')).eq true
+    expect(response.body.include?('value="cost40">최소코스트(40)')).eq true
+    expect(response.body.include?('value="cost50">최소코스트(50)')).eq true
     expect(response.body.include?('value="distance">최단거리')).eq true
     expect(response.body.include?('value="balance">탐욕')).eq true
     expect(response.body.include?('value="pareto">파레토')).eq true
@@ -81,6 +83,8 @@ describe 'local web features' do
     expect(response.body.include?('각각 0.14점을 빼서')).eq true
     expect(response.body.include?('탐욕 코스트는 0점 아래로 내려가지 않으므로')).eq true
     expect(response.body.include?('max(0.2, 최소코스트 × 15%)')).eq true
+    expect(response.body.include?('레어티켓 1회를 0.027점으로 계산')).eq true
+    expect(response.body.include?('레어티켓 1회를 0.033점으로 계산')).eq true
     expect(response.body.include?('id="multi_find_title"')).eq false
     expect(response.body.include?('id="multi_find_targets" type="text" readonly')).eq true
     expect(response.body.include?('aria-label="선택한 캐릭터 필터 열기"')).eq true

@@ -260,6 +260,33 @@ assert.strictEqual(result.ticketUses, 0);
 assert.strictEqual(result.regularUses, 2);
 assert.strictEqual(result.cost, 0.04,
   "minimum-cost mode prefers a farther event result over platinum");
+assert.strictEqual(result.regularUnitCost, 0.02);
+
+result = search({
+  seed: closerSeed,
+  optimization: "cost40",
+  events: [{lang: "kr", event: "later", label: "Later", pool: eventLater}],
+  ticket: {event: "ticket", label: "Ticket", pool: ticketNow},
+  targets: [{cat_id: 200, allow_ticket: true}]
+});
+assert.strictEqual(result.status, "success");
+assert.strictEqual(result.regularUses, 2);
+assert.strictEqual(result.regularUnitCost, 0.027);
+assert.strictEqual(result.cost, 0.054,
+  "minimum-cost(40) values each rare ticket at 0.027");
+
+result = search({
+  seed: closerSeed,
+  optimization: "cost50",
+  events: [{lang: "kr", event: "later", label: "Later", pool: eventLater}],
+  ticket: {event: "ticket", label: "Ticket", pool: ticketNow},
+  targets: [{cat_id: 200, allow_ticket: true}]
+});
+assert.strictEqual(result.status, "success");
+assert.strictEqual(result.regularUses, 2);
+assert.strictEqual(result.regularUnitCost, 0.033);
+assert.strictEqual(result.cost, 0.066,
+  "minimum-cost(50) values each rare ticket at 0.033");
 
 result = search({
   seed: closerSeed,
@@ -720,7 +747,7 @@ function exhaustive(seed, count, last, optimization) {
         offset: rolled.nextOffset,
         last: rolled.lastRareId,
         mask: eventMask(state.mask, rolled.id),
-        costUnits: state.costUnits + 2,
+        costUnits: state.costUnits + 20,
         ticketUsed: state.ticketUsed
       });
     });
@@ -731,7 +758,7 @@ function exhaustive(seed, count, last, optimization) {
         offset: ticketRoll.nextOffset,
         last: 0,
         mask: ticketRoll.id === 100 ? state.mask | 1 : state.mask,
-        costUnits: state.costUnits + 100,
+        costUnits: state.costUnits + 1000,
         ticketUsed: state.ticketUsed + 1
       });
     }

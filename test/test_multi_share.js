@@ -95,7 +95,14 @@ const paretoPayload = codec.makePayload(track,
   Object.assign({}, find, {optimization: "pareto"}), 93, track.formIndex);
 assert.strictEqual(codec.findSettings(
   codec.decode(codec.encode(paretoPayload))).optimization, "pareto",
-"pareto optimization survives share round trips");
+  "pareto optimization survives share round trips");
+["cost40", "cost50"].forEach((optimization) => {
+  const costPayload = codec.makePayload(track,
+    Object.assign({}, find, {optimization}), 93, track.formIndex);
+  assert.strictEqual(codec.findSettings(
+    codec.decode(codec.encode(costPayload))).optimization, optimization,
+  `${optimization} survives share round trips`);
+});
 
 const legacyFindPayload = JSON.parse(JSON.stringify(payload));
 legacyFindPayload.f = legacyFindPayload.f.slice(0, 5);
