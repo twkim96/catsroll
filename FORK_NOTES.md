@@ -520,6 +520,9 @@ Performance notes:
 - It fetches event/pool data lazily for selected rows.
 - User edits should not call `renderTables()` until Apply.
 - Row height synchronization is done after render with `requestAnimationFrame`.
+- Resize-triggered row synchronization runs only when the table container width
+  changes. Mobile address-bar/keyboard height changes keep existing row heights,
+  while Safari virtual-window updates still respond to viewport changes.
 - Keeping input state in localStorage is negligible. The expensive part is table calculation, which still happens only after Apply or navigation/click actions.
 
 Conflict risk:
