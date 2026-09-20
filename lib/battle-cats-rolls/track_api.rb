@@ -213,14 +213,14 @@ module BattleCatsRolls
       {
         initial: {
           seed: route.seed,
-          count: [route.count, 500].min,
+          count: route.count,
           lang: initial_lang,
           event: route.event,
           name: route.name
         },
         limits: {
           rows: 8,
-          count: 500
+          count: TrackMaxCount
         },
         last_cats: multi_last_cats(route.name),
         find_cats: find_cats,

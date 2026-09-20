@@ -11,6 +11,25 @@ describe 'local web features' do
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
 
+  would 'preserve 999 rows and correct oversized counts in regular and multi tracks' do
+    [999, 1000, 9999].each do |count|
+      route = BattleCatsRolls::Route.new(BattleCatsRolls::Request.new(
+        'QUERY_STRING' => "lang=kr&count=#{count}"))
+      expect(route.count).eq 999
+      data = BattleCatsRolls::TrackApi.multi_data(route)
+      expect(data.dig(:initial, :count)).eq 999
+      expect(data.dig(:limits, :count)).eq 999
+    end
+    response = Rack::MockRequest.new(web).get('/?lang=kr&seed=12345&count=1000')
+    expect(response.status).eq 302
+    params = Rack::Utils.parse_query(URI(response['location']).query)
+    expect(params['count']).eq '999'
+    expect(params['seed']).eq '12345'
+    response = Rack::MockRequest.new(web).get('/multi?lang=kr&count=1000')
+    count_input = response.body[/<input id="multi_count"[^>]*>/]
+    expect(count_input.include?('max=')).eq false
+  end
+
   %w[/seed-views /multi].each do |path|
     would "respond 200 for #{path}" do
       response = Rack::MockRequest.new(web).get(path)

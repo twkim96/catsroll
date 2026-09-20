@@ -60,6 +60,21 @@ assert.deepStrictEqual(codec.fromHash("#share=" + token), payload,
   "share hash is decoded");
 
 const restoredTrack = codec.trackState(decoded);
+const fullTrack = Object.assign({}, track, { count: 999 });
+const fullPlan = { name: "999 rows", marks: [
+  { column: 0, position: "501A", kind: "regular" },
+  { column: 1, position: "999B", kind: "regular" }
+] };
+const fullShare = codec.decode(codec.encode(
+  codec.makePayload(fullTrack, find, 999, track.formIndex, fullPlan)));
+assert.strictEqual(codec.trackState(fullShare).count, 999,
+  "share round trip preserves all 999 rows");
+assert.deepStrictEqual(codec.planState(fullShare).marks, fullPlan.marks,
+  "share round trip preserves marks beyond the former 500-row limit");
+const oversizedShare = codec.makePayload(
+  Object.assign({}, track, { count: 1000 }), find, 1000, track.formIndex);
+assert.strictEqual(codec.trackState(oversizedShare).count, 999,
+  "oversized shared counts are corrected to 999");
 assert.strictEqual(restoredTrack.count, 93);
 assert.strictEqual(restoredTrack.formIndex, 2);
 assert.strictEqual(restoredTrack.rows[0].customName, "울하고축 한글 이름");

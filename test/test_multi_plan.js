@@ -44,6 +44,19 @@ assert(saved.plan, "a valid plan is saved");
 assert.strictEqual(saved.plan.id, "plan-fixed");
 assert.strictEqual(saved.plan.track.seed, 3671843074);
 assert.strictEqual(saved.plan.track.rows.length, 2);
+const longPlan = plans.upsertPlan(plans.emptyLibrary(), {
+  name: "999 rows",
+  track: Object.assign({}, track, { count: 1000 }),
+  marks: [
+    { column: 0, position: "501A" },
+    { column: 1, position: "999B" },
+    { column: 1, position: "1000A" }
+  ]
+}, null, "2026-09-20T00:00:00.000Z", "long-plan");
+assert.strictEqual(longPlan.plan.track.count, 999,
+  "saved counts over the maximum are corrected to 999");
+assert.deepStrictEqual(longPlan.plan.marks.map(mark => mark.position),
+  ["501A", "999B"], "saved plans keep valid marks through the last row");
 assert.deepStrictEqual(saved.plan.marks, [
   { column: 0, position: "2A", kind: "regular" },
   { column: 1, position: "20B", kind: "regular" }

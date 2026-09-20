@@ -34,7 +34,7 @@ Major files added or changed from upstream:
   - Used by the external control server button flow.
 - `Dockerfile`
   - Hugging Face oriented runtime setup.
-  - Sets `TRACK_MAX_COUNT=500`.
+  - Sets `TRACK_MAX_COUNT=999`.
   - Sets `EXPAND_COMPARE=0` so expanded comparison stays disabled by default.
 - `lib/battle-cats-rolls/asset/recent-seeds.js`
   - Client-side recent seed panel.
@@ -140,7 +140,9 @@ Relevant commits:
 
 Purpose:
 
-- `TRACK_MAX_COUNT` is set to `500` for Hugging Face free tier safety.
+- `TRACK_MAX_COUNT` is set to `999` for both regular and multi tracks.
+- Client rendering, saved plans, share links, and over-limit input correction
+  also use the 999-row limit.
 - Upstream default in `lib/battle-cats-rolls/root.rb` is still `999`.
 - The count input does not set a browser `max`; values above the cap submit
   normally and are clamped server-side.
@@ -463,7 +465,7 @@ Entry points:
 Current UI behavior:
 
 - Up to 5 comparison rows.
-- Up to 500 table rows.
+- Up to 999 table rows.
 - `/multi` uses a wider 1200px max-width so five comparison columns have more room on desktop.
 - Supported regions are Korean and Japanese only.
 - Event picker lists upcoming events first, then past events.
