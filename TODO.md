@@ -34,7 +34,6 @@
 
 ## Features and utilities
 
-* Add text to the menu icons
 * What if we add /tracks and make /help the landing page?
 * A workflow guide for advanced usages with the golden cat CPU icon
   * Utilizing multiple tabs with anchored positions
