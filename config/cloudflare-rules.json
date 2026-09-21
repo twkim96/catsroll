@@ -6,19 +6,19 @@
     "expression": "(cf.bot_management.verified_bot)",
     "ratelimit": {
       "characteristics": [
-        "ip.src"
+        "ip.src",
+        "cf.colo.id"
       ],
       "mitigation_timeout": 10,
       "period": 10,
-      "requests_per_period": 5,
-      "rate_exceeds": "request_base"
+      "requests_per_period": 5
     }
   },
   {
     "action": "block",
     "description": "AI Crawl Control - Block AI bots by User Agent",
     "enabled": true,
-    "expression": "(http.request.uri.path ne \"/robots.txt\" and ((http.user_agent contains \"meta-externalagent\") or (http.user_agent contains \"Applebot\")))",
+    "expression": "(http.request.uri.path ne \"/robots.txt\" and (http.user_agent contains \"meta-externalagent\"))",
     "position": {
       "index": 1
     }
