@@ -75,7 +75,7 @@ module BattleCatsRolls
     end
 
     def event_not_in_menu?
-      all_events[event].nil?
+      event != 'custom' && all_events[event].nil?
     end
 
     def event_missing_data?
