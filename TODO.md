@@ -34,15 +34,9 @@
 
 ## Features and utilities
 
-* Add text to the menu icons
 * What if we add /tracks and make /help the landing page?
-* A workflow guide for advanced usages with the golden cat CPU icon
-  * Utilizing multiple tabs with anchored positions
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
-* Add a table of contents to the help page
-* Finishing the help page
-* Refactor `lib/battle-cats-rolls/help.rb`. It's a mess! Need DSL.
 * Add a dropdown menu for filtering events based on series id
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
@@ -52,6 +46,14 @@
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Normal gacha banners and tracks. Possibly with a new menu item
+
+## Help pages
+
+* Add a table of contents to the help page
+* Reword `lib/battle-cats-rolls/view/table_notes.erb` accordingly
+* Refactor `lib/battle-cats-rolls/help.rb`. It's a mess! Need DSL.
+* A workflow guide for advanced usages with the golden cat CPU icon
+  * Utilizing multiple tabs with anchored positions
 
 ## Onboarding seeking seeds
 

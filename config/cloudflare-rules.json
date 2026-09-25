@@ -6,12 +6,12 @@
     "expression": "(cf.bot_management.verified_bot)",
     "ratelimit": {
       "characteristics": [
-        "ip.src"
+        "ip.src",
+        "cf.colo.id"
       ],
       "mitigation_timeout": 10,
       "period": 10,
-      "requests_per_period": 5,
-      "rate_exceeds": "request_base"
+      "requests_per_period": 5
     }
   },
   {
