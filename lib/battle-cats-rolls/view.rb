@@ -119,6 +119,10 @@ module BattleCatsRolls
       end
     end
 
+    def encoded_listed_cats
+      Owned.encode(arg[:cats].keys)
+    end
+
     def each_ab_cat
       arg[:cats].inject(nil) do |prev_b, ab|
         yield(prev_b, ab)
