@@ -11,7 +11,7 @@
 
 .multi-plan-controls {
   display: grid;
-  grid-template-columns: 4.8rem 5.5rem minmax(9rem, .75fr)
+  grid-template-columns: 4.8rem 5.5rem 5.5rem minmax(9rem, .75fr)
     minmax(16rem, 1.35fr) 4.4rem 4.35rem;
   gap: .42rem;
   align-items: end;
@@ -88,6 +88,19 @@
 .multi-plan-button.is-danger:focus-visible {
   color: #fff;
   filter: brightness(.94);
+}
+
+.multi-plan-button:disabled {
+  border-color: var(--multi-line);
+  background: var(--multi-soft);
+  color: var(--multi-line);
+  cursor: not-allowed;
+}
+
+.multi-plan-button[aria-pressed="true"] {
+  border-color: var(--multi-accent);
+  background: #eaf2fa;
+  color: var(--multi-accent);
 }
 
 .multi-plan-switch {
@@ -361,7 +374,7 @@
   box-sizing: border-box;
   max-height: min(62vh, 36rem);
   padding: .8rem;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: auto;
 }
 
@@ -402,10 +415,14 @@
 }
 
 .multi-plan-cats-tags {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  display: flex;
+  flex-wrap: nowrap;
   gap: .38rem;
   min-width: 0;
+  max-width: 100%;
+  padding-bottom: .18rem;
+  overflow-x: auto;
+  scrollbar-width: thin;
 }
 
 .multi-plan-cat-tag {
@@ -414,10 +431,11 @@
   align-items: center;
   gap: .35rem;
   box-sizing: border-box;
-  width: 100%;
-  min-width: 0;
+  flex: 0 0 min(12.5rem, 31vw);
+  width: min(12.5rem, 31vw);
+  min-width: 8.8rem;
   min-height: 1.85rem;
-  padding: .22rem .55rem .22rem .86rem;
+  padding: .22rem 1.1rem .22rem .86rem;
   overflow: hidden;
   border: 1px solid var(--multi-line);
   border-radius: 7px;
@@ -462,24 +480,49 @@
   background: #fff7f6;
 }
 
-.multi-plan-cat-count {
+.multi-plan-cat-target {
+  position: absolute;
+  top: .22rem;
+  right: .28rem;
+  bottom: .22rem;
+  width: 2px;
+  border-radius: 999px;
+  background: var(--multi-accent);
+}
+
+.multi-plan-cat-coordinates {
+  display: flex;
+  flex: 0 0 auto;
+  gap: .18rem;
+  max-width: 48%;
+  margin-left: auto;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.multi-plan-cat-coordinate,
+.multi-plan-route-coordinate {
+  display: inline-block;
+  flex: 0 0 auto;
+  padding: .08rem .24rem;
+  border: 1px solid #9dc5ee;
+  border-radius: 3px;
+  background: #eef6ff;
   color: var(--multi-accent);
-  font-size: .68rem;
+  font-size: .58rem;
   font-weight: 800;
+  line-height: 1.25;
+  text-decoration: none;
   white-space: nowrap;
 }
 
-.multi-plan-cat-target {
-  flex: 0 0 auto;
-  margin-left: auto;
-  padding: .08rem .3rem;
-  border-radius: 4px;
-  background: var(--multi-accent);
-  color: #fff;
-  font-size: .58rem;
-  font-weight: 800;
-  line-height: 1.35;
-  white-space: nowrap;
+.multi-plan-cat-coordinate:hover,
+.multi-plan-cat-coordinate:focus-visible,
+.multi-plan-route-coordinate:hover,
+.multi-plan-route-coordinate:focus-visible {
+  border-color: var(--multi-accent);
+  background: #dceeff;
+  outline: 0;
 }
 
 .multi-plan-cats-empty {

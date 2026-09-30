@@ -55,4 +55,19 @@ assert.strictEqual(catalog.matches(groups[4], groups[4].cats[0],
   "울소 가시루가"), true);
 assert.strictEqual(catalog.matches(groups[4], groups[4].cats[0], "플뽑"), false);
 
+const selectedTargets = [{cat_id: 2, allow_ticket: true},
+  {cat_id: 99, allow_ticket: false}];
+const bulk = catalog.updateGroupTargets(selectedTargets, groups[1].cats, true);
+assert.strictEqual(bulk.length, 6, "bulk selection adds every group member once");
+assert.strictEqual(bulk.find((target) => target.cat_id === 2).allow_ticket, true);
+assert.deepStrictEqual(catalog.updateGroupTargets(bulk, groups[1].cats, true), bulk,
+  "selecting overlapping groups is idempotent");
+assert.deepStrictEqual(catalog.updateGroupTargets(bulk, groups[1].cats, false),
+  [{cat_id: 99, allow_ticket: false}], "clear preserves targets outside the group");
+assert.deepStrictEqual(selectedTargets, [{cat_id: 2, allow_ticket: true},
+  {cat_id: 99, allow_ticket: false}], "bulk actions do not mutate previous targets");
+const bigGroup = Array.from({length: 76}, (_, i) => ({id: i + 1}));
+assert.strictEqual(catalog.updateGroupTargets([], bigGroup, true).length, 76,
+  "all collect never silently truncates large banners");
+
 console.log("multi-find-catalog: ok");

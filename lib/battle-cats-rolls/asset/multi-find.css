@@ -262,6 +262,50 @@
   content: "(";
 }
 
+.multi-find-series-actions {
+  display: flex;
+  align-items: center;
+  gap: .38rem;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.multi-find-series-all {
+  padding: .08rem .3rem;
+  border: 0;
+  border-radius: 4px;
+  background: #eaf2fa;
+  color: var(--multi-accent);
+  font-size: .66rem;
+  font-weight: 600;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.multi-find-series-reset {
+  display: flex;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--multi-muted);
+  cursor: pointer;
+}
+
+.multi-find-series-reset svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.multi-find-series-reset:disabled {
+  opacity: .35;
+  cursor: default;
+}
+
 .multi-find-series-count::after {
   content: ")";
 }
@@ -464,6 +508,18 @@
 
 .multi-find-route-position {
   font-weight: 750;
+}
+
+.multi-route-coordinate {
+  color: var(--multi-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.multi-route-coordinate:hover,
+.multi-route-coordinate:focus-visible {
+  color: #005bb8;
+  outline: 0;
 }
 
 .multi-find-route-target {

@@ -120,6 +120,12 @@ assert.strictEqual(codec.findSettings(
 });
 
 const legacyFindPayload = JSON.parse(JSON.stringify(payload));
+const allCollect = Array.from({length: 200}, (_, i) =>
+  ({cat_id: i + 1, allow_ticket: i % 2 === 0}));
+assert.deepStrictEqual(codec.findSettings(codec.decode(codec.encode(
+  codec.makePayload(track, Object.assign({}, find, {targets: allCollect}),
+    93, track.formIndex)))).targets, allCollect,
+  "all collect selections beyond 64 targets survive sharing");
 legacyFindPayload.f = legacyFindPayload.f.slice(0, 5);
 assert.strictEqual(codec.findSettings(legacyFindPayload).scheduleAware, false,
   "older shared Find settings default schedule ordering to off");
