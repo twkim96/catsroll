@@ -11,7 +11,7 @@
 
 .multi-plan-controls {
   display: grid;
-  grid-template-columns: max-content max-content 5.5rem minmax(9rem, .75fr)
+  grid-template-columns: max-content max-content max-content minmax(9rem, .75fr)
     minmax(16rem, 1.35fr) 4.4rem 4.35rem;
   gap: .42rem;
   align-items: end;
@@ -66,7 +66,7 @@
   line-height: 1.2;
 }
 
-.multi-plan-auto-draw {
+.multi-plan-action .multi-plan-button {
   justify-self: start;
   padding-inline: .4rem;
 }
