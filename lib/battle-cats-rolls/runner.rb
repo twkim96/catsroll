@@ -10,6 +10,9 @@ require_relative 'aws_cf'
 module BattleCatsRolls
   class Runner < Struct.new(:lang, :version, :apk_id)
     VersionNotFound = Class.new(RuntimeError)
+    DateNotFound = Class.new(RuntimeError)
+    EventsBuildingErrors = [Date::Error, DateNotFound].freeze
+    EventsNetworkErrors = [Errno::ECONNRESET, OpenSSL::SSL::SSLError].freeze
 
     def self.en
       @en ||= [
@@ -392,8 +395,8 @@ module BattleCatsRolls
 
     def last_date items
       items.sort_by{ |_, data| data['end_on'] }.
-        dig(-1, -1, 'end_on').
-        strftime('%Y%m%d')
+        dig(-1, -1, 'end_on')&.
+        strftime('%Y%m%d') || raise(DateNotFound)
     end
 
     def download_tsv_paths
