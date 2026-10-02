@@ -39,6 +39,7 @@ module BattleCatsRolls
         811, # "Agent Staal",
         838, # "Squire Luno",
         860, # "Lone Moon Lunos",
+        874, # "Metal Maiden Koneko",
       ].freeze
     end
 
