@@ -12,7 +12,10 @@ module BattleCatsRolls
     VersionNotFound = Class.new(RuntimeError)
     DateNotFound = Class.new(RuntimeError)
     EventsBuildingErrors = [Date::Error, DateNotFound].freeze
-    EventsNetworkErrors = [Errno::ECONNRESET, OpenSSL::SSL::SSLError].freeze
+    EventsNetworkErrors = [
+      Errno::EACCES, Errno::ECONNRESET,
+      SocketError, OpenSSL::SSL::SSLError
+    ].freeze
 
     def self.en
       @en ||= [
@@ -58,8 +61,6 @@ module BattleCatsRolls
       runner.write_events
       runner.write_data
       # runner.write_item_and_sale
-    rescue Errno::EACCES, SocketError => e
-      puts "! Ignore: #{e}"
     end
 
     def self.extract lang=nil, dir=nil
