@@ -4,6 +4,16 @@ const assert = require("assert");
 const engine = require("../lib/battle-cats-rolls/asset/multi-find-engine.js");
 const tracks = require("../lib/battle-cats-rolls/asset/track-engine.js").TrackEngine;
 const plans = require("../lib/battle-cats-rolls/asset/multi-plan.js");
+const fs = require("fs");
+const vm = require("vm");
+// Exercise the production display predicate with real tracks and transitions.
+const source = fs.readFileSync(require.resolve(
+  "../lib/battle-cats-rolls/asset/multi-track.js"), "utf8");
+const start = source.indexOf("  function conditionalEntries(");
+const end = source.indexOf("  function conditionalHtml(", start);
+assert(start >= 0 && end > start);
+const display = {};
+vm.runInNewContext(source.slice(start, end), display);
 // Public KR pools from 2026-09-28, reduced to simulation inputs.
 const fixture = require("./fixtures/multi-cross-banner.json");
 fixture.ready = true;
@@ -21,6 +31,34 @@ const baseline = tracks.buildTracks(pools[0], fixture.seed, {
 }).cats[1][0];
 assert.strictEqual(baseline.guaranteed.id, 368);
 assert(!baseline.rerolled, "the original single-banner table misses this branch");
+const visibleHidden = display.conditionalEntries(
+  {alternatives: alternatives[0]}, "2A", baseline);
+assert(visibleHidden.some((entry) => entry.kind === "guaranteed" &&
+  entry.variant === "rerolled" && entry.pull.id === 866),
+  "the real conditional RG result remains visible");
+assert(visibleHidden.some((entry) => entry.kind === "reroll"),
+  "the real conditional R result remains visible");
+
+// The user's 88-row example has no 89th-row objects, despite normal progression.
+// Showing one more row must not change which outcomes at 88A/88B are conditional.
+for (const count of [88, 89]) {
+  const options = {count, last: 0};
+  const boundary = engine.buildTrackAlternatives(pools, 647908447, options);
+  pools.forEach((pool, column) => {
+    const out = tracks.buildTracks(pool, 647908447, {
+      count, last: 0, guaranteedRolls: 11, guaranteed: true, findCat: true
+    });
+    [0, 1].forEach((track) => {
+      const position = "88" + (track ? "B" : "A");
+      const cat = out.cats[87][track];
+      assert.strictEqual(!!cat.next, count === 89);
+      const visible = display.conditionalEntries(
+        {alternatives: boundary[column]}, position, cat);
+      assert(!visible.some((entry) => entry.kind === "regular"),
+        `${position}, count=${count}: a missing next-row object is not an alternative`);
+    });
+  });
+}
 const alone = engine.buildTrackAlternatives([pools[0]], fixture.seed, fixture);
 assert(!alone[0]["2A"].some((entry) => entry.variant === "rerolled"),
   "unreachable predecessor states are not displayed");
