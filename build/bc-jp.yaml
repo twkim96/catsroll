@@ -1817,6 +1817,14 @@ cats:
         max_level: 10
         minmax: [[10, 100], [5, 5]]
         ultra: 1
+      savage_blow:
+        max_level: 10
+        minmax: [[2, 20], [200, 200]]
+        ultra: 1
+      increase_health_plus:
+        max_level: 10
+        minmax: [[10, 100]]
+        ultra: 1
   126:
     name: [武田信玄, 武神・武田信玄, 猛牛の武神・武田信玄]
     desc: ["伝説の武具「風林火にゃん」の呪いで\n圧倒的な超破壊力を身に付けた戦国武将\nしかし黒い敵とエイリアンにしか攻撃できない(範囲攻撃)\nタケダシンゲン", "伝説の武具「風林火にゃん」軍配モードで\nさらなる超破壊力を解放させた戦国武将\nしかし黒い敵とエイリアンにしか攻撃できない(範囲攻撃)\nブシンタケダシンゲン", "「風林火にゃん」の真の姿を解放した戦国武将\n本来の力を取り戻し、異次元の破壊力を見せつける\nしかし黒い敵とエイリアンにしか攻撃できない(範囲攻撃)\nモウギュウノブシンタケダシンゲン"]
@@ -3463,7 +3471,11 @@ cats:
         ultra: 1
       slow:
         max_level: 10
-        minmax: [[100, 100], [10, 30]]
+        minmax: [[100, 100], [24, 60]]
+        ultra: 1
+      reduce_production_cooldown_every_other:
+        max_level: 10
+        minmax: [[5, 50]]
         ultra: 1
   259:
     name: [守護神アヌビス, パーフェクトアヌビス, Ｇパーフェクトアヌビス]
@@ -5152,9 +5164,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   402:
-    name: [雷の精霊ボルト, 天雷の精霊ピカボルト, 天雷の精霊王ギガボルト]
-    desc: ["宇宙の果てからやって来た雷の精霊\n降り立った星に雷の源を宿すと言われている\nたまにエイリアンの動きを止める\nカミナリノセイレイボルト", "月を引き裂くほどの迅雷を操る精霊\n荒れ狂うイカヅチはバリアをも貫く力を持つ\nエイリアンに打たれ強く、動きを必ず止める\nテンライノセイレイピカボルト", "宇宙の果てまで照らす強大な力を持つ迅雷の精霊王\n宇宙を横断する雷光はバリアを貫く力を持ち\nエイリアンに打たれ強く、動きを必ず止める\nテンライノセイレイオウギガボルト"]
-    stat: [{health: 1100, knockbacks: 3, speed: 15, cost: 750, production_cooldown: 375, attack_cooldown: 60, range: 320, width: 320, area_effect: 1, damage_0: 775, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, freeze_chance: 50, freeze_duration: 90, immune_warp: 1, attack_duration: 100}, {health: 2600, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 1475, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 90, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}, {health: 3200, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 110, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}]
+    name: [雷の精霊ボルト, 天雷の精霊ピカボルト, 天雷の精霊王ギガボルト, 天雷の大精霊テラボルタ]
+    desc: ["宇宙の果てからやって来た雷の精霊\n降り立った星に雷の源を宿すと言われている\nたまにエイリアンの動きを止める\nカミナリノセイレイボルト", "月を引き裂くほどの迅雷を操る精霊\n荒れ狂うイカヅチはバリアをも貫く力を持つ\nエイリアンに打たれ強く、動きを必ず止める\nテンライノセイレイピカボルト", "宇宙の果てまで照らす強大な力を持つ迅雷の精霊王\n宇宙を横断する雷光はバリアを貫く力を持ち\nエイリアンに打たれ強く、動きを必ず止める\nテンライノセイレイオウギガボルト", "雷の力を司る大精霊。全宇宙のエネルギーを集約した\n雷光は宇宙空間をあまねく照らす。エイリアンに\n打たれ強く、動きを必ず止めバリアを貫く\nテンライノダイセイレイテラボルタ"]
+    stat: [{health: 1100, knockbacks: 3, speed: 15, cost: 750, production_cooldown: 375, attack_cooldown: 60, range: 320, width: 320, area_effect: 1, damage_0: 775, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, freeze_chance: 50, freeze_duration: 90, immune_warp: 1, attack_duration: 100}, {health: 2600, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 1475, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 90, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}, {health: 3200, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 110, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}, {health: 3800, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 50, range: 370, width: 320, area_effect: 1, damage_0: 2000, long_range_0: 1, long_range_offset_0: 370, attack_time_0: 60, trigger_effects_0: 1, damage_1: 500, long_range_1: 270, long_range_offset_1: 250, attack_time_1: 79, trigger_effects_1: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 110, break_barrier_chance: 100, immune_warp: 1, immune_drain: 1, attack_duration: 110}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -7636,6 +7648,22 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      surge_mini:
+        max_level: 10
+        minmax: [[5, 50], [2, 2], [600, 600], [2800, 2800]]
+      resistant_slow:
+        max_level: 10
+        minmax: [[16, 70]]
+      survive:
+        max_level: 10
+        minmax: [[10, 100]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   670:
     name: ['古びたタマゴ:N003', '悪のタマゴ:N003', ネコサボテン]
     desc: ["タマゴのような形をした謎の物体\n長い歳月を経て土がこびりつき風化している\n「N003」と小さく刻まれているように見えるが…\nフルビタタマゴ", "悪のボディを現したタマゴのような物体\n内部に微かな生命反応があるようだ\n悪魔にめっぽう強い\nアクノタマゴ", "ホームセンターで売られているトゲトゲにゃんこ\nグサッとくる発言でいつも誰かを傷つけている\n悪魔にめっぽう強く、烈波ダメージを無効にする"]
@@ -8193,9 +8221,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   747:
-    name: [緋村剣心, 緋村剣心CC]
-    desc: ["「るろうに剣心」から参戦！\n峰と刃が逆の「逆刃刀」で戦う温和な雰囲気の剣客\n属性を持たない敵と悪魔に超ダメージを与える(範囲攻撃)\nヒムラケンシン", "「るろうに剣心」から参戦！\n神速の古流剣術「飛天御剣流」を使う流浪の剣客\n属性を持たない敵と悪魔に超ダメージを与える(範囲攻撃)\nヒムラケンシンシーシー"]
-    stat: [{health: 2000, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 1600, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}, {health: 2700, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 2150, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}]
+    name: [緋村剣心, 緋村剣心CC, 不殺の流浪人・緋村剣心]
+    desc: ["「るろうに剣心」から参戦！\n峰と刃が逆の「逆刃刀」で戦う温和な雰囲気の剣客\n属性を持たない敵と悪魔に超ダメージを与える(範囲攻撃)\nヒムラケンシン", "「るろうに剣心」から参戦！\n神速の古流剣術「飛天御剣流」を使う流浪の剣客\n属性を持たない敵と悪魔に超ダメージを与える(範囲攻撃)\nヒムラケンシンシーシー", "「るろうに剣心」から参戦！飛天御剣流の奥義\n「天翔龍閃」で神速を越える超神速の抜刀術を放つ\n属性を持たない敵と悪魔に超ダメージを与える(遠方範囲)\nコロサズノルロウニヒムラケンシン"]
+    stat: [{health: 2000, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 1600, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}, {health: 2700, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 2150, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}, {health: 2700, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, range: 435, width: 320, area_effect: 1, damage_0: 2450, long_range_0: 200, long_range_offset_0: 600, attack_time_0: 15, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_freeze: 1, immune_surge: 1, attack_duration: 249}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -8249,9 +8277,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   755:
-    name: [明智光秀, 武神・明智光秀]
-    desc: ["伝説の武具「にゃんこ長銃」の呪いによって\n冷酷無慈悲な指揮官と化した戦国武将。召喚能力を持ち\n黒い敵と天使を必ずふっとばす(遠方範囲攻撃)\nアケチミツヒデ", "伝説の武具「にゃんこ長銃」の呪いに染まった戦国武将\n心なき眼に映るすべてを撃ち滅ぼす。召喚能力を持ち\n黒い敵と天使をふっとばし、たまに烈波を放つ(遠方範囲)\nブシンアケチミツヒデ"]
-    stat: [{health: 2500, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1000, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, attack_duration: 200}, {health: 3000, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1350, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, surge_chance: 50, surge_level: 1, surge_range: 1400, surge_range_offset: 1200, attack_duration: 200}]
+    name: [明智光秀, 武神・明智光秀, 智謀の武神・明智光秀]
+    desc: ["伝説の武具「にゃんこ長銃」の呪いによって\n冷酷無慈悲な指揮官と化した戦国武将。召喚能力を持ち\n黒い敵と天使を必ずふっとばす(遠方範囲攻撃)\nアケチミツヒデ", "伝説の武具「にゃんこ長銃」の呪いに染まった戦国武将\n心なき眼に映るすべてを撃ち滅ぼす。召喚能力を持ち\n黒い敵と天使をふっとばし、たまに烈波を放つ(遠方範囲)\nブシンアケチミツヒデ", "伝説の武具「にゃんこ長銃」の怨念を掌握した戦国武将\n宿命と背信を身に宿し狂気の銃弾を放つ。召喚能力を持ち\n黒い敵と天使を必ずふっとばし、烈波を放つ(遠方範囲)\nチボウノブシンアケチミツヒデ"]
+    stat: [{health: 2500, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1000, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, attack_duration: 200}, {health: 3000, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1350, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, surge_chance: 50, surge_level: 1, surge_range: 1400, surge_range_offset: 1200, attack_duration: 200}, {health: 3500, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1350, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 877, surge_chance: 100, surge_level: 1, surge_range: 1400, surge_range_offset: 1200, immune_wave: 1, attack_duration: 200}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -9101,6 +9129,48 @@ cats:
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 250, kamikaze: 2, attack_duration: 85}]
     rarity: 4
     max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  877:
+    name: [756-1]
+    desc: [精霊：敵をふっとばして一瞬動きを遅くします]
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, slow_chance: 100, slow_duration: 60, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  878:
+    name: [いなばの白うさぎ, メガシャークVS白うさぎ]
+    desc: ["サメを活用した交通インフラ事業を立ち上げ\n連邦政府の独占を打ち破った実業家にゃんこ\n天使とエイリアンにめっぽう強い(範囲攻撃)\nイナバノシロウサギ", "鮫暴走剤「INA・B100」を散布され事業を妨害\nされたにゃんこ。不屈の商魂で業務改善を行う\n天使とエイリアンにめっぽう強い(範囲攻撃)\nメガシャークバーサスシロウサギ"]
+    stat: [{health: 2200, knockbacks: 2, speed: 12, cost: 650, production_cooldown: 300, range: 250, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 17, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 5, savage_blow_modifier: 200, immune_weaken: 1, attack_duration: 71}, {health: 5500, knockbacks: 4, speed: 30, cost: 3100, production_cooldown: 1700, range: 380, width: 320, area_effect: 1, damage_0: 2200, attack_time_0: 21, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 15, savage_blow_modifier: 200, immune_weaken: 1, attack_duration: 170}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  879:
+    name: [悠久山安慈, 悠久山安慈CC]
+    desc: ["「るろうに剣心」から参戦！「十本刀」の一人\n神仏をも凌駕する救世の力を得るため修行する破戒僧\n赤と浮きに超ダメージを与えてふっとばし、波動を放つ\nユウキュウザンアンジ", "「るろうに剣心」から参戦！\n破壊の極意「二重の極み」は岩石をも粉砕する\n赤と浮きに超ダメージを与えてふっとばし、波動を放つ\nユウキュウザンアンジシーシー"]
+    stat: [{health: 8200, knockbacks: 2, speed: 8, cost: 3500, production_cooldown: 2350, attack_cooldown: 120, range: 360, width: 320, damage_0: 1350, long_range_0: 450, long_range_offset_0: -770, attack_time_0: 36, trigger_effects_0: 1, against_red: 1, against_float: 1, massive_damage: 1, knockback_chance: 100, wave_chance: 100, wave_level: 3, immune_knockback: 1, immune_weaken: 1, attack_duration: 130}, {health: 9000, knockbacks: 2, speed: 8, cost: 3500, production_cooldown: 2350, attack_cooldown: 120, range: 360, width: 320, damage_0: 1650, long_range_0: 450, long_range_offset_0: -770, attack_time_0: 36, trigger_effects_0: 1, against_red: 1, against_float: 1, massive_damage: 1, knockback_chance: 100, wave_chance: 100, wave_level: 3, immune_knockback: 1, immune_weaken: 1, attack_duration: 130}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  880:
+    name: [瀬田宗次郎, 瀬田宗次郎CC]
+    desc: ["「るろうに剣心」から参戦！「十本刀」の一人\n「喜怒哀楽」の「楽」以外の感情が欠落している少年\n必ず黒い敵と天使の攻撃力を下げて遅くする(範囲攻撃)\nセタソウジロウ", "「るろうに剣心」から参戦！\n天賦の才による剣の技で瞬時に相手へ斬りこむ\n必ず黒い敵と天使の攻撃力を下げて遅くする(範囲攻撃)\nセタソウジロウシーシー"]
+    stat: [{health: 2000, knockbacks: 5, speed: 10, cost: 2100, production_cooldown: 1700, attack_cooldown: 65, range: 450, width: 320, area_effect: 1, damage_0: 700, attack_time_0: 60, trigger_effects_0: 1, damage_1: 700, attack_time_1: 65, trigger_effects_1: 1, damage_2: 700, attack_time_2: 70, trigger_effects_2: 1, against_black: 1, against_angel: 1, slow_chance: 100, slow_duration: 75, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, immune_slow: 1, attack_duration: 140}, {health: 2400, knockbacks: 5, speed: 10, cost: 2100, production_cooldown: 1700, attack_cooldown: 65, range: 450, width: 320, area_effect: 1, damage_0: 735, attack_time_0: 60, trigger_effects_0: 1, damage_1: 735, attack_time_1: 65, trigger_effects_1: 1, damage_2: 735, attack_time_2: 70, trigger_effects_2: 1, against_black: 1, against_angel: 1, slow_chance: 100, slow_duration: 75, weaken_chance: 100, weaken_duration: 120, weaken_multiplier: 50, immune_slow: 1, attack_duration: 140}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  881:
+    name: [志々雄真実, 志々雄真実CC]
+    desc: ["「るろうに剣心」から参戦！\n「弱肉強食」を信念に国盗りを企む男(全方位攻撃)\n天使とエイリアンにめっぽう強く、必ず爆波を放つ\nシシオマコト", "「るろうに剣心」から参戦！\n壱の秘剣「焔霊」で炎燃える斬撃を放つ(全方位攻撃)\n天使とエイリアンにめっぽう強く、必ず爆波を放つ\nシシオマコトシーシー"]
+    stat: [{health: 9200, knockbacks: 1, speed: 10, cost: 3700, production_cooldown: 5000, attack_cooldown: 40, range: 350, width: 320, area_effect: 1, damage_0: 760, long_range_0: 500, long_range_offset_0: -820, attack_time_0: 41, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, slow_chance: 50, slow_duration: 60, strengthen_threshold: 30, strengthen_modifier: 100, explosion_chance: 100, explosion_range: 1400, immune_wave: 1, immune_explosion: 1, attack_duration: 82}, {health: 11500, knockbacks: 1, speed: 10, cost: 3700, production_cooldown: 5000, attack_cooldown: 40, range: 350, width: 320, area_effect: 1, damage_0: 950, long_range_0: 500, long_range_offset_0: -820, attack_time_0: 41, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, slow_chance: 50, slow_duration: 60, strengthen_threshold: 30, strengthen_modifier: 100, explosion_chance: 100, explosion_range: 1400, immune_wave: 1, immune_explosion: 1, attack_duration: 82}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  882:
+    name: [比古清十郎, 比古清十郎CC]
+    desc: ["「るろうに剣心」から参戦！\n飛天御剣流の第十三代目継承者で剣心の師匠\n浮きとエイリアンに極ダメージを与え、一瞬動きを止める\nヒコセイジュウロウ", "「るろうに剣心」から参戦！\n強靭な肉体から繰り出される剣術は圧倒的な力を誇る\n浮きとエイリアンに極ダメージを与え、一瞬動きを止める\nヒコセイジュウロウシーシー"]
+    stat: [{health: 5000, knockbacks: 3, speed: 12, cost: 3100, production_cooldown: 2200, attack_cooldown: 79, range: 460, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 56, trigger_effects_0: 1, against_float: 1, against_alien: 1, insane_damage: 1, freeze_chance: 100, freeze_duration: 60, break_barrier_chance: 100, immune_slow: 1, immune_weaken: 1, attack_duration: 126}, {health: 5600, knockbacks: 3, speed: 12, cost: 3100, production_cooldown: 2200, attack_cooldown: 79, range: 460, width: 320, area_effect: 1, damage_0: 2450, attack_time_0: 56, trigger_effects_0: 1, against_float: 1, against_alien: 1, insane_damage: 1, freeze_chance: 100, freeze_duration: 60, break_barrier_chance: 100, immune_slow: 1, immune_weaken: 1, attack_duration: 126}]
+    rarity: 5
+    max_level: 59
     growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
@@ -14901,6 +14971,53 @@ gacha:
     series_id: 75
     name: "「りゅういち」参戦！「熱血!大運動会」ガチャ登場！★詳細はバナーをタップ!!"
     rate: no_legend
+  1081:
+    cats: [865, 866, 363, 364, 365, 366, 367, 368, 369, 457, 461, 371, 372, 373, 459, 460, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
+    series_id: 34
+    name: 新たな超激レア「衛宮士郎」「真アサシン」参戦！★コラボガチャの詳細はバナーをタップ!!
+    rate: no_legend
+  1082:
+    cats: [882, 881, 880, 879, 747, 748, 749, 750, 751, 751, 751, 752, 752, 752, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 63
+    name: 限定キャラが全部で6体登場する『るろうに剣心』ガチャ！★詳細はバナーをタップ!!
+    rate: no_legend
+    similarity: 92
+  1083:
+    cats: [878, 770, 693, 634, 526, 452, 323, 204, 139, 138, 137, 136, 135, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 6
+    name: 進化後に召喚能力を持つキャラクター「花咲かじいさん」参戦！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 99
+  1084:
+    cats: [878, 770, 693, 634, 526, 452, 323, 204, 139, 138, 137, 136, 135, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 6
+    name: 進化後に召喚能力を持つキャラクター「花咲かじいさん」参戦！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 99
+  1085:
+    cats: [878, 870, 862, 851, 838, 831, 818, 812, 800, 782, 780, 775, 770, 764, 761, 755, 734, 732, 724, 720, 716, 713, 699, 693, 691, 675, 669, 661, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 595, 586, 570, 547, 535, 534, 530, 526, 524, 523, 496, 520, 506, 503, 497, 440, 437, 432, 428, 418, 402, 397, 381, 378, 377, 362, 361, 360, 356, 352, 339, 326, 323, 319, 317, 307, 306, 305, 308, 309, 273, 272, 270, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 19
+    name: 限定キャラ「幼騎士ルーノ」登場！★超激レア出現率アップの「超ネコ祭」開催中!!
+    rate: uberfest_legend
+    similarity: 99
+  1086:
+    cats: [878, 870, 862, 860, 851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 27
+    name: 限定超激レアキャラクター「孤月の騎士ルーノス」登場！★詳細はバナーをタップ!!
+    rate: uberfest_legend
+    similarity: 99
+  1087:
+    cats: [878, 870, 862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 21
+    name: 超激レアのキャラクターが必ず１体手に入る「プラチナガチャ」！
+    rate: platinum
+    similarity: 99
+  1088:
+    cats: [878, 870, 862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 46
+    name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
+    rate: legend
+    similarity: 99
 events:
   2018-09-15_320:
     start_on: 2018-09-15

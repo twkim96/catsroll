@@ -67,6 +67,8 @@ module BattleCatsRolls
       end
     end
 
+    IncreaseHealthPlus = IncreaseHealth
+
     class IncreaseDamage < Talent
       include TalentUtility
 
@@ -179,6 +181,35 @@ module BattleCatsRolls
         Module.new do
           define_method(:production_cooldown) do
             super() - talent.max
+          end
+        end
+      end
+
+      def augment_attributes
+        [:production_cooldown]
+      end
+    end
+
+    class ReduceProductionCooldownEveryOther < Talent
+      include TalentUtility
+
+      def name
+        'Reduce every other'
+      end
+
+      def display(view:, **)
+        values = values_range(data.dig('minmax', 0), suffix: '%')
+
+        "#{strong('Production cooldown')} by #{values} by #{level} levels"
+      end
+
+      def augment_module
+        talent = self
+        Module.new do
+          define_method(:production_cooldown) do
+            value = super()
+            other = (value * talent.max / 100.0).floor
+            [value, other]
           end
         end
       end
