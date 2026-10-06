@@ -305,7 +305,7 @@ module BattleCatsRolls
         immune_weaken: 51, immune_curse: 79,
         immune_wave: 46, block_wave: 47,
         immune_surge: 91, immune_explosion: 116,
-        immune_toxic: 90,
+        immune_toxic: 90, immune_drain: 117,
         # unused
         warp_chance: 71, warp_duration: 72,
         warp_range: 73, warp_range_offset: 74,

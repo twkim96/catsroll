@@ -983,7 +983,7 @@ module BattleCatsRolls
 
       List = %w[
         bosswave knockback warp freeze slow weaken curse
-        wave surge explosion toxic
+        wave surge explosion toxic drain
       ].freeze
 
       def self.build_if_available stat
