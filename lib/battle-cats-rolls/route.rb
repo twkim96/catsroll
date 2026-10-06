@@ -358,12 +358,15 @@ module BattleCatsRolls
         end
     end
 
+    def o_decoded
+      @o_decoded ||= Owned.decode(request.params_coercion('o', :to_s))
+    end
+
     def owned
       @owned ||=
-        if ticked.any?
-          ticked
-        elsif (result = Owned.decode(request.params_coercion('o', :to_s))).any?
-          result
+        if ticked.any? || o_decoded.any?
+          listed = Owned.decode(request.params_coercion('c', :to_s))
+          o_decoded - listed + ticked
         else
           Owned.decode_old(request.params_coercion('owned', :to_s))
         end.sort.uniq

@@ -28,9 +28,6 @@
   with invalid level. The same goes to Metal Cat. It's capped at level=20,
   and if we swap language or tick some options, we'll send level=20, without
   knowing if it's intentional or not.)
-* Can't untick the last owned cat (This is because we can't tell if this is
-  visiting the page itself or it's unticking the last cat, because `t` is
-  absent in both cases, the URL is the same!)
 
 ## Features and utilities
 
