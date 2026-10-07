@@ -305,7 +305,7 @@ module BattleCatsRolls
         immune_weaken: 51, immune_curse: 79,
         immune_wave: 46, block_wave: 47,
         immune_surge: 91, immune_explosion: 116,
-        immune_toxic: 90,
+        immune_toxic: 90, immune_drain: 117,
         # unused
         warp_chance: 71, warp_duration: 72,
         warp_range: 73, warp_range_offset: 74,
@@ -320,9 +320,12 @@ module BattleCatsRolls
 
     def talent_types
       @talent_types ||= {
-        32 => 'increase_health', 31 => 'increase_damage',
+        32 => 'increase_health', 71 => 'increase_health_plus',
+        31 => 'increase_damage',
         27 => 'increase_speed',
-        25 => 'reduce_cost', 26 => 'reduce_production_cooldown',
+        25 => 'reduce_cost',
+        26 => 'reduce_production_cooldown',
+        72 => 'reduce_production_cooldown_every_other',
         61 => 'reduce_attack_cooldown',
         33 => 'against_red', 34 => 'against_float', 35 => 'against_black',
         37 => 'against_angel', 38 => 'against_alien', 39 => 'against_zombie',
