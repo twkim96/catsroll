@@ -139,9 +139,11 @@ module BattleCatsRolls
       ('A'..'K').inject([]) do |result, letter|
         skill = group_skills_letter(letter, named_data)
 
-        compact_skill(skill)
+        if skill.any?
+          compact_skill(skill)
+          result << skill if skill['abilityID']
+        end
 
-        result << skill if skill['abilityID']
         result
       end
     end
