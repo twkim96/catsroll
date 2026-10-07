@@ -67,25 +67,24 @@ module BattleCatsRolls
       end
     end
 
-    def stat_augmented stat, attribute, value=stat.public_send(attribute)
-      if stat && talents = stat.augmenting_talents[attribute]
+    def stat_augmented stat, attribute,
+      value=stat.public_send(attribute), &block
+      transform = block || :itself.to_proc
+      wrap = if stat && talents = stat.augmenting_talents[attribute]
         css_class = if talents.any?(&:ultra?)
           'augmented_ultra'
         else
           'augmented_regular'
         end
 
-        %Q{<span class="augmented #{css_class}">#{value}</span>}
+        lambda do
+          %Q{<span class="augmented #{css_class}">#{_1}</span>}
+        end
       else
-        value
+        :itself.to_proc
       end
-    end
 
-    # TODO: Generalize this
-    def stat_augmented_production_cooldown stat
-      Array(stat.production_cooldown).map do |value|
-        stat_augmented(stat, :production_cooldown, stat_time(value))
-      end.join('<br>or ')
+      Array(value).map(&transform).map(&wrap).join('<br>or ')
     end
 
     private
