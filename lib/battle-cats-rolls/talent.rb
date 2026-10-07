@@ -67,7 +67,11 @@ module BattleCatsRolls
       end
     end
 
-    IncreaseHealthPlus = IncreaseHealth
+    class IncreaseHealthPlus < IncreaseHealth
+      def name
+        "#{super}+"
+      end
+    end
 
     class IncreaseDamage < Talent
       include TalentUtility
