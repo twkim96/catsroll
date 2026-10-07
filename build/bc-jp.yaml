@@ -1680,6 +1680,14 @@ cats:
         max_level: 10
         minmax: [[10, 100], [3, 3], [600, 600], [2800, 2800]]
         ultra: 1
+      increase_health_plus:
+        max_level: 5
+        minmax: [[10, 50]]
+        ultra: 1
+      strong:
+        ultra: 1
+      zombie_killer:
+        ultra: 1
   109:
     name: [にゃんこ３兄弟, 秘密要塞ネコロス]
     desc: ["プラスチック製のガシャポンカプセルに\n入った仲良しにゃんこ３兄弟(範囲攻撃)\n良い子はマネしちゃダメ！絶対！\nニャンコサンキョウダイ", "３兄弟の英知を結集して作られた\n秘密要塞ネコロス(範囲攻撃)\nメイン装甲がダンボールなので湿気に弱い\nヒミツヨウサイネコロス"]
@@ -1824,6 +1832,8 @@ cats:
       increase_health_plus:
         max_level: 10
         minmax: [[10, 100]]
+        ultra: 1
+      sage_slayer:
         ultra: 1
   126:
     name: [武田信玄, 武神・武田信玄, 猛牛の武神・武田信玄]
@@ -3476,6 +3486,10 @@ cats:
       reduce_production_cooldown_every_other:
         max_level: 10
         minmax: [[5, 50]]
+        ultra: 1
+      immune_explosion:
+        ultra: 1
+      zombie_killer:
         ultra: 1
   259:
     name: [守護神アヌビス, パーフェクトアヌビス, Ｇパーフェクトアヌビス]

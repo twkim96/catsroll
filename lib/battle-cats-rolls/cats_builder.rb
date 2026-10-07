@@ -136,7 +136,7 @@ module BattleCatsRolls
     end
 
     def group_skills named_data
-      ('A'..'H').inject([]) do |result, letter|
+      ('A'..'K').inject([]) do |result, letter|
         skill = group_skills_letter(letter, named_data)
 
         compact_skill(skill)
