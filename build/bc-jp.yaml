@@ -3483,7 +3483,7 @@ cats:
         max_level: 10
         minmax: [[100, 100], [24, 60]]
         ultra: 1
-      reduce_production_cooldown_every_other:
+      alternate_production_cooldown:
         max_level: 10
         minmax: [[5, 50]]
         ultra: 1
