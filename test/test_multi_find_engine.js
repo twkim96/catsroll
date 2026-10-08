@@ -69,6 +69,25 @@ function actualFirst(track, last) {
   });
 });
 
+[2, 7, 15].forEach((guaranteedRolls) => {
+  const eventPool = pool({guaranteedRolls});
+  const guaranteed = FindEngine.simulateGuaranteed(
+    eventPool, 3671843074, 0, 0, 200, 0);
+  const track = TrackEngine.buildTracks(eventPool, 3671843074, {
+    count: 40,
+    guaranteedRolls,
+    findCat: false
+  });
+  const actual = track.cats[0][0].guaranteed;
+  assert(actual, `guaranteed exists for simulated ${guaranteedRolls}`);
+  assert.strictEqual(guaranteed.pulls.length, guaranteedRolls,
+    `simulated ${guaranteedRolls} uses the selected pull count`);
+  assert.strictEqual(guaranteed.pulls[guaranteed.pulls.length - 1].id, actual.id,
+    `simulated ${guaranteedRolls} matches TrackEngine`);
+  assert.strictEqual(guaranteed.guaranteedLabel, actual.number(),
+    `simulated ${guaranteedRolls} keeps the guaranteed label`);
+});
+
 const eventUber = pool({
   rates: {rare: 0, supa: 0, uber: 10000, legend: 0},
   guaranteedRolls: 0,
@@ -381,6 +400,25 @@ assert.strictEqual(guaranteedAction.routePulls.length, 11);
 assert.strictEqual(guaranteedAction.routePulls[10].guaranteed, true);
 assert.strictEqual(guaranteedAction.routePulls[10].resultLabel,
   guaranteedAction.guaranteedLabel);
+
+[2, 7, 15].forEach((guaranteedRolls) => {
+  result = search({
+    count: 30,
+    maxPlatinum: 0,
+    maxGuaranteed: 1,
+    events: [{lang: "kr", event: "g", label: "Guaranteed", pool: Object.assign(
+      {}, guaranteedPool, {guaranteed_rolls: guaranteedRolls})}],
+    ticket: null,
+    targets: [{cat_id: 300, allow_ticket: false}]
+  });
+  assert.strictEqual(result.status, "success",
+    `search supports simulated ${guaranteedRolls}`);
+  const action = result.actions.find((candidate) =>
+    candidate.type === "guaranteed");
+  assert(action, `search returns simulated ${guaranteedRolls}`);
+  assert.strictEqual(action.routePulls.length, guaranteedRolls,
+    `search keeps the simulated ${guaranteedRolls} pull count`);
+});
 
 result = search({
   count: 30,

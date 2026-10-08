@@ -13,6 +13,7 @@ const track = {
       lang: "kr",
       event: "2026-08-21_1075",
       ubers: 1,
+      forceGuaranteed: 7,
       customName: "울하고축",
       customNameAuto: false,
       seriesIds: [24, 42]
@@ -44,6 +45,8 @@ assert(saved.plan, "a valid plan is saved");
 assert.strictEqual(saved.plan.id, "plan-fixed");
 assert.strictEqual(saved.plan.track.seed, 3671843074);
 assert.strictEqual(saved.plan.track.rows.length, 2);
+assert.strictEqual(saved.plan.track.rows[0].forceGuaranteed, 7,
+  "saved plans keep the per-banner simulated guaranteed setting");
 const longPlan = plans.upsertPlan(plans.emptyLibrary(), {
   name: "999 rows",
   track: Object.assign({}, track, { count: 1000 }),

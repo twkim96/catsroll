@@ -13,6 +13,7 @@ const track = {
       lang: "kr",
       event: "2026-08-21_1075",
       ubers: 1,
+      forceGuaranteed: 7,
       customName: "울하고축 한글 이름",
       customNameAuto: false,
       seriesIds: [24, 42]
@@ -81,6 +82,8 @@ assert.strictEqual(restoredTrack.rows[0].customName, "울하고축 한글 이름
 assert.strictEqual(restoredTrack.rows[0].customNameAuto, false);
 assert.strictEqual(restoredTrack.rows[1].customNameAuto, true);
 assert.deepStrictEqual(restoredTrack.rows[0].seriesIds, [24, 42]);
+assert.strictEqual(restoredTrack.rows[0].forceGuaranteed, 7,
+  "simulated guaranteed settings survive shared links");
 
 const restoredFind = codec.findSettings(decoded);
 assert.strictEqual(restoredFind.optimization, "balance");
