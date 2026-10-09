@@ -67,7 +67,11 @@ module BattleCatsRolls
       end
     end
 
-    IncreaseHealthPlus = IncreaseHealth
+    class IncreaseHealthPlus < IncreaseHealth
+      def name
+        "#{super}+"
+      end
+    end
 
     class IncreaseDamage < Talent
       include TalentUtility
@@ -190,17 +194,18 @@ module BattleCatsRolls
       end
     end
 
-    class ReduceProductionCooldownEveryOther < Talent
+    class AlternateProductionCooldown < Talent
       include TalentUtility
 
       def name
-        'Reduce every other'
+        'Alternate'
       end
 
       def display(view:, **)
         values = values_range(data.dig('minmax', 0), suffix: '%')
 
-        "#{strong('Production cooldown')} by #{values} by #{level} levels"
+        "Every other #{strong('production cooldown')}" \
+          " by #{values} by #{level} levels"
       end
 
       def augment_module

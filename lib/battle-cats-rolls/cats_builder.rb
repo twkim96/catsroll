@@ -136,12 +136,14 @@ module BattleCatsRolls
     end
 
     def group_skills named_data
-      ('A'..'H').inject([]) do |result, letter|
+      ('A'..'K').inject([]) do |result, letter|
         skill = group_skills_letter(letter, named_data)
 
-        compact_skill(skill)
+        if skill.any?
+          compact_skill(skill)
+          result << skill if skill['abilityID']
+        end
 
-        result << skill if skill['abilityID']
         result
       end
     end
@@ -325,7 +327,7 @@ module BattleCatsRolls
         27 => 'increase_speed',
         25 => 'reduce_cost',
         26 => 'reduce_production_cooldown',
-        72 => 'reduce_production_cooldown_every_other',
+        72 => 'alternate_production_cooldown',
         61 => 'reduce_attack_cooldown',
         33 => 'against_red', 34 => 'against_float', 35 => 'against_black',
         37 => 'against_angel', 38 => 'against_alien', 39 => 'against_zombie',

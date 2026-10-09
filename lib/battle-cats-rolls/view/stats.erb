@@ -22,7 +22,7 @@
     <td><%= l10n('Production cost') %></td>
     <td><%= stat_augmented(stat, :production_cost) %></td>
     <td><%= l10n('Production cooldown') %></td>
-    <td><%= stat_augmented_production_cooldown(stat) %></td>
+    <td><%= stat_augmented(stat, :production_cooldown, &method(:stat_time)) %></td>
     <td><%= l10n('Attack cooldown') %></td>
     <td><%= stat_augmented(stat, :attack_cooldown, stat_time(stat.attack_cooldown)) %></td>
   </tr>
