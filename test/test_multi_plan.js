@@ -3,6 +3,18 @@
 const assert = require("assert");
 const plans = require("../lib/battle-cats-rolls/asset/multi-plan.js");
 
+const mixedMarks = plans.marksFromFindActions({
+  count: 10,
+  rows: [
+    {lang: "kr", event: "shared-event", title: "Shared"},
+    {lang: "jp", event: "shared-event", title: "Shared"}
+  ]
+}, [{type: "roll", lang: "jp", event: "shared-event", eventLabel: "Shared",
+  start: "1A"}]);
+assert.deepStrictEqual(mixedMarks.marks,
+  [{column: 1, position: "1A", kind: "regular"}],
+  "Find plan drawing selects the correct region when banner IDs and labels match");
+
 const track = {
   seed: 3671843074,
   last: 523,

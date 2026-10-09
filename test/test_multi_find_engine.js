@@ -1,6 +1,8 @@
 "use strict";
 
 const assert = require("assert");
+const fs = require("fs");
+const vm = require("vm");
 const TrackEngine = require(
   "../lib/battle-cats-rolls/asset/track-engine.js").TrackEngine;
 const FindEngine = require(
@@ -114,6 +116,109 @@ function search(overrides) {
   }, overrides || {}));
 }
 
+const multiFindSource = fs.readFileSync(require.resolve(
+  "../lib/battle-cats-rolls/asset/multi-find.js"), "utf8");
+const ticketPolicy = {
+  data: {
+    regions: {
+      kr: {events: []},
+      jp: {events: []}
+    }
+  }
+};
+const eventInfoStart = multiFindSource.indexOf("  function eventInfo(");
+const eventInfoEnd = multiFindSource.indexOf("  function seriesInfo(",
+  eventInfoStart);
+const ticketPolicyStart = multiFindSource.indexOf("  function selectedTicketPools(");
+const ticketPolicyEnd = multiFindSource.indexOf("  function startSearch(",
+  ticketPolicyStart);
+assert(eventInfoStart >= 0 && eventInfoEnd > eventInfoStart);
+assert(ticketPolicyStart >= 0 && ticketPolicyEnd > ticketPolicyStart);
+vm.runInNewContext(multiFindSource.slice(eventInfoStart, eventInfoEnd) +
+  multiFindSource.slice(ticketPolicyStart, ticketPolicyEnd), ticketPolicy);
+
+function ticketRow(lang, event, kind, title) {
+  ticketPolicy.data.regions[lang].events.push({event});
+  return {
+    lang,
+    event,
+    title,
+    pool: {exist: true, platinum: kind}
+  };
+}
+
+const fallbackTickets = {
+  platinum: {event: "kr-fallback-pt", label: "KR PT", pool: platinum},
+  legend: {event: "kr-fallback-lt", label: "KR LT",
+    pool: pool({platinum: "legend"})}
+};
+const firstTicketRows = [ticketRow("kr", "kr-event", null, "KR"),
+  ticketRow("jp", "jp-pt", "platinum", "JP PT"),
+  ticketRow("kr", "kr-pt", "platinum", "KR PT"),
+  ticketRow("jp", "jp-lt", "legend", "JP LT"),
+  ticketRow("kr", "kr-lt", "legend", "KR LT")];
+let selectedTickets = ticketPolicy.selectedTicketPools(
+  {rows: firstTicketRows},
+  {tickets: fallbackTickets}, "kr");
+assert.deepStrictEqual(Array.from(selectedTickets, (ticket) => ticket.event),
+  ["jp-pt", "jp-lt"],
+  "the first selected ticket pool wins independently for each ticket type");
+assert.strictEqual(selectedTickets[0].pool, firstTicketRows[1].pool,
+  "a selected ticket uses its actual pool instead of a regional fallback");
+assert.strictEqual(selectedTickets[1].pool, firstTicketRows[3].pool);
+selectedTickets = ticketPolicy.selectedTicketPools(
+  {rows: firstTicketRows.slice().reverse()}, {tickets: fallbackTickets}, "kr");
+assert.deepStrictEqual(Array.from(selectedTickets, (ticket) => ticket.event),
+  ["kr-pt", "kr-lt"], "reordering rows changes the selected ticket pools");
+selectedTickets = ticketPolicy.selectedTicketPools(
+  {rows: [firstTicketRows[0], firstTicketRows[1]]},
+  {tickets: fallbackTickets}, "kr");
+assert.deepStrictEqual(Array.from(selectedTickets, (ticket) => ticket.event),
+  ["jp-pt", "kr-fallback-lt"],
+  "a directly selected ticket overrides only its own type's fallback");
+selectedTickets = ticketPolicy.selectedTicketPools(
+  {rows: [firstTicketRows[0]]},
+  {tickets: fallbackTickets}, "kr");
+assert.deepStrictEqual(Array.from(selectedTickets, (ticket) => ticket.event),
+  ["kr-fallback-pt", "kr-fallback-lt"],
+  "ticket fallbacks use the first selected region");
+assert(selectedTickets.every((ticket) => ticket.lang === "kr"));
+assert.strictEqual(selectedTickets[0].pool, fallbackTickets.platinum.pool);
+assert.strictEqual(selectedTickets[1].pool, fallbackTickets.legend.pool);
+
+const markedRegions = [];
+const routeCells = ["kr", "jp"].map((lang) => ({
+  dataset: {routeEvent: "shared-event", routePosition: "1A", routeLang: lang},
+  classList: {add() {}},
+  appendChild() { markedRegions.push(lang); }
+}));
+const markPolicy = {
+  clearRouteMarks() {},
+  routeScheduleValid() { return true; },
+  basePosition(position) { return position; },
+  acquiredNames() { return ["Target"]; },
+  pawHtml() { return "marker"; },
+  doc: {
+    createElement() {
+      return {childNodes: [], insertAdjacentHTML() { this.childNodes.push({}); }};
+    }
+  }
+};
+const markPolicyStart = multiFindSource.indexOf("  function applyRouteMarks(");
+const markPolicyEnd = multiFindSource.indexOf("  function routeIsDrawn(",
+  markPolicyStart);
+assert(markPolicyStart >= 0 && markPolicyEnd > markPolicyStart);
+vm.runInNewContext(multiFindSource.slice(markPolicyStart, markPolicyEnd), markPolicy);
+markPolicy.applyRouteMarks([
+  {type: "roll", lang: "jp", event: "shared-event", start: "1A"}
+], {
+  querySelectorAll(selector) {
+    return selector === "[data-route-event][data-route-position]" ? routeCells : [];
+  }
+});
+assert.deepStrictEqual(markedRegions, ["jp"],
+  "route markers distinguish regions even when event IDs match");
+
 // A platinum-allowed target is still satisfied by an event result first; the
 // ticket result costs +1 and only wins when the primary destination improves.
 let result = search();
@@ -132,6 +237,18 @@ assert.strictEqual(result.cost, 1);
 assert.strictEqual(result.ticketUses, 1);
 assert.strictEqual(result.actions[0].type, "ticket");
 assert.strictEqual(result.actions[0].cost, 1);
+
+result = search({
+  count: 1,
+  maxPlatinum: 1,
+  tickets: [{lang: "jp", event: "jp-platinum", label: "JP Platinum",
+    kind: "platinum", pool: platinum}],
+  targets: [{cat_id: 200, allow_ticket: true}]
+});
+assert.strictEqual(result.status, "success",
+  "a selected JP ticket can be used with a KR regular banner");
+assert.strictEqual(result.actions[0].event, "jp-platinum");
+assert.strictEqual(result.actions[0].lang, "jp");
 
 result = search({
   targets: [{cat_id: 200, allow_ticket: false}]
@@ -732,9 +849,37 @@ result = search({
   events: [
     {lang: "kr", event: "kr", label: "KR", pool: eventUber},
     {lang: "jp", event: "jp", label: "JP", pool: eventUber}
+  ],
+  maxPlatinum: 0,
+  ticket: null
+});
+assert.strictEqual(result.status, "success",
+  "KR and JP banners can be mixed for future-banner planning");
+
+result = search({
+  seed: 4,
+  count: 2,
+  scheduleAware: true,
+  maxPlatinum: 0,
+  maxLegendTicket: 0,
+  events: [
+    {lang: "kr", event: "early", label: "KR Early",
+      start_on: "2026-09-14", end_on: "2026-09-19", pool: earlySchedulePool},
+    {lang: "jp", event: "late", label: "JP Late",
+      start_on: "2026-09-18", end_on: "2026-09-22", pool: lateSchedulePool}
+  ],
+  ticket: null,
+  targets: [
+    {cat_id: 100, allow_ticket: false},
+    {cat_id: 200, allow_ticket: false}
   ]
 });
-assert.strictEqual(result.status, "invalid");
+assert.strictEqual(result.status, "success",
+  "mixed KR and JP banners keep schedule-aware planning available");
+assert.deepStrictEqual(result.actions.map((action) => action.event),
+  ["late", "early"], "the mixed route actually uses both regions' pools");
+assert.deepStrictEqual(result.actions.map((action) => action.lang), ["jp", "kr"],
+  "route actions retain each banner's region for plan drawing");
 
 // Compare the optimized search with a small exhaustive search that permits a
 // platinum ticket at every position. This guards the ticket-defense pruning
