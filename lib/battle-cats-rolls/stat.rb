@@ -85,7 +85,7 @@ module BattleCatsRolls
     end
 
     def health
-      @health ||= health_raw.round
+      @health ||= health_raw.floor
     end
 
     def health_raw
@@ -317,7 +317,7 @@ module BattleCatsRolls
     end
 
     def damage n=0
-      damage_raw(n)&.round
+      damage_raw(n)&.floor
     end
 
     def damage_raw n=0

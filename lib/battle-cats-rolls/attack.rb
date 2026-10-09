@@ -99,7 +99,7 @@ module BattleCatsRolls
 
     def damage
       if triggered_effect.mini
-        (super * mini_damage_multiplier).round
+        (super * mini_damage_multiplier).floor
       else
         super
       end
@@ -150,7 +150,7 @@ module BattleCatsRolls
     private
 
     def wave_step
-      (width * next_position_multiplier).round
+      (width * next_position_multiplier).floor
     end
 
     def width

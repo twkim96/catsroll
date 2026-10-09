@@ -153,11 +153,11 @@ module BattleCatsRolls
       end
 
       def min
-        (super * chapter2_cost_multiplier).round
+        (super * chapter2_cost_multiplier).floor
       end
 
       def max
-        (super * chapter2_cost_multiplier).round
+        (super * chapter2_cost_multiplier).floor
       end
 
       private
