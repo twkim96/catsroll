@@ -446,6 +446,7 @@ module BattleCatsRolls
       'surge' => 'immune_surge',
       'explosion' => 'immune_explosion',
       'toxic' => 'immune_toxic',
+      'drain' => 'immune_drain',
       'bosswave' => 'immune_bosswave',
     }.freeze
 
