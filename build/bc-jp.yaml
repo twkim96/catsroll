@@ -9154,7 +9154,7 @@ cats:
   878:
     name: [いなばの白うさぎ, メガシャークVS白うさぎ]
     desc: ["サメを活用した交通インフラ事業を立ち上げ\n連邦政府の独占を打ち破った実業家にゃんこ\n天使とエイリアンにめっぽう強い(範囲攻撃)\nイナバノシロウサギ", "鮫暴走剤「INA・B100」を散布され事業を妨害\nされたにゃんこ。不屈の商魂で業務改善を行う\n天使とエイリアンにめっぽう強い(範囲攻撃)\nメガシャークバーサスシロウサギ"]
-    stat: [{health: 2200, knockbacks: 2, speed: 12, cost: 650, production_cooldown: 300, range: 250, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 17, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 5, savage_blow_modifier: 200, immune_weaken: 1, attack_duration: 71}, {health: 5500, knockbacks: 4, speed: 30, cost: 3100, production_cooldown: 1700, range: 380, width: 320, area_effect: 1, damage_0: 2200, attack_time_0: 21, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 15, savage_blow_modifier: 200, immune_weaken: 1, attack_duration: 170}]
+    stat: [{health: 2200, knockbacks: 2, speed: 12, cost: 650, production_cooldown: 300, range: 250, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 17, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 5, savage_blow_modifier: 200, alternate_production_cooldown_multiplier: 50, immune_weaken: 1, attack_duration: 71}, {health: 5500, knockbacks: 4, speed: 30, cost: 3100, production_cooldown: 1700, range: 380, width: 320, area_effect: 1, damage_0: 2200, attack_time_0: 21, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 15, savage_blow_modifier: 200, alternate_production_cooldown_multiplier: 75, immune_weaken: 1, attack_duration: 170}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]

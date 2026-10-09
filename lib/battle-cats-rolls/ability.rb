@@ -540,6 +540,29 @@ module BattleCatsRolls
       def index = __LINE__
     end
 
+    class AlternateProductionCooldown < Struct.new(:multiplier)
+      include AbilityUtility
+
+      def self.build_if_available stat
+        new(stat['alternate_production_cooldown_multiplier']) if
+          stat['alternate_production_cooldown_multiplier']
+      end
+
+      def name
+        'Alternate'
+      end
+
+      def display(**)
+        value = percent_highlight(100 - multiplier, **)
+
+        "Every other #{strong('production cooldown')} to #{value}"
+      end
+
+      def specialized = false
+      def effects = false
+      def index = __LINE__
+    end
+
     class ZombieKiller
       include AbilityUtility
 

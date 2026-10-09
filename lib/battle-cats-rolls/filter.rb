@@ -372,7 +372,7 @@ module BattleCatsRolls
       end
 
       def match? abilities, stat
-        case value = stat.production_cooldown
+        case value = stat.production_cooldown.first
         when Numeric
           value <= criteria
         end
