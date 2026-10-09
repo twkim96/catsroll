@@ -2,6 +2,11 @@
 
 <%= erb :form %>
 
+<div class="note"><ul>
+  <li><%= erb :help_seek %></li>
+  <li>There are <%= arg[:queue_size] %> people waiting for their seeds.</li>
+</ul></div>
+
 <% if gacha.pool.exist? %>
   <%= erb :seek_form %>
 <% elsif gacha.pool.event %>
