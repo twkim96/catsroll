@@ -135,7 +135,8 @@ module BattleCatsRolls
       end
 
       def display(**)
-        "#{strong('Cost')} by #{min} ~ #{strong(max)} by #{level} levels"
+        "#{strong('Production cost')} by" \
+          " #{min} ~ #{strong(max)} by #{level} levels"
       end
 
       def augment_module
