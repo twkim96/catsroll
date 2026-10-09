@@ -101,13 +101,14 @@ describe BattleCatsRolls::Web do
         expect(body).not.include? text_select_event
 
         expect(body).include? ' selected="selected">'
+        expect(body).include? ' ~ '
       end
     end
 
-    would 'ask for selecting an event if the selected one is invalid' do
-      expect_request('/', 'event=non-existing') do |body|
-        expect(body).not.include? text_selected_group
-        expect(body).include? text_select_event
+    would 'use a default event if the selected one is invalid' do
+      expect_request('/', 'event=non-existing',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'event='
       end
     end
 
@@ -115,6 +116,34 @@ describe BattleCatsRolls::Web do
       expect_request('/', 'event_page=2') do |body|
         expect(body).not.include? text_selected_group
         expect(body).include? text_select_event
+      end
+    end
+
+    would 'drop the banner if empty or invalid' do
+      expect_request('/', 'banner=',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner='
+      end
+
+      expect_request('/', 'banner=invalid',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner='
+      end
+    end
+
+    would 'show no events with a non-existing banner' do
+      expect_request('/', 'banner=9999') do |body|
+        expect(body).include? text_select_event
+        expect(body).not.include? ' ~ ' # Only used for showing an event
+      end
+    end
+
+    would 'drop the event when the banner does not have it' do
+      expect_request('/', 'event=2018-06-06_245&banner=9999',
+        status: 302) do |body, header|
+        location = header['location']
+        expect(location).not.include? 'event='
+        expect(location).include? 'banner=9999'
       end
     end
 

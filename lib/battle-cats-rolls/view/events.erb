@@ -1,6 +1,6 @@
 <% if route.path_info.match?(%r{\A/(?:seek)?\z}) %>
 <div class="events">
-  <label for="event_select" title="Gacha banner to show">Event:</label>
+  <label for="event_select" title="Gacha event to show">Event:</label>
   <select id="event_select" name="event" onchange="roll(this)">
     <% if route.event_page > 1 %>
     <option value="prev_page">Previous page...</option>
@@ -88,7 +88,23 @@
     </div>
   <% end %>
 </div>
+
+<div class="banners">
+  <label for="banner_select" title="Gacha banner to filter events">Banner:</label>
+  <select id="banner_select" name="banner" onchange="roll(this)">
+    <option
+      value=""
+      <%= selected_current_banner('') %>>
+      (Any events. Select a banner to filter events here)</option>
+    <% route.ball.banners.each do |id, data| %>
+    <option
+      value="<%= id %>"
+      <%= selected_current_banner(id) %>>
+        <%= show_banner(id, data) %></option>
+    <% end %>
+  </select>
+</div>
 <% else %>
-<%= hidden_inputs('event') %>
+<%= hidden_inputs('event', 'banner') %>
 <% end %>
 <%= hidden_inputs('event_page') %>

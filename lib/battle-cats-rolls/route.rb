@@ -75,7 +75,7 @@ module BattleCatsRolls
     end
 
     def event_not_in_menu?
-      event != 'custom' && all_events[event].nil?
+      event != 'custom' && events_paged[event].nil?
     end
 
     def event_missing_data?
@@ -263,8 +263,14 @@ module BattleCatsRolls
     end
 
     def event
-      @event ||= request.params_coercion_with_nil('event', :to_s) ||
-        current_event
+      @event ||= begin
+        selected = request.params_coercion_with_nil('event', :to_s)
+        if filtered_event?(selected)
+          selected
+        else
+          current_event
+        end
+      end
     end
 
     def event_page
@@ -299,6 +305,12 @@ module BattleCatsRolls
 
     def c_uber
       @c_uber ||= get_rate('c_uber', 2)
+    end
+
+    def banner
+      return @banner if instance_variable_defined?(:@banner)
+
+      @banner ||= request.params_coercion_int_or_nil('banner')
     end
 
     def count
@@ -732,7 +744,7 @@ module BattleCatsRolls
       @grouped_events ||= begin
         today = Date.today
 
-        all_events.group_by do |_, value|
+        events_paged.group_by do |_, value|
           if today <= value['start_on']
             :upcoming
           elsif today <= value['end_on']
@@ -744,8 +756,21 @@ module BattleCatsRolls
       end
     end
 
-    def all_events
-      @all_events ||= ball.events_page(event_page)
+    def events_paged
+      @events_paged ||= ball.events_paged(event_page, events_filtered)
+    end
+
+    def events_filtered
+      @events_filtered ||= ball.events_filtered(banner)
+    end
+
+    def filtered_event? event
+      case event
+      when nil, 'next_page', 'prev_page'
+        event
+      else
+        events_filtered.find{ event == _1.first }
+      end
     end
 
     def get_rate name, index
@@ -788,7 +813,7 @@ module BattleCatsRolls
     def default_query query={}, include_filters: false
       keys = %i[
         seed pos last
-        event event_page custom rate c_rare c_supa c_uber
+        event event_page custom rate c_rare c_supa c_uber banner
         level speed_unit lang ui
         seeker name display highlighting theme text_bg count find
         no_guaranteed force_guaranteed ubers details

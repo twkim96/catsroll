@@ -12,6 +12,21 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-10-10") %>
+<ul>
+  <li>
+    Add a new banner events filter that we can filter the events based on a
+    particular banner. The banner is determined by the banner id, which
+    doesn't have a name, thus we're showing the lastest event date and name
+    for that particular banner for better recognization.
+  </li>
+  <li>
+    If the selected event doesn't belong to the selected banner, it'll be
+    de-selected to avoid confusion. When this happens, if there's a upcoming
+    event for that banner, it'll be selected instead.
+  </li>
+</ul>
+
 <%= header(2, "2026-10-09") %>
 <ul>
   <li>
