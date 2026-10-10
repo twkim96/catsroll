@@ -56,6 +56,36 @@ describe BattleCatsRolls::Web do
     end
   end
 
+  describe 'banner events filter' do
+    would 'drop the banner if empty or invalid' do
+      expect_request('/', 'banner=',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner='
+      end
+
+      expect_request('/', 'banner=invalid',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner='
+      end
+    end
+
+    would 'show no events with a non-existing banner' do
+      expect_request('/', 'banner=9999') do |body|
+        expect(body).include? text_select_event
+        expect(body).not.include? ' ~ ' # Only used for showing an event
+      end
+    end
+
+    would 'drop the event when the banner does not have it' do
+      expect_request('/', 'event=2018-06-06_245&banner=9999',
+        status: 302) do |body, header|
+        location = header['location']
+        expect(location).not.include? 'event='
+        expect(location).include? 'banner=9999'
+      end
+    end
+  end
+
   describe 'event pagination' do
     would 'have a next_page link but no prev_page link on page 1' do
       expect_request('/') do |body|
@@ -129,34 +159,6 @@ describe BattleCatsRolls::Web do
       expect_request('/', 'event_page=2') do |body|
         expect(body).not.include? text_selected_group
         expect(body).include? text_select_event
-      end
-    end
-
-    would 'drop the banner if empty or invalid' do
-      expect_request('/', 'banner=',
-        status: 302) do |body, header|
-        expect(header['location']).not.include? 'banner='
-      end
-
-      expect_request('/', 'banner=invalid',
-        status: 302) do |body, header|
-        expect(header['location']).not.include? 'banner='
-      end
-    end
-
-    would 'show no events with a non-existing banner' do
-      expect_request('/', 'banner=9999') do |body|
-        expect(body).include? text_select_event
-        expect(body).not.include? ' ~ ' # Only used for showing an event
-      end
-    end
-
-    would 'drop the event when the banner does not have it' do
-      expect_request('/', 'event=2018-06-06_245&banner=9999',
-        status: 302) do |body, header|
-        location = header['location']
-        expect(location).not.include? 'event='
-        expect(location).include? 'banner=9999'
       end
     end
 
