@@ -163,9 +163,13 @@ module BattleCatsRolls
           source
         else
           selected = event_series.to_set
-          source.select do |_, info|
-            selected.member?(ball.gacha.dig(info['id'], 'series_id'))
-          end
+          # The default Banner means no extra selection; its full list must
+          # not override an active local series filter.
+          banner_events = banner ? source.to_h : {}
+          ball.events.select do |event_id, info|
+            banner_events.key?(event_id) ||
+              selected.member?(ball.gacha.dig(info['id'], 'series_id'))
+          end.to_a
         end
       end
     end

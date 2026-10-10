@@ -414,15 +414,18 @@ describe 'local web features' do
     expected = ball.events.select do |_, info|
       ball.gacha.dig(info['id'], 'series_id') == 24
     end.keys.sort
-    response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
-      '/?event_series=24&lang=kr')
-    rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
-      flatten.sort
+    request = Rack::MockRequest.new(BattleCatsRolls::Server)
+    ['', '&banner='].each do |banner|
+      response = request.get("/?event_series=24&lang=kr#{banner}")
+      response = request.get(response['location']) if response.redirect?
+      rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
+        flatten.sort
 
-    expect(response.status).eq 200
-    expect(rendered).eq expected
-    expect(response.body.include?('name="event_series" value="24"')).eq true
-    expect(response.body.include?('Customize...')).eq true
+      expect(response.status).eq 200
+      expect(rendered).eq expected
+      expect(response.body.include?('name="event_series" value="24"')).eq true
+      expect(response.body.include?('Customize...')).eq true
+    end
   end
 
   would 'combine selected event series with OR semantics' do
@@ -455,43 +458,59 @@ describe 'local web features' do
     expect(response.body.scan(/name="event_series"/).size).eq 1
   end
 
-  would 'intersect the selected event series with the upstream banner filter' do
+  would 'combine the selected event series and the banner with OR semantics' do
     ball = BattleCatsRolls::Route.ball_kr
     expected = ball.events.select do |_, info|
-      ball.gacha.dig(info['id'], 'series_id') == 24
+      [3, 6, 9].include?(ball.gacha.dig(info['id'], 'series_id'))
     end.keys.sort
     request = Rack::MockRequest.new(BattleCatsRolls::Server)
     ['/', '/seek'].each do |path|
-      response = request.get(
-        "#{path}?event_series=24&event_series=28&banner=24&lang=kr")
-      response = request.get(response['location']) if response.redirect?
-      rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
-        flatten.sort
+      ['', '&compute=client'].each do |compute|
+        response = request.get(
+          "#{path}?seed=2762818371&event_series=3&event_series=6&banner=9&lang=kr#{compute}")
+        response = request.get(response['location']) if response.redirect?
+        rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
+          flatten.sort
 
-      expect(response.status).eq 200
-      expect(rendered).eq expected
-      banner_select = response.body[/<select id="banner_select".*?<\/select>/m]
-      expect(banner_select.match?(/value="24"\s+selected="selected"/)).eq true
-      expect(response.body.include?('name="event_series" value="28"')).eq true
+        expect(response.status).eq 200
+        expect(rendered).eq expected
+        banner_select = response.body[/<select id="banner_select".*?<\/select>/m]
+        expect(banner_select.match?(/value="9"\s+selected="selected"/)).eq true
+        expect(response.body.include?('name="event_series" value="3"')).eq true
+        expect(response.body.include?('name="event_series" value="6"')).eq true
+      end
     end
   end
 
-  would 'show no dated events when the series and banner filters do not overlap' do
-    response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
-      '/?event_series=24&banner=28&lang=kr')
-    rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
-      flatten
+  would 'show no dated events safely when neither selected filter has events' do
+    request = Rack::MockRequest.new(BattleCatsRolls::Server)
+    %w[kr jp].each do |lang|
+      ['', '&compute=client'].each do |compute|
+        response = request.get(
+          "/?seed=2762818371&event_series=99999&banner=99999&lang=#{lang}#{compute}")
+        rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
+          flatten
 
+        expect(response.status).eq 200
+        expect(rendered).eq []
+        expect(response.body.include?('(Select an event here)')).eq true
+        expect(response.body.include?('Customize...')).eq true
+        expect(response.body.include?('id="find_select"')).eq false
+      end
+    end
+
+    response = request.get(
+      '/?seed=2762818371&event_series=3&banner=3&lang=kr&compute=client')
     expect(response.status).eq 200
-    expect(rendered).eq []
-    expect(response.body.include?('(Select an event here)')).eq true
-    expect(response.body.include?('Customize...')).eq true
+    expect(response.body.include?('id="find_select"')).eq true
+    expect(response.body.include?('/asset/track-client.js')).eq true
+    expect(response.body.include?('2762818371')).eq true
   end
 
-  would 'replace an event outside the banner intersection and preserve both filters' do
+  would 'replace an event outside both filters and preserve their selections' do
     ball = BattleCatsRolls::Route.ball_kr
     outside = ball.events.find do |_, info|
-      ball.gacha.dig(info['id'], 'series_id') == 28
+      ball.gacha.dig(info['id'], 'series_id') == 3
     end.first
     request = Rack::MockRequest.new(BattleCatsRolls::Server)
     response = request.get(
@@ -506,13 +525,14 @@ describe 'local web features' do
     response = request.get(location)
     expect(response.status).eq 200
     selected = response.body[/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"\s+selected=/, 1]
-    expect(ball.gacha.dig(ball.events.fetch(selected)['id'], 'series_id')).eq 24
+    selected_series = ball.gacha.dig(ball.events.fetch(selected)['id'], 'series_id')
+    expect([24, 28].include?(selected_series)).eq true
   end
 
-  would 'use the same series and banner intersection for the client event API' do
+  would 'use the same series and banner union for the client event API' do
     ball = BattleCatsRolls::Route.ball_kr
     expected = ball.events.select do |_, info|
-      ball.gacha.dig(info['id'], 'series_id') == 28
+      [24, 28].include?(ball.gacha.dig(info['id'], 'series_id'))
     end.keys.sort
     response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
       '/events.json?event_series=24&event_series=28&banner=28&lang=kr')
@@ -521,6 +541,22 @@ describe 'local web features' do
 
     expect(response.status).eq 200
     expect(rendered).eq expected
+  end
+
+  would 'preserve an event matching either the local filter or the banner' do
+    ball = BattleCatsRolls::Route.ball_kr
+    request = Rack::MockRequest.new(BattleCatsRolls::Server)
+    [3, 1].each do |series_id|
+      event = ball.events.find do |_, info|
+        ball.gacha.dig(info['id'], 'series_id') == series_id
+      end.first
+      response = request.get(
+        "/?seed=2762818371&event=#{event}&event_series=3&banner=1&lang=kr&compute=client")
+      response = request.get(response['location']) if response.redirect?
+      expect(response.status).eq 200
+      selected = response.body[/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"\s+selected=/, 1]
+      expect(selected).eq event
+    end
   end
 
   would 'serve searchable event series metadata' do

@@ -5,9 +5,14 @@
 
 * With Banner at its default, the local series filter shows all dated events
   from any selected series, without pagination.
-* Multiple local series use OR; selecting a Banner applies AND to that result.
-* Non-overlapping series and Banner selections show no dated events.
-* Changing either filter drops an event outside the intersection while keeping
+* Without a local series filter, the default Banner keeps the ordinary event
+  menu; a selected Banner uses the upstream Banner filter and pagination.
+* Multiple local series and the selected Banner use OR. For example, choosing
+  Galaxy Gals in the local filter and The Dynamites in Banner shows both series.
+* If neither selection has events, show an empty menu. Verify this with a
+  nonzero seed in server and client compute modes; controls that require an
+  event pool stay hidden until a matching event is available.
+* Changing either filter drops an event outside both selections while keeping
   both filter selections. `Customize...` remains available.
 * In client compute mode, changing Banner rebuilds the event menu and preserves
   client computation. Region changes with active filters rebuild the menus too.
