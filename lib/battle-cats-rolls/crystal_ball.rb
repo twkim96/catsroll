@@ -204,11 +204,11 @@ module BattleCatsRolls
       end
     end
 
-    def each_custom_gacha name_index
+    def each_custom_gacha name_index, gacha_filtered=gacha
       ubers = cats_by_rarity[Cat::Uber].keys
       legends = cats_by_rarity[Cat::Legend].keys
 
-      gacha.reverse_each do |gacha_id, gacha_data|
+      gacha_filtered.reverse_each do |gacha_id, gacha_data|
         title =
           if similarity = gacha_data['similarity']
             "(#{similarity}%) #{gacha_data['name']}"

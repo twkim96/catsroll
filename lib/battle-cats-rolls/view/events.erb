@@ -48,7 +48,7 @@
     <div class="custom">
       <label for="custom_select">Custom gacha:</label>
       <select id="custom_select" name="custom" onchange="roll(this)">
-        <% route.ball.each_custom_gacha(route.name) do |id, name| %>
+        <% route.ball.each_custom_gacha(route.name, route.gacha_filtered) do |id, name| %>
           <option
             value="<%= id %>"
             <%= selected_custom_gacha(id) %>><%= name %></option>

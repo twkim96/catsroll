@@ -277,6 +277,14 @@ module BattleCatsRolls
       end
     end
 
+    def gacha_filtered
+      @gacha_filtered ||= if banner
+        ball.gacha.select{ |id, data| data['series_id'] == banner }
+      else
+        ball.gacha
+      end
+    end
+
     def event_page
       @event_page ||= [request.params_coercion('event_page', :to_i), 1].max
     end
@@ -291,8 +299,14 @@ module BattleCatsRolls
     end
 
     def custom
-      @custom ||= request.params_coercion_with_nil('custom', :to_i) ||
-        ball.gacha.each_key.reverse_each.first.to_i
+      @custom ||= begin
+        selected = request.params_coercion_with_nil('custom', :to_i)
+        if gacha_filtered.any?{ |id, data| selected == id }
+          selected
+        else
+          gacha_filtered.each_key.reverse_each.first.to_i
+        end
+      end
     end
 
     def rate
