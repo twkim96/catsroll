@@ -443,7 +443,7 @@ module BattleCatsRolls
       'selected="selected"' if route.event == event_name
     end
 
-    def selected_custom_gacha gacha_id
+    def selected_gacha_pool gacha_id
       'selected="selected"' if route.custom == gacha_id
     end
 

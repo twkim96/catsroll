@@ -7,7 +7,7 @@ require 'battle-cats-rolls/route'
 describe BattleCatsRolls::Web do
   text_select_event = '(Select an event here)'
   text_selected_group = '<optgroup label="Selected:">'
-  text_label_custom_gacha = 'Custom gacha:'
+  text_label_gacha_pool = 'Gacha pool:'
 
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
@@ -56,7 +56,7 @@ describe BattleCatsRolls::Web do
       expect_request('/', 'event=custom',
         status: 302) do |_, header|
         expect_request(URI.parse(header['location'])) do |body|
-          expect(body).include? text_label_custom_gacha
+          expect(body).include? text_label_gacha_pool
         end
       end
     end

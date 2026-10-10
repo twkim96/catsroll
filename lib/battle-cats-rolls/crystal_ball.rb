@@ -204,7 +204,7 @@ module BattleCatsRolls
       end
     end
 
-    def each_custom_gacha name_index, gacha_filtered=gacha
+    def each_gacha_pool name_index, gacha_filtered=gacha
       ubers = cats_by_rarity[Cat::Uber].keys
       legends = cats_by_rarity[Cat::Legend].keys
 
