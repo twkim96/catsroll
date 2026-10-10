@@ -92,15 +92,18 @@
 <div class="banners">
   <label for="banner_select" title="Gacha banner to filter events">Banner:</label>
   <select id="banner_select" name="banner" onchange="roll(this)">
-    <option
-      value=""
-      <%= selected_current_banner('') %>>
-      (Any events. Select a banner to filter events)</option>
+    <% if route.banner_not_in_menu? %>
+    <option value="<%= route.banner %>" selected="selected">
+      (<%= route.banner %>) Unknown
+    </option>
+    <% end %>
+    <option value="" <%= selected_current_banner('') %>>
+      (Any events. Select a banner to filter events)
+    </option>
     <% route.ball.banners.each do |id, data| %>
-    <option
-      value="<%= id %>"
-      <%= selected_current_banner(id) %>>
-        <%= show_banner(id, data) %></option>
+    <option value="<%= id %>" <%= selected_current_banner(id) %>>
+      <%= show_banner(id, data) %>
+    </option>
     <% end %>
   </select>
 </div>

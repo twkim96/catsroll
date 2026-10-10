@@ -82,6 +82,10 @@ module BattleCatsRolls
       gacha.pool.event && !gacha.pool.exist?
     end
 
+    def banner_not_in_menu?
+      banner && !ball.banners.member?(banner)
+    end
+
     def prepare_tracks
       gacha.pool.add_future_ubers(ubers) if ubers > 0
       gacha.position = pos
