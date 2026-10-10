@@ -425,7 +425,7 @@
           </label>
         </td>
         <td class="filter" colspan="3">
-          <div><strong>Cost</strong></div>
+          <div><strong>Production cost</strong></div>
           <% BattleCatsRolls::Filter::Cost.each do |filter, mod| %>
           <label for="cost_<%= filter %>">
             <input type="radio" name="cost" id="cost_<%= filter %>"
@@ -446,7 +446,7 @@
           </label>
         </td>
         <td class="filter" colspan="3">
-          <div><strong>Production</strong></div>
+          <div><strong>Production cooldown</strong></div>
           <% BattleCatsRolls::Filter::Production.each do |filter, mod| %>
           <label for="production_<%= filter %>">
             <input type="radio" name="production" id="production_<%= filter %>"

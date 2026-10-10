@@ -372,14 +372,14 @@ describe BattleCatsRolls::Stat do
       would 'have augmented attributes' do
         expect(stat.health).eq 81600
         expect(stat.dps_sum.round).eq 17626
-        expect(stat.production_cooldown).eq 1936
+        expect(stat.production_cooldown).eq [1936]
       end
 
       copy do
         would 'not have augmented attributes' do
           expect(stat.health).eq 34000
           expect(stat.dps_sum.round).eq 9792
-          expect(stat.production_cooldown).eq 2136
+          expect(stat.production_cooldown).eq [2136]
         end
       end
 
@@ -413,6 +413,56 @@ describe BattleCatsRolls::Stat do
           expect(stat.attack_cooldown).eq 152
           expect(stat.production_cost).eq 4200
         end
+      end
+    end
+
+    describe 'Almighty Zeus' do
+      def lang = 'jp'
+      def id = 258
+
+      would 'have augmented attributes' do
+        expect(stat.health).eq 85272
+        expect(stat.production_cooldown).eq [4736, 2368]
+      end
+
+      describe 'when talents are excluded' do
+        def exclude_talents = true
+
+        would 'not have augmented attributes' do
+          expect(stat.health).eq 71060
+          expect(stat.production_cooldown).eq [4736]
+        end
+      end
+    end
+  end
+
+  describe '#production_cooldown' do
+    describe 'メガシャークVS白うさぎ' do
+      def lang = 'jp'
+      def id = 878
+
+      describe 'base form' do
+        def index = 0
+
+        would 'give correct production cooldown' do
+          expect(stat.production_cooldown).eq [336, 168]
+        end
+      end
+
+      describe 'evolved form' do
+        def index = 1
+
+        would 'give correct production cooldown' do
+          expect(stat.production_cooldown).eq [3136, 784]
+        end
+      end
+    end
+
+    describe '733_1' do
+      def id = 733
+
+      would 'give correct production cooldown' do
+        expect(stat.production_cooldown).eq ['-']
       end
     end
   end

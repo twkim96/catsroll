@@ -372,7 +372,7 @@ module BattleCatsRolls
       end
 
       def match? abilities, stat
-        case value = stat.production_cooldown
+        case value = stat.production_cooldown.first
         when Numeric
           value <= criteria
         end
@@ -446,6 +446,7 @@ module BattleCatsRolls
       'surge' => 'immune_surge',
       'explosion' => 'immune_explosion',
       'toxic' => 'immune_toxic',
+      'drain' => 'immune_drain',
       'bosswave' => 'immune_bosswave',
     }.freeze
 
@@ -478,6 +479,8 @@ module BattleCatsRolls
 
     Other = {
       'extra_money' => nil,
+      'alternate_production_cooldown' =>
+        'alternate_production_cooldown_multiplier',
       'dodge' => 'dodge_chance',
       'survive' => 'survive_chance',
       'attack_only' => 'against_only',

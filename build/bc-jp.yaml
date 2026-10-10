@@ -9154,7 +9154,7 @@ cats:
   878:
     name: [いなばの白うさぎ, メガシャークVS白うさぎ]
     desc: ["サメを活用した交通インフラ事業を立ち上げ\n連邦政府の独占を打ち破った実業家にゃんこ\n天使とエイリアンにめっぽう強い(範囲攻撃)\nイナバノシロウサギ", "鮫暴走剤「INA・B100」を散布され事業を妨害\nされたにゃんこ。不屈の商魂で業務改善を行う\n天使とエイリアンにめっぽう強い(範囲攻撃)\nメガシャークバーサスシロウサギ"]
-    stat: [{health: 2200, knockbacks: 2, speed: 12, cost: 650, production_cooldown: 300, range: 250, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 17, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 5, savage_blow_modifier: 200, immune_weaken: 1, attack_duration: 71}, {health: 5500, knockbacks: 4, speed: 30, cost: 3100, production_cooldown: 1700, range: 380, width: 320, area_effect: 1, damage_0: 2200, attack_time_0: 21, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 15, savage_blow_modifier: 200, immune_weaken: 1, attack_duration: 170}]
+    stat: [{health: 2200, knockbacks: 2, speed: 12, cost: 650, production_cooldown: 300, range: 250, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 17, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 5, savage_blow_modifier: 200, alternate_production_cooldown_multiplier: 50, immune_weaken: 1, attack_duration: 71}, {health: 5500, knockbacks: 4, speed: 30, cost: 3100, production_cooldown: 1700, range: 380, width: 320, area_effect: 1, damage_0: 2200, attack_time_0: 21, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 15, savage_blow_modifier: 200, alternate_production_cooldown_multiplier: 75, immune_weaken: 1, attack_duration: 170}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -15031,6 +15031,149 @@ gacha:
     name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
     rate: legend
     similarity: 99
+banners:
+  0:
+    event: 2026-10-08_986
+  1:
+    event: 2026-10-09_1067
+  2:
+    event: 2026-10-11_1043
+  3:
+    event: 2026-10-09_1021
+  4:
+    event: 2026-10-16_1059
+  5:
+    event: 2026-09-15_696
+  6:
+    event: 2026-10-18_946
+  7:
+    event: 2026-10-04_947
+  8:
+    event: 2025-10-29_922
+  9:
+    event: 2025-12-25_940
+  10:
+    event: 2019-12-26_473
+  13:
+    event: 2024-11-10_925
+  14:
+    event: 2026-08-27_1000
+  15:
+    event: 2024-07-17_505
+  16:
+    event: 2026-01-08_1037
+  17:
+    event: 2026-01-19_482
+  18:
+    event: 2026-10-06_991
+  19:
+    event: 2026-10-01_1069
+  20:
+    event: 2023-07-26_822
+  21:
+    event: 2026-08-08_1071
+  22:
+    event: 2026-09-17_452
+  23:
+    event: 2025-02-04_958
+  24:
+    event: 2026-10-13_979
+  25:
+    event: 2018-10-15_322
+  26:
+    event: 2026-04-11_875
+  27:
+    event: 2026-10-16_1070
+  28:
+    event: 2026-10-13_1015
+  30:
+    event: 2024-05-09_853
+  31:
+    event: 2024-05-07_854
+  32:
+    event: 2026-09-19_906
+  33:
+    event: 2026-10-11_1004
+  34:
+    event: 2026-06-10_1066
+  35:
+    event: 2026-04-24_1052
+  37:
+    event: 2026-02-21_998
+  38:
+    event: 2024-09-11_913
+  39:
+    event: 2026-05-09_1053
+  40:
+    event: 2020-11-12_549
+  41:
+    event: 2024-05-05_855
+  42:
+    event: 2026-05-01_1051
+  43:
+    event: 2023-10-27_850
+  44:
+    event: 2026-02-21_999
+  45:
+    event: 2026-09-21_523
+  46:
+    event: 2026-08-08_1072
+  47:
+    event: 2026-09-25_1078
+  48:
+    event: 2026-02-25_785
+  49:
+    event: 2022-07-06_748
+  50:
+    event: 2026-07-04_861
+  51:
+    event: 2022-10-10_765
+  52:
+    event: 2026-03-18_968
+  53:
+    event: 2026-06-24_1065
+  54:
+    event: 2025-10-14_1017
+  55:
+    event: 2025-10-14_1018
+  56:
+    event: 2026-09-23_772
+  57:
+    event: 2026-09-10_1079
+  58:
+    event: 2024-10-10_924
+  59:
+    event: 2026-05-15_939
+  60:
+    event: 2024-01-24_864
+  61:
+    event: 2024-03-08_866
+  63:
+    event: 2026-10-16_1082
+  64:
+    event: 2026-08-06_1073
+  65:
+    event: 2026-08-27_1074
+  66:
+    event: 2026-04-21_1028
+  67:
+    event: 2026-05-07_1054
+  68:
+    event: 2026-05-13_1030
+  69:
+    event: 2025-02-10_961
+  70:
+    event: 2026-09-21_1077
+  71:
+    event: 2026-06-29_974
+  72:
+    event: 2025-04-04_977
+  73:
+    event: 2025-05-31_985
+  74:
+    event: 2026-02-11_1038
+  75:
+    event: 2026-09-10_1080
 events:
   2018-09-15_320:
     start_on: 2018-09-15

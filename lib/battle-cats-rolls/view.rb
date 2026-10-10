@@ -451,6 +451,10 @@ module BattleCatsRolls
       'selected="selected"' if route.rate == rate
     end
 
+    def selected_current_banner banner_id
+      'selected="selected"' if route.banner == banner_id
+    end
+
     def selected_find cat
       'selected="selected"' if route.find == cat.id
     end
@@ -647,6 +651,11 @@ module BattleCatsRolls
 
     def show_event info
       h "#{info['start_on']} ~ #{info['end_on']}: #{info['name']}"
+    end
+
+    def show_banner id, data
+      info = route.ball.events[data['event']]
+      h "(#{id}) #{info['start_on']}: #{info['name']}"
     end
 
     def show_gacha_slots cats

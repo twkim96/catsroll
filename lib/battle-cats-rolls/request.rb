@@ -54,5 +54,11 @@ module BattleCatsRolls
     def params_coercion_true_or_nil key
       /\S+/.match?(params_coercion_with_nil(key, :to_s)) || nil
     end
+
+    def params_coercion_int_or_nil key
+      value = params_coercion_with_nil(key, :to_s)
+
+      value.to_i if /\d+/.match?(value)
+    end
   end
 end

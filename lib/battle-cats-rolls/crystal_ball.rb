@@ -13,6 +13,7 @@ module BattleCatsRolls
       new(deep_freeze({
         'cats' => cats_builder.cats,
         'gacha' => guess_gacha_events(gacha_data, events.gacha.values),
+        'banners' => set_banners_with_last_event(gacha_data, events.gacha),
         'events' => events.gacha
       }))
     end
@@ -116,6 +117,14 @@ module BattleCatsRolls
       end
     end
 
+    def self.set_banners_with_last_event gacha, events
+      events.group_by do |event_id, event_data|
+        gacha.dig(event_data['id'], 'series_id')
+      end.transform_values do |grouped_events|
+        {'event' => grouped_events.last.first}
+      end.sort.to_h
+    end
+
     def self.find_gacha_rate event
       predefined_rates.find do |_, name_rate|
         name_rate[:rate] == event.values_at('rare', 'supa', 'uber')
@@ -159,25 +168,40 @@ module BattleCatsRolls
       @cats_by_rarity ||= self.class.group_by_rarity(cats)
     end
 
+    def cats
+      data['cats']
+    end
+
     def gacha
       data['gacha']
+    end
+
+    def banners
+      data['banners']
     end
 
     def events
       data['events']
     end
 
-    def cats
-      data['cats']
-    end
-
-    def events_page page
+    def events_paged page, all=events_filtered
       offset = EventsPerPage * page
-      size = events.size
-      (@events_page ||= events.to_a)[
+      size = all.size
+
+      all[
         -[offset, size].min,
         [EventsPerPage, size - (offset - EventsPerPage)].min
       ].to_h
+    end
+
+    def events_filtered banner=nil
+      if banner
+        events.select do |event_id, event_data|
+          gacha.dig(event_data['id'], 'series_id') == banner
+        end.to_a
+      else
+        @events_filtered ||= events.to_a
+      end
     end
 
     def each_custom_gacha name_index

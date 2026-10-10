@@ -290,6 +290,7 @@ module BattleCatsRolls
         savage_blow_chance: 82, savage_blow_modifier: 83,
         critical_chance: 31, metal_killer: 112,
         break_barrier_chance: 70, break_shield_chance: 95,
+        alternate_production_cooldown_multiplier: 118,
         zombie_killer: 52, soul_strike: 98, base_destroyer: 34,
         colossus_slayer: 97, sage_slayer: 111,
         witch_slayer: 53, eva_angel_slayer: 77,

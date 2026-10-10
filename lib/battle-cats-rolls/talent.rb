@@ -135,7 +135,8 @@ module BattleCatsRolls
       end
 
       def display(**)
-        "#{strong('Cost')} by #{min} ~ #{strong(max)} by #{level} levels"
+        "#{strong('Production cost')} by" \
+          " #{min} ~ #{strong(max)} by #{level} levels"
       end
 
       def augment_module
@@ -152,11 +153,11 @@ module BattleCatsRolls
       end
 
       def min
-        (super * chapter2_cost_multiplier).round
+        (super * chapter2_cost_multiplier).floor
       end
 
       def max
-        (super * chapter2_cost_multiplier).round
+        (super * chapter2_cost_multiplier).floor
       end
 
       private
@@ -183,7 +184,7 @@ module BattleCatsRolls
       def augment_module
         talent = self
         Module.new do
-          define_method(:production_cooldown) do
+          define_method(:production_cooldown_base) do
             super() - talent.max
           end
         end
@@ -202,19 +203,18 @@ module BattleCatsRolls
       end
 
       def display(view:, **)
-        values = values_range(data.dig('minmax', 0), suffix: '%')
+        invert = data.dig('minmax', 0).map{ 100 - _1 }
+        values = values_range(invert, suffix: '%')
 
         "Every other #{strong('production cooldown')}" \
-          " by #{values} by #{level} levels"
+          " to #{values} by #{level} levels"
       end
 
       def augment_module
         talent = self
         Module.new do
-          define_method(:production_cooldown) do
-            value = super()
-            other = (value * talent.max / 100.0).floor
-            [value, other]
+          define_method(:alternate_production_cooldown_multiplier) do
+            talent.max
           end
         end
       end

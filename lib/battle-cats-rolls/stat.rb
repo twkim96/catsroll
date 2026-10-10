@@ -85,7 +85,7 @@ module BattleCatsRolls
     end
 
     def health
-      @health ||= health_raw.round
+      @health ||= health_raw.floor
     end
 
     def health_raw
@@ -110,13 +110,18 @@ module BattleCatsRolls
 
     def production_cooldown
       @production_cooldown ||= if stat['production_cooldown']
-        [
-          minimal_cooldown,
-          (stat['production_cooldown'] * time_multiplier) -
-            reduction_from_blue_orbs_and_treasures
-        ].max
+        if multiplier = alternate_production_cooldown_multiplier
+          alternate = [
+            minimal_cooldown,
+            (production_cooldown_base * ((100 - multiplier) / 100.0)).floor
+          ].max
+
+          [production_cooldown_base, alternate]
+        else
+          [production_cooldown_base]
+        end
       else
-        '-'
+        ['-']
       end
     end
 
@@ -299,8 +304,20 @@ module BattleCatsRolls
       self
     end
 
+    def production_cooldown_base
+      @production_cooldown_base ||= [
+        minimal_cooldown,
+        (stat['production_cooldown'] * time_multiplier) -
+          reduction_from_blue_orbs_and_treasures
+      ].max
+    end
+
+    def alternate_production_cooldown_multiplier
+      stat['alternate_production_cooldown_multiplier']
+    end
+
     def damage n=0
-      damage_raw(n)&.round
+      damage_raw(n)&.floor
     end
 
     def damage_raw n=0
