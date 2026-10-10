@@ -22,7 +22,7 @@
   to show the gacha data so we know it's not just an empty gacha but a gacha
   we can't use, and it should be clear what's the missing cat so we have a
   better idea. See:
-  https://bc.godfat.org/?seed=1&event=custom&custom=12&details=true
+  https://bc.godfat.org/?event=custom&custom=12&details=true
   This should not show empty gacha, but what are there and what's missing.
   Check GachaPool#slots for this.
 * Preserve current queries when swapping language for a non-existing cat when

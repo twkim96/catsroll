@@ -8,6 +8,7 @@ describe BattleCatsRolls::Web do
   text_select_event = '(Select an event here)'
   text_selected_group = '<optgroup label="Selected:">'
   text_label_gacha_pool = 'Gacha pool:'
+  text_label_event_details = 'Event details:'
 
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
@@ -185,6 +186,14 @@ describe BattleCatsRolls::Web do
         expect(body).include? text_select_event
 
         expect(body).not.match? last_event
+      end
+    end
+  end
+
+  describe 'showing event details' do
+    would 'show when details is on even without a seed' do
+      expect_request('/', 'event=2018-06-06_245&details=true') do |body|
+        expect(body).include? text_label_event_details
       end
     end
   end
