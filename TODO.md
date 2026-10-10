@@ -16,6 +16,7 @@
 
 * Changing the banner should go back to the first page because the whole set
   is changed so there's no reason to preserve the same page.
+* Don't show next page if next page is empty
 * If there's a non-existing cat in a gacha, for now we show nothing because
   tracking can't be done due to missing rarity data. However, it'll be useful
   to show the gacha data so we know it's not just an empty gacha but a gacha
