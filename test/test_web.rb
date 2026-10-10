@@ -7,6 +7,7 @@ require 'battle-cats-rolls/route'
 describe BattleCatsRolls::Web do
   text_select_event = '(Select an event here)'
   text_selected_group = '<optgroup label="Selected:">'
+  text_label_custom_gacha = 'Custom gacha:'
 
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
@@ -40,6 +41,18 @@ describe BattleCatsRolls::Web do
   BattleCatsRolls::Route.ball_jp.cats.each_key do |id|
     would "respond 200 for /cats/#{id}?lang=jp" do
       expect_request("/cats/#{id}", 'lang=jp')
+    end
+  end
+
+  describe 'custom event' do
+    would 'show a custom gacha selection' do
+      expect_request('/', 'event=custom',
+        status: 302) do |_, header|
+        location = URI.parse(header['location'])
+        expect_request(location.path, location.query) do |body|
+          expect(body).include? text_label_custom_gacha
+        end
+      end
     end
   end
 

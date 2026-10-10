@@ -766,7 +766,7 @@ module BattleCatsRolls
 
     def filtered_event? event
       case event
-      when nil, 'next_page', 'prev_page'
+      when nil, 'custom', 'next_page', 'prev_page'
         event
       else
         events_filtered.find{ event == _1.first }
