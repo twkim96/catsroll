@@ -75,7 +75,7 @@ module BattleCatsRolls
     end
 
     def event_not_in_menu?
-      event != 'custom' && events_paged[event].nil?
+      event != 'custom' && !events_paged.key?(event)
     end
 
     def event_missing_data?
