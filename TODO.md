@@ -14,6 +14,8 @@
 
 ## Bugs
 
+* Changing the banner should go back to the first page because the whole set
+  is changed so there's no reason to preserve the same page.
 * If there's a non-existing cat in a gacha, for now we show nothing because
   tracking can't be done due to missing rarity data. However, it'll be useful
   to show the gacha data so we know it's not just an empty gacha but a gacha
@@ -34,7 +36,6 @@
 * What if we add /tracks and make /help the landing page?
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
-* Add a dropdown menu for filtering events based on series id
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.
