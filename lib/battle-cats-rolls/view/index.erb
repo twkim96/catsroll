@@ -1,8 +1,8 @@
 <%= erb :form %>
 
 <% if arg %>
-  <%= erb :found_cats %>
   <%= erb :information %>
+  <%= erb :found_cats %>
   <%= erb :table %>
   <%= erb :table_notes %>
 <% elsif route.event_missing_data? %>
