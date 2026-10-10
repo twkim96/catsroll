@@ -14,8 +14,15 @@ describe BattleCatsRolls::Web do
 
   BattleCatsRolls::Route.reload_balls
 
-  define_method(:expect_request) do |path, query='',
+  define_method(:expect_request) do |path_or_uri, query='',
     status: 200, &block|
+    if path_or_uri.kind_of?(URI)
+      query = path_or_uri.query
+      path = path_or_uri.path
+    else
+      path = path_or_uri
+    end
+
     response_status, headers, body = web.call(
       'PATH_INFO' => path, 'QUERY_STRING' => query)
 
@@ -48,8 +55,7 @@ describe BattleCatsRolls::Web do
     would 'show a custom gacha selection' do
       expect_request('/', 'event=custom',
         status: 302) do |_, header|
-        location = URI.parse(header['location'])
-        expect_request(location.path, location.query) do |body|
+        expect_request(URI.parse(header['location'])) do |body|
           expect(body).include? text_label_custom_gacha
         end
       end
