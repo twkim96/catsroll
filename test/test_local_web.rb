@@ -455,6 +455,74 @@ describe 'local web features' do
     expect(response.body.scan(/name="event_series"/).size).eq 1
   end
 
+  would 'intersect the selected event series with the upstream banner filter' do
+    ball = BattleCatsRolls::Route.ball_kr
+    expected = ball.events.select do |_, info|
+      ball.gacha.dig(info['id'], 'series_id') == 24
+    end.keys.sort
+    request = Rack::MockRequest.new(BattleCatsRolls::Server)
+    ['/', '/seek'].each do |path|
+      response = request.get(
+        "#{path}?event_series=24&event_series=28&banner=24&lang=kr")
+      response = request.get(response['location']) if response.redirect?
+      rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
+        flatten.sort
+
+      expect(response.status).eq 200
+      expect(rendered).eq expected
+      banner_select = response.body[/<select id="banner_select".*?<\/select>/m]
+      expect(banner_select.match?(/value="24"\s+selected="selected"/)).eq true
+      expect(response.body.include?('name="event_series" value="28"')).eq true
+    end
+  end
+
+  would 'show no dated events when the series and banner filters do not overlap' do
+    response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
+      '/?event_series=24&banner=28&lang=kr')
+    rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
+      flatten
+
+    expect(response.status).eq 200
+    expect(rendered).eq []
+    expect(response.body.include?('(Select an event here)')).eq true
+    expect(response.body.include?('Customize...')).eq true
+  end
+
+  would 'replace an event outside the banner intersection and preserve both filters' do
+    ball = BattleCatsRolls::Route.ball_kr
+    outside = ball.events.find do |_, info|
+      ball.gacha.dig(info['id'], 'series_id') == 28
+    end.first
+    request = Rack::MockRequest.new(BattleCatsRolls::Server)
+    response = request.get(
+      "/?event=#{outside}&event_series=24&event_series=28&banner=24&lang=kr")
+
+    expect(response.status).eq 302
+    location = response['location']
+    expect(location.include?("event=#{outside}")).eq false
+    expect(location.include?('event_series=24')).eq true
+    expect(location.include?('event_series=28')).eq true
+    expect(location.include?('banner=24')).eq true
+    response = request.get(location)
+    expect(response.status).eq 200
+    selected = response.body[/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"\s+selected=/, 1]
+    expect(ball.gacha.dig(ball.events.fetch(selected)['id'], 'series_id')).eq 24
+  end
+
+  would 'use the same series and banner intersection for the client event API' do
+    ball = BattleCatsRolls::Route.ball_kr
+    expected = ball.events.select do |_, info|
+      ball.gacha.dig(info['id'], 'series_id') == 28
+    end.keys.sort
+    response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
+      '/events.json?event_series=24&event_series=28&banner=28&lang=kr')
+    data = JSON.parse(response.body)
+    rendered = (data['upcoming'] + data['past']).map{ |item| item['value'] }.sort
+
+    expect(response.status).eq 200
+    expect(rendered).eq expected
+  end
+
   would 'serve searchable event series metadata' do
     response = Rack::MockRequest.new(BattleCatsRolls::Server).get(
       '/events.json?lang=kr&catalog=series')

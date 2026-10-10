@@ -30,19 +30,6 @@ module BattleCatsRolls
       end
     end
 
-    def event
-      @event ||= begin
-        requested = request.params_coercion_with_nil('event', :to_s)
-
-        if event_series.any? && requested && requested != 'custom' &&
-            !all_events.key?(requested)
-          current_event
-        else
-          requested || current_event
-        end
-      end
-    end
-
     def event_not_in_menu?
       event == 'custom' ? false : super
     end
@@ -169,16 +156,26 @@ module BattleCatsRolls
         (past_events.last&.first if event_series.any?)
     end
 
-    def all_events
-      @all_events ||=
-        if event_series.any?
+    def events_filtered
+      @local_events_filtered ||= begin
+        source = super
+        if event_series.empty?
+          source
+        else
           selected = event_series.to_set
-          ball.events.select do |_, info|
+          source.select do |_, info|
             selected.member?(ball.gacha.dig(info['id'], 'series_id'))
           end
-        else
-          super
         end
+      end
+    end
+
+    def events_paged
+      event_series.empty? ? super : events_filtered.to_h
+    end
+
+    def filtered_event? event
+      event == 'custom' || super
     end
 
     def default_query query={}, include_filters: false

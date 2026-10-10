@@ -1,6 +1,22 @@
 
 # Test the following edge cases:
 
+## Event filters
+
+* With Banner at its default, the local series filter shows all dated events
+  from any selected series, without pagination.
+* Multiple local series use OR; selecting a Banner applies AND to that result.
+* Non-overlapping series and Banner selections show no dated events.
+* Changing either filter drops an event outside the intersection while keeping
+  both filter selections. `Customize...` remains available.
+* In client compute mode, changing Banner rebuilds the event menu and preserves
+  client computation. Region changes with active filters rebuild the menus too.
+
+For upstream web tests in this fork, preload `battle-cats-rolls/server` so local
+Route/View extensions are installed. Example for event pagination and Banner:
+
+    PORK_TEST=test/test_web.rb:46 bundle exec ruby -EUTF-8 -Ilib:test -rbattle-cats-rolls/server test/test_web.rb
+
 ## Seeker
 
 * time ./Seeker 8.6 6970 2500 500 30 25 29 11 1 2 22 2 9 2 18 2 19 2 2 2 4 2 1 3 12 2 21 2 8
