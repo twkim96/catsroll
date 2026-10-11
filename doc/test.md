@@ -17,7 +17,8 @@
 ## Tracking
 
 * Existing dupes can cause more dupes, see this for bouncing around:
-  https://bc.godfat.org/?seed=2263031574&event=2019-11-27_377&pick=5AR#N5A
+  https://bc.godfat.org/?seed=2263031574&event=2019-11-27_377&pick=5AR
+  https://bc.godfat.org/?seed=59690635&event=2026-09-18_1062&pick=8AX (more)
 * A lot of dupes in a row:
   * 2: https://bc.godfat.org/?seed=2458231674&event=2019-07-18_391&pick=4AX
   * 2: https://bc.godfat.org/?seed=2116007321&event=2019-07-21_391&pick=1AG
