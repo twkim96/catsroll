@@ -41,7 +41,9 @@
       <% end %>
     </optgroup>
 
+    <% if route.events_next_page? %>
     <option value="next_page">Next page...</option>
+    <% end %>
   </select>
 
   <% if route.event == 'custom' %>

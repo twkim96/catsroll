@@ -82,6 +82,10 @@ module BattleCatsRolls
       gacha.pool.event && !gacha.pool.exist?
     end
 
+    def events_next_page?
+      CrystalBall::EventsPerPage * event_page < events_filtered.size
+    end
+
     def banner_not_in_menu?
       banner && !ball.banners.member?(banner)
     end
