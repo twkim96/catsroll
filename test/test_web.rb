@@ -9,6 +9,8 @@ describe BattleCatsRolls::Web do
   text_selected_group = '<optgroup label="Selected:">'
   text_label_gacha_pool = 'Gacha pool:'
   text_label_event_details = 'Event details:'
+  text_label_guaranteed_event_details = 'Guaranteed event details:'
+  text_label_step_up_event_details = 'Step-up event details:'
 
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
@@ -193,6 +195,14 @@ describe BattleCatsRolls::Web do
   describe 'showing event details' do
     would 'show when details is on even without a seed' do
       expect_request('/', 'event=2018-06-06_245&details=true') do |body|
+        expect(body).include? text_label_step_up_event_details
+      end
+
+      expect_request('/', 'event=2018-06-08_289&details=true') do |body|
+        expect(body).include? text_label_guaranteed_event_details
+      end
+
+      expect_request('/', 'event=2018-06-11_266&details=true') do |body|
         expect(body).include? text_label_event_details
       end
     end

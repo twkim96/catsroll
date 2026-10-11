@@ -664,6 +664,17 @@ module BattleCatsRolls
       end.join(', ')
     end
 
+    def event_details_title
+      event = gacha.pool.event
+      if event['guaranteed']
+        'Guaranteed event'
+      elsif event['step_up']
+        'Step-up event'
+      else
+        'Event'
+      end
+    end
+
     def cat_name cat
       h cat.pick_name(route.name)
     end

@@ -1,6 +1,6 @@
 <% if route.details && gacha.pool.exist? %>
 <div class="information">
-  <p>Event details:</p>
+  <p><%= event_details_title %> details:</p>
   <ul>
     <li>
       Rare: <%= sprintf('%g', gacha.rare / 100.0) %>%
