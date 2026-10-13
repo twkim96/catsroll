@@ -443,7 +443,7 @@ module BattleCatsRolls
       'selected="selected"' if route.event == event_name
     end
 
-    def selected_custom_gacha gacha_id
+    def selected_gacha_pool gacha_id
       'selected="selected"' if route.custom == gacha_id
     end
 
@@ -662,6 +662,17 @@ module BattleCatsRolls
       cats.map.with_index do |cat, i|
         "#{i} #{link_to_cat(cat)}"
       end.join(', ')
+    end
+
+    def event_details_title
+      event = gacha.pool.event
+      if event['guaranteed']
+        'Guaranteed event'
+      elsif event['step_up']
+        'Step-up event'
+      else
+        'Event'
+      end
     end
 
     def cat_name cat

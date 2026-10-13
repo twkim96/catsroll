@@ -12,6 +12,26 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-10-12") %>
+<ul>
+  <li>It no longer shows next page for events if there's no next page.</li>
+</ul>
+
+<%= header(2, "2026-10-11") %>
+<ul>
+  <li>"Gacha information" is renamed to "Event details".</li>
+  <li>"Custom gacha" is renamed to "Gacha pool".</li>
+  <li>
+    When Details is turned on, event details will still show without a seed
+    now, therefore there's no need to fill a fake seed to read event details
+    anymore.
+  </li>
+  <li>
+    If the event is a guaranteed event, or a step-up event, event details
+    title will say so.
+  </li>
+</ul>
+
 <%= header(2, "2026-10-10") %>
 <ul>
   <li>
@@ -25,6 +45,14 @@
     de-selected to avoid confusion. When this happens, if there's a upcoming
     event for that banner, it'll be selected instead.
   </li>
+  <li>Not being able to use custom event is fixed.</li>
+  <li>
+    Banner is persisted even when it's unknown now. This can happen when
+    we switch between banners and the selected banner doesn't exist for
+    the other region. For example, BCJP doesn't have banner 62 for
+    Tower of Saviors.
+  </li>
+  <li>Banner filter is also applied to custom events now.</li>
 </ul>
 
 <%= header(2, "2026-10-09") %>

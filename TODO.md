@@ -14,12 +14,15 @@
 
 ## Bugs
 
+* Changing the banner should go back to the first page because the whole set
+  is changed so there's no reason to preserve the same page.
+* Don't show next page if next page is empty
 * If there's a non-existing cat in a gacha, for now we show nothing because
   tracking can't be done due to missing rarity data. However, it'll be useful
   to show the gacha data so we know it's not just an empty gacha but a gacha
   we can't use, and it should be clear what's the missing cat so we have a
   better idea. See:
-  https://bc.godfat.org/?seed=1&event=custom&custom=12&details=true
+  https://bc.godfat.org/?event=custom&custom=12&details=true
   This should not show empty gacha, but what are there and what's missing.
   Check GachaPool#slots for this.
 * Preserve current queries when swapping language for a non-existing cat when
@@ -34,7 +37,6 @@
 * What if we add /tracks and make /help the landing page?
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
-* Add a dropdown menu for filtering events based on series id
 * Multi-select for finding cats
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.

@@ -41,17 +41,19 @@
       <% end %>
     </optgroup>
 
+    <% if route.events_next_page? %>
     <option value="next_page">Next page...</option>
+    <% end %>
   </select>
 
   <% if route.event == 'custom' %>
     <div class="custom">
-      <label for="custom_select">Custom gacha:</label>
+      <label for="custom_select">Gacha pool:</label>
       <select id="custom_select" name="custom" onchange="roll(this)">
-        <% route.ball.each_custom_gacha(route.name) do |id, name| %>
+        <% route.ball.each_gacha_pool(route.name, route.gacha_filtered) do |id, name| %>
           <option
             value="<%= id %>"
-            <%= selected_custom_gacha(id) %>><%= name %></option>
+            <%= selected_gacha_pool(id) %>><%= name %></option>
         <% end %>
       </select>
 
@@ -92,15 +94,18 @@
 <div class="banners">
   <label for="banner_select" title="Gacha banner to filter events">Banner:</label>
   <select id="banner_select" name="banner" onchange="roll(this)">
-    <option
-      value=""
-      <%= selected_current_banner('') %>>
-      (Any events. Select a banner to filter events here)</option>
+    <% if route.banner_not_in_menu? %>
+    <option value="<%= route.banner %>" selected="selected">
+      (<%= route.banner %>) Unknown
+    </option>
+    <% end %>
+    <option value="" <%= selected_current_banner('') %>>
+      (Any events. Select a banner to filter events)
+    </option>
     <% route.ball.banners.each do |id, data| %>
-    <option
-      value="<%= id %>"
-      <%= selected_current_banner(id) %>>
-        <%= show_banner(id, data) %></option>
+    <option value="<%= id %>" <%= selected_current_banner(id) %>>
+      <%= show_banner(id, data) %>
+    </option>
     <% end %>
   </select>
 </div>

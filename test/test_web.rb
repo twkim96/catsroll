@@ -7,14 +7,25 @@ require 'battle-cats-rolls/route'
 describe BattleCatsRolls::Web do
   text_select_event = '(Select an event here)'
   text_selected_group = '<optgroup label="Selected:">'
+  text_label_gacha_pool = 'Gacha pool:'
+  text_label_event_details = 'Event details:'
+  text_label_guaranteed_event_details = 'Guaranteed event details:'
+  text_label_step_up_event_details = 'Step-up event details:'
 
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
 
   BattleCatsRolls::Route.reload_balls
 
-  define_method(:expect_request) do |path, query='',
+  define_method(:expect_request) do |path_or_uri, query='',
     status: 200, &block|
+    if path_or_uri.kind_of?(URI)
+      query = path_or_uri.query
+      path = path_or_uri.path
+    else
+      path = path_or_uri
+    end
+
     response_status, headers, body = web.call(
       'PATH_INFO' => path, 'QUERY_STRING' => query)
 
@@ -40,6 +51,47 @@ describe BattleCatsRolls::Web do
   BattleCatsRolls::Route.ball_jp.cats.each_key do |id|
     would "respond 200 for /cats/#{id}?lang=jp" do
       expect_request("/cats/#{id}", 'lang=jp')
+    end
+  end
+
+  describe 'custom event' do
+    would 'show a custom gacha selection' do
+      expect_request('/', 'event=custom',
+        status: 302) do |_, header|
+        expect_request(URI.parse(header['location'])) do |body|
+          expect(body).include? text_label_gacha_pool
+        end
+      end
+    end
+  end
+
+  describe 'banner events filter' do
+    would 'drop the banner if empty or invalid' do
+      expect_request('/', 'banner=',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner='
+      end
+
+      expect_request('/', 'banner=invalid',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner='
+      end
+    end
+
+    would 'show no events with a non-existing banner' do
+      expect_request('/', 'banner=9999') do |body|
+        expect(body).include? text_select_event
+        expect(body).not.include? ' ~ ' # Only used for showing an event
+      end
+    end
+
+    would 'drop the event when the banner does not have it' do
+      expect_request('/', 'event=2018-06-06_245&banner=9999',
+        status: 302) do |body, header|
+        location = header['location']
+        expect(location).not.include? 'event='
+        expect(location).include? 'banner=9999'
+      end
     end
   end
 
@@ -119,34 +171,6 @@ describe BattleCatsRolls::Web do
       end
     end
 
-    would 'drop the banner if empty or invalid' do
-      expect_request('/', 'banner=',
-        status: 302) do |body, header|
-        expect(header['location']).not.include? 'banner='
-      end
-
-      expect_request('/', 'banner=invalid',
-        status: 302) do |body, header|
-        expect(header['location']).not.include? 'banner='
-      end
-    end
-
-    would 'show no events with a non-existing banner' do
-      expect_request('/', 'banner=9999') do |body|
-        expect(body).include? text_select_event
-        expect(body).not.include? ' ~ ' # Only used for showing an event
-      end
-    end
-
-    would 'drop the event when the banner does not have it' do
-      expect_request('/', 'event=2018-06-06_245&banner=9999',
-        status: 302) do |body, header|
-        location = header['location']
-        expect(location).not.include? 'event='
-        expect(location).include? 'banner=9999'
-      end
-    end
-
     would 'load the last page correctly' do
       last_page = (BattleCatsRolls::Route.ball_en.events.size.to_f /
         BattleCatsRolls::CrystalBall::EventsPerPage).ceil
@@ -164,6 +188,22 @@ describe BattleCatsRolls::Web do
         expect(body).include? text_select_event
 
         expect(body).not.match? last_event
+      end
+    end
+  end
+
+  describe 'showing event details' do
+    would 'show when details is on even without a seed' do
+      expect_request('/', 'event=2018-06-06_245&details=true') do |body|
+        expect(body).include? text_label_step_up_event_details
+      end
+
+      expect_request('/', 'event=2018-06-08_289&details=true') do |body|
+        expect(body).include? text_label_guaranteed_event_details
+      end
+
+      expect_request('/', 'event=2018-06-11_266&details=true') do |body|
+        expect(body).include? text_label_event_details
       end
     end
   end

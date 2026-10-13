@@ -75,11 +75,19 @@ module BattleCatsRolls
     end
 
     def event_not_in_menu?
-      event != 'custom' && events_paged[event].nil?
+      event != 'custom' && !events_paged.key?(event)
     end
 
     def event_missing_data?
       gacha.pool.event && !gacha.pool.exist?
+    end
+
+    def events_next_page?
+      CrystalBall::EventsPerPage * event_page < events_filtered.size
+    end
+
+    def banner_not_in_menu?
+      banner && !ball.banners.member?(banner)
     end
 
     def prepare_tracks
@@ -273,6 +281,14 @@ module BattleCatsRolls
       end
     end
 
+    def gacha_filtered
+      @gacha_filtered ||= if banner
+        ball.gacha.select{ |id, data| data['series_id'] == banner }
+      else
+        ball.gacha
+      end
+    end
+
     def event_page
       @event_page ||= [request.params_coercion('event_page', :to_i), 1].max
     end
@@ -287,8 +303,14 @@ module BattleCatsRolls
     end
 
     def custom
-      @custom ||= request.params_coercion_with_nil('custom', :to_i) ||
-        ball.gacha.each_key.reverse_each.first.to_i
+      @custom ||= begin
+        selected = request.params_coercion_with_nil('custom', :to_i)
+        if gacha_filtered.any?{ |id, data| selected == id }
+          selected
+        else
+          gacha_filtered.each_key.reverse_each.first.to_i
+        end
+      end
     end
 
     def rate
@@ -766,10 +788,10 @@ module BattleCatsRolls
 
     def filtered_event? event
       case event
-      when nil, 'next_page', 'prev_page'
+      when nil, 'custom', 'next_page', 'prev_page'
         event
       else
-        events_filtered.find{ event == _1.first }
+        events_filtered.any?{ event == _1.first }
       end
     end
 
