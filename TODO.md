@@ -1,3 +1,10 @@
+## Multi Track
+
+* 모바일 실기기에서 멀티 초기 로딩 최적화 후 스크롤·텍스트 선택·위치 이동·PNG
+  공유가 유지되는지 검증한다. 재현 링크는
+  `seed=2762818371&count=300&lang=kr&event=2026-02-13_1042`이다. 현재 최적화와 로컬 검증
+  범위는 [멀티 계획 문서](doc/multi-track-local-plan.md#current-initial-load-optimizations)에 있다.
+
 ## Stats
 
 * Add an advanced filter for forms. Useful to find all cats having ultra form

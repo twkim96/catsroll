@@ -11,6 +11,37 @@ describe 'local web features' do
   web = BattleCatsRolls::Web.new
   web.call('PATH_INFO' => '/warmup')
 
+  would 'restore every preloaded multi pool without losing translated metadata' do
+    route = BattleCatsRolls::Route.new(BattleCatsRolls::Request.new(
+      'QUERY_STRING' => 'lang=kr&seed=2762818371&count=300&event=2026-02-13_1042'))
+    data = BattleCatsRolls::TrackApi.multi_data(route)
+    metadata = data.fetch(:cat_metadata)
+    references = []
+
+    data.fetch(:regions).each do |lang, region|
+      ball = BattleCatsRolls::Route.public_send("ball_#{lang}")
+      pools = region[:events].filter_map do |event|
+        [event[:pool], BattleCatsRolls::TrackApi.pool_data_for(ball, event[:event])] if event[:pool]
+      end
+      region[:tickets].each_value do |ticket|
+        pools << [ticket[:pool],
+          BattleCatsRolls::TrackApi.compact_find_pool_data(ball, ticket[:event])]
+      end
+      pools.each do |packed, expected|
+        references.concat(packed.fetch(:cats).values)
+        restored = packed.merge(cats: packed[:cats].transform_values{ |index| metadata.fetch(index) })
+        expect(restored).eq expected
+      end
+    end
+
+    # Repeated cats really share wire records; complete pool equivalence above
+    # includes names/descriptions, slots, rates, versions and ticket metadata.
+    expect(references.length > references.uniq.length).eq true
+    expect(data[:regions]['kr'][:events].any? do |event|
+      event[:event] == '2026-02-13_1042' && event[:pool]
+    end).eq true
+  end
+
   would 'preserve 999 rows and correct oversized counts in regular and multi tracks' do
     [999, 1000, 9999].each do |count|
       route = BattleCatsRolls::Route.new(BattleCatsRolls::Request.new(

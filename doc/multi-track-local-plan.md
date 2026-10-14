@@ -1,5 +1,33 @@
 # Local Multi Track Page Plan
 
+## Current Initial-Load Optimizations
+
+The original plan below describes the initial feature scope. The current viewer
+supports up to eight banners and `TRACK_MAX_COUNT` rows (999 by default), and
+loads unpreloaded historical pools through the existing `/track.json` endpoint.
+
+The multi HTML keeps the existing event list and preloaded pool coverage, but
+transmits identical cat metadata through a shared `cat_metadata` array. Each
+pool's `cats` map contains array indexes on the wire. The deduplication key
+includes region, cat ID and complete metadata; translated descriptions, forms
+and compact special-ticket metadata must remain distinct when their contents
+differ. `multi-track.js` restores the normal pool shape once and exposes that
+initial data to Find through `MultiTrackApp.getInitialData()`. `/track.json`
+continues returning its existing full pool format.
+
+Restored metadata is shared and treated as read-only. Future-uber and forced
+guarantee settings copy the top-level pool, cat map and affected slot array, so
+changing one banner cannot modify another banner's pool.
+
+Row synchronization clears all heights, measures all A/B pairs, then applies
+the heights together. It preserves the complete table, text selection, position
+links and PNG capture. Existing iPhone/iPad Safari virtualization is unchanged;
+this optimization does not enable it for additional browsers.
+
+Regression checks: `test/test_local_web.rb` checks reconstructed preloaded pools;
+`test/test_multi_track_data.js` checks decoding and independent future settings;
+`test/test_multi_track_resize.js` checks row alignment and layout read/write order.
+
 ## Goal
 
 Add a local-only multi-track viewer that is reachable from the existing top-right

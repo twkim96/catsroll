@@ -210,7 +210,7 @@ module BattleCatsRolls
         end
       find_cats = multi_find_cats(route.name)
 
-      {
+      data = {
         initial: {
           seed: route.seed,
           count: route.count,
@@ -261,6 +261,34 @@ module BattleCatsRolls
           }
         end
       }
+
+      deduplicate_multi_cats(data)
+    end
+
+    # Keep the existing pool shape in the browser, but transmit repeated cat
+    # metadata once. Region and complete metadata are part of the key so ticket
+    # pools and translated/full descriptions retain their exact contents.
+    def self.deduplicate_multi_cats data
+      metadata = []
+      indexes = {}
+      data[:regions].each do |lang, region|
+        pools = region[:events].filter_map{ |event| event[:pool] }
+        pools.concat(region[:tickets].values.map{ |ticket| ticket[:pool] })
+        pools.each do |pool|
+          next unless pool[:cats]
+
+          pool[:cats] = pool[:cats].each_with_object({}) do |(id, cat), cats|
+            key = [lang, id, cat]
+            unless indexes.key?(key)
+              indexes[key] = metadata.length
+              metadata << cat
+            end
+            cats[id] = indexes[key]
+          end
+        end
+      end
+      data[:cat_metadata] = metadata
+      data
     end
 
     def self.raw_ball_jp

@@ -48,4 +48,43 @@ assert.strictEqual(rowSyncs, 1, "height changes after a width change remain igno
 tables.clientWidth = 1200;
 resize();
 assert.strictEqual(rowSyncs, 2, "restoring the previous width also resynchronizes");
+
+// Width changes and PNG captures share this production synchronization path.
+// Simulate wrapped text and fail if a height write dirties layout while another
+// row still needs measurement.
+const operations = [];
+function row(label, naturalHeight, index) {
+  const style = {};
+  Object.defineProperty(style, "height", {
+    set(value) { operations.push([value ? "write" : "reset", label, value]); }
+  });
+  return {style, dataset: {rowIndex: String(index)},
+    get offsetHeight() { operations.push(["read", label]); return naturalHeight; }};
+}
+const aRows = [row("a0", 40, 10), row("a1", 80, 11), row("a2", 0, 12)];
+const bRows = [row("b0", 64, 10), row("b1", 32, 11), row("b2", 0, 12)];
+const bodies = [aRows, bRows].map(rows => ({querySelectorAll() { return rows; }}));
+let measured;
+let spacers = 0;
+const syncContext = {
+  intValue(value, fallback) { return Number(value) || fallback; },
+  useChunkVirtualization: true, virtualModel: {},
+  virtualApi: {updateHeights(model, measurements) { measured = measurements; }},
+  updateVirtualSpacers() { spacers++; }
+};
+const syncStart = source.indexOf("  function syncRowsIn(");
+const syncEnd = source.indexOf("  function syncTrackRowHeights()", syncStart);
+vm.runInNewContext(source.slice(syncStart, syncEnd), syncContext);
+syncContext.syncRowsIn({querySelectorAll() { return bodies; }}, true);
+assert.deepStrictEqual(operations.map(op => op[0]), [
+  "reset", "reset", "reset", "reset", "reset", "reset",
+  "read", "read", "read", "read", "read", "read",
+  "write", "write", "write", "write"
+]);
+assert.deepStrictEqual(operations.filter(op => op[0] === "write"), [
+  ["write", "a0", "64px"], ["write", "b0", "64px"],
+  ["write", "a1", "80px"], ["write", "b1", "80px"]
+]);
+assert.deepStrictEqual(Array.from(measured, item => [item.index, item.height]), [[10, 64], [11, 80]]);
+assert.strictEqual(spacers, 1);
 console.log("multi-track-resize: ok");
