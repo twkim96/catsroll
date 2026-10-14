@@ -28,6 +28,7 @@
   * 4: https://bc.godfat.org/?seed=1204266455&last=562&event=2020-12-11_563&lang=jp&pick=4AR
   * 5: https://bc.godfat.org/?seed=4275004160&event=2020-12-11_563&lang=jp&pick=5AR
   * 5: https://bc.godfat.org/?seed=2810505815&event=2020-12-11_563&lang=jp&pick=4BR
+  * 10: https://bc.godfat.org/?seed=43945319&event=2025-05-23_985&lang=jp&pick=2AR
   * 2 into R: https://bc.godfat.org/?seed=3322538705&event=2020-12-11_563&lang=jp&pick=8AR
 * Tracks from both sides can attempt to reroll the same cat:
   https://bc.godfat.org/?seed=3785770978&event=2020-03-20_414&pick=10AX#N10A
