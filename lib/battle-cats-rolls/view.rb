@@ -284,11 +284,16 @@ module BattleCatsRolls
       "#{route.uri(query: {pos: pos, last: last})}#N#{cat.number}"
     end
 
-    def uri_for_backtrack steps
-      route.uri(query: {
-        seed: route.gacha.backtrack_seed(route.seed, steps),
-        last: 0, pos: '1A'
-      })
+    def backtrack_links
+      seed = route.seed
+      prev = 0
+
+      [1, 5, 15].map do |steps|
+        seed = route.gacha.backtrack_seed(seed, 2 * (steps - prev))
+        prev = steps
+        uri = route.uri(query: {seed: seed, last: 0, pos: '1A'})
+        %Q{<a href="#{uri}">#{steps}x</a>}
+      end.join(' / ')
     end
 
     def score_tds cat, other_cat

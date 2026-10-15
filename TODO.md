@@ -34,7 +34,6 @@
 
 ## Features and utilities
 
-* Expand backtracks to 5x and 15x
 * What if we add /tracks and make /help the landing page?
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
