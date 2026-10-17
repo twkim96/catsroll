@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "catsroll",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "냥코대전쟁 배열 초보자 안내, 속성별 티어 추천, 시드 찾기와 Multi 경로 탐색. 계산은 사용자 기기에서 실행합니다.",
   "homepage": "https://github.com/twkim96/catsroll",
   "repository": "https://github.com/twkim96/catsroll",
@@ -81,13 +81,14 @@
           ]
         },
         "commerce": false,
-        "commerce_description": "Free fan tool. No purchases, paid products, checkout, subscriptions, or automatic in-game actions."
+        "commerce_description": "Free fan tool. No purchases, paid products, checkout, subscriptions, or automatic in-game actions.",
+        "demo_recording_url": "https://github.com/twkim96/catsroll/releases/download/catsroll-chatgpt-review-2026-10-18/catsroll-review-0.2.4.mp4"
       },
       "publication": {
         "countries": [
           "KR"
         ],
-        "release_notes": "Refined seed-search controls and automatic observation-choice preparation without running calculations. Shared Multi, original paw branding, public privacy and terms pages. Initial directory review preparation.",
+        "release_notes": "Added an actual ChatGPT review walkthrough showing typed requests, device-side Multi and Find calculations, WASM seed search, result sharing, and unsupported-request handling. Public privacy and terms pages; original Catsroll paw icon.",
         "translations": {
           "ko-KR": {
             "subtitle": "시드 찾기와 Multi 배열·경로 계산",
