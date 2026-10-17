@@ -97,6 +97,22 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(hint.fetch('topics')).eq %w[tracks guaranteed colors]
   end
 
+  would 'resolve banner nicknames and spacing without requiring a character target' do
+    named = call_tool(client, 'catsroll_events', {lang: 'kr', query: '다이너마이트 군단'}).
+      fetch('structuredContent').fetch('events')
+    expect(named.empty?).eq false
+    %w[다마군 다군 다이너마이트군단].each do |query|
+      found = call_tool(client, 'catsroll_events', {lang: 'kr', query: query}).fetch('structuredContent').fetch('events')
+      expect(found.map { |event| event.fetch('event') }).eq named.map { |event| event.fetch('event') }
+      expect(found.all? { |event| event.fetch('series_id') == 1 }).eq true
+    end
+    prepared = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
+      rows: [{lang: 'kr', event: named.first.fetch('event')}]})
+    expect(prepared.fetch('isError', false)).eq false
+    expect(prepared.dig('structuredContent', 'request', 'count')).eq 300
+    expect(prepared.dig('structuredContent', 'request', 'findEnabled')).eq false
+  end
+
   would 'explain individual characters with current metadata and separate source conditions' do
     result = call_tool(client, 'catsroll_cats', {query: '107', details: true}).fetch('structuredContent')
     cat = result.fetch('cats').first

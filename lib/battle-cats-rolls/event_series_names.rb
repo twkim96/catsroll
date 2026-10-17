@@ -79,7 +79,7 @@ module BattleCatsRolls
     }.freeze
 
     Shortcuts = {
-      1 => '다군',
+      1 => %w[다군 다마군],
       3 => '갤걸',
       4 => '드엠',
       6 => '울소',

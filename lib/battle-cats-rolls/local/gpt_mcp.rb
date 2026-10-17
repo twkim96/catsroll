@@ -21,6 +21,20 @@ module BattleCatsRolls
     TEMPLATE = File.expand_path('../view/gpt_app.html', __dir__)
     ICON = File.expand_path('../../../plugins/catsroll/assets/icon.png', __dir__)
     BODY_LIMIT = 65_536
+    CLAUDE_ROUTING = <<~TEXT.freeze
+      냥코대전쟁 뽑기 도구다. 배열표/배너 조회는 mode=multi이며 목표 캐릭터는 필요 없다.
+      배너 이름·별명은 catsroll_events(query=...)로 찾는다. 다마군/다군은 다이너마이트 군단 배너이며 캐릭터가 아니다.
+      캐릭터를 얻고 싶다는 요청에만 catsroll_cats로 목표를 찾고 Find를 사용한다. 캐릭터 검색 실패를 배너가 없다는 근거로 삼지 않는다.
+      시드를 모르면 mode=seek로 화면을 연다. seek는 시드와 관측 결과 없이도 준비 가능하고 관측은 화면에서 선택한다.
+      횟수 생략은 300이다. 지역은 사용자가 말한 값을 유지하고 모르면 지역만 묻는다.
+      날짜 없는 앞으로의 배열 조회는 해당 지역의 현재 배너를 우선한다. 현재 후보가 여러 변형이면 차이만 묻는다.
+      지난 뽑기로 시드를 찾을 때는 실제 뽑은 배너/기간을 확인한다. forceGuaranteed=0은 배너 기본값이며 확정 없음/비활성이라는 뜻이 아니다.
+    TEXT
+    CLAUDE_TOOL_HINTS = {
+      'catsroll_events' => '배너/뽑기 시리즈 검색용. 다마군, 다군, 다이너마이트 군단 같은 이름은 여기에 query로 넣는다. 공백과 기존 시리즈 별명을 지원한다.',
+      'catsroll_cats' => '개별 고양이 검색 전용. 배너나 시리즈 이름을 캐릭터로 찾지 않는다. 배열표 조회에는 이 도구나 목표 캐릭터가 필수가 아니다.',
+      'catsroll_prepare' => '배열표를 열 때 mode=multi와 seed, rows를 사용한다. targets는 선택이며 없어도 정상이다. 목표를 얻는 경로 요청에만 targets/Find를 사용한다. 시드가 없으면 mode=seek로 화면을 연다. 관측도 화면에서 입력 가능하다. count 생략은 300. forceGuaranteed=0은 배너 기본값이다. 준비는 계산 결과가 아니며 화면에서 계산 후 공유한 결과만 설명한다.'
+    }.freeze
     INPUT_KEYS = %w[mode seed last count rows targets optimization maxGuaranteed
       maxPlatinum maxLegendTicket scheduleAware rolls findEnabled planMode planName].freeze
 
@@ -148,7 +162,7 @@ module BattleCatsRolls
       when 'initialize'
         {protocolVersion: PROTOCOLS.include?(params['protocolVersion']) ? params['protocolVersion'] : PROTOCOLS.first,
          capabilities: {tools: {}, resources: {}}, serverInfo: {name: 'catsroll', version: VERSION},
-         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. For what-to-pull or trait-gap questions use catsroll_recommend, then check banner membership and optional Find routes; no seed is needed for performance candidates. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. For unscheduled collab/event arrays use catsroll_banner_preview to compare KR/JP reference pools; never present source dates as a confirmed future schedule. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
+         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. For what-to-pull or trait-gap questions use catsroll_recommend, then check banner membership and optional Find routes; no seed is needed for performance candidates. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. For unscheduled collab/event arrays use catsroll_banner_preview to compare KR/JP reference pools; never present source dates as a confirmed future schedule. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.' + (@ui_host == :claude ? "\n" + CLAUDE_ROUTING : '')}
       when 'ping' then {}
       when 'tools/list' then {tools: tools}
       when 'tools/call'
@@ -278,6 +292,13 @@ module BattleCatsRolls
             event: {type: 'string', maxLength: 100}, previewFor: lang}, ['section'])],
         ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. Default count is 300 unless the user specifies it. Multi includes optional Find, Found cats list, route stamps and planMode. For vague beginner questions use catsroll_guide first. Resolve exact banner/cat IDs with catalog tools and pass cat_name with each target to verify identity; never guess numeric IDs. Before choosing a banner for a target, use catsroll_events(cat_id=...) to verify pool membership. Missing targets in selected pools or permitted tickets are rejected. maxGuaranteed is a resource budget, not proof a banner offers a guarantee; forceGuaranteed explicitly simulates it. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks Calculate in app; no server fallback.', input]
       ].map do |name, title, description, input_schema|
+        if @ui_host == :claude && CLAUDE_TOOL_HINTS.key?(name)
+          description = if name == 'catsroll_prepare'
+            CLAUDE_TOOL_HINTS.fetch(name)
+          else
+            CLAUDE_TOOL_HINTS.fetch(name) + ' ' + description
+          end
+        end
         item = {name: name, title: title, description: description, inputSchema: input_schema,
           outputSchema: {type: 'object', additionalProperties: true},
           annotations: {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false}}
@@ -324,12 +345,13 @@ module BattleCatsRolls
 
     def events(args)
       lang = args.fetch('lang', 'kr')
-      term = query(args)
+      term = query(args).gsub(/\s+/, '')
       ball = region(lang)
       cat_id = integer(args['cat_id'], 'cat_id', 1, 1_000_000) if args.key?('cat_id')
       raise InvalidInput, 'Unknown character; resolve with catsroll_cats first' if cat_id && !ball.cats.key?(cat_id)
       entries = TrackApi.multi_events(ball).select do |item|
-        next false unless "#{item[:event]} #{item[:label]} #{item[:series_name]}".downcase.include?(term)
+        names = [item[:event], item[:label], item[:series_name], *EventSeriesNames.shortcuts(item[:series_id])]
+        next false unless names.join(' ').downcase.gsub(/\s+/, '').include?(term)
         !cat_id || GachaPool.new(ball, event_name: item[:event]).slots.values.any? { |ids| ids.include?(cat_id) }
       end.map { |item| item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).merge(lang: lang) }
       page(entries, args, :events)
