@@ -140,7 +140,7 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .track-result-table th { color: var(--text); background: var(--soft); }
 .track-result-table .position-head, .track-result-table .position-cell { width: 48px; min-width: 48px; max-width: 48px; padding-right: 5px; padding-left: 5px; background: var(--soft); text-align: center; white-space: nowrap; }
 .track-result-table tbody tr { height: 49px; }
-.track-result-table .banner-head { min-width: 86px; overflow-wrap: anywhere; }
+.track-result-table .track-event-heading { min-width: 86px; overflow-wrap: anywhere; }
 .track-cell { line-height: 1.25; }
 .track-cell.position { background: linear-gradient(to right, var(--minor) 10%, var(--major) 10%); }
 .track-cell.minor_rare { --minor: var(--rare); }
