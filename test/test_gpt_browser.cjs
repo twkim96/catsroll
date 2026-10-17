@@ -51,6 +51,9 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await frame.locator("#send-context").click();
     await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
     const shared = await page.evaluate(() => messages.find(item => item.method === "ui/update-model-context"));
+    const visibleShare = await page.evaluate(() => messages.find(item => item.method === "ui/message"));
+    assert(visibleShare.params.content[0].text.includes(shared.params.content[0].text), "computed data must travel with the visible message even when hidden context is ignored");
+    assert.match(visibleShare.params.content[0].text, /Find 계산:.*success/);
     assert.match(shared.params.content[0].text, /명계의 칼리파/);
     assert.match(shared.params.content[0].text, /플랜/);
     // A new host input cancels and discards all old results/plan selections.
