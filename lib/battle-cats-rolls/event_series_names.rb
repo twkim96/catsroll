@@ -83,12 +83,24 @@ module BattleCatsRolls
       3 => '갤걸',
       4 => '드엠',
       6 => '울소',
+      7 => '닼히',
+      17 => '발공',
       18 => '갓즈',
       19 => '울고축',
+      20 => '썸걸',
+      23 => '마마마',
       24 => '아워즈',
       27 => '하고축',
       28 => '걸몬',
-      42 => '울하고축'
+      34 => %w[페스나 페이트],
+      37 => %w[에바 에반],
+      40 => '스파',
+      42 => '울하고축',
+      44 => %w[에바 에반],
+      54 => '스파',
+      55 => '스파',
+      64 => '썸걸',
+      65 => '썸걸'
     }.freeze
 
     module_function
@@ -99,6 +111,15 @@ module BattleCatsRolls
 
     def shortcuts series_id
       Array(Shortcuts[series_id])
+    end
+
+    def exact_shortcut_ids query
+      term = query.to_s.unicode_normalize(:nfkc).downcase.gsub(/\s+/, '')
+      return [] if term.empty?
+
+      Shortcuts.keys.select do |id|
+        shortcuts(id).any? { |name| name.unicode_normalize(:nfkc).downcase.gsub(/\s+/, '') == term }
+      end
     end
   end
 end

@@ -357,10 +357,12 @@ module BattleCatsRolls
     def events(args)
       lang = args.fetch('lang', 'kr')
       term = query(args).gsub(/\s+/, '')
+      exact_series_ids = EventSeriesNames.exact_shortcut_ids(term)
       ball = region(lang)
       cat_id = integer(args['cat_id'], 'cat_id', 1, 1_000_000) if args.key?('cat_id')
       raise InvalidInput, 'Unknown character; resolve with catsroll_cats first' if cat_id && !ball.cats.key?(cat_id)
       entries = TrackApi.multi_events(ball).select do |item|
+        next false unless exact_series_ids.empty? || exact_series_ids.include?(item[:series_id])
         names = [item[:event], item[:label], item[:series_name], *EventSeriesNames.shortcuts(item[:series_id])]
         next false unless names.join(' ').downcase.gsub(/\s+/, '').include?(term)
         !cat_id || GachaPool.new(ball, event_name: item[:event]).slots.values.any? { |ids| ids.include?(cat_id) }

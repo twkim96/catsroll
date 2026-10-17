@@ -121,7 +121,7 @@ module BattleCatsRolls
         catalog.fetch(:characters).each do |character|
           character.fetch(:series_ids).each do |series_id|
             item = catalogs[series_id] ||= {labels: [], names: []}
-            item[:names].concat(Array(character[:names]))
+            item[:names].concat(Array(character[:names]) + Array(character[:aliases]))
           end
         end
         ball.gacha.each_value do |gacha|
@@ -162,6 +162,8 @@ module BattleCatsRolls
     def matching_series(catalogs, query)
       term = normalize_name(query)
       return [] if term.empty?
+      exact = EventSeriesNames.exact_shortcut_ids(query)
+      return exact.select { |id| catalogs.key?(id) }.sort unless exact.empty?
 
       catalogs.filter_map do |series_id, item|
         terms = item[:labels] + item[:names]

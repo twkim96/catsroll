@@ -16,6 +16,7 @@ const prepared = search.prepareCatalog({
   characters: [
     { id: 43, rarity: 4, name: "고양이 아이스",
       names: ["고양이 아이스", "고양이 아이스 크리스탈"],
+      aliases: ["얼음냥이"],
       series_ids: [1, 2] },
     { id: 811, rarity: 4, name: "에이전트 스탈",
       names: ["에이전트 스탈", "블레이드 마스터 스탈"],
@@ -34,6 +35,20 @@ assert.deepStrictEqual(suggestions.map((item) => item.character.id), [811, 43],
   "a word-start character match sorts ahead of an inner-word match");
 assert.strictEqual(suggestions[0].name, "에이전트 스탈");
 assert.strictEqual(suggestions[1].name, "고양이 아이스 크리스탈");
+const nickname = search.suggestCharacters(prepared.characters, "얼음냥이", [], 10);
+assert.deepStrictEqual(nickname.map(item => item.character.id), [43]);
+assert.strictEqual(nickname[0].name, "고양이 아이스", "aliases preserve the canonical display name");
+
+const festivals = search.prepareCatalog({series:[
+  {id:27,label:"하이퍼 고양이 축제",aliases:["하고축"]},
+  {id:42,label:"울트라 하이퍼 고양이 축제",aliases:["울하고축"]}
+]}).series;
+assert.deepStrictEqual(search.filterSeries(festivals,"하고축",[]).map(item=>item.id),[27]);
+assert.deepStrictEqual(search.filterSeries(festivals,"울하고축",[]).map(item=>item.id),[42]);
+assert.deepStrictEqual(search.filterSeries(festivals,"고축",[]).map(item=>item.id),[27,42],
+  "partial searches remain available when no exact alias matches");
+assert.deepStrictEqual(search.filterSeries(festivals,"하고축",[{seriesIds:[42]}]),[],
+  "a conflicting character selection must not fall back to a different festival");
 
 const agent = prepared.characters.find((item) => item.id === 811);
 const ice = prepared.characters.find((item) => item.id === 43);

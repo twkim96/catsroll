@@ -15,6 +15,7 @@ require_relative 'route'
 require_relative 'request'
 require_relative 'cat'
 require_relative 'event_series_names'
+require_relative 'character_aliases'
 
 require 'jellyfish'
 require 'json'
@@ -149,6 +150,7 @@ module BattleCatsRolls
 
     def self.event_series_characters ball
       kr_cats = (Route.ball_kr || ball).cats
+      nicknames = CharacterAliases.new
       characters = {}
 
       ball.gacha.each_value do |info|
@@ -180,6 +182,7 @@ module BattleCatsRolls
 
       characters.values.sort_by{ |item| item[:id] }.each do |item|
         item[:name] = item[:names].first || item[:id].to_s
+        item[:aliases] = nicknames.for(item[:id])
         item[:series_ids].sort!
       end
     end
@@ -188,7 +191,7 @@ module BattleCatsRolls
       aliases = Hash.new{ |hash, key| hash[key] = [] }
       characters.each do |character|
         character[:series_ids].each do |series_id|
-          character[:names].each do |name|
+          (character[:names] + Array(character[:aliases])).each do |name|
             aliases[series_id] << name unless aliases[series_id].include?(name)
           end
         end
@@ -312,6 +315,7 @@ module BattleCatsRolls
     end
 
     def self.multi_find_cats name_index
+      nicknames = CharacterAliases.new
       balls = {
         'kr' => Route.ball_kr,
         'jp' => raw_ball_jp
@@ -332,6 +336,7 @@ module BattleCatsRolls
           id: id,
           rarity: rarity,
           name: kr || jp || id.to_s,
+          aliases: nicknames.for(id),
           kr: kr,
           jp: jp
         }.compact

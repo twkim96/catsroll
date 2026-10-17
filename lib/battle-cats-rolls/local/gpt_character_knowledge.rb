@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require_relative '../character_aliases'
 
 module BattleCatsRolls
   # Source opinions stay separate from the live game's names and mechanics.
@@ -10,6 +11,7 @@ module BattleCatsRolls
 
     def initialize
       @data = JSON.parse(File.read(PATH, encoding: 'UTF-8'))
+      @aliases = CharacterAliases.new
     end
 
     def alias_matches?(id, query)
@@ -17,7 +19,8 @@ module BattleCatsRolls
       return false if term.empty?
 
       entry = @data.fetch('entries').find { |item| item.fetch('cat_id') == id }
-      Array(entry && entry['aliases']).any? { |name| normalize_name(name).include?(term) }
+      Array(entry && entry['aliases']).any? { |name| normalize_name(name).include?(term) } ||
+        @aliases.for(id).any? { |name| normalize_name(name) == term }
     end
 
     def notes(ball, id, form_index: nil, investment: nil)

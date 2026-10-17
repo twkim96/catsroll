@@ -106,6 +106,11 @@ describe 'Catsroll MCP device-computation adapter' do
       expect(found.map { |event| event.fetch('event') }).eq named.map { |event| event.fetch('event') }
       expect(found.all? { |event| event.fetch('series_id') == 1 }).eq true
     end
+    {'하고축' => 27, '울하고축' => 42, '닼히' => 7}.each do |query, series_id|
+      found = call_tool(client, 'catsroll_events', {lang: 'kr', query: query}).fetch('structuredContent').fetch('events')
+      expect(found.empty?).eq false
+      expect(found.map { |event| event.fetch('series_id') }.uniq).eq [series_id]
+    end
     prepared = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
       rows: [{lang: 'kr', event: named.first.fetch('event')}]})
     expect(prepared.fetch('isError', false)).eq false
@@ -134,6 +139,28 @@ describe 'Catsroll MCP device-computation adapter' do
     collection = call_tool(client, 'catsroll_guide', {query: '이번 콜라보 수집 우선순위가 궁금해'}).fetch('structuredContent')
     expect(collection.fetch('documents').first.fetch('id')).eq 'recommendations'
     expect(collection.fetch('documents').first.fetch('content').include?('반드시 복각')).eq true
+  end
+
+  would 'resolve reviewed Korean contractions without changing canonical names or collapsing ambiguous names' do
+    {'문단' => 34, '라길' => 149, '암테' => 272, '크놋' => 440,
+      '아이캣' => 40, '카맨' => 150, '거북카' => 325,
+      '백슬리' => 530, '흑슬리' => 544, '백포노' => 691, '흑포노' => 706}.each do |query, id|
+      result = call_tool(client, 'catsroll_cats', {query: query}).fetch('structuredContent').fetch('cats')
+      expect(result.map { |cat| cat.fetch('id') }).eq [id]
+      expect(result.first.fetch('name')).eq BattleCatsRolls::Route.ball_kr.cats.fetch(id).fetch('name').first
+    end
+    expect(call_tool(client, 'catsroll_cats', {query: '하데스'}).dig('structuredContent', 'cats').map { |cat| cat.fetch('id') }).eq [74, 535]
+    expect(call_tool(client, 'catsroll_cats', {query: '해커'}).dig('structuredContent', 'cats').map { |cat| cat.fetch('id') }).eq [36, 430]
+    catalog = BattleCatsRolls::TrackApi.event_series_characters(BattleCatsRolls::Route.ball_kr)
+    expect(catalog.find { |cat| cat[:id] == 544 }.fetch(:aliases).include?('흑슬리')).eq true
+    expect(catalog.find { |cat| cat[:id] == 544 }.fetch(:name)).eq '화근의 마녀 캐슬리'
+    targets = BattleCatsRolls::TrackApi.multi_find_cats(0)
+    expect(targets.find { |cat| cat[:id] == 544 }.fetch(:aliases).include?('흑슬리')).eq true
+    aliases = JSON.parse(File.read(BattleCatsRolls::CharacterAliases::PATH))
+    expect(aliases.fetch('entries').all? do |entry|
+      BattleCatsRolls::Route.ball_kr.cats.key?(entry.fetch('cat_id')) &&
+        entry.fetch('source_ids').all? { |id| aliases.fetch('sources').key?(id) }
+    end).eq true
   end
 
   would 'route actual novice wording to explanations and supported boundaries' do

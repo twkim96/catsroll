@@ -318,6 +318,33 @@
         "banners"
       ],
       "file": "recommendations.md"
+    },
+    {
+      "id": "glossary",
+      "title": "냥코 줄임말과 별명",
+      "summary": "캐릭터·배너의 한국어 축약, 복수 대상과 일반 용어 구별",
+      "keywords": [
+        "줄임말",
+        "별명",
+        "은어",
+        "약칭",
+        "축약",
+        "용어",
+        "블아",
+        "쌍포노",
+        "쌍슬리",
+        "고방",
+        "기캐",
+        "대구력",
+        "중구력",
+        "뉴절먹"
+      ],
+      "related": [
+        "banners",
+        "recommendations",
+        "find"
+      ],
+      "file": "glossary.md"
     }
   ]
 }

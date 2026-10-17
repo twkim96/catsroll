@@ -47,6 +47,11 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | `catsroll_multi_data` | 앱 전용(`_meta.ui.visibility=[app]`) bootstrap/series/pool 전송. 기존 `TrackApi`의 공개 데이터만 `_meta`로 반환하며 계산하지 않음 |
 
 `catsroll_prepare`의 `structuredContent.status`는 **prepared**이며 결과가 아니다.
+문단·라길·아이캣 같은 한국어 축약과 백/흑 캐릭터 별명은
+`gpt-knowledge/character-aliases.json`에서 ID·출처로 관리한다. 정식 형태명은 게임
+데이터에서 읽고, 같은 별명 사전은 웹/MCP Multi의 선택 검색에도 전달한다.
+하고축 같은 배너 별명은 정확히 일치하는 시리즈를 부분 문자열보다 우선한다.
+집단 표현·중의적인 이름을 한 캐릭터로 합치지 않는다. [검토 기록](gpt-alias-review.md)을 참고한다.
 준비 응답의 `guide`는 모드별 설명 주제만 제안하며 계산 결과를 담지 않는다.
 풀과 WASM 입력은 `_meta['catsroll/data']`에만 담아 모델 문맥을 불필요하게 채우지 않는다.
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.

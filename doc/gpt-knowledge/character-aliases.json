@@ -1,0 +1,592 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-10-18",
+  "sources": {
+    "arca-46071094": {
+      "url": "https://arca.live/b/battlecat/46071094",
+      "title": "냥코 줄임말 사전",
+      "retrieval": "user_supplied_text"
+    },
+    "arca-74042366": {
+      "url": "https://arca.live/b/nyanko/74042366",
+      "title": "냥코 용어 정리",
+      "retrieval": "user_supplied_text"
+    },
+    "user-contractions": {
+      "title": "사용자가 승인한 한국어 축약",
+      "retrieval": "user_approved_contraction",
+      "verified_on": "2026-10-18"
+    }
+  },
+  "entries": [
+    {
+      "cat_id": 10,
+      "aliases": [
+        "마초"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 14,
+      "aliases": [
+        "닼라"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 22,
+      "aliases": [
+        "스모"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 26,
+      "aliases": [
+        "폭무"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 34,
+      "aliases": [
+        "문단"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 40,
+      "aliases": [
+        "아이캣"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 45,
+      "aliases": [
+        "헬옹마"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 50,
+      "aliases": [
+        "에몽"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 60,
+      "aliases": [
+        "베카"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 62,
+      "aliases": [
+        "연어얄"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 74,
+      "aliases": [
+        "바데스"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 84,
+      "aliases": [
+        "갤주"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 137,
+      "aliases": [
+        "복동"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 139,
+      "aliases": [
+        "대공이"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 149,
+      "aliases": [
+        "라길"
+      ],
+      "source_ids": [
+        "user-contractions"
+      ]
+    },
+    {
+      "cat_id": 150,
+      "aliases": [
+        "카맨"
+      ],
+      "source_ids": [
+        "user-contractions"
+      ]
+    },
+    {
+      "cat_id": 173,
+      "aliases": [
+        "꼬옹마"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 197,
+      "aliases": [
+        "캣맨"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 201,
+      "aliases": [
+        "메냥이"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 213,
+      "aliases": [
+        "화래빗"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 227,
+      "aliases": [
+        "데삐"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 260,
+      "aliases": [
+        "디테"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 270,
+      "aliases": [
+        "황수"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 272,
+      "aliases": [
+        "암테"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 273,
+      "aliases": [
+        "가넷"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 275,
+      "aliases": [
+        "트칼"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 277,
+      "aliases": [
+        "해요미"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 319,
+      "aliases": [
+        "백타마"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 325,
+      "aliases": [
+        "거북카"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 334,
+      "aliases": [
+        "흑수"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 352,
+      "aliases": [
+        "코마리"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 355,
+      "aliases": [
+        "썸카"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 377,
+      "aliases": [
+        "위성"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 379,
+      "aliases": [
+        "흑타마"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 381,
+      "aliases": [
+        "백타냥"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 432,
+      "aliases": [
+        "비그라"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 436,
+      "aliases": [
+        "꼬발"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 440,
+      "aliases": [
+        "크놋"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 442,
+      "aliases": [
+        "흑타냥"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 453,
+      "aliases": [
+        "현냥이"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 467,
+      "aliases": [
+        "블제"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 482,
+      "aliases": [
+        "헤븐박사"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 485,
+      "aliases": [
+        "흑키리"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 489,
+      "aliases": [
+        "분더"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 503,
+      "aliases": [
+        "챈주"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 506,
+      "aliases": [
+        "흙타마"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 520,
+      "aliases": [
+        "라보"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 530,
+      "aliases": [
+        "백슬리"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 532,
+      "aliases": [
+        "좀쿠마"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 535,
+      "aliases": [
+        "갓데스"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 544,
+      "aliases": [
+        "흑슬리"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 547,
+      "aliases": [
+        "늙슬리"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 570,
+      "aliases": [
+        "락엔롤"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 582,
+      "aliases": [
+        "돌맹이"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 583,
+      "aliases": [
+        "오사카미쿠"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 584,
+      "aliases": [
+        "도쿄미쿠"
+      ],
+      "source_ids": [
+        "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 586,
+      "aliases": [
+        "백제수",
+        "제수"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 610,
+      "aliases": [
+        "흑제수",
+        "흑흑수"
+      ],
+      "source_ids": [
+        "arca-46071094",
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 642,
+      "aliases": [
+        "백이즈"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 658,
+      "aliases": [
+        "흑이즈"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 691,
+      "aliases": [
+        "백포노"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 706,
+      "aliases": [
+        "흑포노"
+      ],
+      "source_ids": [
+        "arca-74042366"
+      ]
+    }
+  ]
+}
