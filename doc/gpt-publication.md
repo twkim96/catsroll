@@ -2,7 +2,8 @@
 
 ## 현재 단계
 
-공개용 패키지 준비 중이다. 디렉터리 제출·승인·공개는 완료하지 않았다.
+0.2.4 공개 ZIP을 포털에 업로드해 초안을 생성했고 도메인 인증·MCP 연결을 완료했다.
+디렉터리 심사 제출·승인·공개는 완료하지 않았다.
 원본 비공개 플러그인과 App 연결은 보존하며, 별도 공개 ZIP은 기존 HTTPS MCP를 선언한다.
 플러그인 소스 버전은 `plugins/catsroll/plugin.json`, 서버 구현 버전은 `local/gpt_mcp.rb`가 각각 기준이다.
 
@@ -12,7 +13,7 @@
 - 무료 제공, 결제·상품 구매 기능 없음.
 - 문의: 공개 [GitHub Issues](https://github.com/twkim96/catsroll/issues).
 - 유지할 MCP 주소: `https://twkim96-my-cats-rolls.hf.space/mcp`.
-- 게시자 공개명은 개인 인증 화면에서 확인한 뒤 소유자가 결정한다. `twkim`을 임의로 인증명으로 선언하지 않는다.
+- 개인 인증은 승인됐다. 포털의 실제 인증 게시자명을 확인했고 소유자는 해당 실명 표시를 허용해 심사 진행을 요청했다. `twkim`을 임의로 인증명으로 선언하지 않는다.
 
 ## 다음에 필요한 사용자 작업
 
@@ -20,11 +21,12 @@ OpenAI Platform 조직 설정의 개인 인증 시작 시 유효한 기본 결�
 카드 입력 뒤 초기 크레딧 구매 화면에서 멈춘 상태로 조직 설정의 개인 인증을 다시 시도하자
 `Verify your identity → Start ID Check`가 열렸다. 이 계정에서는 초기 $5 구매 전에도
 Persona 본인 인증을 시작할 수 있는 화면까지 진입했다. 소유자는 Persona의 완료 화면을 확인했고,
-OpenAI 조직 설정에는 `Identity in review`가 표시된다. OpenAI 승인·게시자명 확인은 아직 남아 있다.
+OpenAI 조직 설정에서 `Verified → Individual: Approved`를 확인했다. 이후 제출 포털에서 실제 인증 게시자명을 확인했고,
+소유자는 실명 표시를 허용하고 심사 신청 진행을 요청했다.
 카드 등록·구매·자동 충전·신분증 제출은 소유자가 직접 결정한다.
 API 선불 결제는 ChatGPT Business 구독 및 ChatGPT 워크스페이스 크레딧과 별개다.
 현재 플러그인 서버는 OpenAI API를 호출하지 않는다. 초기 API 크레딧 구매를 플러그인 등록 수수료로 안내하지 않는다.
-개인 인증 뒤 실제 공개명을 확인하기 전에는 공개 배포를 진행하지 않는다.
+공개 이름에 대한 동의는 확보됐으나 플러그인 심사 제출·승인·공개는 아직 완료하지 않았다.
 
 ## 준비한 것과 남은 자료
 
@@ -35,10 +37,10 @@ API 선불 결제는 ChatGPT Business 구독 및 ChatGPT 워크스페이스 크�
 | 아이콘 | 256×256 Catsroll 전용 발바닥 PNG. 소유자가 오리지널 제작을 선택했고 기존 PONOS 파비콘은 대체. 생성 경위는 `plugins/catsroll/assets/README.md` |
 | 심사 사례 | manifest에 긍정 5개·부정 3개 수록 |
 | 지원 국가·무료 선언·릴리스 설명 | manifest 수록 |
-| 인증 게시자·공개명 | Persona 제출 완료, OpenAI `Identity in review`. 승인·공개명 확인 대기 |
+| 인증 게시자·공개명 | Individual Approved. 실제 포털 게시자명 확인 및 소유자의 실명 공개 허용 완료 |
 | 개인정보처리방침·약관 | `view/gpt_public/`에 twkim 운영자 표기·시행일·문의 보관·확인한 서버 진단 범위를 반영. 0.2.3 HF 공개 경로 활성화 및 manifest URL 연결 |
 | UI 전용 origin·공개 CSP | 고유 `ui.domain` 유지. ChatGPT의 사용자 지정 앱 CSP 강제 적용을 켠 상태에서 Multi·Find·WASM 시드 복구·결과 공유 확인. 공개 포털 스캔은 인증 승인 후 별도 |
-| 도메인 challenge | 정확한 환경 변수 토큰만 응답하는 경로 준비. 포털 토큰 발급·HF 설정·Verify Domain은 미완료 |
+| 도메인 challenge | HF secret 설정 및 재시작 후 인증 경로 HTTP 200 확인. 포털 Domain verified·Configured, 7개 도구 발견 및 최신 MCP 스캔 지적 없음 |
 | 실제 ChatGPT 심사 사례·시연 녹화 | Business Instant에서 아래 일부 흐름 확인. 최초 앱 표시 실패가 반복되어 재시도 필요. 녹화·전체 수용은 미완료 |
 | 무료 계정 설치·사용 | 미검증 |
 | 제출 attestation | 소유자가 실제 사실과 권리 범위를 확인하고 직접 완료 |
@@ -65,7 +67,13 @@ HF 루트 Dockerfile은 0.2.3부터 활성화한다. manifest의 소개·정책�
 도메인 인증은 `CATSROLL_OPENAI_DOMAIN_CHALLENGE`에 실제 토큰을 설정한다. 비어 있거나
 제어 문자·4,096바이트 초과 값이면 404이며, 유효한 값은 공백도 가공하지 않고 정확히 반환한다.
 인증 경로는 안내 페이지 활성화와 별개이며 GET/HEAD만 허용한다. 실제 토큰은 저장소에 넣지 않는다.
-현재 포털에서는 인증된 게시자가 없으면 ZIP 업로드 자체를 시작할 수 없으므로 토큰도 아직 발급되지 않았다.
+소유자가 0.2.4 ZIP 업로드를 완료했다. 공개 초안은
+[포털 상세](https://platform.openai.com/plugins/manage/plugin_asdk_app_6ad37fd07b188191914c9a3497da23d8)에 있다.
+실제 challenge를 HF secret에 설정하고 재시작한 뒤 HTTP 200·plain text·no-store 응답을 확인했다.
+포털은 `Domain verified`, `Configured`이며 서버 instructions와 7개 도구를 발견했다.
+최신 MCP scan에는 findings가 없다. 메타데이터에는 Productivity 분류를 확인하지 못했다는 비차단 안내가 있다.
+심사 정보의 시연 영상 URL 누락은 차단 항목이며 실제 녹화·링크 추가 후 새 ZIP 업로드가 필요하다.
+실제 토큰 값은 문서나 저장소에 기록하지 않는다.
 
 현재 패키지의 정상 사례는 초심자·속성 추천·Multi·Find·미정 배너의 정확히 5개이며 부정 사례는 3개다.
 사용자 시드 대신 합성 샘플 42를 사용한다. 별명 사례는 제품 회귀 검사를 유지하되 제출 사례 수에는 포함하지 않는다.
@@ -153,9 +161,9 @@ HF 0.2.3에서 `/gpt/about`, `/gpt/privacy`, `/gpt/terms`가 모두 HTTP 200이�
 배포 후 도구 새로고침과 새 대화에서 0.2.3 코드·아이콘, 관측 10개 보존 및
 계산 버튼 한 번으로 시드 42 복구를 실제 확인했다. 기존 대화의 캐시된 앱은 예전 코드를 유지할 수 있다.
 
-포털에서 Upload를 다시 열었으나 `You need a verified developer identity before you can
-create or upload a plugin`으로 차단됐다. 따라서 실제 challenge 발급·MCP 연결·자동 검사는
-현재 진행할 수 없다. challenge 서버 구현과 패키지는 준비된 상태이며 토큰은 임의로 만들지 않는다.
+인증 전에는 포털이 검증된 게시자 부재로 업로드를 차단했으나 현재는 승인되어 업로드 폼에 진입한다.
+challenge 서버 구현과 패키지는 준비됐으며, 실제 업로드 후 발급되는 토큰을 사용한다.
+0.2.4 업로드 뒤 도메인 인증과 MCP 검색·스캔은 완료했다. 심사 접수는 영상과 최종 확인 후 별도다.
 
 ## 실제 시연 준비
 
@@ -170,7 +178,8 @@ create or upload a plugin`으로 차단됐다. 따라서 실제 challenge 발급
 6. 녹화 재생·심사자 접근 가능 여부를 확인한 실제 URL만 `review.demo_recording_url`에 넣는다.
 
 현재 ChatGPT 첫 로딩/답변 표시 오류 때문에 정상 시연 완료로 표시하지 않는다.
-브라우저 제어에는 녹화 기능이 노출되지 않았다. 정상 환경 확보 후 창 녹화로 실제 흐름을 촬영해야 한다.
+브라우저 제어 자체에는 녹화 API가 없으나 컴퓨터 유즈로 macOS 화면 기록 도구를 조작할 수 있다.
+Catsroll 시험 전용 창을 분리해 실제 흐름을 촬영하고, 결과 재생·심사자 접근 가능 여부를 확인해야 한다.
 로컬 모의 호스트 녹화나 정지 화면 모음을 실제 ChatGPT 시연으로 대체하지 않는다.
 CSP 강제 적용을 켠 Business Instant에서 Find 칼리파/플래티넘 1장/다음 2A와
 WASM 합성 관측 10개 → 시작 시드 42·관측 후 3562635250 복구를 확인했다.
