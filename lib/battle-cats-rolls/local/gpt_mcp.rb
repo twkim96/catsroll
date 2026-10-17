@@ -57,7 +57,7 @@ module BattleCatsRolls
       shared = %w[event-series-search.js multi-track-virtual.js multi-track.js
         multi-find-catalog.js multi-find.js multi-plan.js]
       files = %w[track-engine.js multi-find-engine.js seeker-vampireflower.js
-        seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-inputs.js gpt-app.js gpt-app.css
+        seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-inputs.js gpt-result-summary.js gpt-app.js gpt-app.css
         multi-find-worker.js multi-find.css multi-plan.css event-filter.css style/tacit.css] + shared
       multi_template = File.read(File.expand_path('../view/multi.erb', __dir__))
       digest = Digest::SHA256.hexdigest(files.map { |file|
@@ -78,6 +78,7 @@ module BattleCatsRolls
         }.join("\n;\n")
         scripts += "\n;window.CatsrollMountMulti=function(){[#{modules}].forEach(function(m){m();});};\n"
         scripts += File.read(File.join(ASSETS, 'gpt-inputs.js')) + "\n;\n"
+        scripts += File.read(File.join(ASSETS, 'gpt-result-summary.js')) + "\n;\n"
         scripts += File.read(File.join(ASSETS, 'gpt-app.js'))
         scripts = scripts.gsub(%r{</script}i, '<\\/script')
         # Keep one maintained Multi DOM/CSS contract. Only transport scripts and

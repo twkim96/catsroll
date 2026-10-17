@@ -57,6 +57,33 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     assert.match(shared.params.content[0].text, /Find 계산:.*success/);
     assert.match(shared.params.content[0].text, /명계의 칼리파/);
     assert.match(shared.params.content[0].text, /플랜/);
+    // A long successful route must include the final guaranteed acquisition in ChatGPT context.
+    const messageCountBeforeLongRoute = await page.evaluate(() => messages.length);
+    const longRouteShare = await frame.locator("body").evaluate(() => {
+      const app = window.MultiFindApp;
+      const original = app.getResult;
+      app.getResult = () => ({status: "success", destination: "35B", cost: 1.48,
+        rawCost: 1.48, baseCost: 1.48, regularUnitCost: 0.02, optimization: "cost",
+        targetAcquired: 1, targetTotal: 1, regularUses: 24, guaranteedUses: 1,
+        actions: Array.from({length: 24}, (_, i) => ({type: "roll", lang: "kr", event: "fixture",
+          eventLabel: "검증 배너", start: (i + 1) + "A", resultLabel: (i + 1) + "A",
+          next: (i + 2) + "A", catId: 38, catName: "고양이 홉핑", rarity: 2, acquired: []})).concat([{
+            type: "guaranteed", lang: "kr", event: "fixture", eventLabel: "검증 배너",
+            start: "25A", next: "35B", guaranteedLabel: "25AG", pulls: 11,
+            routePulls: Array.from({length: 11}, (_, i) => ({resultLabel: i === 10 ? "25AG" : (25 + i) + "A", guaranteed: i === 10})),
+            acquired: [{catId: 870, catName: "변신소녀 단", resultLabel: "25AG", targetIndex: 0}]
+          }])});
+      document.getElementById("send-context").click();
+      app.getResult = original;
+      return true;
+    });
+    assert.equal(longRouteShare, true);
+    await page.waitForFunction(() => messages.filter(item => item.method === "ui/message").length === 2);
+    const routeSnapshot = await page.evaluate(() => messages.filter(item => item.method === "ui/update-model-context").at(-1).params.content[0].text);
+    assert.match(routeSnapshot, /25AG/);
+    assert.match(routeSnapshot, /변신소녀 단/);
+    assert.match(routeSnapshot, /"totalDraws":35/);
+    await page.evaluate(count => messages.splice(count), messageCountBeforeLongRoute);
     // A new host input cancels and discards all old results/plan selections.
     const prepared = {mode: "multi", seed: 43, count: 10, rows: [{lang: "kr", event: "2019-01-23_348"}],
       targets: [{cat_id: 306}], findEnabled: true};
@@ -183,6 +210,74 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
     assert.equal(await page.evaluate(() => messages.find(item => item.method === "ui/message").params.content[0].text), claudeShare,
       "Claude can share computed data when hidden context fails");
+    // Baseline 300: real engine output, 600 cells, complete route, both host transports.
+    for (const hostPath of ["", "?claude=1"]) {
+      await page.goto(base + "/gpt-test-host" + hostPath);
+      await page.waitForFunction(() => window.ready);
+      await page.locator("#arguments").fill(JSON.stringify({mode: "multi", seed: 42,
+        rows: [{lang: "kr", event: "2019-01-23_348", forceGuaranteed: 11}],
+        findEnabled: true, targets: [{cat_id: 306, allow_ticket: true}],
+        maxGuaranteed: 1, maxPlatinum: 1}));
+      await page.locator("#prepare").click();
+      await page.waitForFunction(() => latestResult?.structuredContent?.request?.count === 300);
+      await frame.locator("#calculate").click();
+      await page.waitForFunction(() => document.querySelector("iframe").contentWindow.MultiFindApp.getResult()?.status === "success");
+      await frame.locator("#send-context").click();
+      await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
+      const baseline = await page.evaluate(() => {
+        const win = document.querySelector("iframe").contentWindow;
+        const snapshot = messages.find(item => item.method === "ui/update-model-context").params.content[0].text;
+        const find = win.MultiFindApp.getResult();
+        return {snapshot, visible: messages.find(item => item.method === "ui/message").params.content[0].text,
+          route: find.actions, destination: find.destination, targetAcquired: find.targetAcquired,
+          rows: win.MultiTrackApp.getOutputs()[0].out.cats.map(pair => pair.map(cat => [cat.id, cat.number(), cat.next && cat.next.number()]))};
+      });
+      const parseLine = prefix => JSON.parse(baseline.snapshot.split("\n").find(line => line.startsWith(prefix)).slice(prefix.length));
+      const array = parseLine("배너 배열: ");
+      const route = parseLine("Find 계산: ");
+      assert.equal(array.rowsTotal, 300);
+      assert.equal(array.rowsIncluded, 300, "all default rows should fit one banner");
+      assert.equal(array.rowsOmitted, 0);
+      assert.equal(array.rows.length, 300);
+      assert.deepEqual(array.rows.map(pair => pair.map(cell => cell.slice(0, 3))), baseline.rows,
+        "all 600 serialized ID/result/next cells match the calculated table");
+      assert.equal(route.totalDraws, baseline.route.reduce((n, action) => n + (action.type === "guaranteed" ? action.pulls : 1), 0));
+      assert.equal(route.destination, baseline.destination);
+      assert.equal(route.targetAcquired, baseline.targetAcquired);
+      assert(route.targetsAcquired.some(item => item.catId === 306));
+      if (hostPath) assert(baseline.visible.includes(baseline.snapshot));
+      else assert.equal(baseline.visible, "현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.");
+      console.log((hostPath ? "Claude" : "GPT") + " default300: 600 cells exact, full Find acquisition, chars=" + baseline.snapshot.length);
+    }
+    // At the maximum count, multiple banners may omit arrays but never the route or plan.
+    const stress = await frame.locator("body").evaluate(() => {
+      const win = window;
+      const source = win.MultiTrackApp.getOutputs()[0];
+      const inputs = win.MultiTrackApp.getShareState();
+      const output = Object.assign({}, source, {out: win.TrackEngine.buildTracks(source.pool, 42,
+        {count: 999, position: "1A", last: 0, guaranteedRolls: 11, guaranteed: true, findCat: true})});
+      const find = win.MultiFindApp.getResult();
+      const start = performance.now();
+      const snapshot = win.CatsrollGptResultSummary.build({track: Object.assign({}, inputs, {count: 999}),
+        find, findEnabled: true, findSettings: win.MultiFindApp.getShareSettings(),
+        plan: win.MultiPlanApp.getState(), outputs: Array.from({length: 8}, () => output)});
+      return {snapshot, elapsed: performance.now() - start, destination: find.destination};
+    });
+    const stressLines = stress.snapshot.split("\n");
+    const stressArrays = stressLines.filter(line => line.startsWith("배너 배열: ")).map(line => JSON.parse(line.slice("배너 배열: ".length)));
+    assert.equal(stressArrays.length, 8);
+    assert(stressArrays.some(item => item.rowsOmitted > 0));
+    for (const array of stressArrays) {
+      assert.equal(array.rowsTotal, 999);
+      assert.equal(array.rowsIncluded + array.rowsOmitted, 999);
+      assert.equal(array.rows.length, array.rowsIncluded);
+    }
+    const stressFind = JSON.parse(stressLines.find(line => line.startsWith("Find 계산: ")).slice("Find 계산: ".length));
+    assert.equal(stressFind.destination, stress.destination);
+    assert(stressFind.targetsAcquired.some(item => item.catId === 306));
+    assert(stress.snapshot.length <= 60000);
+    assert(stress.elapsed < 5000, "snapshot serialization should not freeze the UI");
+    console.log("999x8 banners: explicit omissions, route retained, chars=" + stress.snapshot.length + ", ms=" + Math.round(stress.elapsed));
     assert.deepEqual(errors, []);
     console.log("GPT shared Multi: canonical targets, manual Apply, arrays+Find stamps, plan switching/save, reference provenance, host sharing, cancellation, mobile width and WASM seed recovery passed");
   } finally { await browser.close(); }

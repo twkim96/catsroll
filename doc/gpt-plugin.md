@@ -55,6 +55,18 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 준비 응답의 `guide`는 모드별 설명 주제만 제안하며 계산 결과를 담지 않는다.
 풀과 WASM 입력은 `_meta['catsroll/data']`에만 담아 모델 문맥을 불필요하게 채우지 않는다.
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.
+공유 직렬화는 `asset/gpt-result-summary.js`에서 계산된 출력만 읽는다. Find의 전체 행동과
+목표 획득 단계·총 실제 뽑기 수를 우선 전달하고, 연속된 일반 단뽑은 개수·시작/다음 좌표로
+묶는다. 확정 묶음의 `pulls`를 실제 뽑기 수에 포함하며 목표의 정확한 회차를 확인할 수
+없을 때는 행동 내 범위로 표시한다. `cost`는 엔진의 비교 가중치이고 `uberDraws`는
+획득 울슈레 수로서 입력의 미래 울슈레 수와 다르다.
+A/B 배열은 캐릭터 이름 사전과 좌표·ID·R/G를 보존한 압축 표로 전달한다. 기본 공유 예산은
+60,000자이며, 넘으면 배열 행 단위로 줄이고 배너별 계산/전달/생략 수를 명시한다.
+경로의 반복 배너·일정은 `actionContexts`, 반복 이름·희귀도는 `actionCats`로 연결한다.
+경로·합계·플랜은 우선 보존하며 긴 JSON을 문자 중간에서 자르지 않는다. 필수 데이터 자체가
+예산을 넘는 경우에는 전체 경로를 남기고 배열 생략 범위를 명시하므로 60,000자는 절대 전송 상한이 아니다.
+이는 공유 시점의 스냅샷이며 모델이 앱 DOM을 직접 보거나 이후 조작을 자동으로 읽는 것은 아니다.
+
 공유 버튼은 Multi 배열 표 바로 위에, 시드 찾기에서는 결과 바로 위에 배치한다.
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
 
@@ -133,6 +145,7 @@ CATSROLL_GPT_ENABLED=1 WEB_BIND=127.0.0.1:17867 bundle exec yahns -c config/yahn
 
 ```sh
 node test/test_gpt_runtime.js
+node test/test_gpt_result_summary.js
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_recommendations.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp.rb
@@ -147,6 +160,10 @@ MCP 검사는 opt-in, origin, 크기/타입 제한, 도구 교환·카탈로그�
 브라우저 검사는 Playwright가 설치된 환경의 `NODE_PATH` 또는 `PLAYWRIGHT_MODULE`을
 사용하고 Chrome을 실행한다. `CATSROLL_GPT_TEST_URL`로 별도 시험 서버를 지정할 수 있다.
 호스트 브리지는 로컬 모의 호스트이며 실제 ChatGPT 격리 정책의 검증을 대체하지 않는다.
+`test_gpt_result_summary.js`는 24단뽑+11확정, 300행동의 마지막 목표 획득, R/RG와
+부분/실패 상태를 확인한다. 브라우저 검사는 count 생략→300을 GPT/Claude 모의 호스트에서
+계산하고 공유된 600개 A/B 칸의 ID·좌표·다음 위치를 원본과 대조한다. 999행×8배너에서는
+배열의 생략 수와 전체 경로 유지도 확인한다. 실제 모델이 이 압축 형식을 해석하는지는 별도 수용이다.
 앱은 인증된 부모 호스트에 `ui/notifications/size-changed`로 실제 본문 높이를 알린다.
 `ResizeObserver`와 animation frame 중복 제거로 입력·접기/펼치기·계산 결과의 크기 변화를
 전달하며 iframe viewport 높이를 본문 높이로 재사용하지 않는다. 실제 최대 높이와 폭은
