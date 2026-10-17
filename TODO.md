@@ -1,5 +1,8 @@
 ## ChatGPT 플러그인
 
+* [Claude 연결](doc/gpt-plugin.md#claude-연결)의 전용 MCP 주소로 실제 Free 계정 UI 표시와
+  기기 계산·결과 공유를 확인한다. 기존 주소의 UI 도메인 검증 실패는 콘솔에서 확인했다.
+
 * 초심자 안내 `catsroll_guide`와 추천 `catsroll_recommend`를 실제 ChatGPT의 모호한 질문과 무료 계정에서 확인한다.
   로컬 검색과 Luna 문서 검토는 실제 무료 계정 수용을 대신하지 않는다.
 

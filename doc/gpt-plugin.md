@@ -217,6 +217,7 @@ JP 배너의 한국어 표시 우선순위와 원본 날짜 유지 규칙은
 - `CATSROLL_PUBLIC_ORIGIN`: 공개 서비스 HTTPS origin. 기본은 현재 HF Space 주소.
 - `CATSROLL_GPT_UI_ORIGIN`: 공개 UI 심사용 전용 origin이 정해진 경우 지정한다.
   미지정 시 공개 MCP origin을 사용한다. 도메인 소유권과 ChatGPT 호스트의 실제 origin/CSP를 확인해야 한다.
+  Claude 전용 연결에는 적용하지 않는다.
 - `CATSROLL_GPT_PUBLIC_PAGES=1`: 소개·개인정보처리방침·이용약관 활성화. HF 루트 Dockerfile은 0.2.3부터 활성화한다.
 - `CATSROLL_OPENAI_DOMAIN_CHALLENGE`: 포털이 발급한 정확한 단일 도메인 인증 토큰.
   페이지·인증 준비와 남은 소유자 확인은 [공개 제출 준비](gpt-publication.md#페이지와-도메인-인증-준비)에 유지한다.
@@ -244,10 +245,31 @@ ChatGPT의 blob Worker/WASM 보안 정책이 호환되는지는 실제 시험의
 공개 설정·심사 자료·결제/인증 중단 지점과 이전 절차는 [공개 제출 준비](gpt-publication.md)에 유지한다.
 사용자용 소개와 문의는 [Catsroll 소개](gpt-overview.md)에 있다.
 
+## Claude 연결
+
+Claude의 사용자 지정 원격 커넥터에는
+`https://twkim96-my-cats-rolls.hf.space/mcp/claude`를 등록한다. 인증은 없다.
+기존 `/mcp`는 ChatGPT용이며 공개 심사 중인 연결과 패키지 설정을 유지한다.
+두 경로는 도구·입력 검증·데이터·계산 UI·JS/WASM을 공유하고, UI 리소스 URI와
+호스트별 `ui.domain` 메타데이터만 분리한다. `/mcp/claude`도 `CATSROLL_GPT_ENABLED`를 따른다.
+
+2026-10-18 실제 Claude Free에서 안내 도구와 계산 준비 호출은 동작했으나 UI 표시가 실패했다.
+콘솔의 `[mcp-ext-apps-host] ui.domain validation failed`로 기존 `/mcp`가 보내는
+ChatGPT용 origin이 Claude의 도메인 검사에 맞지 않음을 확인했다.
+Claude 경로는 전체 공개 연결 URL(`/mcp/claude` 포함)의 SHA-256 앞 32자리와
+`.claudemcpcontent.com`을 조합한다. 공식 [MCP Apps CSP/CORS 안내](https://apps.extensions.modelcontextprotocol.io/api/documents/csp-and-cors.html)의 규칙을 따른다.
+요청 User-Agent로 호스트를 추측하거나 세션의 initialize 정보를 전역 상태로 저장하지 않는다.
+
+기존 Claude 커넥터는 새 주소로 다시 등록하고 새 대화에서 시험한다.
+연결/메타데이터 검사는 실제 UI 표시·기기 계산·결과 공유 통과를 대신하지 않는다.
+모델이 시드를 모르는 사용자를 `multi`로 준비하면 입력 검사가 실패한다. 이 경우 `seek`로
+화면을 열어야 하며, UI 호환 문제와 구분한다. Claude의 안내·버튼에는 아직 GPT 명칭이 남아 있다.
+
 ## 다음 수용 조건
 
 - 실제 ChatGPT 첫 진입 실패와 결과 공유 후 설명 응답 오류를 재현·해결하고 전체 왕복을 확인.
 - 무료 웹 계정에서 설치/연결·UI 제공 여부와 실제 사용량 제한 확인.
+- Claude 전용 주소로 실제 Free 계정의 UI 표시·Multi·Find·WASM 시드 찾기·결과 공유 확인.
 - 화면 재생성·탭 종료·절전 시 실행 중단과 입력 재구성 경험 확인. 지속 실행은 보장하지 않는다.
 - 기존 Multi의 PNG 등 추가 내보내기 기능은 이후 범위를 정한다. 플랜 저장은 현재 앱 세션에서 지원한다.
 - UI 변경 후 새 리소스 URI로 ChatGPT 도구 설정을 새로고침하고 표시·계산을 확인한다.

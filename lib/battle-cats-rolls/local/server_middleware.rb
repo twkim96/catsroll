@@ -11,6 +11,7 @@ module BattleCatsRolls
       @track_api = TrackApi.new
       @assets = Rack::Files.new(File.expand_path('../asset', __dir__))
       @gpt_mcp = GptMcp.new
+      @claude_mcp = GptMcp.new(ui_host: :claude)
       @gpt_public_pages = GptPublicPages.new
     end
 
@@ -22,6 +23,8 @@ module BattleCatsRolls
         @gpt_public_pages.call(env)
       when '/mcp', '/gpt'
         @gpt_mcp.call(env)
+      when '/mcp/claude'
+        @claude_mcp.call(env)
       when '/track.json', '/events.json'
         @track_api.call(env)
       when '/sw.js'

@@ -27,6 +27,10 @@ module BattleCatsRolls
     class InvalidInput < StandardError; end
     class UnknownMethod < StandardError; end
 
+    def initialize(ui_host: :chatgpt)
+      @ui_host = ui_host
+    end
+
     def self.enabled?
       ENV['CATSROLL_GPT_ENABLED'] == '1'
     end
@@ -166,7 +170,7 @@ module BattleCatsRolls
           {isError: true, content: [{type: 'text', text: error.message}]}
         end
       when 'resources/list'
-        {resources: [{uri: self.class.widget[:uri], name: 'catsroll-multi', mimeType: MIME},
+        {resources: [{uri: widget[:uri], name: 'catsroll-multi', mimeType: MIME},
           {uri: 'catsroll://guide/index', name: 'catsroll-guide', mimeType: 'text/markdown',
            description: 'Beginner guide index; use catsroll_guide for focused retrieval.'}]}
       when 'resources/templates/list' then {resourceTemplates: []}
@@ -175,11 +179,15 @@ module BattleCatsRolls
           index = GptGuide.new.lookup('topic' => 'index').fetch('documents').first
           return {contents: [{uri: params['uri'], mimeType: 'text/markdown', text: index.fetch('content')}]}
         end
-        raise InvalidInput, 'Unknown resource; list resources again' unless params['uri'] == self.class.widget[:uri]
+        raise InvalidInput, 'Unknown resource; list resources again' unless params['uri'] == widget[:uri]
 
         meta = {ui: {csp: {connectDomains: [], resourceDomains: []}},
           'openai/widgetDescription' => 'Catsroll: device-only Multi arrays, route search and seed finder. Prepared inputs are not computed results.'}
-        domain = ENV.fetch('CATSROLL_GPT_UI_ORIGIN', self.class.public_origin)
+        domain = if @ui_host == :claude
+          Digest::SHA256.hexdigest("#{self.class.public_origin}/mcp/claude")[0, 32] + '.claudemcpcontent.com'
+        else
+          ENV.fetch('CATSROLL_GPT_UI_ORIGIN', self.class.public_origin)
+        end
         meta[:ui][:domain] = domain if domain && !domain.empty?
         {contents: [{uri: params['uri'], mimeType: MIME, text: self.class.widget[:text], _meta: meta}]}
       else
@@ -189,6 +197,14 @@ module BattleCatsRolls
     end
 
     private
+
+    def widget
+      base = self.class.widget
+      return base unless @ui_host == :claude
+
+      # Host-specific domain metadata must never share the cached ChatGPT URI.
+      base.merge(uri: base[:uri].sub(/\.html\z/, '-claude-1.html'))
+    end
 
     def allowed_origin?(request)
       origin = request.env['HTTP_ORIGIN']
@@ -266,8 +282,8 @@ module BattleCatsRolls
           outputSchema: {type: 'object', additionalProperties: true},
           annotations: {readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false}}
         if name == 'catsroll_prepare'
-          item[:_meta] = {ui: {resourceUri: self.class.widget[:uri]},
-            'openai/outputTemplate' => self.class.widget[:uri]}
+          item[:_meta] = {ui: {resourceUri: widget[:uri]},
+            'openai/outputTemplate' => widget[:uri]}
         end
         item[:_meta] = {ui: {visibility: ['app']}} if name == 'catsroll_multi_data'
         item

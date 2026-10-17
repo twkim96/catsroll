@@ -8,10 +8,10 @@ describe 'Catsroll MCP device-computation adapter' do
   mcp = BattleCatsRolls::GptMcp.new
   client = Rack::MockRequest.new(mcp)
 
-  def rpc(client, method, params = {}, headers = {})
+  def rpc(client, method, params = {}, headers = {}, path: '/mcp')
     previous = ENV['CATSROLL_GPT_ENABLED']
     ENV['CATSROLL_GPT_ENABLED'] = '1'
-    response = client.post('/mcp', {'CONTENT_TYPE' => 'application/json',
+    response = client.post(path, {'CONTENT_TYPE' => 'application/json',
       input: JSON.generate(jsonrpc: '2.0', id: 1, method: method, params: params)}.merge(headers))
     [response, JSON.parse(response.body)]
   ensure
@@ -38,7 +38,7 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(body.dig('result', 'protocolVersion')).eq '2025-06-18'
     expect(body.dig('result', 'capabilities', 'tools')).eq({})
     expect(body.dig('result', 'instructions').include?('does NOT compute')).eq true
-    _, body = rpc(client, 'ping', {}, 'HTTP_MCP_PROTOCOL_VERSION' => 'bad')
+    _, body = rpc(client, 'ping', {}, {'HTTP_MCP_PROTOCOL_VERSION' => 'bad'})
     expect(body['error']).eq 'Unsupported MCP protocol version'
     previous = ENV['CATSROLL_GPT_ENABLED']
     ENV['CATSROLL_GPT_ENABLED'] = '1'
@@ -325,5 +325,27 @@ describe 'Catsroll MCP device-computation adapter' do
     ENV['CATSROLL_GPT_ENABLED'] = '1'
     expect(client.get('/gpt').body).eq content.fetch('text')
     ENV['CATSROLL_GPT_ENABLED'] = previous
+  end
+
+  would 'isolate Claude UI domains and resource references from the ChatGPT connection' do
+    web = Rack::MockRequest.new(BattleCatsRolls::LocalServerMiddleware.new(->(_) { [404, {}, ['Not found']] }))
+    list = rpc(web, 'tools/list', path: '/mcp/claude').last.fetch('result').fetch('tools')
+    uri = list.find { |tool| tool['name'] == 'catsroll_prepare' }.dig('_meta', 'ui', 'resourceUri')
+    original_uri = rpc(web, 'tools/list').last.dig('result', 'tools').
+      find { |tool| tool['name'] == 'catsroll_prepare' }.dig('_meta', 'ui', 'resourceUri')
+    expect(uri == original_uri).eq false
+    listed = rpc(web, 'resources/list', path: '/mcp/claude').last.dig('result', 'resources').first
+    expect(listed.fetch('uri')).eq uri
+    read = rpc(web, 'resources/read', {uri: uri}, path: '/mcp/claude').last.dig('result', 'contents').first
+    endpoint = "#{BattleCatsRolls::GptMcp.public_origin}/mcp/claude"
+    expect(read.dig('_meta', 'ui', 'domain')).eq Digest::SHA256.hexdigest(endpoint)[0, 32] + '.claudemcpcontent.com'
+    original = rpc(web, 'resources/read', {uri: original_uri}).last.dig('result', 'contents').first
+    expect(original.dig('_meta', 'ui', 'domain')).eq ENV.fetch('CATSROLL_GPT_UI_ORIGIN', BattleCatsRolls::GptMcp.public_origin)
+    expect(read.fetch('text')).eq original.fetch('text')
+    expect(rpc(web, 'resources/read', {uri: original_uri}, path: '/mcp/claude').last.key?('error')).eq true
+    prepared = rpc(web, 'tools/call', {name: 'catsroll_prepare', arguments: {mode: 'multi', seed: 42,
+      count: 100, rows: [{lang: 'kr', event: '2019-01-23_348'}]}}, path: '/mcp/claude').last.fetch('result')
+    expect(prepared.dig('structuredContent', 'status')).eq 'prepared'
+    expect(prepared.dig('structuredContent', 'execution')).eq 'client'
   end
 end
