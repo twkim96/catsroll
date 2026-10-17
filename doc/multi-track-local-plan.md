@@ -1,5 +1,20 @@
 # Local Multi Track Page Plan
 
+## Regional display names
+
+JP event titles use the existing Korean match for the same gacha ID within the
+date window first. If none exists, `LocalCrystalBall#with_event_names_from`
+falls back to the existing Korean series name, then the latest Korean event
+title for the same ID or series, then the original title. Compact series names
+avoid carrying old roster-count claims into newer JP pools. `LocalRoute.reload_balls` enables
+this display fallback without a per-collaboration translation table.
+
+The date prefix always comes from the selected JP event's actual start/end dates.
+Borrowing a Korean title never changes its event ID, pool, rates or schedule.
+The original source title is retained as `original_name` for fallback records.
+GPT uses the same catalog; reference arrays still identify their source region
+and do not establish future KR release dates.
+
 ## Current Initial-Load Optimizations
 
 The original plan below describes the initial feature scope. The current viewer

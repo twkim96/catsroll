@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'set'
+require_relative '../event_series_names'
 
 module BattleCatsRolls
   module LocalCrystalBallClassMethods
@@ -37,12 +38,27 @@ module BattleCatsRolls
       self.class.new(self.class.deep_freeze(copied_data))
     end
 
-    def with_event_names_from source, window_days: 240
+    def with_event_names_from source, window_days: 240, series_fallback: false
       source_events = source.events.values.group_by{ |event| event['id'] }
+      source_series = source.events.values.group_by do |event|
+        source.gacha.dig(event['id'], 'series_id')
+      end if series_fallback
       copied_data = self.class.deep_dup(data)
 
       copied_data['events'].each_value do |event|
-        if name = matching_event_name(event, source_events, window_days)
+        name = matching_event_name(event, source_events, window_days)
+        if !name && series_fallback
+          series_id = gacha.dig(event['id'], 'series_id')
+          candidates = Array(source_events[event['id']])
+          candidates += Array(source_series[series_id]) if series_id
+          candidate = candidates.select do |info|
+            !info['name'].to_s.strip.empty? && info['platinum'] == event['platinum'] && info['start_on']
+          end.max_by { |info| info['start_on'] }
+          name = EventSeriesNames.korean(series_id) || candidate&.fetch('name')
+          # Only the display name is borrowed; dates, ID and pool stay regional.
+          event['original_name'] = event['name'] if name
+        end
+        if name
           event['name'] = name
         end
       end

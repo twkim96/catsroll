@@ -33,8 +33,8 @@ MCP 어댑터 순이다. 이 기록은 게임 클라이언트 자체나 모든 �
 | 시드 진행·레어 재추첨 | `asset/track-engine.js`의 `advanceSeed`, `duped`, `fillCatLinks`, `finishRerolledLinks`; 원본 `gacha.rb`/`cat.rb` |
 | 직전 결과·티켓 후 초기화 | `asset/multi-find-engine.js`의 `rollRegular`, `lastRareId`, `rollGuaranteed` |
 | G/RG·2/7/11/15 | 원본 Gacha와 `TrackEngine.fillGuaranteed`, `MultiFindEngine.guaranteedRollCount`; `gpt-runtime.js` 직렬화 |
-| 색상·한정 강조 | `scoreRarityLabel`의 7개 구간, `EXCLUSIVES`, `gpt-app.css`의 색상 매핑 |
-| 미래 울슈레 | `gpt-runtime.js`의 `modifiedPool`: 선택한 풀만 복사해 음수 ID를 앞에 추가 |
+| 색상·한정 강조 | `scoreRarityLabel`의 7개 구간, `EXCLUSIVES`, `tacit.css`의 공통 색상 매핑과 GPT 테마 변수 |
+| 미래 울슈레 | 공통 `multi-track.js`의 `poolWithFuture` 및 `gpt-runtime.js`의 `modifiedPool`: 선택한 풀만 복사해 음수 ID를 앞에 추가 |
 | Find 한계·일정·비용 | `multi-find-engine.js`의 `scheduleDayFor`, `betterGoal`, `search` 상태와 비용 상수 |
 | 실제 MCP 지원 범위 | `local/gpt_mcp.rb`의 `tools`, `prepare`, `seeker_data`; 시드 찾기 WASM 어댑터 |
 
@@ -70,3 +70,16 @@ MCP 어댑터 순이다. 이 기록은 게임 클라이언트 자체나 모든 �
 Luna 검토에서 초심자 질문 10개의 주제 분류와 문서 이해를 확인했고, Find의 세 질문 묶음을
 한 번에 요구하지 않고 차례대로 좁히도록 문구를 보완했다.
 Luna의 문서 이해/질문 분류 검토는 무료 ChatGPT 계정의 실제 도구 선택/응답 수용을 대신하지 않는다.
+
+## Multi UI 통합 후 확인
+
+GPT 상단 입력 디자인을 유지하고 아래 표·Find·플랜은 공통 Multi 컨트롤러를 사용한다.
+`test_gpt_browser.cjs`의 모의 호스트에서 수신만으로 계산하지 않음, 실제 목표명,
+배열/성공 경로 도장, Found cats 목록, 플랜 그리기·저장, 명시적 GPT 요약 전달,
+새 입력/취소 후 오래된 결과 차단과 기존 WASM 관측 흐름을 검사한다.
+GPT 전용 화면은 좁은 폭의 배치만 조정하며 엔진 규칙을 다시 구현하지 않는다.
+실제 ChatGPT·무료 계정·공개 CSP 검증은 별도다.
+
+미정 콜라보 참고 풀 조회는 기존 `TrackApi`의 시리즈·캐릭터 ID와 지역별 카탈로그를 연결한다.
+한국어 이름 연결은 표시 전용이며 일본 원본 풀의 ID 순서·확률·확정 조건을 변경하지 않는다.
+`previewFor`는 화면·준비 요청·플랜에 유지하며 일정 미확정 여부를 계산 결과와 분리한다.

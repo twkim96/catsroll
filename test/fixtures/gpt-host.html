@@ -1,0 +1,32 @@
+<!doctype html><html lang="ko"><meta charset="utf-8"><title>Catsroll 로컬 호스트 검증</title>
+<style>body{margin:12px;font:14px system-ui;background:#e8e8ed}button{margin:4px;padding:8px}iframe{display:block;border:1px solid #ccc;height:900px;width:390px;max-width:100%;background:white}textarea{display:block;width:95%;height:100px}#messages{white-space:pre-wrap;max-height:240px;overflow:auto;font-size:12px}</style>
+<button id="mobile" onclick="document.querySelector('iframe').style.width='390px'">모바일 폭</button><button id="desktop" onclick="document.querySelector('iframe').style.width='900px'">넓은 폭</button>
+<button id="prepare">입력 준비</button><button id="cancel-host">호스트 취소</button>
+<textarea id="arguments">{"mode":"multi","seed":42,"count":10,"rows":[{"lang":"kr","event":"2026-02-13_1042"}],"findEnabled":true,"targets":[{"cat_id":160,"allow_ticket":true}],"maxPlatinum":1,"planMode":true,"planName":"검증용 플랜"}</textarea>
+<iframe title="Catsroll 앱" id="widget" sandbox="allow-scripts allow-same-origin" src="/gpt"></iframe><pre id="messages"></pre>
+<script>
+window.messages=[];window.latestResult=null;window.ready=false;window.holdPrepare=false;window.releases=[];
+const iframe=document.querySelector('iframe');
+async function prepare(){
+ const args=JSON.parse(document.querySelector('textarea').value);
+ iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-input',params:{arguments:args}},location.origin);
+ const response=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:99,method:'tools/call',params:{name:'catsroll_prepare',arguments:args}})});
+ latestResult=(await response.json()).result;
+ iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:latestResult},location.origin);
+}
+document.querySelector('#prepare').onclick=prepare;
+document.querySelector('#cancel-host').onclick=()=>iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-cancelled',params:{}},location.origin);
+addEventListener('message',async event=>{
+ if(event.source!==iframe.contentWindow||event.origin!==location.origin)return;
+ const m=event.data;if(!m||m.jsonrpc!=='2.0')return;
+ messages.push(m);document.querySelector('#messages').textContent=messages.filter(m=>m.method!=='tools/call').map(m=>JSON.stringify(m)).join('\n');
+ let result={};
+ if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:{},hostContext:{}};
+ else if(m.method==='tools/call'){
+  const response=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(m)});result=(await response.json()).result;
+  if(holdPrepare && m.params.name==='catsroll_prepare')await new Promise(resolve=>releases.push(resolve));
+ }
+ if(m.id!=null)event.source.postMessage({jsonrpc:'2.0',id:m.id,result},event.origin);
+ if(m.method==='ui/notifications/initialized')ready=true;
+});
+</script></html>

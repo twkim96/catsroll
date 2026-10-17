@@ -3,10 +3,12 @@
 ## 목적과 현재 범위
 
 시드 찾기와 Multi의 배열·교차 배너 R/G·Find 경로 탐색을 대화 안의 앱에서 실행한다.
-기존 JS/WASM 엔진 파일을 그대로 번들하고, 계산은 사용자의 브라우저 Worker에서 한다.
+기존 Multi의 배열·Find·플랜 컨트롤러와 JS/WASM 엔진을 공유한다.
+배열은 기존 Multi의 기기 JS, Find·시드 찾기는 기기 Worker에서 실행한다.
+상단 시드·횟수·배너 입력은 기존 GPT 디자인을 유지하며, 아래에 Multi의 선택·표·플랜 기능을 배치한다.
 서버는 공개 배너·캐릭터·풀 데이터와 앱을 제공하며 계산 서버로 자동 전환하지 않는다.
 
-현재는 시험 버전이다. HF 공개 서버와 비공개 ChatGPT 웹 앱을 연결하고 실제 격리
+현재는 시험 버전이다. 이번 통합 UI는 로컬 모의 호스트에서 검증했으며 실제 ChatGPT 갱신 검증은 별도다. HF 공개 서버와 비공개 ChatGPT 웹 앱을 연결하고 실제 격리
 iframe에서 Multi·Find·WASM 실행을 확인했다. 무료 웹 계정, 결과 공유 후 모델 설명,
 공개 심사·배포 수용은 남아 있다. 플러그인 ZIP 생성, 비공개 연결, 공개 출시는
 서로 다른 단계다. 공개 전에는 아래 수용 조건을 마친다.
@@ -14,8 +16,10 @@ iframe에서 Multi·Find·WASM 실행을 확인했다. 무료 웹 계정, 결과
 ## 파일과 유지보수
 
 - `lib/battle-cats-rolls/local/gpt_mcp.rb`: opt-in `/mcp`, `/gpt`와 입력 검증·데이터 준비.
+- `local/gpt_banner_preview.rb`: 기존 KR/JP 시리즈 연결과 최신 참고 풀 조회. 서버 계산은 하지 않는다.
 - `asset/gpt-runtime.js`, `asset/gpt-worker.js`: 기존 엔진의 기기 실행과 취소·직렬화.
-- `asset/gpt-app.js`, `asset/gpt-app.css`, `view/gpt_app.html`: 독립 미리보기와 MCP Apps UI.
+- `asset/gpt-app.js`, `asset/gpt-inputs.js`, `asset/gpt-app.css`, `view/gpt_app.html`: 호스트 브리지·기존 GPT 입력 UI·독립 미리보기.
+- `view/multi.erb`, `asset/multi-{track,find,plan}.js`: 표·목표 선택·경로 도장·플랜의 공통 UI. `CatsrollMultiHost`가 있을 때만 MCP 데이터·Worker·임시 저장소를 사용한다.
 - `plugins/catsroll/{plugin,mcp}.json`: 원격 MCP 플러그인 패키지 원본.
 - `bin/package-gpt-plugin.rb`: 설정된 공개 origin으로 ZIP 생성. 생성물은 `temp/`.
 - 계산 원본: `asset/track-engine.js`, `multi-find-engine.js`,
@@ -33,9 +37,11 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | --- | --- |
 | `catsroll_guide` | 초심자 자연어 질문 또는 `topic`으로 검증 안내 1~3개 검색. 기본 2개, 본문 합계 최대 16,000자 |
 | `catsroll_recommend` | 속성/육성/보유/배너 풀로 상위 티어 후보 조회. 이름·형태·능력은 기존 게임 데이터에서 읽음 |
+| `catsroll_banner_preview` | 일정 미정 콜라보/이벤트의 시리즈를 KR·JP 이름/별명/캐릭터 ID로 연결하고 지역별 최신 참고 풀과 `prepare_rows` 반환. 예측·미래 일정 아님 |
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달 |
 | `catsroll_cats` | 모든 형태 이름·검토한 별명 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
-| `catsroll_prepare` | `multi`, `find`, `seek` 조건을 검증하고 앱에서 실행할 데이터를 준비 |
+| `catsroll_prepare` | `multi`, `seek`와 Find 옵션·플랜 초기 설정을 검증. 기존 `find`는 같은 Multi 화면의 호환 입력 |
+| `catsroll_multi_data` | 앱 전용(`_meta.ui.visibility=[app]`) bootstrap/series/pool 전송. 기존 `TrackApi`의 공개 데이터만 `_meta`로 반환하며 계산하지 않음 |
 
 `catsroll_prepare`의 `structuredContent.status`는 **prepared**이며 결과가 아니다.
 준비 응답의 `guide`는 모드별 설명 주제만 제안하며 계산 결과를 담지 않는다.
@@ -44,6 +50,21 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
 
 Multi의 초기 횟수는 100이며, 명시적으로 전달한 횟수는 그대로 사용한다.
+별도 Find 탭 없이 `findEnabled`로 켠다. `targets`가 있으면 기본으로 켜지며, 목표 이름은
+공유 Multi 카탈로그에서 표시한다. AI는 `cat_id`와 `cat_name`을 같이 전달하며 이름/ID가
+맞지 않으면 준비 도구가 오류를 반환한다. `planMode`, `planName`으로 플랜 UI를 준비할 수 있다.
+준비 입력을 받았다고 계산하지 않는다. 사용자의 계산하기 클릭이 실행 경계다.
+Found cats는 기존 Multi의 캐릭터·좌표 목록을 유지한다. 목표 선택은 Find 설정의 필터 창에서 한다.
+Find 성공 후 경로 도장을 자동 표시한다. 플랜 그리기·직접 선택·조회·저장은 공통 Multi 규칙을 쓴다.
+GPT의 플랜·입력 상태는 메모리에서 격리되며 해당 앱 세션 동안만 유지한다. 사이트의 저장 플랜이나 주소를 변경하지 않는다.
+샌드박스가 native form 제출을 허용하지 않아도 계산 버튼은 명시적인 기기 API로 실행한다.
+Find 옵션은 계산 방식 옆에 두며, Find·플랜 도구는 각 패널 왼쪽 위에 모은다.
+플랜 그리기·불러오기·초기화·저장은 접근성 이름과 툴팁이 있는 아이콘이다.
+스위치는 텍스트 표제 대신 패널 안쪽의 흐림 정도로 꺼진 상태를 나타낸다.
+배열 미계산/변경 대기 중 활성화가 거부되면 스위치와 흐림을 실제 상태로 유지하고
+흐린 영역 중앙에 계산하기 안내를 표시한다.
+입력칸은 도구 막대 다음 행에 두며 중간 폭에서도 도구를 분산하지 않는다. 목표 선택창은 좁은 폭에서도
+이름·획득처·삭제 버튼을 안쪽에 유지한다.
 8개 배너, 최대 `min(TRACK_MAX_COUNT, 999)`행을 지원한다. Find는 기존 여섯
 검색 기준과 확뽑·플래티넘·레전드 한도를 사용하며 한 지역의 배너끼리만 검색한다.
 상태 한도 결과는 최적 경로라고 단정하지 않는다. `forceGuaranteed`는 기존 Multi와
@@ -135,6 +156,14 @@ ChatGPT 테마가 어두워도 앱은 밝게 표시하며, 캐릭터 검색 목�
 배너 제목과 표 머리글은 기존 Multi의 `multi_events.series_name`을 사용한다.
 제목 아래에는 원래 배너 설명을 작은 글자로 표시하고, 이벤트 ID는 툴팁에 둔다.
 별도 ‘선택됨’ 설명은 반복하지 않으며 준비된 배너도 동일한 선택 상자로 표시한다.
+일정 미정 배너 요청은 `catsroll_banner_preview`로 기존 시리즈·캐릭터 ID를 연결하고 KR/JP 최신 풀을 비교한다.
+준비 행의 `previewFor`는 가정 대상 지역이며 원본 `lang`/이벤트 ID/확률/슬롯 순서를 유지한다.
+캐릭터 이름만 해당 지역 데이터에서 ID로 연결하고 없는 이름은 원문을 유지한다. 화면·GPT 입력·플랜 저장에도
+참고 계산 표시를 보존한다. 이 표시를 임의로 지우고 실제 확정 일정으로 답하지 않는다.
+`previewFor`와 `scheduleAware=true`를 함께 전달하면 미확정 일정으로 경로를 계산하지 않고 오류를 반환한다.
+JP 배너의 한국어 표시 우선순위와 원본 날짜 유지 규칙은
+[Multi 표시명](multi-track-local-plan.md#regional-display-names)을 따른다.
+
 전체 목록은 앱 안에서 지역별로 한 번 불러온다. 모델의 이름 검색은 기존 페이지
 검색을 사용하고, 준비 도구가 넘긴 정확한 이벤트 ID는 선택 메뉴에 그대로 반영한다.
 공개 디렉터리 개발자명은 선택한 인증 게시자 정보에서 정해지며, `developerName`이나
@@ -204,7 +233,7 @@ ChatGPT의 blob Worker/WASM 보안 정책이 호환되는지는 실제 시험의
 - 실제 ChatGPT 첫 진입 실패와 결과 공유 후 설명 응답 오류를 재현·해결하고 전체 왕복을 확인.
 - 무료 웹 계정에서 설치/연결·UI 제공 여부와 실제 사용량 제한 확인.
 - 화면 재생성·탭 종료·절전 시 실행 중단과 입력 재구성 경험 확인. 지속 실행은 보장하지 않는다.
-- 기존 Multi의 플랜 저장·진행 기록·PNG 등 부가 기능은 이후 범위를 정한다.
+- 기존 Multi의 PNG 등 추가 내보내기 기능은 이후 범위를 정한다. 플랜 저장은 현재 앱 세션에서 지원한다.
 - UI 변경 후 새 리소스 URI로 ChatGPT 도구 설정을 새로고침하고 표시·계산을 확인한다.
 - 공개 배포용 CSP 활성 상태에서 blob Worker·WASM 실행과 결과 공유를 확인한다.
 - 공개 디렉터리 심사 제출·공개는 별도 준비와 소유자 확인 후 진행한다.

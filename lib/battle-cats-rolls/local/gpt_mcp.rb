@@ -7,12 +7,13 @@ require 'uri'
 require 'rack'
 require_relative 'gpt_guide'
 require_relative 'gpt_recommendations'
+require_relative 'gpt_banner_preview'
 
 module BattleCatsRolls
   # Stateless JSON Streamable HTTP. This adapter only prepares public game data;
   # the existing JS/WASM engines run in the user's UI, never on this server.
   class GptMcp
-    VERSION = '0.1.4'
+    VERSION = '0.2.0'
     PROTOCOLS = %w[2025-11-25 2025-06-18 2025-03-26].freeze
     MIME = 'text/html;profile=mcp-app'
     ASSETS = File.expand_path('../asset', __dir__)
@@ -20,7 +21,7 @@ module BattleCatsRolls
     ICON = File.expand_path('../../../plugins/catsroll/assets/icon.png', __dir__)
     BODY_LIMIT = 65_536
     INPUT_KEYS = %w[mode seed last count rows targets optimization maxGuaranteed
-      maxPlatinum maxLegendTicket scheduleAware rolls].freeze
+      maxPlatinum maxLegendTicket scheduleAware rolls findEnabled planMode planName].freeze
 
     class InvalidInput < StandardError; end
     class UnknownMethod < StandardError; end
@@ -34,11 +35,15 @@ module BattleCatsRolls
     end
 
     def self.widget
+      shared = %w[event-series-search.js multi-track-virtual.js multi-track.js
+        multi-find-catalog.js multi-find.js multi-plan.js]
       files = %w[track-engine.js multi-find-engine.js seeker-vampireflower.js
-        seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-app.js gpt-app.css]
+        seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-inputs.js gpt-app.js gpt-app.css
+        multi-find-worker.js multi-find.css multi-plan.css event-filter.css style/tacit.css] + shared
+      multi_template = File.read(File.expand_path('../view/multi.erb', __dir__))
       digest = Digest::SHA256.hexdigest(files.map { |file|
         File.binread(File.join(ASSETS, file))
-      }.join + File.binread(TEMPLATE) + File.binread(ICON))
+      }.join + multi_template.b + File.binread(TEMPLATE) + File.binread(ICON))
       @widget ||= {}
       @widget = {} unless @widget.key?(digest)
       @widget[digest] ||= begin
@@ -47,16 +52,35 @@ module BattleCatsRolls
         binary = Base64.strict_encode64(File.binread(File.join(ASSETS, 'seeker-vampireflower.wasm')))
         worker += "\n;self.CATSROLL_WASM_BASE64=#{JSON.generate(binary)};\n"
         worker += File.read(File.join(ASSETS, 'gpt-worker.js'))
-        scripts = %w[gpt-runtime.js gpt-app.js].map { |file|
+        modules = shared.map { |file| "function(){\n#{File.read(File.join(ASSETS, file))}\n}" }.join(",\n")
+        scripts = %w[track-engine.js multi-find-engine.js gpt-runtime.js].map { |file|
           File.read(File.join(ASSETS, file))
-        }.join("\n;\n").gsub(%r{</script}i, '<\\/script')
+        }.join("\n;\n")
+        scripts += "\n;window.CatsrollMountMulti=function(){[#{modules}].forEach(function(m){m();});};\n"
+        scripts += File.read(File.join(ASSETS, 'gpt-inputs.js')) + "\n;\n"
+        scripts += File.read(File.join(ASSETS, 'gpt-app.js'))
+        scripts = scripts.gsub(%r{</script}i, '<\\/script')
+        # Keep one maintained Multi DOM/CSS contract. Only transport scripts and
+        # template expressions are replaced; controllers mount after MCP data arrives.
+        multi = multi_template.gsub(/<%.*?%>/m, '').gsub(%r{<link\b[^>]*>}, '').
+          gsub(%r{<script\b[^>]*>.*?</script>}m, '').
+          sub(/data-find-worker="[^"]*"/, '').sub(/data-find-engine="[^"]*"/, '')
+        find_worker = %w[track-engine.js multi-find-engine.js multi-find-worker.js].map { |file|
+          File.read(File.join(ASSETS, file))
+        }.join("\n;\n")
+        base_style = File.read(File.join(ASSETS, 'style/tacit.css'))
+        track_colors = base_style[base_style.index('.position {')...base_style.index('.attack {')]
         replacements = {
-          '{{STYLE}}' => File.read(File.join(ASSETS, 'gpt-app.css')),
+          '{{STYLE}}' => track_colors + %w[event-filter.css multi-find.css multi-plan.css gpt-app.css].map { |file|
+            File.read(File.join(ASSETS, file))
+          }.join("\n"),
+          '{{MULTI}}' => multi,
           '{{ICON_DATA_URI}}' => "data:image/png;base64,#{Base64.strict_encode64(File.binread(ICON))}",
           '{{SCRIPTS}}' => scripts,
-          '{{WORKER_SOURCE}}' => JSON.generate(worker).gsub('<', '\\u003c')
+          '{{WORKER_SOURCE}}' => JSON.generate(worker).gsub('<', '\\u003c'),
+          '{{FIND_WORKER_SOURCE}}' => JSON.generate(find_worker).gsub('<', '\\u003c')
         }
-        html = File.read(TEMPLATE).gsub(/\{\{(?:STYLE|ICON_DATA_URI|SCRIPTS|WORKER_SOURCE)\}\}/) { |key|
+        html = File.read(TEMPLATE).gsub(/\{\{(?:STYLE|MULTI|ICON_DATA_URI|SCRIPTS|WORKER_SOURCE|FIND_WORKER_SOURCE)\}\}/) { |key|
           replacements.fetch(key)
         }
         {uri: "ui://catsroll/multi-#{digest[0, 16]}.html", text: html, digest: digest}
@@ -118,7 +142,7 @@ module BattleCatsRolls
       when 'initialize'
         {protocolVersion: PROTOCOLS.include?(params['protocolVersion']) ? params['protocolVersion'] : PROTOCOLS.first,
          capabilities: {tools: {}, resources: {}}, serverInfo: {name: 'catsroll', version: VERSION},
-         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. For what-to-pull or trait-gap questions use catsroll_recommend, then check banner membership and optional Find routes; no seed is needed for performance candidates. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
+         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. For what-to-pull or trait-gap questions use catsroll_recommend, then check banner membership and optional Find routes; no seed is needed for performance candidates. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. For unscheduled collab/event arrays use catsroll_banner_preview to compare KR/JP reference pools; never present source dates as a confirmed future schedule. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
       when 'ping' then {}
       when 'tools/list' then {tools: tools}
       when 'tools/call'
@@ -129,12 +153,14 @@ module BattleCatsRolls
           case params['name']
           when 'catsroll_guide' then guide_reply(args)
           when 'catsroll_recommend' then tool_reply(GptRecommendations.new.lookup(args))
+          when 'catsroll_banner_preview' then tool_reply(GptBannerPreview.new.lookup(args))
           when 'catsroll_events' then event_reply(args)
           when 'catsroll_cats' then tool_reply(cats(args))
+          when 'catsroll_multi_data' then multi_data_reply(args)
           when 'catsroll_prepare' then prepare(args)
           else raise InvalidInput, 'Unknown tool'
           end
-        rescue InvalidInput, GptGuide::InvalidInput, GptRecommendations::InvalidInput => error
+        rescue InvalidInput, GptGuide::InvalidInput, GptRecommendations::InvalidInput, GptBannerPreview::InvalidInput => error
           {isError: true, content: [{type: 'text', text: error.message}]}
         end
       when 'resources/list'
@@ -195,13 +221,17 @@ module BattleCatsRolls
         offset: int.call(0, 100_000), limit: int.call(1, 50)}
       event_input = paging.merge(catalog: {type: 'boolean'})
       row = schema({lang: lang, event: {type: 'string', maxLength: 100},
+        previewFor: {type: 'string', enum: %w[kr jp], description: 'Reference simulation for this game region using the selected source pool. NOT a confirmed future schedule.'},
         ubers: int.call(0, 100), forceGuaranteed: {type: 'integer', enum: [0, 2, 7, 11, 15]}}, %w[lang event])
       input = schema({mode: {type: 'string', enum: %w[multi find seek]},
         seed: int.call(1, 4_294_967_295), last: int.call(0, 1_000_000),
         count: int.call(1, [TrackMaxCount, 999].min),
         rows: {type: 'array', minItems: 1, maxItems: 8, items: row},
         targets: {type: 'array', maxItems: 30,
-          items: schema({cat_id: int.call(1, 1_000_000), allow_ticket: {type: 'boolean'}}, ['cat_id'])},
+          items: schema({cat_id: int.call(1, 1_000_000), cat_name: {type: 'string', maxLength: 100},
+            allow_ticket: {type: 'boolean'}}, %w[cat_id cat_name])},
+        findEnabled: {type: 'boolean', description: 'Find option inside Multi; targets enable it by default. Legacy mode=find opens the same Multi UI.'},
+        planMode: {type: 'boolean'}, planName: {type: 'string', maxLength: 80},
         optimization: {type: 'string', enum: %w[cost cost40 cost50 distance balance pareto]},
         maxGuaranteed: int.call(0, 20), maxPlatinum: int.call(0, 20),
         maxLegendTicket: int.call(0, 20), scheduleAware: {type: 'boolean'},
@@ -220,8 +250,14 @@ module BattleCatsRolls
             max_form: int.call(0, 3), investment: {type: 'string', enum: %w[none talents ultra]},
             limit: int.call(1, 10)})],
         ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
+        ['catsroll_banner_preview', '미정 배너 참고 풀 찾기', 'Use for unscheduled collab/event preview requests such as 검심 배열. Resolve series using existing KR/JP names, aliases and character IDs; compare latest known KR/JP pools. Newer JP pools may be used only as a reference simulation, NOT a confirmed Korean schedule/pool. Return candidates and exact prepare rows with previewFor. Ask which variant if ambiguous. Names are joined by stable cat IDs; untranslated new units retain source names. Do not fabricate release dates or extra units. Does not calculate.',
+          schema({query: {type: 'string', minLength: 1, maxLength: 100}, lang: lang,
+            series_id: int.call(0, 100_000)}, ['query'])],
         ['catsroll_cats', '캐릭터 찾기', 'Find exact character IDs by name (all forms) before selecting targets or seed-search rolls. details=true (at most 5 results) adds current base-form abilities, available talent types and dated source opinions with explicit form/investment context. Distinguish collection scarcity, farming/combo roles and combat tiers; missing notes mean unreviewed, not weak.', schema(paging.merge(details: {type: 'boolean'}))],
-        ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. For vague beginner questions use catsroll_guide first. Resolve banner/cat IDs with catalog tools; do not ask beginners for IDs. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks calculate in app; no server fallback.', input]
+        ['catsroll_multi_data', 'Multi 화면 데이터', 'App transport for shared Multi selectors and public pools. Does not calculate.',
+          schema({section: {type: 'string', enum: %w[bootstrap pool series]}, lang: lang,
+            event: {type: 'string', maxLength: 100}, previewFor: lang}, ['section'])],
+        ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. Multi includes optional Find, Found cats list, route stamps and planMode. For vague beginner questions use catsroll_guide first. Resolve exact banner/cat IDs with catalog tools and pass cat_name with each target to verify identity; never guess numeric IDs. maxGuaranteed is a resource budget, not proof a banner offers a guarantee; forceGuaranteed explicitly simulates it. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks Calculate in app; no server fallback.', input]
       ].map do |name, title, description, input_schema|
         item = {name: name, title: title, description: description, inputSchema: input_schema,
           outputSchema: {type: 'object', additionalProperties: true},
@@ -230,6 +266,7 @@ module BattleCatsRolls
           item[:_meta] = {ui: {resourceUri: self.class.widget[:uri]},
             'openai/outputTemplate' => self.class.widget[:uri]}
         end
+        item[:_meta] = {ui: {visibility: ['app']}} if name == 'catsroll_multi_data'
         item
       end
     end
@@ -323,6 +360,44 @@ module BattleCatsRolls
       result
     end
 
+    def multi_data_reply(args)
+      raise InvalidInput, 'Unknown UI data fields' unless (args.keys - %w[section lang event previewFor]).empty?
+      lang = args.fetch('lang', 'kr')
+      ball = region(lang)
+      data = case args['section']
+      when 'bootstrap'
+        route = Struct.new(:lang, :name, :seed, :count, :event).
+          new(lang, 0, 0, 100, default_event(lang))
+        TrackApi.multi_data(route)
+      when 'series'
+        TrackApi.event_series_data(Struct.new(:ball).new(ball))
+      when 'pool'
+        event = args['event']
+        raise InvalidInput, 'Unknown banner' unless event.is_a?(String) && ball.events.key?(event)
+
+        pool = TrackApi.pool_data_for(ball, event)
+        args['previewFor'] ? localize_pool(pool, args['previewFor']) : pool
+      else raise InvalidInput, 'Unknown UI data section'
+      end
+      tool_reply({status: 'data_ready', section: args['section'], execution: 'client',
+        dataVersion: Digest::SHA256.hexdigest(JSON.generate(data))}).
+        merge(_meta: {'catsroll/multi' => data})
+    end
+
+    def localize_pool(pool, display_lang)
+      display_ball = region(display_lang)
+      return pool unless pool[:cats]
+
+      pool.merge(cats: pool[:cats].to_h { |id, cat|
+        localized = Array(display_ball.cats[id]&.fetch('name', nil))
+        names = Array(cat[:name]).each_with_index.map { |name, index|
+          translated = localized[index]
+          translated.is_a?(String) && !translated.empty? ? translated : name
+        }
+        [id, cat.merge(name: names)]
+      })
+    end
+
     def prepare(args)
       raise InvalidInput, 'Unknown input fields' unless (args.keys - INPUT_KEYS).empty?
       mode = args['mode']
@@ -337,6 +412,11 @@ module BattleCatsRolls
         maxLegendTicket: integer(args.fetch('maxLegendTicket', 0), 'maxLegendTicket', 0, 20),
         scheduleAware: boolean(args.fetch('scheduleAware', false), 'scheduleAware')
       }
+      request[:findEnabled] = boolean(args.fetch('findEnabled', mode == 'find' ||
+        (args['targets'].is_a?(Array) && !args['targets'].empty?)), 'findEnabled')
+      request[:planMode] = boolean(args.fetch('planMode', false), 'planMode')
+      request[:planName] = args.fetch('planName', '')
+      raise InvalidInput, 'planName must be at most 80 characters' unless request[:planName].is_a?(String) && request[:planName].size <= 80
       raise InvalidInput, 'Unknown optimization' unless %w[cost cost40 cost50 distance balance pareto].include?(request[:optimization])
       raise InvalidInput, 'Seed search cannot apply last; ordinary observations only' if mode == 'seek' && request[:last] != 0
 
@@ -348,7 +428,7 @@ module BattleCatsRolls
       event_catalogs = {}
       prepared_events = rows.map do |row|
         raise InvalidInput, 'Invalid banner row' unless row.is_a?(Hash) &&
-          (row.keys - %w[lang event ubers forceGuaranteed]).empty?
+          (row.keys - %w[lang event ubers forceGuaranteed previewFor]).empty?
         lang = row['lang']
         ball = region(lang)
         name = row['event']
@@ -359,6 +439,11 @@ module BattleCatsRolls
         display_name = catalog.find { |item| item[:event] == name }&.fetch(:series_name, nil)
         pool = TrackApi.compact_find_pool_data(ball, name)
         raise InvalidInput, 'Banner has no usable pool data' unless pool[:exist]
+        preview_for = row['previewFor']
+        if preview_for
+          raise InvalidInput, 'Reference preview does not identify an observed seed-search pool' if mode == 'seek'
+          pool = localize_pool(pool, preview_for)
+        end
 
         ubers = integer(row.fetch('ubers', 0), 'ubers', 0, 100)
         forced = row.fetch('forceGuaranteed', 0)
@@ -368,21 +453,35 @@ module BattleCatsRolls
         end
         {lang: lang, event: name, label: TrackApi.multi_event_label(info), displayName: display_name,
          start_on: info['start_on'].to_s, end_on: info['end_on'].to_s,
-         ubers: ubers, forceGuaranteed: forced, pool: pool}
+         ubers: ubers, forceGuaranteed: forced, previewFor: preview_for, pool: pool}.compact
       end
-      request[:rows] = prepared_events.map { |event| event.slice(:lang, :event, :ubers, :forceGuaranteed) }
+      request[:rows] = prepared_events.map { |event| event.slice(:lang, :event, :ubers, :forceGuaranteed, :previewFor) }
+      if request[:scheduleAware] && prepared_events.any? { |event| event[:previewFor] }
+        raise InvalidInput, 'Reference previews have no confirmed future schedule; scheduleAware must be false'
+      end
       targets = args.fetch('targets', [])
       raise InvalidInput, 'targets: expected at most 30 unique cats' unless targets.is_a?(Array) && targets.size <= 30
       request[:targets] = targets.map do |target|
-        raise InvalidInput, 'Invalid target' unless target.is_a?(Hash) && (target.keys - %w[cat_id allow_ticket]).empty?
+        raise InvalidInput, 'Invalid target' unless target.is_a?(Hash) && (target.keys - %w[cat_id cat_name allow_ticket]).empty?
         id = integer(target['cat_id'], 'cat_id', 1, 1_000_000)
         raise InvalidInput, 'Unknown target character' unless prepared_events.any? { |event| region(event[:lang]).cats[id] }
 
-        {cat_id: id, allow_ticket: boolean(target.fetch('allow_ticket', false), 'allow_ticket')}
+        info = prepared_events.filter_map { |event| region(event[:lang]).cats[id] }.first
+        names = Array(info&.fetch('name', nil)).compact
+        identity_names = (names + TrackApi::MultiLangs.flat_map { |lang|
+          Array(region(lang).cats[id]&.fetch('name', nil))
+        }).compact
+        if target.key?('cat_name') && (!target['cat_name'].is_a?(String) ||
+            target['cat_name'].size > 100 ||
+            !(identity_names.include?(target['cat_name']) || GptCharacterKnowledge.new.alias_matches?(id, target['cat_name'])))
+          raise InvalidInput, "Target name does not match ID #{id}; resolve with catsroll_cats first"
+        end
+        {cat_id: id, cat_name: names.first || id.to_s,
+          allow_ticket: boolean(target.fetch('allow_ticket', false), 'allow_ticket')}
       end
       raise InvalidInput, 'Duplicate targets' unless request[:targets].map { |t| t[:cat_id] }.uniq.size == targets.size
       tickets = []
-      if mode == 'find'
+      if mode == 'find' || request[:findEnabled]
         raise InvalidInput, 'Find requires targets' if targets.empty?
         raise InvalidInput, 'Find currently requires banners from one region' unless rows.map { |row| row['lang'] }.uniq.size == 1
 
@@ -396,13 +495,23 @@ module BattleCatsRolls
       payload[:seeker] = seeker_data(args, prepared_events.first, request) if mode == 'seek'
       version = Digest::SHA256.hexdigest(JSON.generate(payload))
       payload[:dataVersion] = version
+      warnings = ['계산 준비만 완료했습니다. 앱에서 계산을 실행한 뒤 결과를 공유해야 합니다.']
+      prepared_events.select { |event| event[:previewFor] }.each do |event|
+        warnings << "참고 시뮬레이션: #{event[:lang].upcase} #{event[:event]} 풀을 #{event[:previewFor].upcase}용으로 가정합니다. 해당 지역의 미래 일정·풀 확정이 아닙니다."
+      end
+      if request[:maxGuaranteed] > 0 && prepared_events.none? { |event|
+          !event[:pool][:platinum] && (event[:forceGuaranteed] > 0 || event[:pool][:guaranteed_rolls] > 0) }
+        warnings << '확뽑 한도는 자원 예산입니다. 선택한 배너에는 확정 조건이 없어 이 설정으로는 확뽑을 사용하지 않습니다. 강제 확정은 실제 일정과 다른 가정임을 명시해야 합니다.'
+      end
       summary = {status: 'prepared', execution: 'client', request: request, dataVersion: version,
         engineVersion: self.class.widget[:digest],
         guide: {tool: 'catsroll_guide', topics: mode == 'seek' ? %w[seed troubleshooting] :
-          (mode == 'find' ? %w[find tracks guaranteed] : %w[tracks guaranteed colors])},
-        events: prepared_events.map { |event| event.slice(:lang, :event, :label, :displayName, :start_on, :end_on) },
+          (request[:findEnabled] ? %w[find tracks guaranteed] : %w[tracks guaranteed colors])},
+        events: prepared_events.map { |event| event.slice(:lang, :event, :label, :displayName, :start_on, :end_on, :previewFor).
+          merge(guaranteedRolls: event[:forceGuaranteed] > 0 ? event[:forceGuaranteed] : event[:pool][:guaranteed_rolls],
+            simulatedGuarantee: event[:forceGuaranteed] > 0) },
         siteUrl: site_url(request),
-        warnings: ['계산 준비만 완료했습니다. 앱에서 계산을 실행한 뒤 결과를 공유해야 합니다.']}
+        warnings: warnings}
       tool_reply(summary).merge(_meta: {'catsroll/data' => payload})
     end
 

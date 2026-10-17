@@ -224,6 +224,62 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(call_tool(client, 'catsroll_prepare', bad)['isError']).eq true
   end
 
+  would 'use the shared Multi catalog and reject mismatched AI target identities' do
+    bootstrap = call_tool(client, 'catsroll_multi_data', {section: 'bootstrap'})
+    catalog = bootstrap.fetch('_meta').fetch('catsroll/multi')
+    expect(catalog.fetch('initial').fetch('seed')).eq 0
+    expect(catalog.fetch('find_cats').any? { |cat| cat['id'] == 545 && cat['name'] != '545' }).eq true
+    expect(bootstrap.fetch('structuredContent').key?('regions')).eq false
+    hidden = rpc(client, 'tools/list').last.dig('result', 'tools').find { |tool| tool['name'] == 'catsroll_multi_data' }
+    expect(hidden.fetch('_meta').dig('ui', 'visibility')).eq ['app']
+    base = {mode: 'multi', seed: 42, rows: [{lang: 'kr', event: '2019-01-23_348'}],
+      targets: [{cat_id: 545, cat_name: 'ナナホではない名前'}], findEnabled: true}
+    expect(call_tool(client, 'catsroll_prepare', base)['isError']).eq true
+    name = BattleCatsRolls::Route.ball_kr.cats.fetch(545).fetch('name').first
+    good = call_tool(client, 'catsroll_prepare', base.merge(
+      targets: [{cat_id: 545, cat_name: name}], planMode: true, planName: '메탈 대응'))
+    request = good.fetch('structuredContent').fetch('request')
+    expect(request.fetch('targets').first.fetch('cat_name')).eq name
+    expect(request.fetch('findEnabled')).eq true
+    expect(request.fetch('planMode')).eq true
+    expect(request.fetch('planName')).eq '메탈 대응'
+    expect(call_tool(client, 'catsroll_multi_data', {section: 'pool', lang: 'kr', event: 'missing'})['isError']).eq true
+  end
+
+  would 'prepare unscheduled regional references without altering the source draw pool' do
+    lookup = call_tool(client, 'catsroll_banner_preview', {query: '검심', lang: 'kr'}).
+      fetch('structuredContent')
+    expect(lookup.fetch('status')).eq 'ok'
+    row = lookup.fetch('prepare_rows').first
+    expect(row.fetch('lang')).eq 'jp'
+    expect(row.fetch('previewFor')).eq 'kr'
+    base = {mode: 'multi', seed: 42, count: 10, rows: [row]}
+    result = call_tool(client, 'catsroll_prepare', base)
+    summary = result.fetch('structuredContent')
+    expect(summary.fetch('request').fetch('rows').first.fetch('previewFor')).eq 'kr'
+    expect(summary.fetch('warnings').any? { |warning| warning.include?('미래 일정·풀 확정이 아닙니다') }).eq true
+    pool = result.fetch('_meta').fetch('catsroll/data').fetch('events').first.fetch('pool')
+    raw = BattleCatsRolls::TrackApi.compact_find_pool_data(
+      BattleCatsRolls::TrackApi.raw_ball_jp, row.fetch('event'))
+    original = JSON.parse(JSON.generate(raw))
+    %w[slots rates guaranteed_rolls version].each do |field|
+      expect(pool.fetch(field)).eq original.fetch(field)
+    end
+    ids = pool.fetch('slots').values.flatten.uniq
+    known = ids.find { |id| BattleCatsRolls::Route.ball_kr.cats[id] }
+    expect(pool.fetch('cats').fetch(known.to_s).fetch('name').first).
+      eq BattleCatsRolls::Route.ball_kr.cats.fetch(known).fetch('name').first
+    missing = ids.find { |id| !BattleCatsRolls::Route.ball_kr.cats[id] }
+    expect(pool.fetch('cats').fetch(missing.to_s).fetch('name')).
+      eq original.fetch('cats').fetch(missing.to_s).fetch('name')
+    ui_pool = call_tool(client, 'catsroll_multi_data', row.merge('section' => 'pool')).
+      fetch('_meta').fetch('catsroll/multi')
+    expect(ui_pool.fetch('slots')).eq pool.fetch('slots')
+    expect(ui_pool.fetch('cats').fetch(known.to_s).fetch('name')).eq pool.fetch('cats').fetch(known.to_s).fetch('name')
+    expect(call_tool(client, 'catsroll_prepare', base.merge(scheduleAware: true))['isError']).eq true
+    expect(call_tool(client, 'catsroll_prepare', base.merge(mode: 'seek'))['isError']).eq true
+  end
+
   would 'serve a self-contained versioned app resource and the same standalone preview' do
     _, listed = rpc(client, 'resources/list')
     resource = listed.fetch('result').fetch('resources').first

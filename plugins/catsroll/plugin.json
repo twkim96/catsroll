@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "catsroll",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "냥코대전쟁 배열 초보자 안내, 속성별 티어 추천, 시드 찾기와 Multi 경로 탐색. 계산은 사용자 기기에서 실행합니다.",
   "homepage": "https://github.com/twkim96/catsroll",
   "repository": "https://github.com/twkim96/catsroll",
@@ -54,13 +54,19 @@
               "description": "검증된 플래티넘 샘플에서 기기 Find와 티켓 사용 조건을 확인한다. 앱은 실행 버튼 후 결과를 공유한다.",
               "prompt": "한국 플래티넘 2026-02-13 배너에서 시드 2762818371로 비명의 왕 포노아를 얻는 경로를 찾아줘. 플래티넘 티켓 1장 사용을 허용하고 다른 특수 티켓과 확정은 쓰지 않을게. 10회 범위로 봐줘.",
               "tools_triggered": "catsroll_events, catsroll_cats, catsroll_prepare",
-              "expected_behavior": "event=2026-02-13_1042, cat_id=706을 확인해 mode=find, count=10, allow_ticket=true, maxPlatinum=1, maxLegendTicket=0, maxGuaranteed=0으로 준비한다. 사용자 실행 후 티켓 1회, 목표 1/1, 다음 2A를 확인한다. 실행 전 경로를 확정하지 않는다."
+              "expected_behavior": "event=2026-02-13_1042, cat_id=706을 확인해 mode=multi, findEnabled=true, count=10, allow_ticket=true, maxPlatinum=1, maxLegendTicket=0, maxGuaranteed=0으로 준비한다. 사용자 실행 후 티켓 1회, 목표 1/1, 다음 2A를 확인한다. 실행 전 경로를 확정하지 않는다."
             },
             {
               "description": "별명과 초본능 조건을 정식 캐릭터 ID 및 현재 형태 정보에 연결한다.",
               "prompt": "쌍장성이 누군지 알려주고, 카이는 그냥 악마 탱커로 쓸 수 있는지도 설명해줘.",
               "tools_triggered": "catsroll_cats",
               "expected_behavior": "쌍장성을 cat_id=352 시시루와 코마리에 연결하고, 카이 cat_id=107의 details=true를 조회한다. 카이의 악마 대상 추가/탱킹 평가는 초본능 조건임을 설명한다. 기본형 대상과 본능 적용 평가를 혼동하지 않는다."
+            },
+            {
+              "description": "미정 콜라보를 기존 시리즈 ID로 지역 간 연결하고 참고 배열을 준비한다.",
+              "prompt": "한국판이고 시드는 42야. 아직 일정 없는 검심 배열을 최신 풀 기준으로 미리 보여줘.",
+              "tools_triggered": "catsroll_guide, catsroll_banner_preview, catsroll_prepare",
+              "expected_behavior": "검심을 기존 데이터로 해석해 KR/JP 최신 후보와 원본 기간을 비교한다. 최신 JP를 쓰면 rows의 lang=jp와 previewFor=kr를 유지해 Multi를 준비한다. 한국어명이 없는 신캐는 원문과 ID를 유지한다. 한국 미래 일정·확정 풀로 단정하지 않고 자동 계산하지 않는다. 변형 후보가 여러 개면 먼저 구별한다."
             }
           ],
           "negative": [

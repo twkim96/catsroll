@@ -41,6 +41,14 @@ const track = {
   ]
 };
 
+const previewTrack={...track,rows:[{...track.rows[0],lang:"jp",previewFor:"kr"}]};
+assert.equal(plans.normalizeTrack({...previewTrack,rows:[{...previewTrack.rows[0],ubers:100}]}).rows[0].ubers,100,
+  "plan storage must preserve the GPT adapter's supported future-uber count");
+assert.equal(plans.normalizeTrack(previewTrack).rows[0].previewFor,"kr",
+  "saved reference plans retain their assumed game region");
+assert.notEqual(plans.trackFingerprint(previewTrack),plans.trackFingerprint({...previewTrack,rows:[{...previewTrack.rows[0],previewFor:undefined}]}),
+  "a reference preview cannot be mistaken for the source game plan");
+
 const saved = plans.upsertPlan(plans.emptyLibrary(), {
   name: "루노스 획득 플랜",
   track: track,

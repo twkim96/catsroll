@@ -5,7 +5,7 @@ module BattleCatsRolls
     def reload_balls(...)
       super
       self.ball_jp =
-        ball_jp.with_cat_names_from(ball_kr).with_event_names_from(ball_kr)
+        ball_jp.with_cat_names_from(ball_kr).with_event_names_from(ball_kr, series_fallback: true)
     end
   end
 

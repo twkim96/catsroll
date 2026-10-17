@@ -1,109 +1,114 @@
-// Optional real-browser integration check. Start the opt-in server first.
-// Supply Playwright via NODE_PATH or PLAYWRIGHT_MODULE; no product npm dependency.
+// Optional browser regression. Start the opt-in local server first.
+// UI behavior is also checked manually through CUA in the local host fixture.
 "use strict";
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const {chromium} = require(process.env.PLAYWRIGHT_MODULE || "playwright");
 const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
-
 (async () => {
-  const browser = await chromium.launch({headless: true,
-    channel: process.env.GPT_BROWSER_CHANNEL || "chrome"});
+  const browser = await chromium.launch({headless: true, channel: process.env.GPT_BROWSER_CHANNEL || "chrome"});
   try {
-    const page = await browser.newPage({viewport: {width: 1000, height: 900}});
+    const page = await browser.newPage({viewport: {width: 1000, height: 1100}});
     const errors = [];
-    page.on("pageerror", error => errors.push(error.message));
-    await page.route("**/gpt-bridge-test", route => route.fulfill({contentType: "text/html", body: `
-      <!doctype html><iframe id="widget" sandbox="allow-scripts allow-same-origin" src="/gpt"
-        style="width:950px;height:850px"></iframe><script>
-      window.messages=[]; window.latestResult=null; window.holdPrepare=false; window.releases=[];
-      addEventListener('message',async event=>{
-        if(event.source!==document.querySelector('iframe').contentWindow)return;
-        const m=event.data;if(!m||m.jsonrpc!=='2.0')return; messages.push(m);
-        let result={};
-        if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',
-          hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:{},hostContext:{}};
-        else if(m.method==='tools/call'){
-          const r=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({...m,method:'tools/call'})}); result=(await r.json()).result;
-          if(holdPrepare && m.params.name==='catsroll_prepare') await new Promise(resolve=>releases.push(resolve));
-        } else if(m.method==='ui/message' && !Array.isArray(m.params.content)){
-          event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32602,message:'content must be array'}},event.origin); return;
-        }
-        if(m.id!=null)event.source.postMessage({jsonrpc:'2.0',id:m.id,result},event.origin);
-        if(m.method==='ui/notifications/initialized'){
-          const r=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},
-            body:JSON.stringify({jsonrpc:'2.0',id:99,method:'tools/call',params:{name:'catsroll_prepare',
-              arguments:{mode:'multi',seed:2762818371,count:10,rows:[{lang:'kr',event:'2026-02-13_1042'}]}}})});
-          latestResult=(await r.json()).result;
-          event.source.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:latestResult},event.origin);
-        }
-      });</script>`}));
-    await page.goto(base + "/gpt-bridge-test");
+    page.on("pageerror", error => { errors.push(error.message); console.error(error.stack); });
+    await page.route("**/gpt-test-host", route => route.fulfill({contentType: "text/html",
+      body: fs.readFileSync(path.join(__dirname, "fixtures/gpt-host.html"), "utf8")}));
+    await page.goto(base + "/gpt-test-host");
     const frame = page.frameLocator("#widget");
-    await page.waitForFunction(() => window.latestResult);
     await frame.locator("#seed").waitFor();
-    assert.equal(await frame.locator("#seed").inputValue(), "2762818371");
-    assert.equal(await frame.locator("#results-panel").isVisible(), false,
-      "receiving prepared data never claims computation completed");
+    await page.waitForFunction(() => window.ready);
+    await page.locator("#prepare").click();
+    await frame.locator("#seed").waitFor({state: "visible"});
+    await page.waitForFunction(() => window.latestResult);
+    await assert.doesNotReject(async () => frame.locator("#calculate").waitFor());
+    assert.equal(await frame.locator("#mode option[value=find]").count(), 0);
+    assert.equal(await frame.locator("#seed").inputValue(), "42");
+    assert.equal(await frame.locator("#multi_tables table").count(), 0, "prepared input never calculates automatically");
+    assert.equal(await frame.locator("#calculate").isEnabled(), true, "prepared plan mode permits the initial Apply");
+    await page.waitForFunction(() => document.querySelector("iframe").contentDocument.querySelector("#multi_find_targets")?.value.includes("칼리파"));
     await frame.locator("#calculate").click();
-    await frame.locator("#results-panel").waitFor({state: "visible"});
-    assert.equal(await frame.locator("#result-content table").count(), 2);
-    for (const table of await frame.locator("#result-content table").all()) {
-      assert.equal(await table.locator("tbody tr").count(), 10);
-    }
+    await frame.locator("#multi_tables table").first().waitFor();
+    assert.equal(await frame.locator("#multi_tables table").count(), 2);
+    assert.equal(await frame.locator("#multi_tables table").first().locator("tbody tr").count(), 10);
+    await page.waitForFunction(() => document.querySelector("iframe").contentWindow.MultiFindApp.getResult()?.status === "success");
+    assert.equal(await frame.locator("#multi_tables .multi-route-marked").count() > 0, true);
+    await frame.locator("#multi_found summary").click();
+    assert.match(await frame.locator("#multi_found_cats").innerText(), /ヨ|요수|[0-9]+[AB]/);
+    assert.equal(await frame.locator("#gpt-found-select").count(),0);
+    assert.equal(await frame.locator("#multi_plan_auto_draw").isEnabled(), true);
+    await frame.locator("#multi_plan_auto_draw").click();
+    assert.equal(await frame.locator("#multi_tables .multi-plan-picked-line").count() > 0, true);
+    await frame.locator("#multi_plan_save").click();
     await frame.locator("#send-context").click();
     await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
-    const shared = await page.evaluate(() => messages.filter(item =>
-      ["ui/update-model-context", "ui/message"].includes(item.method)));
-    assert.equal(shared.length, 2);
-    assert(Array.isArray(shared[1].params.content));
-    assert.equal(shared[1].params.role, "user");
-
-    await frame.locator("#seed").fill("42");
-    assert.equal(await frame.locator("#results-panel").isVisible(), false,
-      "edited inputs invalidate the old result and sharing");
-    await page.evaluate(() => { window.holdPrepare = true; });
+    const shared = await page.evaluate(() => messages.find(item => item.method === "ui/update-model-context"));
+    assert.match(shared.params.content[0].text, /명계의 칼리파/);
+    assert.match(shared.params.content[0].text, /플랜/);
+    // A new host input cancels and discards all old results/plan selections.
+    const prepared = {mode: "multi", seed: 43, count: 10, rows: [{lang: "kr", event: "2019-01-23_348"}],
+      targets: [{cat_id: 545}], findEnabled: true};
+    await page.locator("#arguments").fill(JSON.stringify(prepared));
+    await page.locator("#prepare").click();
+    await frame.locator("#seed").waitFor();
+    await page.waitForFunction(() => latestResult?.structuredContent?.request?.seed === 43);
+    assert.equal(await frame.locator("#multi_tables table").count(), 0);
+    await page.waitForFunction(() => document.querySelector("iframe").contentDocument.querySelector("#multi_find_targets")?.value.includes("나나호"));
+    assert.equal(await frame.locator("#send-context").isEnabled(), false);
+    await frame.locator("#gpt-plan-settings summary").click();
+    await frame.locator(".multi-plan-toggle-field").click();
+    assert.equal(await frame.locator("#multi_plan_mode").isChecked(),false,"unapplied input cannot activate plan mode");
+    assert.equal(await frame.locator("#multi_plan_panel").evaluate(el=>el.classList.contains("is-plan-off")),true);
+    assert.equal(await frame.locator("#gpt-plan-warning").isVisible(),true);
+    await page.evaluate(()=>{window.holdPrepare=true;});
     await frame.locator("#calculate").click();
-    await page.waitForFunction(() => releases.length === 1);
-    assert.equal(await frame.locator("#mode").isDisabled(), true);
+    await page.waitForFunction(()=>releases.length===1);
     await frame.locator("#cancel").click();
-    await page.evaluate(() => { window.holdPrepare = false; releases.splice(0).forEach(resolve => resolve()); });
-    await frame.locator("#calculate").waitFor({state: "visible"});
-    // An unrelated awaited ping establishes that the delayed reply was processed.
-    await page.evaluate(async () => {
-      await fetch('/mcp', {method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({jsonrpc:'2.0',id:100,method:'ping'})});
-    });
-    assert.equal(await frame.locator("#results-panel").isVisible(), false,
-      "a cancelled preparation cannot publish a late result");
+    await page.evaluate(()=>{window.holdPrepare=false;releases.splice(0).forEach(resolve=>resolve());});
+    await frame.locator("#status").getByText("계산을 중단했습니다.",{exact:true}).waitFor();
+    assert.equal(await frame.locator("#multi_tables table").count(),0,"a cancelled preparation never publishes a late array");
+    // Reference arrays keep provenance through calculation, plan saving and model sharing.
+    const lookup=await fetch(base+"/mcp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:3,method:"tools/call",params:{name:"catsroll_banner_preview",arguments:{query:"검심",lang:"kr"}}})}).then(r=>r.json());
+    const referenceRows=lookup.result.structuredContent.prepare_rows;
+    await page.locator("#arguments").fill(JSON.stringify({mode:"multi",seed:42,count:10,rows:referenceRows}));
+    await page.locator("#prepare").click();
+    await frame.locator(".preview-notice").waitFor();
+    assert.match(await frame.locator(".preview-notice").innerText(),/JP 풀 → KR 가정/);
     await frame.locator("#calculate").click();
-    await frame.locator("#results-panel").waitFor({state: "visible"});
-    assert.match(await frame.locator("#result-caption").innerText(), /42/);
-
-    await page.goto(base + "/gpt");
-    const workerChecks = await page.evaluate(async () => {
-      const source = JSON.parse(document.getElementById('catsroll-worker-source').textContent);
-      async function prepare(args) {
-        const response = await fetch('/mcp', {method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({jsonrpc:'2.0',id:1,method:'tools/call',params:{name:'catsroll_prepare',arguments:args}})});
-        return (await response.json()).result._meta['catsroll/data'];
-      }
-      const payload = await prepare({mode:'find',seed:42,count:10,
-        rows:[{lang:'kr',event:'2019-01-23_348'}],targets:[{cat_id:38}],optimization:'distance'});
-      const found = await CatsrollGptRuntime.start('find',payload,{source}).promise;
-      const seeker = (await prepare({mode:'seek',rows:[{lang:'kr',event:'2019-01-23_348'}]})).seeker;
-      const first = seeker.choices.find(cat => cat.rarity === 5) || seeker.choices.find(cat => cat.rarity === 4);
-      seeker.rolls = [first.rarity,first.slot];
-      const seed = await CatsrollGptRuntime.start('seek',{request:{mode:'seek'},seeker},{source}).promise;
-      const run = CatsrollGptRuntime.start('find',payload,{source}); run.cancel();
-      let cancelled = false;
-      try { await run.promise; } catch (error) { cancelled = error.name === 'AbortError'; }
-      return {find:found.status,seed:seed.status,cancelled};
-    });
-    assert.equal(workerChecks.find, "success");
-    assert(workerChecks.seed >= 1);
-    assert(workerChecks.cancelled);
+    await frame.locator("#multi_tables table").first().waitFor();
+    await frame.locator("#gpt-plan-settings summary").click();
+    await frame.locator(".multi-plan-toggle-field").click();
+    assert.equal(await frame.locator("#multi_plan_mode").isChecked(),true,"computed tracks can enable plan mode");
+    await frame.locator(".multi-plan-toggle-field").click();
+    assert.equal(await frame.locator("#multi_plan_mode").isChecked(),false);
+    await frame.locator(".multi-plan-toggle-field").click();
+    assert.equal(await frame.locator("#multi_plan_mode").isChecked(),true,"plan mode can be switched back on");
+    await frame.locator("#multi_plan_save").click();
+    await frame.locator("#send-context").click();
+    await page.waitForFunction(()=>messages.filter(item=>item.method==="ui/update-model-context").length===2);
+    const referenceContext=await page.evaluate(()=>messages.filter(item=>item.method==="ui/update-model-context").at(-1).params.content[0].text);
+    assert.match(referenceContext,/참고 시뮬레이션: JP/);
+    assert.match(referenceContext,/"previewFor":"kr"/);
+    assert.match(referenceContext,/미래 복각 일정이 아니며/);
+    // Viewport overflow belongs to the array scroller, not the entire app.
+    const widths = await frame.locator("body").evaluate(body => ({scroll: body.scrollWidth, client: body.clientWidth}));
+    assert(widths.scroll <= widths.client + 1);
+    // Restore the old seed-finder contract after the Multi UI integration.
+    const prepareReply = await fetch(base+"/mcp", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method:"tools/call",params:{name:"catsroll_prepare",arguments:{mode:"seek",rows:[{lang:"kr",event:"2019-01-23_348"}]}}})}).then(r=>r.json());
+    const choices=prepareReply.result._meta["catsroll/data"].seeker.choices;
+    const find=require("../lib/battle-cats-rolls/asset/multi-find-engine.js");
+    const poolReply=await fetch(base+"/mcp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:2,method:"tools/call",params:{name:"catsroll_multi_data",arguments:{section:"pool",lang:"kr",event:"2019-01-23_348"}}})}).then(r=>r.json());
+    const pool=poolReply.result._meta["catsroll/multi"];
+    let offset=0,last=0;const rolls=[];
+    for(let n=0;n<10;n++){const out=find.simulateRegular(pool,42,offset,last,0);assert(choices.some(c=>c.id===out.id));rolls.push(out.id);offset=out.nextOffset;last=out.lastRareId;}
+    let expectedEnd=42;for(let n=0;n<offset;n++)expectedEnd=find.advanceSeed(expectedEnd);
+    await page.locator("#arguments").fill(JSON.stringify({mode:"seek",rows:[{lang:"kr",event:"2019-01-23_348"}],rolls}));
+    await page.locator("#prepare").click();
+    await page.waitForFunction(()=>document.querySelector("iframe").contentDocument.querySelectorAll("#seek-rolls select").length===10);
+    await frame.locator("#calculate-seek").click();
+    await frame.locator("#seek-result").getByText("시작 시드: 42",{exact:true}).waitFor({timeout:120000});
+    assert.match(await frame.locator("#seek-result").innerText(),new RegExp("관측 후 시드: "+expectedEnd));
     assert.deepEqual(errors, []);
-    console.log("GPT browser: mock-host handshake, arrays, explicit sharing, stale-input/cancel isolation, Find and WASM Workers passed");
+    console.log("GPT shared Multi: canonical targets, manual Apply, arrays+Find stamps, plan switching/save, reference provenance, host sharing, cancellation, mobile width and WASM seed recovery passed");
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
