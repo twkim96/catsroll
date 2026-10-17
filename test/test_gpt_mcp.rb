@@ -365,4 +365,24 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(prepared.dig('structuredContent', 'status')).eq 'prepared'
     expect(prepared.dig('structuredContent', 'execution')).eq 'client'
   end
+
+  would 'keep cached widget handles usable after deployment without crossing hosts' do
+    web = Rack::MockRequest.new(BattleCatsRolls::LocalServerMiddleware.new(->(_) { [404, {}, ['Not found']] }))
+    old_gpt = 'ui://catsroll/multi-959980be993b3cc0.html'
+    old_claude = old_gpt.sub('.html', '-claude-1.html')
+    [['/mcp', old_gpt], ['/mcp/claude', old_claude]].each do |path, old_uri|
+      current_uri = rpc(web, 'resources/list', {}, path: path).last.dig('result', 'resources').first.fetch('uri')
+      current = rpc(web, 'resources/read', {uri: current_uri}, path: path).last.dig('result', 'contents').first
+      cached = rpc(web, 'resources/read', {uri: old_uri}, path: path).last.dig('result', 'contents').first
+      expect(cached.fetch('uri')).eq old_uri
+      expect(cached.fetch('text')).eq current.fetch('text')
+      expect(cached.fetch('_meta')).eq current.fetch('_meta')
+    end
+    expect(rpc(web, 'resources/read', {uri: old_claude}).last.key?('error')).eq true
+    expect(rpc(web, 'resources/read', {uri: old_gpt}, path: '/mcp/claude').last.key?('error')).eq true
+    ['https://example.com/app.html', 'ui://other/multi-959980be993b3cc0.html',
+      'ui://catsroll/multi-959980be993b3cc0.html?host=claude', 'ui://catsroll/multi-not-a-hash.html'].each do |uri|
+      expect(rpc(web, 'resources/read', {uri: uri}).last.key?('error')).eq true
+    end
+  end
 end

@@ -193,7 +193,7 @@ module BattleCatsRolls
           index = GptGuide.new.lookup('topic' => 'index').fetch('documents').first
           return {contents: [{uri: params['uri'], mimeType: 'text/markdown', text: index.fetch('content')}]}
         end
-        raise InvalidInput, 'Unknown resource; list resources again' unless params['uri'] == widget[:uri]
+        raise InvalidInput, 'Unknown resource; list resources again' unless compatible_widget_uri?(params['uri'])
 
         meta = {ui: {csp: {connectDomains: [], resourceDomains: []}},
           'openai/widgetDescription' => 'Catsroll: device-only Multi arrays, route search and seed finder. Prepared inputs are not computed results.'}
@@ -211,6 +211,16 @@ module BattleCatsRolls
     end
 
     private
+
+    def compatible_widget_uri?(uri)
+      return false unless uri.is_a?(String)
+
+      # Hosts can retain a tool descriptor across deployments. Serve the current
+      # compatible app for our older handles, preserving host-specific isolation.
+      pattern = @ui_host == :claude ? %r{\Aui://catsroll/multi-[0-9a-f]{16}-claude-1\.html\z} :
+        %r{\Aui://catsroll/multi-[0-9a-f]{16}\.html\z}
+      pattern.match?(uri)
+    end
 
     def widget
       base = self.class.widget
