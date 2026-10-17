@@ -27,6 +27,8 @@ for (let i = 0; i < payload.events.length; i++) {
       assert.equal(item.position, cat.number());
       assert.equal(item.next, cat.next ? cat.next.number() : null);
       assert.equal(item.name, cat.pickName(0));
+      assert.equal(item.rarityLabel, cat.scoreRarityLabel());
+      assert.equal(item.title, cat.pickTitle(0));
     }
   }
 }
@@ -34,6 +36,7 @@ assert(actual.rows[0].alternatives["2A"].some(item =>
   item.kind === "guaranteed" && item.variant === "rerolled" && item.pull.id === 866),
   "the real cross-banner conditional RG result survives the GPT adapter");
 assert.equal(JSON.stringify(payload), before, "shared pools remain immutable");
+assert.deepEqual(actual.exclusiveIds, track.EXCLUSIVES);
 const changed = runtime.modifiedPool({...payload.events[0], ubers: 2, forceGuaranteed: 15});
 assert.deepEqual(changed.slots[4].slice(0, 2), [-2, -1]);
 assert.equal(changed.guaranteed_rolls, 15);

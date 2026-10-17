@@ -63,6 +63,15 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(data.fetch('cats').size).eq 1
     expect(data.fetch('nextOffset')).eq 1
     expect(call_tool(client, 'catsroll_events', {lang: 'xx'})['isError']).eq true
+    catalog = call_tool(client, 'catsroll_events', {lang: 'kr', catalog: true})
+    options = catalog.fetch('_meta').fetch('catsroll/events')
+    expect(options.size > 50).eq true
+    expect(catalog.fetch('structuredContent').fetch('total')).eq options.size
+    expect(catalog.fetch('structuredContent').key?('events')).eq false
+    selected = options.find { |item| item['event'] == event.fetch('event') }
+    expect(selected.fetch('series_name')).eq expected_name
+    expect(selected.fetch('group')).eq 'past'
+    expect(call_tool(client, 'catsroll_events', {lang: 'kr', catalog: 'true'})['isError']).eq true
   end
 
   would 'prepare original pools without calculating or exposing full pools to the model' do

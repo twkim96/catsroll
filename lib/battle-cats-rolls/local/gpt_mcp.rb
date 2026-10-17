@@ -125,7 +125,7 @@ module BattleCatsRolls
           raise InvalidInput, 'arguments must be an object' unless args.is_a?(Hash)
 
           case params['name']
-          when 'catsroll_events' then tool_reply(events(args))
+          when 'catsroll_events' then event_reply(args)
           when 'catsroll_cats' then tool_reply(cats(args))
           when 'catsroll_prepare' then prepare(args)
           else raise InvalidInput, 'Unknown tool'
@@ -183,6 +183,7 @@ module BattleCatsRolls
       lang = {type: 'string', enum: %w[kr jp]}
       paging = {lang: lang, query: {type: 'string', maxLength: 100},
         offset: int.call(0, 100_000), limit: int.call(1, 50)}
+      event_input = paging.merge(catalog: {type: 'boolean'})
       row = schema({lang: lang, event: {type: 'string', maxLength: 100},
         ubers: int.call(0, 100), forceGuaranteed: {type: 'integer', enum: [0, 2, 7, 11, 15]}}, %w[lang event])
       input = schema({mode: {type: 'string', enum: %w[multi find seek]},
@@ -196,7 +197,7 @@ module BattleCatsRolls
         maxLegendTicket: int.call(0, 20), scheduleAware: {type: 'boolean'},
         rolls: {type: 'array', maxItems: 10, items: int.call(1, 1_000_000)}}, ['mode'])
       [
-        ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date. Returns IDs and pagination; does not calculate.', schema(paging)],
+        ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
         ['catsroll_cats', '캐릭터 찾기', 'Find exact character IDs by name (all forms) before selecting targets or seed-search rolls.', schema(paging)],
         ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. Ask for seed for multi/find, exact banners, last rare if known, target and resource limits. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks calculate in app; no server fallback.', input]
       ].map do |name, title, description, input_schema|
@@ -250,6 +251,18 @@ module BattleCatsRolls
         "#{item[:event]} #{item[:label]} #{item[:series_name]}".downcase.include?(term)
       end.map { |item| item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).merge(lang: lang) }
       page(entries, args, :events)
+    end
+
+    def event_reply(args)
+      catalog = boolean(args.fetch('catalog', false), 'catalog')
+      return tool_reply(events(args)) unless catalog
+
+      lang = args.fetch('lang', 'kr')
+      entries = TrackApi.multi_events(region(lang)).map do |item|
+        item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on,
+          :group, :platinum).merge(lang: lang)
+      end
+      tool_reply({lang: lang, total: entries.size}).merge(_meta: {'catsroll/events' => entries})
     end
 
     def cats(args)
