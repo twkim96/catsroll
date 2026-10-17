@@ -26,6 +26,11 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     assert.equal(await frame.locator("#seed").inputValue(), "42");
     assert.equal(await frame.locator("#multi_tables table").count(), 0, "prepared input never calculates automatically");
     assert.equal(await frame.locator("#calculate").isEnabled(), true, "prepared plan mode permits the initial Apply");
+    await page.waitForFunction(() => messages.some(item => item.method === "ui/notifications/size-changed"));
+    await page.waitForFunction(() => {
+      const iframe = document.querySelector("iframe");
+      return iframe.contentDocument.querySelector("#calculate").getBoundingClientRect().bottom <= iframe.clientHeight;
+    });
     await page.waitForFunction(() => document.querySelector("iframe").contentDocument.querySelector("#multi_find_targets")?.value.includes("칼리파"));
     await frame.locator("#calculate").click();
     await frame.locator("#multi_tables table").first().waitFor();

@@ -139,6 +139,10 @@ MCP 검사는 opt-in, origin, 크기/타입 제한, 도구 교환·카탈로그�
 브라우저 검사는 Playwright가 설치된 환경의 `NODE_PATH` 또는 `PLAYWRIGHT_MODULE`을
 사용하고 Chrome을 실행한다. `CATSROLL_GPT_TEST_URL`로 별도 시험 서버를 지정할 수 있다.
 호스트 브리지는 로컬 모의 호스트이며 실제 ChatGPT 격리 정책의 검증을 대체하지 않는다.
+앱은 인증된 부모 호스트에 `ui/notifications/size-changed`로 실제 본문 높이를 알린다.
+`ResizeObserver`와 animation frame 중복 제거로 입력·접기/펼치기·계산 결과의 크기 변화를
+전달하며 iframe viewport 높이를 본문 높이로 재사용하지 않는다. 실제 최대 높이와 폭은
+호스트 정책이 결정하므로 높이 알림만으로 전체 화면 전환이나 임의 크기를 보장하지 않는다.
 
 ## 배포 설정과 패키지
 
@@ -244,6 +248,20 @@ ChatGPT의 blob Worker/WASM 보안 정책이 호환되는지는 실제 시험의
 공개 제출 준비 완료 상태가 아니다. 비공개 플러그인은 배포된 `/mcp`에 연결해 시험한다.
 공개 설정·심사 자료·결제/인증 중단 지점과 이전 절차는 [공개 제출 준비](gpt-publication.md)에 유지한다.
 사용자용 소개와 문의는 [Catsroll 소개](gpt-overview.md)에 있다.
+
+### 안내 문서와 패키지의 업데이트 경계
+
+`doc/gpt-knowledge/*.md`와 `manifest.json`은 서버가 `catsroll_guide` 호출 때 읽는다.
+HF 서버에 수정본을 배포하면 다음 안내 도구 응답에 반영되며, 이를 위해 플러그인 ZIP을
+다시 올릴 필요는 없다. 기존 대화의 지난 응답이 바뀌거나 모델이 호출 없이 모든 문서를
+자동으로 읽는다는 뜻은 아니다. 최초 도구 선택은 서버의 instructions·도구 설명도 중요하다.
+
+서버의 도구 설명·UI 수정도 서버 배포로 제공하지만, 공개된 ChatGPT 플러그인의 도구 변경은
+OpenAI 자동 검사·승인된 정의 반영을 거친다. 설치한 클라이언트의 도구 목록/리소스 캐시도
+구분한다. 패키지에 포함한 스킬 MD·이름·아이콘·연결 설정은 패키지 변경이므로 새 ZIP이 필요하다.
+현재 `plugins/catsroll`에는 서버 안내 문서를 복제해 넣지 않는다.
+공식 절차는 [공개 제출 준비의 업데이트 범위](gpt-publication.md#업데이트와-이전)와
+[OpenAI 제출 안내](https://developers.openai.com/plugins/deploy/submission#update-your-published-plugin)를 따른다.
 
 ## Claude 연결
 
