@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "catsroll",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "냥코대전쟁 배열 초보자 안내, 속성별 티어 추천, 시드 찾기와 Multi 경로 탐색. 계산은 사용자 기기에서 실행합니다.",
   "homepage": "https://github.com/twkim96/catsroll",
   "repository": "https://github.com/twkim96/catsroll",
@@ -16,7 +16,7 @@
         "displayName": "Catsroll",
         "developerName": "twkim",
         "shortDescription": "Battle Cats seeds and tracks",
-        "longDescription": "Catsroll is a free fan tool for The Battle Cats. Find seed candidates from draw observations, compare KR/JP gacha tracks, and search routes to target characters. Calculations run on your device. Beginner guidance and sourced character recommendations use the current Catsroll game data. No game-account sign-in, purchases, or automatic in-game draws. ChatGPT Free availability and public-host acceptance remain under verification.",
+        "longDescription": "Catsroll is an independent fan tool for The Battle Cats. Find seed candidates from draw observations, compare KR/JP gacha tracks, and plan routes to target characters. Calculations run on your device. Beginner guidance and sourced character recommendations use Catsroll game data. Reference simulations for unscheduled events are clearly marked. No game-account sign-in or automatic in-game draws.",
         "category": "Productivity",
         "capabilities": [
           "Read"
@@ -46,21 +46,15 @@
             },
             {
               "description": "정확한 과거 배너와 100회·11회 확정 조건을 앱에 준비하고 사용자가 계산한다.",
-              "prompt": "한국 강철군대 아이언워즈 2019-01-23 배너에서 시드 2762818371을 100회, 11회 확정으로 비교하고 싶어.",
+              "prompt": "한국 강철군대 아이언워즈 2019-01-23 배너에서 시드 42를 100회, 11회 확정으로 비교하고 싶어.",
               "tools_triggered": "catsroll_events, catsroll_prepare",
-              "expected_behavior": "KR event=2019-01-23_348을 찾아 mode=multi, seed=2762818371, count=100, forceGuaranteed=11로 준비한다. prepared를 계산 결과로 설명하지 않는다. 앱에서 계산 후 A/B 각 100행과 확정 다음 위치를 표시한다."
+              "expected_behavior": "KR event=2019-01-23_348을 찾아 mode=multi, seed=42, count=100, forceGuaranteed=11로 준비한다. prepared를 계산 결과로 설명하지 않는다. 앱에서 계산 후 A/B 각 100행과 확정 다음 위치를 표시한다."
             },
             {
               "description": "검증된 플래티넘 샘플에서 기기 Find와 티켓 사용 조건을 확인한다. 앱은 실행 버튼 후 결과를 공유한다.",
-              "prompt": "한국 플래티넘 2026-02-13 배너에서 시드 2762818371로 비명의 왕 포노아를 얻는 경로를 찾아줘. 플래티넘 티켓 1장 사용을 허용하고 다른 특수 티켓과 확정은 쓰지 않을게. 10회 범위로 봐줘.",
+              "prompt": "한국 플래티넘 2026-02-13 배너에서 시드 42로 명계의 칼리파를 얻는 경로를 찾아줘. 플래티넘 티켓 1장 사용을 허용하고 다른 특수 티켓과 확정은 쓰지 않을게. 10회 범위로 봐줘.",
               "tools_triggered": "catsroll_events, catsroll_cats, catsroll_prepare",
-              "expected_behavior": "event=2026-02-13_1042, cat_id=706을 확인해 mode=multi, findEnabled=true, count=10, allow_ticket=true, maxPlatinum=1, maxLegendTicket=0, maxGuaranteed=0으로 준비한다. 사용자 실행 후 티켓 1회, 목표 1/1, 다음 2A를 확인한다. 실행 전 경로를 확정하지 않는다."
-            },
-            {
-              "description": "별명과 초본능 조건을 정식 캐릭터 ID 및 현재 형태 정보에 연결한다.",
-              "prompt": "쌍장성이 누군지 알려주고, 카이는 그냥 악마 탱커로 쓸 수 있는지도 설명해줘.",
-              "tools_triggered": "catsroll_cats",
-              "expected_behavior": "쌍장성을 cat_id=352 시시루와 코마리에 연결하고, 카이 cat_id=107의 details=true를 조회한다. 카이의 악마 대상 추가/탱킹 평가는 초본능 조건임을 설명한다. 기본형 대상과 본능 적용 평가를 혼동하지 않는다."
+              "expected_behavior": "event=2026-02-13_1042, cat_id=160을 확인해 mode=multi, findEnabled=true, count=10, allow_ticket=true, maxPlatinum=1, maxLegendTicket=0, maxGuaranteed=0으로 준비한다. 사용자 실행 후 티켓 1회, 목표 1/1, 다음 2A를 확인한다. 실행 전 경로를 확정하지 않는다."
             },
             {
               "description": "미정 콜라보를 기존 시리즈 ID로 지역 간 연결하고 참고 배열을 준비한다.",
@@ -91,7 +85,7 @@
         "countries": [
           "KR"
         ],
-        "release_notes": "Initial public-review preparation: beginner knowledge retrieval, sourced trait recommendations, canonical character and nickname lookup, and on-device Multi/Find/seed workflows. Public host and Free-account acceptance are pending.",
+        "release_notes": "Shared Multi track, Find and plan controls; verified target identities; regional reference-banner lookup and Korean display-name fallbacks. Initial directory review submission preparation.",
         "translations": {
           "ko-KR": {
             "subtitle": "시드 찾기와 Multi 배열·경로 계산",

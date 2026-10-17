@@ -11,12 +11,15 @@ module BattleCatsRolls
       @track_api = TrackApi.new
       @assets = Rack::Files.new(File.expand_path('../asset', __dir__))
       @gpt_mcp = GptMcp.new
+      @gpt_public_pages = GptPublicPages.new
     end
 
     def call env
       return [404, {}, []] if blocked_user_agent?(env)
 
       case env['PATH_INFO']
+      when '/gpt/about', '/gpt/privacy', '/gpt/terms', '/.well-known/openai-apps-challenge'
+        @gpt_public_pages.call(env)
       when '/mcp', '/gpt'
         @gpt_mcp.call(env)
       when '/track.json', '/events.json'

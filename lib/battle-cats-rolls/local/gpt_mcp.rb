@@ -13,7 +13,7 @@ module BattleCatsRolls
   # Stateless JSON Streamable HTTP. This adapter only prepares public game data;
   # the existing JS/WASM engines run in the user's UI, never on this server.
   class GptMcp
-    VERSION = '0.2.0'
+    VERSION = '0.2.1'
     PROTOCOLS = %w[2025-11-25 2025-06-18 2025-03-26].freeze
     MIME = 'text/html;profile=mcp-app'
     ASSETS = File.expand_path('../asset', __dir__)
@@ -177,7 +177,7 @@ module BattleCatsRolls
 
         meta = {ui: {csp: {connectDomains: [], resourceDomains: []}},
           'openai/widgetDescription' => 'Catsroll: device-only Multi arrays, route search and seed finder. Prepared inputs are not computed results.'}
-        domain = ENV['CATSROLL_GPT_UI_ORIGIN']
+        domain = ENV.fetch('CATSROLL_GPT_UI_ORIGIN', self.class.public_origin)
         meta[:ui][:domain] = domain if domain && !domain.empty?
         {contents: [{uri: params['uri'], mimeType: MIME, text: self.class.widget[:text], _meta: meta}]}
       else

@@ -289,6 +289,7 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(content.fetch('text').include?('{{WORKER_SOURCE}}')).eq false
     expect(content.fetch('text').include?('catsroll-worker-source')).eq true
     expect(content.fetch('_meta').dig('ui', 'csp', 'connectDomains')).eq []
+    expect(content.fetch('_meta').dig('ui', 'domain')).eq ENV.fetch('CATSROLL_GPT_UI_ORIGIN', BattleCatsRolls::GptMcp.public_origin)
     previous = ENV['CATSROLL_GPT_ENABLED']
     ENV['CATSROLL_GPT_ENABLED'] = '1'
     expect(client.get('/gpt').body).eq content.fetch('text')

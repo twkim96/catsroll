@@ -205,7 +205,10 @@ JP 배너의 한국어 표시 우선순위와 원본 날짜 유지 규칙은
   HF 배포용 루트 Dockerfile에서는 활성화한다. HF 설정에서 `0`으로 덮어쓰면 비활성화된다.
 - `CATSROLL_PUBLIC_ORIGIN`: 공개 서비스 HTTPS origin. 기본은 현재 HF Space 주소.
 - `CATSROLL_GPT_UI_ORIGIN`: 공개 UI 심사용 전용 origin이 정해진 경우 지정한다.
-  UI 검증을 마치고 도메인 소유권과 ChatGPT 호스트의 실제 origin/CSP를 확인해야 한다.
+  미지정 시 공개 MCP origin을 사용한다. 도메인 소유권과 ChatGPT 호스트의 실제 origin/CSP를 확인해야 한다.
+- `CATSROLL_GPT_PUBLIC_PAGES=1`: 공개 안내 페이지 활성화. 현재 개인정보·이용 안내는 검토용 초안이다.
+- `CATSROLL_OPENAI_DOMAIN_CHALLENGE`: 포털이 발급한 정확한 단일 도메인 인증 토큰.
+  페이지·인증 준비와 남은 소유자 확인은 [공개 제출 준비](gpt-publication.md#페이지와-도메인-인증-준비)에 유지한다.
 
 ```sh
 CATSROLL_PUBLIC_ORIGIN=https://twkim96-my-cats-rolls.hf.space ruby bin/package-gpt-plugin.rb
