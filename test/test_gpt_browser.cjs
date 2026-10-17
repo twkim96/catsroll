@@ -12,7 +12,7 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     const page = await browser.newPage({viewport: {width: 1000, height: 1100}});
     const errors = [];
     page.on("pageerror", error => { errors.push(error.message); console.error(error.stack); });
-    await page.route("**/gpt-test-host", route => route.fulfill({contentType: "text/html",
+    await page.route("**/gpt-test-host*", route => route.fulfill({contentType: "text/html",
       body: fs.readFileSync(path.join(__dirname, "fixtures/gpt-host.html"), "utf8")}));
     await page.goto(base + "/gpt-test-host");
     const frame = page.frameLocator("#widget");
@@ -111,6 +111,18 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await frame.locator("#calculate-seek").click();
     await frame.locator("#seek-result").getByText("시작 시드: 42",{exact:true}).waitFor({timeout:120000});
     assert.match(await frame.locator("#seek-result").innerText(),new RegExp("관측 후 시드: "+expectedEnd));
+    // Real hosts may finish the prepared tool before the larger bootstrap response.
+    await page.goto(base + "/gpt-test-host?holdBootstrap=1");
+    await page.waitForFunction(()=>bootstrapReleases.length===1);
+    await page.locator("#arguments").fill(JSON.stringify({mode:"seek",rows:[{lang:"kr",event:"2019-01-23_348"}],rolls}));
+    await page.locator("#prepare").click();
+    await page.waitForFunction(()=>latestResult?.structuredContent?.request?.rolls?.length===10);
+    await page.evaluate(()=>{holdBootstrap=false;bootstrapReleases.splice(0).forEach(resolve=>resolve());});
+    await frame.locator("#seek-rolls select").last().waitFor();
+    await page.waitForFunction(()=>document.querySelector("iframe").contentDocument.querySelectorAll("#seek-rolls select").length===10);
+    assert.deepEqual(await frame.locator("#seek-rolls select").evaluateAll(es=>es.map(e=>Number(e.value))),rolls);
+    await frame.locator("#calculate-seek").click();
+    await frame.locator("#seek-result").getByText("시작 시드: 42",{exact:true}).waitFor({timeout:120000});
     assert.deepEqual(errors, []);
     console.log("GPT shared Multi: canonical targets, manual Apply, arrays+Find stamps, plan switching/save, reference provenance, host sharing, cancellation, mobile width and WASM seed recovery passed");
   } finally { await browser.close(); }

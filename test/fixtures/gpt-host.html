@@ -6,6 +6,7 @@
 <iframe title="Catsroll 앱" id="widget" sandbox="allow-scripts allow-same-origin" src="/gpt"></iframe><pre id="messages"></pre>
 <script>
 window.messages=[];window.latestResult=null;window.ready=false;window.holdPrepare=false;window.releases=[];
+window.holdBootstrap=new URLSearchParams(location.search).has('holdBootstrap');window.bootstrapReleases=[];
 const iframe=document.querySelector('iframe');
 async function prepare(){
  const args=JSON.parse(document.querySelector('textarea').value);
@@ -25,6 +26,7 @@ addEventListener('message',async event=>{
  else if(m.method==='tools/call'){
   const response=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(m)});result=(await response.json()).result;
   if(holdPrepare && m.params.name==='catsroll_prepare')await new Promise(resolve=>releases.push(resolve));
+  if(holdBootstrap && m.params.name==='catsroll_multi_data' && m.params.arguments.section==='bootstrap')await new Promise(resolve=>bootstrapReleases.push(resolve));
  }
  if(m.id!=null)event.source.postMessage({jsonrpc:'2.0',id:m.id,result},event.origin);
  if(m.method==='ui/notifications/initialized')ready=true;

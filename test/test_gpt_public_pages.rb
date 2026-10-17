@@ -36,12 +36,13 @@ describe BattleCatsRolls::GptPublicPages do
       end
       expect(about.body.include?('아직 확인되지 않았습니다')).eq true
       expect(about.body.include?('사용자 기기의 메모리')).eq true
-      expect(privacy.body.include?('초안')).eq true
-      expect(privacy.body.include?('소유자 검토')).eq true
-      expect(privacy.body.include?('보관 방침')).eq true
-      expect(terms.body.include?('초안')).eq true
-      expect(terms.body.include?('정식 약관')).eq true
-      expect(terms.body.include?('데이터 삭제 기한')).eq true
+      expect(privacy.body.include?('운영자: twkim')).eq true
+      expect(privacy.body.include?('문의 종결 후 1년 이내 운영자가 삭제')).eq true
+      expect(privacy.body.include?('표준 출력과 오류 출력')).eq true
+      expect(privacy.body.include?('https://huggingface.co/privacy')).eq true
+      expect(terms.body.include?('이용약관')).eq true
+      expect(terms.body.include?('미래 일정이나 풀을 확정하지 않습니다')).eq true
+      expect(terms.body.include?('ktwhigh123@gmail.com')).eq true
     end
   end
 

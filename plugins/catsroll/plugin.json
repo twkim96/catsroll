@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "catsroll",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "냥코대전쟁 배열 초보자 안내, 속성별 티어 추천, 시드 찾기와 Multi 경로 탐색. 계산은 사용자 기기에서 실행합니다.",
   "homepage": "https://github.com/twkim96/catsroll",
   "repository": "https://github.com/twkim96/catsroll",
@@ -21,13 +21,15 @@
         "capabilities": [
           "Read"
         ],
-        "websiteURL": "https://github.com/twkim96/catsroll/blob/main/doc/gpt-overview.md",
+        "websiteURL": "https://twkim96-my-cats-rolls.hf.space/gpt/about",
         "defaultPrompt": [
           "처음인데 뽑기 결과로 시드를 찾는 걸 도와줘",
           "내 시드로 여러 배너의 배열을 비교하고 싶어",
           "목표 캐릭터를 얻을 경로를 찾아줘"
         ],
-        "supportURL": "https://github.com/twkim96/catsroll/issues"
+        "supportURL": "https://github.com/twkim96/catsroll/issues",
+        "privacyPolicyURL": "https://twkim96-my-cats-rolls.hf.space/gpt/privacy",
+        "termsOfServiceURL": "https://twkim96-my-cats-rolls.hf.space/gpt/terms"
       },
       "review": {
         "test_cases": {
@@ -85,7 +87,7 @@
         "countries": [
           "KR"
         ],
-        "release_notes": "Shared Multi track, Find and plan controls; verified target identities; regional reference-banner lookup and Korean display-name fallbacks. Initial directory review submission preparation.",
+        "release_notes": "Original Catsroll paw icon and public service, privacy and terms pages. Shared Multi, verified target pools, reference banners and default 300-draw preparation. Initial directory review preparation.",
         "translations": {
           "ko-KR": {
             "subtitle": "시드 찾기와 Multi 배열·경로 계산",

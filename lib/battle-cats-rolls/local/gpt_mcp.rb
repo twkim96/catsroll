@@ -13,7 +13,7 @@ module BattleCatsRolls
   # Stateless JSON Streamable HTTP. This adapter only prepares public game data;
   # the existing JS/WASM engines run in the user's UI, never on this server.
   class GptMcp
-    VERSION = '0.2.2'
+    VERSION = '0.2.3'
     DEFAULT_COUNT = 300
     PROTOCOLS = %w[2025-11-25 2025-06-18 2025-03-26].freeze
     MIME = 'text/html;profile=mcp-app'

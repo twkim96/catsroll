@@ -11,3 +11,5 @@ temp/
 /Gemfile.lock
 /.bundle/config
 /doc/windows-local-live-events.md
+
+/images/generated/

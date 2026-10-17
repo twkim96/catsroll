@@ -51,6 +51,8 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
 
 Multi의 초기 횟수는 300이며, 명시적으로 전달한 횟수는 그대로 사용한다.
+호스트 준비 결과가 bootstrap보다 먼저 도착해도 시드 찾기 payload와 관측 순서를 유지한다.
+초기 목록 로딩 뒤 입력을 다시 적용하면서 payload를 지우지 않으며 사용자 계산 버튼으로 실행한다.
 목표 캐릭터는 먼저 `catsroll_cats`로 식별한 다음 `catsroll_events(cat_id=...)`로 포함 배너를 찾는다.
 Find 준비는 선택한 일반 풀 또는 해당 목표에 허용하고 예산을 부여한 특수 티켓 풀 중 적어도
 하나에 목표가 있어야 한다. 캐릭터 도감에 존재한다는 이유만으로 잘못된 배너를 수락하지 않는다.
@@ -211,7 +213,7 @@ JP 배너의 한국어 표시 우선순위와 원본 날짜 유지 규칙은
 - `CATSROLL_PUBLIC_ORIGIN`: 공개 서비스 HTTPS origin. 기본은 현재 HF Space 주소.
 - `CATSROLL_GPT_UI_ORIGIN`: 공개 UI 심사용 전용 origin이 정해진 경우 지정한다.
   미지정 시 공개 MCP origin을 사용한다. 도메인 소유권과 ChatGPT 호스트의 실제 origin/CSP를 확인해야 한다.
-- `CATSROLL_GPT_PUBLIC_PAGES=1`: 공개 안내 페이지 활성화. 현재 개인정보·이용 안내는 검토용 초안이다.
+- `CATSROLL_GPT_PUBLIC_PAGES=1`: 소개·개인정보처리방침·이용약관 활성화. HF 루트 Dockerfile은 0.2.3부터 활성화한다.
 - `CATSROLL_OPENAI_DOMAIN_CHALLENGE`: 포털이 발급한 정확한 단일 도메인 인증 토큰.
   페이지·인증 준비와 남은 소유자 확인은 [공개 제출 준비](gpt-publication.md#페이지와-도메인-인증-준비)에 유지한다.
 
@@ -229,6 +231,8 @@ ChatGPT의 blob Worker/WASM 보안 정책이 호환되는지는 실제 시험의
 공유 요약은 ChatGPT에 전달된다. 호스팅·ChatGPT 자체의 보관 정책까지 없다고 주장하지 않는다.
 공개 전에는 요청 로그 정책, 트래픽 제한, 동시 요청, HF 절전·cold start와 캐시를 검토한다.
 현재 HF Docker는 Ruby 서비스이며 별도 Node 프로세스를 추가하지 않는다.
+정상 MCP 요청 본문을 기록하는 미들웨어/요청 이력 DB는 없고, 서버 진단은 stdout/stderr로 전달된다.
+인프라 기록은 제공자 정책을 따르며 방침의 유지 위치는 `view/gpt_public/privacy.html`이다.
 
 공개 등록에는 게시자 인증, 고정 HTTPS MCP 주소·도메인 검증, 개인정보처리방침·약관·문의처,
 아이콘과 시연·심사 자료가 필요하다. 패키지는 소유자 정보를 임의로 만들지 않으므로
