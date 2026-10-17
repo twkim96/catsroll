@@ -80,6 +80,13 @@
         window.location = '<%= route.uri %>' + '&pick=' + position
           + '#N' + position.replace(/[RGX]/g, '');
       };
+      function tickAll() { setChecked(true); }
+      function untickAll() { setChecked(false); }
+      function setChecked(value) {
+        var boxes = document.querySelectorAll(
+          'input[type="checkbox"][name="t"]');
+        for(var i=0; i<boxes.length; ++i) boxes[i].checked = value;
+      }
     </script>
   </head>
   <body>

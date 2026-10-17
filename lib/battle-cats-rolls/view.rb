@@ -809,16 +809,6 @@ module BattleCatsRolls
       "https://mygamatoto.com/catinfo/#{sprintf('%03d', cat.id)}/cat"
     end
 
-    def uri_to_own_all_cats
-      route.cats_uri(query: {o: Owned.encode(route.owned + arg[:cats].keys)},
-        include_filters: true)
-    end
-
-    def uri_to_drop_all_cats
-      route.cats_uri(query: {o: Owned.encode(route.owned - arg[:cats].keys)},
-        include_filters: true)
-    end
-
     def erb name, nested_arg=nil, &block
       context =
         if nested_arg
