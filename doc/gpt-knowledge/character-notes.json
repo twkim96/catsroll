@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "verified_on": "2026-10-17",
+  "sources": {
+    "20487": {
+      "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=20487",
+      "title": "울슈레 우선순위 티어표(밑에 설명 있음)",
+      "published_on": "2026-09-27",
+      "kind": "collection_priority"
+    },
+    "16631": {
+      "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=16631",
+      "title": "냥코 배열러 기준 울슈레/레레 티어표",
+      "published_on": "2026-08-16",
+      "kind": "array_player_roles"
+    },
+    "18429": {
+      "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=18429",
+      "title": "다군 티어표",
+      "published_on": "2026-09-12",
+      "kind": "series_role_opinion"
+    },
+    "18442": {
+      "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=18442",
+      "title": "바사라즈 티어표",
+      "published_on": "2026-09-12",
+      "kind": "series_role_opinion"
+    },
+    "18479": {
+      "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=18479",
+      "title": "갤걸 티어표",
+      "published_on": "2026-09-13",
+      "kind": "series_role_opinion"
+    },
+    "18487": {
+      "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=18487",
+      "title": "드엠 티어표",
+      "published_on": "2026-09-14",
+      "kind": "series_role_opinion"
+    }
+  },
+  "entries": [
+    {
+      "cat_id": 44,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "탱커 역할은 인정하지만 추가 투자 우선도에는 신중한 의견이다. 대상 속성이 에이리언이라고 해서 워프 대처까지 보장하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 45,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "헬옹·냥돌·엄동 묶음을 우선 확보 후보로 든다. 이 글의 수집 순서를 다른 글의 성능 티어로 환산하지 않는다."
+        }
+      ]
+    },
+    {
+      "cat_id": 58,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "초본능 활용과 별개로, 메탈 대항이 부족한 초심자의 확보 후보로 본다. 스탈 등 보유 전력이 충분하면 확보 우선도를 다시 따진다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 72,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "빠르게 투입하는 파밍·속공 용도를 언급한다. 이 용도 의견으로 모호한 다른 티어표의 등급을 확정하지 않는다.",
+          "form_index": 2,
+          "investment": "talents"
+        }
+      ]
+    },
+    {
+      "cat_id": 73,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "딜탱으로서의 사용감을 높게 본다. 뜬 적까지 같은 역할로 안내하는 부분은 초본능 대상 추가 조건을 확인해야 한다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 76,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "4진의 높은 대항 화력을 인정하되 공격 범위 때문에 유리한 적 배치가 필요하다는 평가다.",
+          "form_index": 3,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 77,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "4진의 연속 공격과 뒤쪽 타격 활용을 높게 본다. 앞쪽 타격·밀린 적의 위치에 따라 후속 공격 활용이 달라지는 조건을 설명한다.",
+          "form_index": 3,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 86,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "제어 역할은 인정하지만 비용·재생산 간격·공격 범위의 제약과 대체 전력을 함께 비교하라는 의견이다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 88,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "초본능 초수 특효 용도는 인정하되, 그 투자 시점에 이미 대체 전력이 있을 수 있으므로 우선 투자를 재검토하라는 의견이다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 106,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "실전 활용 가능성과 별개로 초본능 투자 우선도에는 신중한 의견이다. 이미 보유한 대체 전력과 자원을 먼저 확인한다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 107,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "악마 탱커 활용을 높게 평가하는 부분은 초본능 대상 추가가 전제다. 짧은 사거리와 선딜도 고려한다. 쉴드 브레이크와 악마 탱킹의 해금 조건을 혼동하지 않는다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 138,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "헬옹·냥돌·엄동 묶음을 우선 확보 후보로 든다. 이 글의 수집 순서를 다른 글의 성능 티어로 환산하지 않는다."
+        }
+      ]
+    },
+    {
+      "cat_id": 262,
+      "observations": [
+        {
+          "source_id": "16631",
+          "summary": "본문은 두 칸 이동속도 중 냥콤보가 필요할 때의 확보 후보로 언급한다. 전투 성능 추천과 다른 목적이며 조합 구성원·해금 조건은 별도 확인한다."
+        }
+      ]
+    },
+    {
+      "cat_id": 352,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "초본능 혼신의 일격을 활용한 화력을 높게 평가한다. 짧은 사거리·연속 공격·생존력 제약과 높은 투자 조건을 함께 안내한다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 449,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "특정 대항에서 강한 단일 공격형이라는 평가다. 여러 속성이 섞이거나 다수 적을 상대하는 상황에는 같은 효과를 기대하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 450,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "이동속도와 원거리 범위 공격을 활용하는 무난한 후보라는 평가다. 단순 DPS 수치로 순위를 확정하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 451,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "탱커로 활용할 수 있지만 생산 비용과 긴 재생산 간격이 부담이라는 평가다. 자원과 대체 탱커 보유에 따라 우선도를 정한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 456,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "파동과 정지를 활용하는 보조 역할을 높게 본다. 짧은 사거리와 공격 범위 때문에 배치와 적 구성이 중요하다는 평가다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 497,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "4진의 초현자 대응을 포함한 딜탱 활용을 높게 본다. 공격 범위가 넓은 후방 타격형과 같다고 설명하지 않는다.",
+          "form_index": 3,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 520,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "보스전에 특화해 활용하는 평가다. 짧은 사거리와 공격력 상승·혼신의 일격에 따른 사용 조건을 감안한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 545,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "우선 확보 후보로 들면서 스탈 보유 조건을 덧붙인다. 메탈 대항의 역할 중복을 살펴 우선도를 재검토하되 자동 제외하지 않는다."
+        }
+      ]
+    },
+    {
+      "cat_id": 618,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "악마전 쉴드 대응과 제어를 위한 후보로 평가한다. 보유한 다른 쉴드 대응 전력이 충분한지도 확인한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 620,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "쉴드 대응과 3진 열파 활용을 높게 본다. 짧은 사거리와 보유한 악마 대항 전력을 함께 비교한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 650,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "빠른 공격과 정지 활용을 높게 본다. 생산 비용과 공격 범위 제약을 함께 고려한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 661,
+      "observations": [
+        {
+          "source_id": "16631",
+          "summary": "본문은 두 칸 이동속도 중 냥콤보가 필요할 때의 확보 후보로 언급한다. 전투 성능 추천과 다른 목적이며 조합 구성원·해금 조건은 별도 확인한다."
+        },
+        {
+          "source_id": "18487",
+          "summary": "원거리 범위 공격과 제어를 활용하는 의견이다. 비용과 재생산 간격이 부담이며 냥콤보 확보 목적과 전투 목적을 나누어 판단한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 693,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "헬옹·냥돌·엄동 묶음을 우선 확보 후보로 든다. 이 글의 수집 순서를 다른 글의 성능 티어로 환산하지 않는다."
+        }
+      ]
+    },
+    {
+      "cat_id": 732,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "레전드 레어 중 우선 확보 후보로 든다. 현재 필요한 역할과 보유 전력을 함께 본다."
+        }
+      ]
+    },
+    {
+      "cat_id": 780,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "쌍루나·쌍루노 묶음을 우선 확보 후보로 든다. 각 캐릭터의 대상 속성과 역할은 현재 게임 데이터로 구분한다."
+        }
+      ]
+    },
+    {
+      "cat_id": 788,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "쌍루나·쌍루노 묶음을 우선 확보 후보로 든다. 각 캐릭터의 대상 속성과 역할은 현재 게임 데이터로 구분한다."
+        }
+      ]
+    },
+    {
+      "cat_id": 811,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "수집 우선순위 글에서 우선 확보 후보로 평가한다. 전투의 절대 순위라는 뜻은 아니다."
+        }
+      ]
+    },
+    {
+      "cat_id": 831,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "딜탱과 느리게 활용을 긍정적으로 본다. 짧은 인식 사거리와 공격 준비 시간 때문에 헛방을 고려한다.",
+          "form_index": 1,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 838,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "쌍루나·쌍루노 묶음을 우선 확보 후보로 든다. 각 캐릭터의 대상 속성과 역할은 현재 게임 데이터로 구분한다."
+        }
+      ]
+    },
+    {
+      "cat_id": 860,
+      "observations": [
+        {
+          "source_id": "20487",
+          "summary": "쌍루나·쌍루노 묶음을 우선 확보 후보로 든다. 각 캐릭터의 대상 속성과 역할은 현재 게임 데이터로 구분한다."
+        }
+      ]
+    },
+    {
+      "cat_id": 862,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "원거리 범위 공격과 화력 활용을 긍정적으로 본다. 높은 비용·재생산 간격과 쉴드 대응 부재를 함께 고려한다.",
+          "form_index": 1,
+          "investment": "none"
+        }
+      ]
+    }
+  ]
+}

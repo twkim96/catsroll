@@ -6,12 +6,13 @@ require 'base64'
 require 'uri'
 require 'rack'
 require_relative 'gpt_guide'
+require_relative 'gpt_recommendations'
 
 module BattleCatsRolls
   # Stateless JSON Streamable HTTP. This adapter only prepares public game data;
   # the existing JS/WASM engines run in the user's UI, never on this server.
   class GptMcp
-    VERSION = '0.1.3'
+    VERSION = '0.1.4'
     PROTOCOLS = %w[2025-11-25 2025-06-18 2025-03-26].freeze
     MIME = 'text/html;profile=mcp-app'
     ASSETS = File.expand_path('../asset', __dir__)
@@ -117,7 +118,7 @@ module BattleCatsRolls
       when 'initialize'
         {protocolVersion: PROTOCOLS.include?(params['protocolVersion']) ? params['protocolVersion'] : PROTOCOLS.first,
          capabilities: {tools: {}, resources: {}}, serverInfo: {name: 'catsroll', version: VERSION},
-         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
+         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. For what-to-pull or trait-gap questions use catsroll_recommend, then check banner membership and optional Find routes; no seed is needed for performance candidates. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
       when 'ping' then {}
       when 'tools/list' then {tools: tools}
       when 'tools/call'
@@ -127,12 +128,13 @@ module BattleCatsRolls
 
           case params['name']
           when 'catsroll_guide' then guide_reply(args)
+          when 'catsroll_recommend' then tool_reply(GptRecommendations.new.lookup(args))
           when 'catsroll_events' then event_reply(args)
           when 'catsroll_cats' then tool_reply(cats(args))
           when 'catsroll_prepare' then prepare(args)
           else raise InvalidInput, 'Unknown tool'
           end
-        rescue InvalidInput, GptGuide::InvalidInput => error
+        rescue InvalidInput, GptGuide::InvalidInput, GptRecommendations::InvalidInput => error
           {isError: true, content: [{type: 'text', text: error.message}]}
         end
       when 'resources/list'
@@ -207,10 +209,18 @@ module BattleCatsRolls
       [
         ['catsroll_guide', '배열 초보자 안내', 'Search verified Catsroll guidance BEFORE answering beginner, vague or conceptual questions. Pass the user question naturally, including Korean slang; empty input returns the index. Explains seeds, A/B and R/G/RG, guarantees, tickets, banner dates, future ubers, colors, Find and unsupported draws. Ask only missing essentials. This retrieves documentation, NOT predictions; use live catalogs and app results for actual outcomes.',
           schema({query: {type: 'string', maxLength: 300},
-            topic: {type: 'string', enum: %w[index start seed tracks guaranteed banners colors find troubleshooting]},
+            topic: {type: 'string', enum: %w[index start seed tracks guaranteed banners colors find troubleshooting recommendations]},
             limit: int.call(1, 3)})],
+        ['catsroll_recommend', '속성별 뽑기 추천', 'Use for vague good-cat/what-to-pull questions and trait gaps such as 빨적 부족. Returns reviewed SS/S/A tier candidates joined by cat ID to current Catsroll names, per-form targets and abilities. No traits: high-tier broad candidates. Multiple traits: match=all unless user accepts any. Default allows 3rd form and ordinary talents, not 4th/ultra. State requirements and subjective within-series tier limits. Attached source_notes are dated opinions for the evaluated form/investment, not game facts or a global rank. For collection priority, distinguish collab scarcity from combat strength; never invent rerun schedules. Use catsroll_cats(details=true) for individual role notes. event filters actual pool membership, NOT current sale or seed reachability. No seed needed for performance candidates; use catalogs and Find for actual pulls.',
+          schema({lang: lang,
+            traits: {type: 'array', maxItems: 10, items: {type: 'string', maxLength: 30}},
+            match: {type: 'string', enum: %w[all any]},
+            event: {type: 'string', maxLength: 100},
+            owned: {type: 'array', maxItems: 1000, items: int.call(1, 1_000_000)},
+            max_form: int.call(0, 3), investment: {type: 'string', enum: %w[none talents ultra]},
+            limit: int.call(1, 10)})],
         ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
-        ['catsroll_cats', '캐릭터 찾기', 'Find exact character IDs by name (all forms) before selecting targets or seed-search rolls.', schema(paging)],
+        ['catsroll_cats', '캐릭터 찾기', 'Find exact character IDs by name (all forms) before selecting targets or seed-search rolls. details=true (at most 5 results) adds current base-form abilities, available talent types and dated source opinions with explicit form/investment context. Distinguish collection scarcity, farming/combo roles and combat tiers; missing notes mean unreviewed, not weak.', schema(paging.merge(details: {type: 'boolean'}))],
         ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. For vague beginner questions use catsroll_guide first. Resolve banner/cat IDs with catalog tools; do not ask beginners for IDs. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks calculate in app; no server fallback.', input]
       ].map do |name, title, description, input_schema|
         item = {name: name, title: title, description: description, inputSchema: input_schema,
@@ -291,14 +301,25 @@ module BattleCatsRolls
     def cats(args)
       lang = args.fetch('lang', 'kr')
       term = query(args)
-      entries = region(lang).cats.filter_map do |id, info|
+      details = boolean(args.fetch('details', false), 'details')
+      if details
+        args = args.merge('limit' => args.fetch('limit', 5))
+        integer(args['limit'], 'limit with details', 1, 5)
+      end
+      ball = region(lang)
+      entries = ball.cats.filter_map do |id, info|
         names = Array(info['name']).compact
         next unless [2, 3, 4, 5].include?(info['rarity']) &&
           (id.to_s == term || names.any? { |name| name.downcase.include?(term) })
 
         {id: id, name: names.first || id.to_s, rarity: info['rarity']}
       end
-      page(entries, args, :cats)
+      result = page(entries, args, :cats)
+      if details
+        knowledge = GptCharacterKnowledge.new
+        result[:cats].each { |cat| cat.merge!(knowledge.details(ball, cat.fetch(:id))) }
+      end
+      result
     end
 
     def prepare(args)

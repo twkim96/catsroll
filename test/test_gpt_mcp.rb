@@ -97,9 +97,32 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(hint.fetch('topics')).eq %w[tracks guaranteed colors]
   end
 
+  would 'explain individual characters with current metadata and separate source conditions' do
+    result = call_tool(client, 'catsroll_cats', {query: '107', details: true}).fetch('structuredContent')
+    cat = result.fetch('cats').first
+    expect(cat.fetch('name')).eq BattleCatsRolls::Route.ball_kr.cats.fetch(107).fetch('name').first
+    expect(cat.fetch('forms').last.fetch('base_traits')).eq ['float']
+    note = cat.fetch('source_notes').find { |item| item.fetch('source').fetch('title') == '갤걸 티어표' }
+    expect(note.fetch('kind')).eq 'source_opinion'
+    expect(note.fetch('evaluation_context').fetch('investment')).eq 'ultra'
+    expect(note.fetch('source').fetch('published_on')).eq '2026-09-13'
+    expect(cat.fetch('talents').any? { |item| item['ability'] == 'Specialized to' && item['ultra'] }).eq true
+    expect(call_tool(client, 'catsroll_cats', {query: '107'}).fetch('structuredContent').fetch('cats').first.key?('source_notes')).eq false
+    expect(call_tool(client, 'catsroll_cats', {details: true, limit: 6})['isError']).eq true
+    expect(call_tool(client, 'catsroll_cats', {details: 'true'})['isError']).eq true
+    collection = call_tool(client, 'catsroll_guide', {query: '이번 콜라보 수집 우선순위가 궁금해'}).fetch('structuredContent')
+    expect(collection.fetch('documents').first.fetch('id')).eq 'recommendations'
+    expect(collection.fetch('documents').first.fetch('content').include?('반드시 복각')).eq true
+  end
+
   would 'route actual novice wording to explanations and supported boundaries' do
     {
       '처음인데 뭐부터 해요' => 'start',
+      '좋은 캐릭 뭐 있어?' => 'recommendations',
+      '빨적/천사 둘다 부족' => 'recommendations',
+      '이번 콜라보부터 다 모을까?' => 'recommendations',
+      '카이 악마 탱커라는데?' => 'recommendations',
+      '없는 평가면 약한거야?' => 'recommendations',
       '내시드찾아줘' => 'seed',
       '포노먹고싶어' => 'find',
       '라길 두번 나오면 왜 B로 가요' => 'tracks',
@@ -116,6 +139,30 @@ describe 'Catsroll MCP device-computation adapter' do
     unknown = call_tool(client, 'catsroll_guide', {query: '외계 행성 지도'})
     expect(unknown.fetch('structuredContent').fetch('matched')).eq false
     expect(unknown.fetch('structuredContent').fetch('documents').first.fetch('id')).eq 'index'
+    recommend_guide = call_tool(client, 'catsroll_guide', {query: '빨적이 부족한데 뭐뽑을까'})
+    expect(recommend_guide.fetch('structuredContent').fetch('documents').first.fetch('id')).eq 'recommendations'
+  end
+
+  would 'connect subjective tiers to real per-form game traits and an exact banner pool' do
+    result = call_tool(client, 'catsroll_recommend', {traits: %w[빨 천], limit: 10})
+    data = result.fetch('structuredContent')
+    expect(data.fetch('scope')).eq 'recommendation_candidates_not_predictions'
+    expect(data.fetch('source').fetch('tier_scope')).eq 'within_series'
+    picks = data.fetch('recommendations')
+    expect(picks.empty?).eq false
+    expect(picks.all? { |item| (%w[red angel] - item.fetch('traits')).empty? }).eq true
+    ball = BattleCatsRolls::Route.ball_kr
+    expect(picks.all? { |item| ball.cats.fetch(item.fetch('cat_id')).fetch('name').include?(item.fetch('name')) }).eq true
+    expect(result.key?('_meta')).eq false
+    expect(data.key?('seed')).eq false
+    owned = picks.first.fetch('cat_id')
+    filtered = call_tool(client, 'catsroll_recommend', {traits: %w[red angel], owned: [owned],
+      event: '2019-01-23_348', limit: 10}).fetch('structuredContent')
+    members = BattleCatsRolls::TrackApi.compact_find_pool_data(ball, '2019-01-23_348').fetch(:slots)
+    ids = Array(members[4]) + Array(members[5])
+    expect(filtered.fetch('recommendations').all? { |item| ids.include?(item.fetch('cat_id')) && item.fetch('cat_id') != owned }).eq true
+    expect(call_tool(client, 'catsroll_recommend', {traits: ['rainbow']})['isError']).eq true
+    expect(call_tool(client, 'catsroll_recommend', {event: 'not-a-banner'})['isError']).eq true
   end
 
   would 'prepare original pools without calculating or exposing full pools to the model' do

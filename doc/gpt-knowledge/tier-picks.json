@@ -1,0 +1,688 @@
+{
+  "schema_version": 1,
+  "source": {
+    "url": "https://gall.dcinside.com/mgallery/board/view/?id=yavetwarch&no=1185591&page=1",
+    "title": "울슐랭 가이드",
+    "game_version": "15.6",
+    "updated_on": "2026-09-24",
+    "tier_scope": "within_series",
+    "coverage": "reviewed_SS_S_A_candidates_only",
+    "verified_on": "2026-10-17"
+  },
+  "ratings": [
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 5,
+      "cat_id": 530,
+      "series_id": 19
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 5,
+      "cat_id": 319,
+      "series_id": 19
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 6,
+      "cat_id": 838,
+      "series_id": 19
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 6,
+      "cat_id": 732,
+      "series_id": 19
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 6,
+      "cat_id": 691,
+      "series_id": 19
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 6,
+      "cat_id": 780,
+      "series_id": 19
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 6,
+      "cat_id": 642,
+      "series_id": 19
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 8,
+      "cat_id": 544,
+      "series_id": 27
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 8,
+      "cat_id": 442,
+      "series_id": 27
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 8,
+      "cat_id": 334,
+      "series_id": 27
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 9,
+      "cat_id": 706,
+      "series_id": 27
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 9,
+      "cat_id": 860,
+      "series_id": 27
+    },
+    {
+      "tier": "SS",
+      "form_index": 2,
+      "investment": "talents",
+      "source_image": 11,
+      "requirements": "원문은 본능 투자를 필수로 평가",
+      "cat_id": 45,
+      "series_id": 1
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "talents",
+      "source_image": 12,
+      "requirements": "원문 상위 평가에 본능 쉴드 브레이커 개선 포함",
+      "cat_id": 618,
+      "series_id": 1
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "talents",
+      "source_image": 12,
+      "requirements": "본능 투자 평가; 원문은 육성 자원 부담 언급",
+      "cat_id": 520,
+      "series_id": 1
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 12,
+      "cat_id": 456,
+      "series_id": 1
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 15,
+      "requirements": "4단 진화 기준",
+      "cat_id": 497,
+      "series_id": 2
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 15,
+      "cat_id": 449,
+      "series_id": 2
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 15,
+      "cat_id": 650,
+      "series_id": 2
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 17,
+      "requirements": "4단 진화 기준",
+      "cat_id": 76,
+      "series_id": 3
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 17,
+      "requirements": "4단 진화 기준",
+      "cat_id": 77,
+      "series_id": 3
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 17,
+      "cat_id": 107,
+      "series_id": 3
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "ultra",
+      "source_image": 17,
+      "requirements": "초본능 투자 기준",
+      "cat_id": 106,
+      "series_id": 3
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 18,
+      "cat_id": 831,
+      "series_id": 3
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 18,
+      "cat_id": 450,
+      "series_id": 3
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 18,
+      "cat_id": 620,
+      "series_id": 3
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 20,
+      "cat_id": 397,
+      "series_id": 4
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 21,
+      "cat_id": 451,
+      "series_id": 4
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 21,
+      "cat_id": 661,
+      "series_id": 4
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 21,
+      "cat_id": 862,
+      "series_id": 4
+    },
+    {
+      "tier": "SS",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 23,
+      "requirements": "4단 진화 기준",
+      "cat_id": 138,
+      "series_id": 6
+    },
+    {
+      "tier": "A",
+      "form_index": 0,
+      "investment": "none",
+      "source_image": 23,
+      "cat_id": 138,
+      "series_id": 6
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 23,
+      "requirements": "4단 진화 기준",
+      "cat_id": 136,
+      "series_id": 6
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 23,
+      "requirements": "4단 진화 기준",
+      "cat_id": 139,
+      "series_id": 6
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 24,
+      "cat_id": 693,
+      "series_id": 6
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 24,
+      "cat_id": 452,
+      "series_id": 6
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "talents",
+      "source_image": 24,
+      "cat_id": 526,
+      "series_id": 6
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 24,
+      "cat_id": 323,
+      "series_id": 6
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 26,
+      "requirements": "4단 진화 기준",
+      "cat_id": 197,
+      "series_id": 7
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "ultra",
+      "source_image": 26,
+      "requirements": "초본능 투자 평가",
+      "cat_id": 196,
+      "series_id": 7
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 26,
+      "requirements": "4단 진화 기준",
+      "cat_id": 213,
+      "series_id": 7
+    },
+    {
+      "tier": "SS",
+      "form_index": 2,
+      "investment": "ultra",
+      "source_image": 27,
+      "requirements": "초본능 투자 평가",
+      "cat_id": 262,
+      "series_id": 7
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 27,
+      "requirements": "4단 진화 기준",
+      "cat_id": 432,
+      "series_id": 7
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 28,
+      "cat_id": 482,
+      "series_id": 7
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 28,
+      "cat_id": 699,
+      "series_id": 7
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "ultra",
+      "source_image": 30,
+      "requirements": "초본능 및 많은 NP 투자 평가",
+      "cat_id": 259,
+      "series_id": 18
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "ultra",
+      "source_image": 30,
+      "requirements": "강화 투자 평가; 일반/초본능 구분이 불명확해 보수적으로 초본능 예산에서만 제시",
+      "cat_id": 273,
+      "series_id": 18
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 30,
+      "cat_id": 260,
+      "series_id": 18
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 30,
+      "cat_id": 272,
+      "series_id": 18
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 31,
+      "cat_id": 440,
+      "series_id": 18
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "talents",
+      "source_image": 31,
+      "cat_id": 535,
+      "series_id": 18
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 33,
+      "requirements": "4단 진화 기준",
+      "cat_id": 305,
+      "series_id": 24
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 33,
+      "requirements": "4단 진화 기준",
+      "cat_id": 306,
+      "series_id": 24
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 33,
+      "requirements": "4단 진화 기준",
+      "cat_id": 418,
+      "series_id": 24
+    },
+    {
+      "tier": "A",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 33,
+      "requirements": "4단 진화 기준",
+      "cat_id": 307,
+      "series_id": 24
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 33,
+      "cat_id": 418,
+      "series_id": 24
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 34,
+      "cat_id": 716,
+      "series_id": 24
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 34,
+      "cat_id": 633,
+      "series_id": 24
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 34,
+      "cat_id": 595,
+      "series_id": 24
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 34,
+      "cat_id": 464,
+      "series_id": 24
+    },
+    {
+      "tier": "A",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 36,
+      "requirements": "4단 진화 기준",
+      "cat_id": 361,
+      "series_id": 33
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 36,
+      "cat_id": 570,
+      "series_id": 33
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 36,
+      "cat_id": 402,
+      "series_id": 33
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 36,
+      "cat_id": 360,
+      "series_id": 33,
+      "requirements": "4단 진화 기준"
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 37,
+      "cat_id": 479,
+      "series_id": 33
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 37,
+      "cat_id": 656,
+      "series_id": 33
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 37,
+      "cat_id": 632,
+      "series_id": 33
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "ultra",
+      "source_image": 39,
+      "requirements": "초본능 투자 평가",
+      "cat_id": 337,
+      "series_id": 28
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 39,
+      "cat_id": 335,
+      "series_id": 28
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 40,
+      "cat_id": 545,
+      "series_id": 28
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 40,
+      "cat_id": 608,
+      "series_id": 28
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 42,
+      "cat_id": 171,
+      "series_id": 0
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 43,
+      "cat_id": 713,
+      "series_id": 0
+    },
+    {
+      "tier": "S",
+      "form_index": 2,
+      "investment": "talents",
+      "source_image": 45,
+      "requirements": "본능 투자 평가",
+      "cat_id": 560,
+      "series_id": 45
+    },
+    {
+      "tier": "A",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 45,
+      "cat_id": 687,
+      "series_id": 56
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 45,
+      "cat_id": 284,
+      "series_id": 5
+    },
+    {
+      "tier": "A",
+      "form_index": 2,
+      "investment": "none",
+      "source_image": 45,
+      "cat_id": 287,
+      "series_id": 22
+    },
+    {
+      "tier": "S",
+      "form_index": 3,
+      "investment": "none",
+      "source_image": 45,
+      "requirements": "4단 진화 기준",
+      "cat_id": 398,
+      "series_id": 32
+    },
+    {
+      "tier": "SS",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 47,
+      "cat_id": 811,
+      "series_id": 39
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 47,
+      "cat_id": 759,
+      "series_id": 35
+    },
+    {
+      "tier": "S",
+      "form_index": 1,
+      "investment": "none",
+      "source_image": 47,
+      "cat_id": 784,
+      "series_id": 70
+    }
+  ]
+}

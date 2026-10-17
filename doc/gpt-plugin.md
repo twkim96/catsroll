@@ -32,8 +32,9 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | 도구 | 입력·반환 |
 | --- | --- |
 | `catsroll_guide` | 초심자 자연어 질문 또는 `topic`으로 검증 안내 1~3개 검색. 기본 2개, 본문 합계 최대 16,000자 |
+| `catsroll_recommend` | 속성/육성/보유/배너 풀로 상위 티어 후보 조회. 이름·형태·능력은 기존 게임 데이터에서 읽음 |
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달 |
-| `catsroll_cats` | 모든 형태 이름 또는 ID로 캐릭터 검색, 페이지 최대 50개 |
+| `catsroll_cats` | 모든 형태 이름 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
 | `catsroll_prepare` | `multi`, `find`, `seek` 조건을 검증하고 앱에서 실행할 데이터를 준비 |
 
 `catsroll_prepare`의 `structuredContent.status`는 **prepared**이며 결과가 아니다.
@@ -69,6 +70,17 @@ Multi의 초기 횟수는 100이며, 명시적으로 전달한 횟수는 그대�
 서버 배너/풀과 앱의 공유 결과를 최종 기준으로 사용한다. [출처 선별·검증](gpt-knowledge-sources.md)을 참고한다.
 검색 가중치의 일반 질문 검사와 실제 ChatGPT 도구 선택/무료 계정 수용은 다른 검증이다.
 
+“뭐 뽑을까”·“빨적이 부족해”는 [추천 안내](gpt-knowledge/recommendations.md)에 따라
+`catsroll_recommend`로 후보를 고른다. 외부 티어 평가는 `tier-picks.json`에 ID/평가 형태/투자
+조건만 저장하며, 이름·대상 속성·능력을 복제하지 않는다. 실제 `ball.cats`와 `Stat`/`Talent`에서
+평가 형태 정보를 읽어 연결한다. 자세한 선별·검증은 [티어 출처](gpt-tier-sources.md)에 있다.
+추가 6개 글은 `character-notes.json`의 ID별 용도/제약 의견으로 연결한다. 수집 우선순위와
+전투 티어를 합치지 않고, 사진의 불확실한 캐릭터 매칭은 제외한다. 원문 의견에는 날짜와
+형태/투자 조건을 붙이며, 현재 게임 데이터와 구분한다.
+복수 속성은 기본 all(모두 충족), 보유 ID 제외, 실제 이벤트 풀 포함 여부를 지원한다.
+기본 투자 예산은 일반 본능이며 4단 진화/초본능은 ultra를 명시해야 한다. 특정
+배너의 풀에 들어 있어도 현재 판매/시드 도달을 보증하지 않는다. 실제 경로는 Find에서 계산한다.
+
 Ruby/Bundler 환경은 기존 README의 개발 환경을 사용한다. 별도 npm 런타임은 필요 없다.
 
 ```sh
@@ -82,6 +94,7 @@ CATSROLL_GPT_ENABLED=1 WEB_BIND=127.0.0.1:17867 bundle exec yahns -c config/yahn
 ```sh
 node test/test_gpt_runtime.js
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
+bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_recommendations.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp.rb
 # Playwright가 제공되는 환경에서 별도 실행한 로컬 서버에 연결:
 node test/test_gpt_browser.cjs
