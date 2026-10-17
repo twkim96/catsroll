@@ -43,7 +43,8 @@ module BattleCatsRolls
       multi_template = File.read(File.expand_path('../view/multi.erb', __dir__))
       digest = Digest::SHA256.hexdigest(files.map { |file|
         File.binread(File.join(ASSETS, file))
-      }.join + multi_template.b + File.binread(TEMPLATE) + File.binread(ICON))
+      }.join + multi_template.b + File.binread(TEMPLATE) + File.binread(ICON) +
+        VERSION + self.public_origin + ENV.fetch('CATSROLL_GPT_UI_ORIGIN', self.public_origin))
       @widget ||= {}
       @widget = {} unless @widget.key?(digest)
       @widget[digest] ||= begin
