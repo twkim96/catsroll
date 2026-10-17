@@ -247,9 +247,12 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 #seek-panel {margin-top:12px;border:1px solid var(--line);background:#fff;padding:12px;border-radius:8px;}
 #seek-panel h2 {font-size:17px;margin:0 0 6px;}
 #seek-panel p {font-size:12px;}
-#seek-rolls label {display:flex;gap:8px;align-items:center;margin-bottom:8px;font-size:12px;}
-#seek-rolls select {flex:1;width:0;}
-#seek-rolls button {padding:4px 10px;}
+#seek-rolls label {display:flex;gap:8px;align-items:center;margin:0;font-size:12px;min-width:0;}
+#seek-rolls .seek-choice {flex:1;}
+#seek-rolls .seek-index {width:3.2em;flex:0 0 3.2em;color:var(--muted);white-space:nowrap;}
+#seek-rolls select {flex:1;width:0;min-width:0;}
+#seek-rolls .seek-remove {flex:0 0 34px;}
+#seek-actions {flex-wrap:wrap;margin-top:12px;}
 .gpt-shell .is-seeking .multi-found {display:none;}
 .event-filter-dialog {position:fixed;width:min(680px,calc(100vw - 16px));max-width:calc(100vw - 16px);max-height:calc(100dvh - 24px);margin:auto;padding:0;border:0;border-radius:12px;background:#fff;color:var(--text);}
 .event-filter-dialog[open] {display:block;height:auto;}
