@@ -203,7 +203,7 @@ module BattleCatsRolls
           ENV.fetch('CATSROLL_GPT_UI_ORIGIN', self.class.public_origin)
         end
         meta[:ui][:domain] = domain if domain && !domain.empty?
-        {contents: [{uri: params['uri'], mimeType: MIME, text: self.class.widget[:text], _meta: meta}]}
+        {contents: [{uri: params['uri'], mimeType: MIME, text: widget[:text], _meta: meta}]}
       else
         # Method errors are handled separately from invalid tool arguments.
         raise UnknownMethod
@@ -217,7 +217,8 @@ module BattleCatsRolls
       return base unless @ui_host == :claude
 
       # Host-specific domain metadata must never share the cached ChatGPT URI.
-      base.merge(uri: base[:uri].sub(/\.html\z/, '-claude-1.html'))
+      base.merge(uri: base[:uri].sub(/\.html\z/, '-claude-1.html'),
+        text: base[:text].sub('<html ', '<html data-catsroll-ui-host="claude" '))
     end
 
     def allowed_origin?(request)

@@ -357,7 +357,8 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(read.dig('_meta', 'ui', 'domain')).eq Digest::SHA256.hexdigest(endpoint)[0, 32] + '.claudemcpcontent.com'
     original = rpc(web, 'resources/read', {uri: original_uri}).last.dig('result', 'contents').first
     expect(original.dig('_meta', 'ui', 'domain')).eq ENV.fetch('CATSROLL_GPT_UI_ORIGIN', BattleCatsRolls::GptMcp.public_origin)
-    expect(read.fetch('text')).eq original.fetch('text')
+    expect(read.fetch('text')).eq original.fetch('text').sub('<html ', '<html data-catsroll-ui-host="claude" ')
+    expect(original.fetch('text').include?('<html data-catsroll-ui-host=')).eq false
     expect(rpc(web, 'resources/read', {uri: original_uri}, path: '/mcp/claude').last.key?('error')).eq true
     prepared = rpc(web, 'tools/call', {name: 'catsroll_prepare', arguments: {mode: 'multi', seed: 42,
       count: 100, rows: [{lang: 'kr', event: '2019-01-23_348'}]}}, path: '/mcp/claude').last.fetch('result')

@@ -13,7 +13,8 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     const errors = [];
     page.on("pageerror", error => { errors.push(error.message); console.error(error.stack); });
     await page.route("**/gpt-test-host*", route => route.fulfill({contentType: "text/html",
-      body: fs.readFileSync(path.join(__dirname, "fixtures/gpt-host.html"), "utf8")}));
+      body: fs.readFileSync(path.join(__dirname, "fixtures/gpt-host.html"), "utf8").replace('src="/gpt"',
+        new URL(route.request().url()).searchParams.has("claude") ? 'src="/gpt-test-claude-widget"' : 'src="/gpt"')}));
     await page.goto(base + "/gpt-test-host");
     const frame = page.frameLocator("#widget");
     await frame.locator("#seed").waitFor();
@@ -52,8 +53,8 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
     const shared = await page.evaluate(() => messages.find(item => item.method === "ui/update-model-context"));
     const visibleShare = await page.evaluate(() => messages.find(item => item.method === "ui/message"));
-    assert(visibleShare.params.content[0].text.includes(shared.params.content[0].text), "computed data must travel with the visible message even when hidden context is ignored");
-    assert.match(visibleShare.params.content[0].text, /Find 계산:.*success/);
+    assert.equal(visibleShare.params.content[0].text, "현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.", "ChatGPT keeps its short follow-up message");
+    assert.match(shared.params.content[0].text, /Find 계산:.*success/);
     assert.match(shared.params.content[0].text, /명계의 칼리파/);
     assert.match(shared.params.content[0].text, /플랜/);
     // A new host input cancels and discards all old results/plan selections.
@@ -154,6 +155,34 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await frame.locator("#mode").selectOption("multi");
     assert.equal(await frame.locator("#calculate").isVisible(),true);
     assert.equal(await frame.getByRole("combobox",{name:"배너 1 확정 뽑기",exact:true}).inputValue(),"11");
+    // Use the actual Claude resource, keeping its compatibility behavior off ChatGPT.
+    async function claudeRpc(method, params) {
+      const response = await fetch(base + "/mcp/claude", {method:"POST", headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({jsonrpc:"2.0",id:1,method,params:params || {}})});
+      return (await response.json()).result;
+    }
+    const claudeResource = (await claudeRpc("resources/list")).resources[0];
+    const claudeHtml = (await claudeRpc("resources/read", {uri:claudeResource.uri})).contents[0].text;
+    await page.route("**/gpt-test-claude-widget", route => route.fulfill({contentType:"text/html",body:claudeHtml}));
+    await page.goto(base + "/gpt-test-host?claude=1");
+    await page.waitForFunction(() => window.ready);
+    await page.locator("#prepare").click();
+    await page.waitForFunction(() => latestResult?.structuredContent?.status === "prepared");
+    await frame.locator("#calculate").click();
+    await page.waitForFunction(() => document.querySelector("iframe").contentWindow.MultiFindApp.getResult()?.status === "success");
+    await frame.locator("#send-context").click();
+    await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
+    const claudeShare = await page.evaluate(() => messages.find(item => item.method === "ui/message").params.content[0].text);
+    const claudeContext = await page.evaluate(() => messages.find(item => item.method === "ui/update-model-context").params.content[0].text);
+    assert(claudeShare.includes(claudeContext), "Claude receives computed data in the visible message");
+    assert.match(claudeShare, /Find 계산:.*success/);
+    await frame.locator("#send-context").waitFor({state:"visible"});
+    await page.waitForFunction(() => !document.querySelector("iframe").contentDocument.querySelector("#send-context").disabled);
+    await page.evaluate(() => { messages=[]; rejectModelContext=true; });
+    await frame.locator("#send-context").click();
+    await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
+    assert.equal(await page.evaluate(() => messages.find(item => item.method === "ui/message").params.content[0].text), claudeShare,
+      "Claude can share computed data when hidden context fails");
     assert.deepEqual(errors, []);
     console.log("GPT shared Multi: canonical targets, manual Apply, arrays+Find stamps, plan switching/save, reference provenance, host sharing, cancellation, mobile width and WASM seed recovery passed");
   } finally { await browser.close(); }

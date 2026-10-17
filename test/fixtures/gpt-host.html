@@ -6,6 +6,7 @@
 <iframe title="Catsroll 앱" id="widget" sandbox="allow-scripts allow-same-origin" src="/gpt"></iframe><pre id="messages"></pre>
 <script>
 window.messages=[];window.latestResult=null;window.ready=false;window.holdPrepare=false;window.releases=[];
+window.rejectModelContext=false;
 window.holdBootstrap=new URLSearchParams(location.search).has('holdBootstrap');window.bootstrapReleases=[];
 const iframe=document.querySelector('iframe');
 async function prepare(){
@@ -21,6 +22,7 @@ addEventListener('message',async event=>{
  if(event.source!==iframe.contentWindow||event.origin!==location.origin)return;
  const m=event.data;if(!m||m.jsonrpc!=='2.0')return;
  messages.push(m);document.querySelector('#messages').textContent=messages.filter(m=>m.method!=='tools/call').map(m=>JSON.stringify(m)).join('\n');
+ if(m.method==='ui/update-model-context' && rejectModelContext){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32601,message:'Context unsupported'}},event.origin);return;}
  let result={};
  if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:{},hostContext:{}};
  else if(m.method==='ui/notifications/size-changed')iframe.style.height=Math.min(m.params.height,1000)+'px';
