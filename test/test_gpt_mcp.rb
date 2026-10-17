@@ -110,6 +110,11 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(call_tool(client, 'catsroll_cats', {query: '107'}).fetch('structuredContent').fetch('cats').first.key?('source_notes')).eq false
     expect(call_tool(client, 'catsroll_cats', {details: true, limit: 6})['isError']).eq true
     expect(call_tool(client, 'catsroll_cats', {details: 'true'})['isError']).eq true
+    %w[헬옹 쌍장성 엄동].zip([45, 352, 693]).each do |alias_name, id|
+      named = call_tool(client, 'catsroll_cats', {query: alias_name, details: true}).fetch('structuredContent').fetch('cats').first
+      expect(named.fetch('id')).eq id
+      expect(named.fetch('name')).eq BattleCatsRolls::Route.ball_kr.cats.fetch(id).fetch('name').first
+    end
     collection = call_tool(client, 'catsroll_guide', {query: '이번 콜라보 수집 우선순위가 궁금해'}).fetch('structuredContent')
     expect(collection.fetch('documents').first.fetch('id')).eq 'recommendations'
     expect(collection.fetch('documents').first.fetch('content').include?('반드시 복각')).eq true

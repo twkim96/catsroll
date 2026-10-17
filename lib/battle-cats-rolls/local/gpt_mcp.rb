@@ -307,16 +307,17 @@ module BattleCatsRolls
         integer(args['limit'], 'limit with details', 1, 5)
       end
       ball = region(lang)
+      knowledge = GptCharacterKnowledge.new if details || !term.empty?
       entries = ball.cats.filter_map do |id, info|
         names = Array(info['name']).compact
         next unless [2, 3, 4, 5].include?(info['rarity']) &&
-          (id.to_s == term || names.any? { |name| name.downcase.include?(term) })
+          (id.to_s == term || names.any? { |name| name.downcase.include?(term) } ||
+            knowledge&.alias_matches?(id, term))
 
         {id: id, name: names.first || id.to_s, rarity: info['rarity']}
       end
       result = page(entries, args, :cats)
       if details
-        knowledge = GptCharacterKnowledge.new
         result[:cats].each { |cat| cat.merge!(knowledge.details(ball, cat.fetch(:id))) }
       end
       result

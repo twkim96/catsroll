@@ -12,6 +12,14 @@ module BattleCatsRolls
       @data = JSON.parse(File.read(PATH, encoding: 'UTF-8'))
     end
 
+    def alias_matches?(id, query)
+      term = normalize_name(query)
+      return false if term.empty?
+
+      entry = @data.fetch('entries').find { |item| item.fetch('cat_id') == id }
+      Array(entry && entry['aliases']).any? { |name| normalize_name(name).include?(term) }
+    end
+
     def notes(ball, id, form_index: nil, investment: nil)
       info = ball.cats.fetch(id)
       entry = @data.fetch('entries').find { |item| item.fetch('cat_id') == id }
@@ -45,6 +53,12 @@ module BattleCatsRolls
       {'forms' => forms, 'talents' => Talent.build(info).map { |talent| {'ability' => talent.name, 'ultra' => talent.ultra?} },
        'metadata_scope' => 'Base form abilities; talent entries identify available upgrades, not unlocked account state. See recommendation evaluated form for applied talents.',
        'source_notes' => notes(ball, id)}
+    end
+
+    private
+
+    def normalize_name(value)
+      value.unicode_normalize(:nfkc).downcase.gsub(/[^\p{Alnum}]/, '')
     end
   end
 end

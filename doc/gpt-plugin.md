@@ -34,7 +34,7 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | `catsroll_guide` | 초심자 자연어 질문 또는 `topic`으로 검증 안내 1~3개 검색. 기본 2개, 본문 합계 최대 16,000자 |
 | `catsroll_recommend` | 속성/육성/보유/배너 풀로 상위 티어 후보 조회. 이름·형태·능력은 기존 게임 데이터에서 읽음 |
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달 |
-| `catsroll_cats` | 모든 형태 이름 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
+| `catsroll_cats` | 모든 형태 이름·검토한 별명 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
 | `catsroll_prepare` | `multi`, `find`, `seek` 조건을 검증하고 앱에서 실행할 데이터를 준비 |
 
 `catsroll_prepare`의 `structuredContent.status`는 **prepared**이며 결과가 아니다.
