@@ -177,6 +177,7 @@ describe 'Catsroll MCP device-computation adapter' do
     summary = result.fetch('structuredContent')
     expect(summary.fetch('status')).eq 'prepared'
     expect(summary.fetch('execution')).eq 'client'
+    expect(summary.fetch('request').fetch('count')).eq 30
     expect(summary.key?('result')).eq false
     expect(summary.fetch('events').first.key?('pool')).eq false
     payload = result.fetch('_meta').fetch('catsroll/data')
@@ -193,6 +194,8 @@ describe 'Catsroll MCP device-computation adapter' do
 
   would 'validate real calculation inputs instead of silently changing conditions' do
     base = {mode: 'multi', seed: 42, rows: [{lang: 'kr', event: '2026-02-13_1042'}]}
+    expect(call_tool(client, 'catsroll_prepare', base).fetch('structuredContent').fetch('request').fetch('count')).eq 300
+    expect(call_tool(client, 'catsroll_prepare', base.merge(count: 100)).fetch('structuredContent').fetch('request').fetch('count')).eq 100
     [{seed: 0}, {seed: 2**32}, {count: 1000}, {seed: '42'},
       {rows: [{lang: 'kr', event: 'missing'}]}, {scheduleAware: 'false'},
       {mode: 'find', targets: []}, {rows: []}, {custom: 1}].each do |change|
@@ -228,6 +231,7 @@ describe 'Catsroll MCP device-computation adapter' do
     bootstrap = call_tool(client, 'catsroll_multi_data', {section: 'bootstrap'})
     catalog = bootstrap.fetch('_meta').fetch('catsroll/multi')
     expect(catalog.fetch('initial').fetch('seed')).eq 0
+    expect(catalog.fetch('initial').fetch('count')).eq 300
     expect(catalog.fetch('find_cats').any? { |cat| cat['id'] == 545 && cat['name'] != '545' }).eq true
     expect(bootstrap.fetch('structuredContent').key?('regions')).eq false
     hidden = rpc(client, 'tools/list').last.dig('result', 'tools').find { |tool| tool['name'] == 'catsroll_multi_data' }
@@ -236,7 +240,10 @@ describe 'Catsroll MCP device-computation adapter' do
       targets: [{cat_id: 545, cat_name: 'ナナホではない名前'}], findEnabled: true}
     expect(call_tool(client, 'catsroll_prepare', base)['isError']).eq true
     name = BattleCatsRolls::Route.ball_kr.cats.fetch(545).fetch('name').first
+    matching = call_tool(client, 'catsroll_events', {lang: 'kr', cat_id: 545}).fetch('structuredContent').fetch('events').
+      find { |event| !event['platinum'] }
     good = call_tool(client, 'catsroll_prepare', base.merge(
+      rows: [{lang: 'kr', event: matching.fetch('event')}],
       targets: [{cat_id: 545, cat_name: name}], planMode: true, planName: '메탈 대응'))
     request = good.fetch('structuredContent').fetch('request')
     expect(request.fetch('targets').first.fetch('cat_name')).eq name
@@ -244,6 +251,30 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(request.fetch('planMode')).eq true
     expect(request.fetch('planName')).eq '메탈 대응'
     expect(call_tool(client, 'catsroll_multi_data', {section: 'pool', lang: 'kr', event: 'missing'})['isError']).eq true
+  end
+
+  would 'resolve character banners from current pools and reject the wrong desired-cat banner' do
+    events = call_tool(client, 'catsroll_events', {lang: 'kr', cat_id: 870, limit: 50}).fetch('structuredContent').fetch('events')
+    dynamites = events.find { |event| event['series_name'] == '다이너마이트 군단' }
+    expect(!!dynamites).eq true
+    expect(events.any? { |event| event['event'] == '2026-10-20_947' }).eq false
+    expect(call_tool(client, 'catsroll_events', {cat_id: 999999})['isError']).eq true
+    expect(call_tool(client, 'catsroll_events', {cat_id: 870, catalog: true})['isError']).eq true
+    args = {mode: 'multi', seed: 42, maxGuaranteed: 1,
+      targets: [{cat_id: 870, cat_name: '변신소녀 단'}],
+      rows: [{lang: 'kr', event: '2026-10-20_947'}]}
+    wrong = call_tool(client, 'catsroll_prepare', args)
+    expect(wrong['isError']).eq true
+    expect(wrong.fetch('content').first.fetch('text').include?('catsroll_events with cat_id=870')).eq true
+    right = call_tool(client, 'catsroll_prepare', args.merge(rows: [{lang: 'kr', event: dynamites.fetch('event')}]))
+    expect(right.fetch('structuredContent').fetch('status')).eq 'prepared'
+    # Ticket-only acquisition needs both a resource allowance and per-target consent.
+    ticket = {mode: 'multi', seed: 42, rows: [{lang: 'kr', event: '2026-02-13_1042'}],
+      targets: [{cat_id: 160, cat_name: '명계의 칼리파', allow_ticket: true}]}
+    expect(call_tool(client, 'catsroll_prepare', ticket)['isError']).eq true
+    expect(call_tool(client, 'catsroll_prepare', ticket.merge(maxPlatinum: 1)).fetch('structuredContent').fetch('status')).eq 'prepared'
+    expect(call_tool(client, 'catsroll_prepare', ticket.merge(maxPlatinum: 1,
+      targets: [{cat_id: 160, cat_name: '명계의 칼리파', allow_ticket: false}]))['isError']).eq true
   end
 
   would 'prepare unscheduled regional references without altering the source draw pool' do

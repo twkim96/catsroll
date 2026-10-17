@@ -38,7 +38,7 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | `catsroll_guide` | 초심자 자연어 질문 또는 `topic`으로 검증 안내 1~3개 검색. 기본 2개, 본문 합계 최대 16,000자 |
 | `catsroll_recommend` | 속성/육성/보유/배너 풀로 상위 티어 후보 조회. 이름·형태·능력은 기존 게임 데이터에서 읽음 |
 | `catsroll_banner_preview` | 일정 미정 콜라보/이벤트의 시리즈를 KR·JP 이름/별명/캐릭터 ID로 연결하고 지역별 최신 참고 풀과 `prepare_rows` 반환. 예측·미래 일정 아님 |
-| `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달 |
+| `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, `cat_id`로 실제 풀에 포함된 배너 역검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달하며 `cat_id`와 함께 쓰지 않음 |
 | `catsroll_cats` | 모든 형태 이름·검토한 별명 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
 | `catsroll_prepare` | `multi`, `seek`와 Find 옵션·플랜 초기 설정을 검증. 기존 `find`는 같은 Multi 화면의 호환 입력 |
 | `catsroll_multi_data` | 앱 전용(`_meta.ui.visibility=[app]`) bootstrap/series/pool 전송. 기존 `TrackApi`의 공개 데이터만 `_meta`로 반환하며 계산하지 않음 |
@@ -50,7 +50,10 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 공유 버튼은 Multi 배열 표 바로 위에, 시드 찾기에서는 결과 바로 위에 배치한다.
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
 
-Multi의 초기 횟수는 100이며, 명시적으로 전달한 횟수는 그대로 사용한다.
+Multi의 초기 횟수는 300이며, 명시적으로 전달한 횟수는 그대로 사용한다.
+목표 캐릭터는 먼저 `catsroll_cats`로 식별한 다음 `catsroll_events(cat_id=...)`로 포함 배너를 찾는다.
+Find 준비는 선택한 일반 풀 또는 해당 목표에 허용하고 예산을 부여한 특수 티켓 풀 중 적어도
+하나에 목표가 있어야 한다. 캐릭터 도감에 존재한다는 이유만으로 잘못된 배너를 수락하지 않는다.
 별도 Find 탭 없이 `findEnabled`로 켠다. `targets`가 있으면 기본으로 켜지며, 목표 이름은
 공유 Multi 카탈로그에서 표시한다. AI는 `cat_id`와 `cat_name`을 같이 전달하며 이름/ID가
 맞지 않으면 준비 도구가 오류를 반환한다. `planMode`, `planName`으로 플랜 UI를 준비할 수 있다.

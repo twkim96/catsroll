@@ -37,6 +37,7 @@ MCP 어댑터 순이다. 이 기록은 게임 클라이언트 자체나 모든 �
 | 미래 울슈레 | 공통 `multi-track.js`의 `poolWithFuture` 및 `gpt-runtime.js`의 `modifiedPool`: 선택한 풀만 복사해 음수 ID를 앞에 추가 |
 | Find 한계·일정·비용 | `multi-find-engine.js`의 `scheduleDayFor`, `betterGoal`, `search` 상태와 비용 상수 |
 | 실제 MCP 지원 범위 | `local/gpt_mcp.rb`의 `tools`, `prepare`, `seeker_data`; 시드 찾기 WASM 어댑터 |
+| 목표와 배너 연결 | `catsroll_events(cat_id=...)`의 실제 GachaPool 슬롯 역검색과 `prepare`의 선택 풀/허용 티켓 검증. 변신소녀 단(ID 870)을 다크 히어로즈에 잘못 설정한 사례를 회귀로 유지 |
 
 ## 공개 Catsroll 서버와의 대조
 

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "catsroll",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "냥코대전쟁 배열 초보자 안내, 속성별 티어 추천, 시드 찾기와 Multi 경로 탐색. 계산은 사용자 기기에서 실행합니다.",
   "homepage": "https://github.com/twkim96/catsroll",
   "repository": "https://github.com/twkim96/catsroll",

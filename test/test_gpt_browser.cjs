@@ -50,13 +50,13 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     assert.match(shared.params.content[0].text, /플랜/);
     // A new host input cancels and discards all old results/plan selections.
     const prepared = {mode: "multi", seed: 43, count: 10, rows: [{lang: "kr", event: "2019-01-23_348"}],
-      targets: [{cat_id: 545}], findEnabled: true};
+      targets: [{cat_id: 306}], findEnabled: true};
     await page.locator("#arguments").fill(JSON.stringify(prepared));
     await page.locator("#prepare").click();
     await frame.locator("#seed").waitFor();
     await page.waitForFunction(() => latestResult?.structuredContent?.request?.seed === 43);
     assert.equal(await frame.locator("#multi_tables table").count(), 0);
-    await page.waitForFunction(() => document.querySelector("iframe").contentDocument.querySelector("#multi_find_targets")?.value.includes("나나호"));
+    await page.waitForFunction(() => document.querySelector("iframe").contentDocument.querySelector("#multi_find_targets")?.value.includes("고대군함 가레스"));
     assert.equal(await frame.locator("#send-context").isEnabled(), false);
     await frame.locator("#gpt-plan-settings summary").click();
     await frame.locator(".multi-plan-toggle-field").click();

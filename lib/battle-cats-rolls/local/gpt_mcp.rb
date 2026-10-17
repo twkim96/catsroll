@@ -13,7 +13,8 @@ module BattleCatsRolls
   # Stateless JSON Streamable HTTP. This adapter only prepares public game data;
   # the existing JS/WASM engines run in the user's UI, never on this server.
   class GptMcp
-    VERSION = '0.2.1'
+    VERSION = '0.2.2'
+    DEFAULT_COUNT = 300
     PROTOCOLS = %w[2025-11-25 2025-06-18 2025-03-26].freeze
     MIME = 'text/html;profile=mcp-app'
     ASSETS = File.expand_path('../asset', __dir__)
@@ -220,13 +221,14 @@ module BattleCatsRolls
       lang = {type: 'string', enum: %w[kr jp]}
       paging = {lang: lang, query: {type: 'string', maxLength: 100},
         offset: int.call(0, 100_000), limit: int.call(1, 50)}
-      event_input = paging.merge(catalog: {type: 'boolean'})
+      event_input = paging.merge(catalog: {type: 'boolean'}, cat_id: int.call(1, 1_000_000))
       row = schema({lang: lang, event: {type: 'string', maxLength: 100},
         previewFor: {type: 'string', enum: %w[kr jp], description: 'Reference simulation for this game region using the selected source pool. NOT a confirmed future schedule.'},
         ubers: int.call(0, 100), forceGuaranteed: {type: 'integer', enum: [0, 2, 7, 11, 15]}}, %w[lang event])
       input = schema({mode: {type: 'string', enum: %w[multi find seek]},
         seed: int.call(1, 4_294_967_295), last: int.call(0, 1_000_000),
-        count: int.call(1, [TrackMaxCount, 999].min),
+        count: int.call(1, [TrackMaxCount, 999].min).merge(default: DEFAULT_COUNT,
+          description: 'Default 300 when the user does not specify a range; preserve explicit counts.'),
         rows: {type: 'array', minItems: 1, maxItems: 8, items: row},
         targets: {type: 'array', maxItems: 30,
           items: schema({cat_id: int.call(1, 1_000_000), cat_name: {type: 'string', maxLength: 100},
@@ -250,7 +252,7 @@ module BattleCatsRolls
             owned: {type: 'array', maxItems: 1000, items: int.call(1, 1_000_000)},
             max_form: int.call(0, 3), investment: {type: 'string', enum: %w[none talents ultra]},
             limit: int.call(1, 10)})],
-        ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
+        ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date or exact cat_id membership. For a desired character, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
         ['catsroll_banner_preview', '미정 배너 참고 풀 찾기', 'Use for unscheduled collab/event preview requests such as 검심 배열. Resolve series using existing KR/JP names, aliases and character IDs; compare latest known KR/JP pools. Newer JP pools may be used only as a reference simulation, NOT a confirmed Korean schedule/pool. Return candidates and exact prepare rows with previewFor. Ask which variant if ambiguous. Names are joined by stable cat IDs; untranslated new units retain source names. Do not fabricate release dates or extra units. Does not calculate.',
           schema({query: {type: 'string', minLength: 1, maxLength: 100}, lang: lang,
             series_id: int.call(0, 100_000)}, ['query'])],
@@ -258,7 +260,7 @@ module BattleCatsRolls
         ['catsroll_multi_data', 'Multi 화면 데이터', 'App transport for shared Multi selectors and public pools. Does not calculate.',
           schema({section: {type: 'string', enum: %w[bootstrap pool series]}, lang: lang,
             event: {type: 'string', maxLength: 100}, previewFor: lang}, ['section'])],
-        ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. Multi includes optional Find, Found cats list, route stamps and planMode. For vague beginner questions use catsroll_guide first. Resolve exact banner/cat IDs with catalog tools and pass cat_name with each target to verify identity; never guess numeric IDs. maxGuaranteed is a resource budget, not proof a banner offers a guarantee; forceGuaranteed explicitly simulates it. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks Calculate in app; no server fallback.', input]
+        ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. Default count is 300 unless the user specifies it. Multi includes optional Find, Found cats list, route stamps and planMode. For vague beginner questions use catsroll_guide first. Resolve exact banner/cat IDs with catalog tools and pass cat_name with each target to verify identity; never guess numeric IDs. Before choosing a banner for a target, use catsroll_events(cat_id=...) to verify pool membership. Missing targets in selected pools or permitted tickets are rejected. maxGuaranteed is a resource budget, not proof a banner offers a guarantee; forceGuaranteed explicitly simulates it. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks Calculate in app; no server fallback.', input]
       ].map do |name, title, description, input_schema|
         item = {name: name, title: title, description: description, inputSchema: input_schema,
           outputSchema: {type: 'object', additionalProperties: true},
@@ -307,8 +309,12 @@ module BattleCatsRolls
     def events(args)
       lang = args.fetch('lang', 'kr')
       term = query(args)
-      entries = TrackApi.multi_events(region(lang)).select do |item|
-        "#{item[:event]} #{item[:label]} #{item[:series_name]}".downcase.include?(term)
+      ball = region(lang)
+      cat_id = integer(args['cat_id'], 'cat_id', 1, 1_000_000) if args.key?('cat_id')
+      raise InvalidInput, 'Unknown character; resolve with catsroll_cats first' if cat_id && !ball.cats.key?(cat_id)
+      entries = TrackApi.multi_events(ball).select do |item|
+        next false unless "#{item[:event]} #{item[:label]} #{item[:series_name]}".downcase.include?(term)
+        !cat_id || GachaPool.new(ball, event_name: item[:event]).slots.values.any? { |ids| ids.include?(cat_id) }
       end.map { |item| item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).merge(lang: lang) }
       page(entries, args, :events)
     end
@@ -316,6 +322,7 @@ module BattleCatsRolls
     def event_reply(args)
       catalog = boolean(args.fetch('catalog', false), 'catalog')
       return tool_reply(events(args)) unless catalog
+      raise InvalidInput, 'cat_id is for banner search, not the full app catalog' if args.key?('cat_id')
 
       lang = args.fetch('lang', 'kr')
       entries = TrackApi.multi_events(region(lang)).map do |item|
@@ -368,7 +375,7 @@ module BattleCatsRolls
       data = case args['section']
       when 'bootstrap'
         route = Struct.new(:lang, :name, :seed, :count, :event).
-          new(lang, 0, 0, 100, default_event(lang))
+          new(lang, 0, 0, DEFAULT_COUNT, default_event(lang))
         TrackApi.multi_data(route)
       when 'series'
         TrackApi.event_series_data(Struct.new(:ball).new(ball))
@@ -406,7 +413,7 @@ module BattleCatsRolls
 
       request = {
         mode: mode, last: integer(args.fetch('last', 0), 'last', 0, 1_000_000),
-        count: integer(args.fetch('count', 100), 'count', 1, [TrackMaxCount, 999].min),
+        count: integer(args.fetch('count', DEFAULT_COUNT), 'count', 1, [TrackMaxCount, 999].min),
         optimization: args.fetch('optimization', 'cost'),
         maxGuaranteed: integer(args.fetch('maxGuaranteed', 0), 'maxGuaranteed', 0, 20),
         maxPlatinum: integer(args.fetch('maxPlatinum', 0), 'maxPlatinum', 0, 20),
@@ -491,6 +498,18 @@ module BattleCatsRolls
           ticket = selected || TrackApi.multi_ticket_pool(region(rows.first['lang']), kind)
           ticket&.merge(kind: kind, lang: rows.first['lang'])
         end
+        request[:targets].each do |target|
+          member = prepared_events.any? { |event|
+            !event[:pool][:platinum] && pool_has_cat?(event[:pool], target[:cat_id]) }
+          if target[:allow_ticket]
+            member ||= tickets.any? { |ticket|
+              budget = ticket[:kind] == 'legend' ? request[:maxLegendTicket] : request[:maxPlatinum]
+              budget > 0 && pool_has_cat?(ticket[:pool], target[:cat_id]) }
+          end
+          unless member
+            raise InvalidInput, "Target #{target[:cat_name]} (#{target[:cat_id]}) is absent from selected regular pools and permitted tickets; use catsroll_events with cat_id=#{target[:cat_id]} to select a matching banner"
+          end
+        end
       end
       payload = {request: request, events: prepared_events, tickets: tickets}
       payload[:seeker] = seeker_data(args, prepared_events.first, request) if mode == 'seek'
@@ -514,6 +533,10 @@ module BattleCatsRolls
         siteUrl: site_url(request),
         warnings: warnings}
       tool_reply(summary).merge(_meta: {'catsroll/data' => payload})
+    end
+
+    def pool_has_cat?(pool, cat_id)
+      pool[:exist] && pool[:slots].values.any? { |ids| ids.include?(cat_id) }
     end
 
     def default_event(lang)
