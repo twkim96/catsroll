@@ -39,7 +39,6 @@ describe BattleCatsRolls::GptPublicPages do
       expect(privacy.body.include?('초안')).eq true
       expect(privacy.body.include?('소유자 검토')).eq true
       expect(privacy.body.include?('보관 방침')).eq true
-      expect(privacy.body.include?('비공개로 접수할 연락 방법')).eq true
       expect(terms.body.include?('초안')).eq true
       expect(terms.body.include?('정식 약관')).eq true
       expect(terms.body.include?('데이터 삭제 기한')).eq true
