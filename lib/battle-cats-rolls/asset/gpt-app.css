@@ -293,6 +293,11 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .gpt-shell .gpt-plan-body {grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr);gap:12px;position:relative;min-height:100px;opacity:1!important;}
 .gpt-shell .gpt-plan-body > .multi-plan-field,.gpt-shell .gpt-plan-body > .multi-plan-summary {transition:opacity .15s;}
 .gpt-shell .is-plan-off .gpt-plan-body > :not(.gpt-plan-warning) {opacity:.32;}
+.gpt-shell .multi-plan-panel {position:relative;isolation:isolate;}
+.gpt-shell .is-plan-off::after {content:"";position:absolute;inset:0;z-index:1;border-radius:inherit;background:rgba(255,255,255,.38);backdrop-filter:blur(2px);pointer-events:none;}
+.gpt-shell .is-plan-off .multi-plan-toggle-field {position:relative;z-index:2;padding:4px;border-radius:999px;background:var(--panel);box-shadow:0 0 0 2px var(--accent),0 0 0 6px var(--accent-soft);}
+.gpt-shell .is-plan-off .multi-plan-switch-ui {border-color:var(--accent);background:var(--accent-soft);}
 .gpt-plan-warning {position:absolute;z-index:1;inset:0;display:flex;align-items:center;justify-content:center;max-width:100%;margin:0;padding:12px;text-align:center;color:var(--muted);font-size:12px;font-weight:600;background:rgba(255,255,255,.5);}
+.gpt-shell .is-plan-off .gpt-plan-warning {z-index:2;}
 .gpt-shell .gpt-multi #multi_notice {display:none;}
 .gpt-shell .gpt-multi .multi-track-pending {display:none;}
