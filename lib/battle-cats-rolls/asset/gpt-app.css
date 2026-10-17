@@ -35,8 +35,8 @@ body {
   background: var(--bg);
   font: 14px/1.45 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 }
-button, input, select { font: inherit; }
-button { color: inherit; }
+button, input, select { font: inherit; color-scheme: light; }
+button { color: inherit; background: var(--panel); }
 .app-shell { width: min(900px, 100%); min-width: 0; margin: 0 auto; padding: 20px 20px 26px; }
 .app-header, .section-heading, .action-buttons, .search-line, .row-top, .row-bottom,
 .target-chip, .result-head, .seek-roll { display: flex; align-items: center; }
@@ -78,7 +78,7 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .selected-banner { display: grid; min-width: 0; gap: 2px; margin-top: 7px; padding: 7px 9px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); }
 .selected-banner strong { overflow-wrap: anywhere; }
 .selected-banner small { color: var(--muted); overflow-wrap: anywhere; }
-.button { min-height: 36px; padding: 7px 12px; border: 1px solid transparent; border-radius: 7px; font-weight: 650; cursor: pointer; }
+.button { min-height: 36px; padding: 7px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--soft); font-weight: 650; cursor: pointer; }
 .button:disabled { opacity: .5; cursor: not-allowed; }
 .button-small { min-height: 30px; padding: 4px 9px; font-size: 12px; }
 .button-icon { display: inline-grid; place-items: center; width: 34px; min-width: 34px; height: 36px; padding: 7px; }
@@ -240,7 +240,6 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .gpt-shell .multi-track-pair {min-width:550px;gap:10px;}
 .gpt-shell .multi-track-table td,.gpt-shell .multi-track-table th {font-size:12px;padding:5px;}
 .gpt-shell .multi-track-table {min-width:0;}
-.gpt-shell .multi-track-table .position a {background:rgba(255,255,255,.6);}
 .gpt-share {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;}
 .gpt-share button {padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0;}
 .gpt-share span,.gpt-footer {color:var(--muted);font-size:11px;}

@@ -49,9 +49,9 @@
     </section>
 
 <section class="action-panel"><div class="action-buttons"><button class="button button-primary" id="calculate" type="button">계산하기</button><button class="button button-cancel" id="cancel" type="button" hidden>중단</button></div><p id="status" class="status-message" role="status" aria-live="polite"></p></section>
+<div class="gpt-share"><button id="send-context" type="button" disabled>결과를 GPT에 전달</button><span>직접 누르면 계산 요약을 대화에 전달합니다.</span></div>
 <div id="multi-container">{{MULTI}}</div>
 <section id="seek-panel" hidden><h2>시드 찾기</h2><p>위에서 배너 하나를 선택하고 관측한 일반 뽑기 결과를 순서대로 입력하세요.</p><div id="seek-rolls"></div><button id="add-roll" type="button">+ 관측 결과</button><button id="calculate-seek" type="button">시드 계산</button><p id="seek-status" role="status"></p><div id="seek-result"></div></section>
-<div class="gpt-share"><button id="send-context" type="button" disabled>결과를 GPT에 전달</button><span>직접 누르면 계산 요약을 대화에 전달합니다.</span></div>
 <p class="gpt-footer">계산은 이 기기에서 실행합니다. 플랜 저장은 현재 앱을 연 동안 유지됩니다.</p>
 </main>
 <script id="catsroll-worker-source" type="application/json">{{WORKER_SOURCE}}</script>
