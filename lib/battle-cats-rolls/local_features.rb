@@ -9,6 +9,7 @@ require_relative 'local/route'
 require_relative 'local/view'
 require_relative 'local/web'
 require_relative 'local/server_middleware'
+require_relative 'local/gpt_mcp'
 
 module BattleCatsRolls
   ExpandCompareSupported = /\A(?:1|true|yes|on)\z/i.match?(
