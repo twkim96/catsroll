@@ -37,7 +37,7 @@ API 선불 결제는 ChatGPT Business 구독 및 ChatGPT 워크스페이스 크�
 | 지원 국가·무료 선언·릴리스 설명 | manifest 수록 |
 | 인증 게시자·공개명 | Persona 제출 완료, OpenAI `Identity in review`. 승인·공개명 확인 대기 |
 | 개인정보처리방침·약관 | `view/gpt_public/`에 twkim 운영자 표기·시행일·문의 보관·확인한 서버 진단 범위를 반영. 0.2.3 HF 공개 경로 활성화 및 manifest URL 연결 |
-| UI 전용 origin·공개 CSP | 고유 `ui.domain` 유지. ChatGPT의 사용자 지정 앱 CSP 강제 적용을 켠 상태에서 Multi·Find 실행 확인. WASM·공유 추가 확인 및 공개 스캔은 별도 |
+| UI 전용 origin·공개 CSP | 고유 `ui.domain` 유지. ChatGPT의 사용자 지정 앱 CSP 강제 적용을 켠 상태에서 Multi·Find·WASM 시드 복구·결과 공유 확인. 공개 포털 스캔은 인증 승인 후 별도 |
 | 도메인 challenge | 정확한 환경 변수 토큰만 응답하는 경로 준비. 포털 토큰 발급·HF 설정·Verify Domain은 미완료 |
 | 실제 ChatGPT 심사 사례·시연 녹화 | Business Instant에서 아래 일부 흐름 확인. 최초 앱 표시 실패가 반복되어 재시도 필요. 녹화·전체 수용은 미완료 |
 | 무료 계정 설치·사용 | 미검증 |
@@ -148,6 +148,10 @@ ChatGPT의 사용자 지정 앱 CSP 강제 적용은 켰으며 보안 정책을 
 예외 메시지·스택을 stdout/stderr로 전달할 수 있다. 이를 모든 호스팅 로그의 부재로
 확대하지 않는다. HF 인프라의 보관 기한을 추정해 쓰지 않고 제공자 방침에 연결했다.
 정책이 구현하는 자동 로그 삭제 기능이나 자동 메일 삭제는 없다.
+HF 0.2.3에서 `/gpt/about`, `/gpt/privacy`, `/gpt/terms`가 모두 HTTP 200이며 운영자 표기와 초안 문구 제거를 확인했다.
+현재 공개 리소스에 새 발바닥 아이콘과 초기 seeker payload 보존 코드가 포함되는지도 확인했다.
+배포 후 도구 새로고침과 새 대화에서 0.2.3 코드·아이콘, 관측 10개 보존 및
+계산 버튼 한 번으로 시드 42 복구를 실제 확인했다. 기존 대화의 캐시된 앱은 예전 코드를 유지할 수 있다.
 
 포털에서 Upload를 다시 열었으나 `You need a verified developer identity before you can
 create or upload a plugin`으로 차단됐다. 따라서 실제 challenge 발급·MCP 연결·자동 검사는
@@ -168,6 +172,9 @@ create or upload a plugin`으로 차단됐다. 따라서 실제 challenge 발급
 현재 ChatGPT 첫 로딩/답변 표시 오류 때문에 정상 시연 완료로 표시하지 않는다.
 브라우저 제어에는 녹화 기능이 노출되지 않았다. 정상 환경 확보 후 창 녹화로 실제 흐름을 촬영해야 한다.
 로컬 모의 호스트 녹화나 정지 화면 모음을 실제 ChatGPT 시연으로 대체하지 않는다.
+CSP 강제 적용을 켠 Business Instant에서 Find 칼리파/플래티넘 1장/다음 2A와
+WASM 합성 관측 10개 → 시작 시드 42·관측 후 3562635250 복구를 확인했다.
+결과 공유는 전달 완료 응답을 받았다. 첫 로딩 재시도와 답변 본문 오류는 남아 있다.
 무료 계정 검사는 별도 로그인 가능한 시험 환경이 있어야 하며 Business Instant 통과로 대체하지 않는다.
 
 ## 업데이트와 이전
