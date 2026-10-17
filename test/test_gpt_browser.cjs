@@ -47,7 +47,10 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
       "receiving prepared data never claims computation completed");
     await frame.locator("#calculate").click();
     await frame.locator("#results-panel").waitFor({state: "visible"});
-    assert.equal(await frame.locator("#result-content tbody tr").count(), 10);
+    assert.equal(await frame.locator("#result-content table").count(), 2);
+    for (const table of await frame.locator("#result-content table").all()) {
+      assert.equal(await table.locator("tbody tr").count(), 10);
+    }
     await frame.locator("#send-context").click();
     await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
     const shared = await page.evaluate(() => messages.filter(item =>

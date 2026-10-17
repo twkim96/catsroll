@@ -39,6 +39,31 @@ assert.deepEqual(changed.slots[4].slice(0, 2), [-2, -1]);
 assert.equal(changed.guaranteed_rolls, 15);
 assert.equal(JSON.stringify(payload), before);
 
+// Every S/G choice used by the existing Multi page must retain the exact G/RG
+// result and following position through the worker's plain-data boundary.
+for (const rolls of [2, 7, 11, 15]) {
+  const forced = {...payload, events: payload.events.map(event => ({...event, forceGuaranteed: rolls}))};
+  const result = runtime.compute('multi', forced, {track, find});
+  const source = track.buildTracks({...payload.events[0].pool, guaranteed_rolls: rolls},
+    fixture.seed, {count: 30, last: fixture.last, guaranteedRolls: rolls});
+  for (const [trackIndex, letter] of [[0, 'A'], [1, 'B']]) {
+    for (let index = 0; index < 30; index++) {
+      const expected = source.cats[index][trackIndex];
+      const actual = result.rows[0].tracks[letter][index];
+      for (const [input, output] of [[expected, actual], [expected.rerolled, actual.rerolled]]) {
+        if (!input) { assert.equal(output, undefined); continue; }
+        assert.equal(!!output.guaranteed, !!input.guaranteed);
+        if (!input.guaranteed) continue;
+        assert.equal(output.guaranteed.id, input.guaranteed.id);
+        assert.equal(output.guaranteed.rarity, input.guaranteed.rarity);
+        assert.equal(output.guaranteed.position, input.guaranteed.number());
+        assert.equal(output.guaranteed.next, input.guaranteed.next ? input.guaranteed.next.number() : null);
+      }
+    }
+  }
+}
+assert.equal(JSON.stringify(payload), before, 'all S/G variants preserve the source pools');
+
 const first = find.simulateRegular(payload.events[0].pool, payload.request.seed, 0, fixture.last, 0);
 const target = {cat_id: first.id, allow_ticket: false};
 const findPayload = {...payload, request: {...payload.request, mode: "find", optimization: "distance",

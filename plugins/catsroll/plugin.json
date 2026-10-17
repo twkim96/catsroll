@@ -1,16 +1,20 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "catsroll",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "냥코대전쟁 시드 찾기, 여러 배너 배열 비교와 목표 경로 탐색을 사용자 기기에서 실행합니다.",
   "homepage": "https://github.com/twkim96/catsroll",
   "repository": "https://github.com/twkim96/catsroll",
+  "author": { "name": "twkim" },
   "extensions": {
     "com.openai": {
       "interface": {
+        "composerIcon": "./assets/icon.png",
+        "logo": "./assets/icon.png",
         "displayName": "Catsroll",
+        "developerName": "twkim",
         "shortDescription": "시드 찾기와 Multi 배열·경로 계산",
-        "longDescription": "배너와 캐릭터를 찾아 입력을 정리하고 대화 안의 앱에서 기기 계산을 실행합니다. 계산 결과를 공유한 뒤 설명을 받을 수 있습니다. 초기 시험 버전으로 실제 ChatGPT 및 무료 계정 호환성 검증이 남아 있습니다.",
+        "longDescription": "냥코대전쟁 배너와 캐릭터를 찾아 시드 찾기, Multi 배열 비교와 목표 경로 탐색을 내 기기에서 실행합니다. 초기 시험 버전으로 결과 공유 후 설명, 무료 계정과 공개 배포 검증이 남아 있습니다.",
         "category": "Productivity",
         "capabilities": ["Read"],
         "websiteURL": "https://github.com/twkim96/catsroll",

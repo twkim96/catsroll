@@ -15,6 +15,7 @@ module BattleCatsRolls
     MIME = 'text/html;profile=mcp-app'
     ASSETS = File.expand_path('../asset', __dir__)
     TEMPLATE = File.expand_path('../view/gpt_app.html', __dir__)
+    ICON = File.expand_path('../../../plugins/catsroll/assets/icon.png', __dir__)
     BODY_LIMIT = 65_536
     INPUT_KEYS = %w[mode seed last count rows targets optimization maxGuaranteed
       maxPlatinum maxLegendTicket scheduleAware rolls].freeze
@@ -35,7 +36,7 @@ module BattleCatsRolls
         seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-app.js gpt-app.css]
       digest = Digest::SHA256.hexdigest(files.map { |file|
         File.binread(File.join(ASSETS, file))
-      }.join + File.binread(TEMPLATE))
+      }.join + File.binread(TEMPLATE) + File.binread(ICON))
       @widget ||= {}
       @widget = {} unless @widget.key?(digest)
       @widget[digest] ||= begin
@@ -49,10 +50,11 @@ module BattleCatsRolls
         }.join("\n;\n").gsub(%r{</script}i, '<\\/script')
         replacements = {
           '{{STYLE}}' => File.read(File.join(ASSETS, 'gpt-app.css')),
+          '{{ICON_DATA_URI}}' => "data:image/png;base64,#{Base64.strict_encode64(File.binread(ICON))}",
           '{{SCRIPTS}}' => scripts,
           '{{WORKER_SOURCE}}' => JSON.generate(worker).gsub('<', '\\u003c')
         }
-        html = File.read(TEMPLATE).gsub(/\{\{(?:STYLE|SCRIPTS|WORKER_SOURCE)\}\}/) { |key|
+        html = File.read(TEMPLATE).gsub(/\{\{(?:STYLE|ICON_DATA_URI|SCRIPTS|WORKER_SOURCE)\}\}/) { |key|
           replacements.fetch(key)
         }
         {uri: "ui://catsroll/multi-#{digest[0, 16]}.html", text: html, digest: digest}
@@ -182,7 +184,7 @@ module BattleCatsRolls
       paging = {lang: lang, query: {type: 'string', maxLength: 100},
         offset: int.call(0, 100_000), limit: int.call(1, 50)}
       row = schema({lang: lang, event: {type: 'string', maxLength: 100},
-        ubers: int.call(0, 100), forceGuaranteed: {type: 'integer', enum: [0, 11, 15]}}, %w[lang event])
+        ubers: int.call(0, 100), forceGuaranteed: {type: 'integer', enum: [0, 2, 7, 11, 15]}}, %w[lang event])
       input = schema({mode: {type: 'string', enum: %w[multi find seek]},
         seed: int.call(1, 4_294_967_295), last: int.call(0, 1_000_000),
         count: int.call(1, [TrackMaxCount, 999].min),
@@ -246,7 +248,7 @@ module BattleCatsRolls
       term = query(args)
       entries = TrackApi.multi_events(region(lang)).select do |item|
         "#{item[:event]} #{item[:label]} #{item[:series_name]}".downcase.include?(term)
-      end.map { |item| item.slice(:event, :label, :start_on, :end_on, :platinum).merge(lang: lang) }
+      end.map { |item| item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).merge(lang: lang) }
       page(entries, args, :events)
     end
 
@@ -285,6 +287,7 @@ module BattleCatsRolls
       raise InvalidInput, 'rows: expected 1..8 banners' unless rows.is_a?(Array) && (1..8).cover?(rows.size)
       raise InvalidInput, 'seek requires exactly one banner' if mode == 'seek' && rows.size != 1
 
+      event_catalogs = {}
       prepared_events = rows.map do |row|
         raise InvalidInput, 'Invalid banner row' unless row.is_a?(Hash) &&
           (row.keys - %w[lang event ubers forceGuaranteed]).empty?
@@ -294,16 +297,18 @@ module BattleCatsRolls
         raise InvalidInput, 'Unknown banner; look up its exact event ID first' unless name.is_a?(String) && ball.events.key?(name)
 
         info = ball.events.fetch(name)
+        catalog = event_catalogs[lang] ||= TrackApi.multi_events(ball)
+        display_name = catalog.find { |item| item[:event] == name }&.fetch(:series_name, nil)
         pool = TrackApi.compact_find_pool_data(ball, name)
         raise InvalidInput, 'Banner has no usable pool data' unless pool[:exist]
 
         ubers = integer(row.fetch('ubers', 0), 'ubers', 0, 100)
         forced = row.fetch('forceGuaranteed', 0)
-        raise InvalidInput, 'forceGuaranteed must be 0, 11 or 15' unless [0, 11, 15].include?(forced)
+        raise InvalidInput, 'forceGuaranteed must be 0, 2, 7, 11 or 15' unless [0, 2, 7, 11, 15].include?(forced)
         if mode == 'seek' && (pool[:platinum] || pool[:guaranteed_rolls] == 15 || ubers > 0 || forced != 0)
           raise InvalidInput, 'Seed search currently supports ordinary draws on an unmodified regular banner only'
         end
-        {lang: lang, event: name, label: TrackApi.multi_event_label(info),
+        {lang: lang, event: name, label: TrackApi.multi_event_label(info), displayName: display_name,
          start_on: info['start_on'].to_s, end_on: info['end_on'].to_s,
          ubers: ubers, forceGuaranteed: forced, pool: pool}
       end
@@ -335,7 +340,7 @@ module BattleCatsRolls
       payload[:dataVersion] = version
       summary = {status: 'prepared', execution: 'client', request: request, dataVersion: version,
         engineVersion: self.class.widget[:digest],
-        events: prepared_events.map { |event| event.slice(:lang, :event, :label, :start_on, :end_on) },
+        events: prepared_events.map { |event| event.slice(:lang, :event, :label, :displayName, :start_on, :end_on) },
         siteUrl: site_url(request),
         warnings: ['계산 준비만 완료했습니다. 앱에서 계산을 실행한 뒤 결과를 공유해야 합니다.']}
       tool_reply(summary).merge(_meta: {'catsroll/data' => payload})

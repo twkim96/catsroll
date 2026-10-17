@@ -12,7 +12,8 @@ uri = URI(origin)
 abort 'CATSROLL_PUBLIC_ORIGIN must be an HTTPS origin' unless uri.is_a?(URI::HTTPS) &&
   uri.host && !uri.userinfo && [nil, '', '/'].include?(uri.path) && !uri.query && !uri.fragment
 
-destination = File.expand_path(ARGV.first || 'temp/catsroll-plugin-0.1.0.zip', root)
+manifest = JSON.parse(File.read("#{root}/plugins/catsroll/plugin.json"))
+destination = File.expand_path(ARGV.first || "temp/catsroll-plugin-#{manifest.fetch('version')}.zip", root)
 FileUtils.mkdir_p(File.dirname(destination))
 Dir.mktmpdir('catsroll-plugin-') do |stage|
   FileUtils.cp_r("#{root}/plugins/catsroll/.", stage)
@@ -20,7 +21,8 @@ Dir.mktmpdir('catsroll-plugin-') do |stage|
   config.fetch('mcpServers').fetch('catsroll')['url'] = "#{origin}/mcp"
   File.write("#{stage}/mcp.json", JSON.pretty_generate(config) + "\n")
   archive = "#{stage}/package.zip"
-  abort 'zip failed' unless system('zip', '-q', '-r', archive, 'plugin.json', 'mcp.json', chdir: stage)
+  entries = %w[plugin.json mcp.json assets].select { |name| File.exist?("#{stage}/#{name}") }
+  abort 'zip failed' unless system('zip', '-q', '-r', archive, *entries, chdir: stage)
   FileUtils.cp(archive, destination)
 end
 puts destination

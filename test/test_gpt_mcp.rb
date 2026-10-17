@@ -53,6 +53,10 @@ describe 'Catsroll MCP device-computation adapter' do
     result = call_tool(client, 'catsroll_events', {lang: 'kr', query: '2026-02-13_1042'})
     event = result.fetch('structuredContent').fetch('events').first
     expect(event.fetch('event')).eq '2026-02-13_1042'
+    expected_name = BattleCatsRolls::TrackApi.multi_events(BattleCatsRolls::Route.ball_kr).
+      find { |item| item[:event] == event.fetch('event') }.fetch(:series_name)
+    expect(event.fetch('series_name')).eq expected_name
+    expect(event.fetch('label').include?('26.02.13')).eq true
     expect(event.key?('pool')).eq false
     result = call_tool(client, 'catsroll_cats', {lang: 'kr', limit: 1})
     data = result.fetch('structuredContent')
@@ -75,6 +79,9 @@ describe 'Catsroll MCP device-computation adapter' do
       BattleCatsRolls::Route.ball_kr, '2026-02-13_1042')
     expect(payload.fetch('events').first.fetch('pool')).eq JSON.parse(JSON.generate(expected))
     expect(payload.fetch('events').first.fetch('ubers')).eq 2
+    expected_name = BattleCatsRolls::TrackApi.multi_events(BattleCatsRolls::Route.ball_kr).
+      find { |item| item[:event] == '2026-02-13_1042' }.fetch(:series_name)
+    expect(payload.fetch('events').first.fetch('displayName')).eq expected_name
     expect(payload.fetch('dataVersion')).eq summary.fetch('dataVersion')
     expect(summary.fetch('engineVersion').size).eq 64
   end
@@ -96,6 +103,20 @@ describe 'Catsroll MCP device-computation adapter' do
       rows: [{lang: 'kr', event: '2019-01-23_348', ubers: 1}]))['isError']).eq true
     expect(call_tool(client, 'catsroll_prepare', seek_base.merge(rolls: [999999]))['isError']).eq true
     expect(call_tool(client, 'catsroll_prepare', seek_base.merge(last: 38))['isError']).eq true
+  end
+
+  would 'prepare every Multi S/G choice without changing ordinary seed-search observations' do
+    base = {mode: 'multi', seed: 42, count: 10,
+      rows: [{lang: 'kr', event: '2019-01-23_348'}]}
+    [2, 7, 11, 15].each do |rolls|
+      args = base.merge(rows: [base[:rows].first.merge(forceGuaranteed: rolls)])
+      result = call_tool(client, 'catsroll_prepare', args)
+      expect(result.fetch('_meta').fetch('catsroll/data').fetch('events').first.fetch('forceGuaranteed')).eq rolls
+      expect(result.fetch('structuredContent').fetch('status')).eq 'prepared'
+      expect(call_tool(client, 'catsroll_prepare', args.merge(mode: 'seek', rolls: [38]))['isError']).eq true
+    end
+    bad = base.merge(rows: [base[:rows].first.merge(forceGuaranteed: 3)])
+    expect(call_tool(client, 'catsroll_prepare', bad)['isError']).eq true
   end
 
   would 'serve a self-contained versioned app resource and the same standalone preview' do
