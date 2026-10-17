@@ -74,6 +74,50 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(call_tool(client, 'catsroll_events', {lang: 'kr', catalog: 'true'})['isError']).eq true
   end
 
+  would 'retrieve beginner guidance without opening a computation or leaking the whole corpus' do
+    result = call_tool(client, 'catsroll_guide', {query: '보라칸이면 레레 확정임?'})
+    data = result.fetch('structuredContent')
+    expect(data.fetch('documents').first.fetch('id')).eq 'colors'
+    expect(data.fetch('documents').size <= 2).eq true
+    expect(data.fetch('documents').first.fetch('content').include?('일대일이 아니다')).eq true
+    expect(result.key?('_meta')).eq false
+    expect(data.key?('seed')).eq false
+    expect(call_tool(client, 'catsroll_guide', {topic: '../.env'})['isError']).eq true
+    expect(call_tool(client, 'catsroll_guide', {query: 'x' * 301})['isError']).eq true
+    topics = rpc(client, 'resources/read', {uri: 'catsroll://guide/index'}).last.
+      dig('result', 'contents').first
+    expect(topics.fetch('text').include?('초심자')).eq true
+    expect(topics.fetch('mimeType')).eq 'text/markdown'
+    listed = rpc(client, 'tools/list').last.dig('result', 'tools')
+    expect(listed.any? { |item| item['name'] == 'catsroll_guide' }).eq true
+    prepared = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
+      rows: [{lang: 'kr', event: '2019-01-23_348'}]})
+    hint = prepared.fetch('structuredContent').fetch('guide')
+    expect(hint.fetch('tool')).eq 'catsroll_guide'
+    expect(hint.fetch('topics')).eq %w[tracks guaranteed colors]
+  end
+
+  would 'route actual novice wording to explanations and supported boundaries' do
+    {
+      '처음인데 뭐부터 해요' => 'start',
+      '내시드찾아줘' => 'seed',
+      '포노먹고싶어' => 'find',
+      '라길 두번 나오면 왜 B로 가요' => 'tracks',
+      '보라칸이면 레레 확정임?' => 'colors',
+      '신캐 나왔는데 전부 +1 하면 됨?' => 'banners',
+      '플티로 열 넘길수있어?' => 'tracks',
+      '11연 했는데 예상이랑 달라' => 'troubleshooting',
+      '냥티로 닼캣아 먹고싶어' => 'troubleshooting',
+      '배열이란게 뭐임' => 'start'
+    }.each do |question, topic|
+      response = call_tool(client, 'catsroll_guide', {query: question})
+      expect(response.fetch('structuredContent').fetch('documents').first.fetch('id')).eq topic
+    end
+    unknown = call_tool(client, 'catsroll_guide', {query: '외계 행성 지도'})
+    expect(unknown.fetch('structuredContent').fetch('matched')).eq false
+    expect(unknown.fetch('structuredContent').fetch('documents').first.fetch('id')).eq 'index'
+  end
+
   would 'prepare original pools without calculating or exposing full pools to the model' do
     args = {mode: 'multi', seed: 2762818371, count: 30,
       rows: [{lang: 'kr', event: '2026-02-13_1042', ubers: 2, forceGuaranteed: 11}]}

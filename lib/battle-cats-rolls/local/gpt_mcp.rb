@@ -5,12 +5,13 @@ require 'digest'
 require 'base64'
 require 'uri'
 require 'rack'
+require_relative 'gpt_guide'
 
 module BattleCatsRolls
   # Stateless JSON Streamable HTTP. This adapter only prepares public game data;
   # the existing JS/WASM engines run in the user's UI, never on this server.
   class GptMcp
-    VERSION = '0.1.0'
+    VERSION = '0.1.3'
     PROTOCOLS = %w[2025-11-25 2025-06-18 2025-03-26].freeze
     MIME = 'text/html;profile=mcp-app'
     ASSETS = File.expand_path('../asset', __dir__)
@@ -116,7 +117,7 @@ module BattleCatsRolls
       when 'initialize'
         {protocolVersion: PROTOCOLS.include?(params['protocolVersion']) ? params['protocolVersion'] : PROTOCOLS.first,
          capabilities: {tools: {}, resources: {}}, serverInfo: {name: 'catsroll', version: VERSION},
-         instructions: 'Use catsroll_events and catsroll_cats to resolve exact IDs. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
+         instructions: 'For beginner, vague or conceptual questions, first use catsroll_guide with the user question; ask only the next 1-2 missing details. Use catsroll_events and catsroll_cats to resolve exact IDs, not ask beginners for IDs. catsroll_prepare only prepares data; it does NOT compute a seed, array or route. The user must run the embedded app. Only describe computed results explicitly shared by the app. If UI is unavailable, provide the site link. Keep ambiguous seeds and partial searches explicitly uncertain. Never silently switch to server computation.'}
       when 'ping' then {}
       when 'tools/list' then {tools: tools}
       when 'tools/call'
@@ -125,18 +126,25 @@ module BattleCatsRolls
           raise InvalidInput, 'arguments must be an object' unless args.is_a?(Hash)
 
           case params['name']
+          when 'catsroll_guide' then guide_reply(args)
           when 'catsroll_events' then event_reply(args)
           when 'catsroll_cats' then tool_reply(cats(args))
           when 'catsroll_prepare' then prepare(args)
           else raise InvalidInput, 'Unknown tool'
           end
-        rescue InvalidInput => error
+        rescue InvalidInput, GptGuide::InvalidInput => error
           {isError: true, content: [{type: 'text', text: error.message}]}
         end
       when 'resources/list'
-        {resources: [{uri: self.class.widget[:uri], name: 'catsroll-multi', mimeType: MIME}]}
+        {resources: [{uri: self.class.widget[:uri], name: 'catsroll-multi', mimeType: MIME},
+          {uri: 'catsroll://guide/index', name: 'catsroll-guide', mimeType: 'text/markdown',
+           description: 'Beginner guide index; use catsroll_guide for focused retrieval.'}]}
       when 'resources/templates/list' then {resourceTemplates: []}
       when 'resources/read'
+        if params['uri'] == 'catsroll://guide/index'
+          index = GptGuide.new.lookup('topic' => 'index').fetch('documents').first
+          return {contents: [{uri: params['uri'], mimeType: 'text/markdown', text: index.fetch('content')}]}
+        end
         raise InvalidInput, 'Unknown resource; list resources again' unless params['uri'] == self.class.widget[:uri]
 
         meta = {ui: {csp: {connectDomains: [], resourceDomains: []}},
@@ -197,9 +205,13 @@ module BattleCatsRolls
         maxLegendTicket: int.call(0, 20), scheduleAware: {type: 'boolean'},
         rolls: {type: 'array', maxItems: 10, items: int.call(1, 1_000_000)}}, ['mode'])
       [
+        ['catsroll_guide', '배열 초보자 안내', 'Search verified Catsroll guidance BEFORE answering beginner, vague or conceptual questions. Pass the user question naturally, including Korean slang; empty input returns the index. Explains seeds, A/B and R/G/RG, guarantees, tickets, banner dates, future ubers, colors, Find and unsupported draws. Ask only missing essentials. This retrieves documentation, NOT predictions; use live catalogs and app results for actual outcomes.',
+          schema({query: {type: 'string', maxLength: 300},
+            topic: {type: 'string', enum: %w[index start seed tracks guaranteed banners colors find troubleshooting]},
+            limit: int.call(1, 3)})],
         ['catsroll_events', '배너 찾기', 'Find public KR/JP banners by name/date. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
         ['catsroll_cats', '캐릭터 찾기', 'Find exact character IDs by name (all forms) before selecting targets or seed-search rolls.', schema(paging)],
-        ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. Ask for seed for multi/find, exact banners, last rare if known, target and resource limits. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks calculate in app; no server fallback.', input]
+        ['catsroll_prepare', 'Multi·시드 계산 열기', 'Prepare the on-device app. For vague beginner questions use catsroll_guide first. Resolve banner/cat IDs with catalog tools; do not ask beginners for IDs. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks calculate in app; no server fallback.', input]
       ].map do |name, title, description, input_schema|
         item = {name: name, title: title, description: description, inputSchema: input_schema,
           outputSchema: {type: 'object', additionalProperties: true},
@@ -263,6 +275,17 @@ module BattleCatsRolls
           :group, :platinum).merge(lang: lang)
       end
       tool_reply({lang: lang, total: entries.size}).merge(_meta: {'catsroll/events' => entries})
+    end
+
+    def guide_reply(args)
+      data = GptGuide.new.lookup(args)
+      data['scope'] = 'explanation_only'
+      data['authority'] = 'Use live Catsroll catalogs and explicitly shared app results for actual predictions.'
+      data['responsePolicy'] = '초심자에게 먼저 핵심 2~4문장과 다음 행동 하나를 제안한다. 누락된 필수 정보 1~2개만 묻고 ID는 도구로 찾는다. prepared는 계산 전이다. 모르는 사실은 추측하지 않는다.'
+      data.fetch('documents').each do |document|
+        document['sourceUrl'] = "https://github.com/twkim96/catsroll/blob/main/doc/gpt-knowledge/#{document.fetch('id')}.md"
+      end
+      tool_reply(data)
     end
 
     def cats(args)
@@ -353,6 +376,8 @@ module BattleCatsRolls
       payload[:dataVersion] = version
       summary = {status: 'prepared', execution: 'client', request: request, dataVersion: version,
         engineVersion: self.class.widget[:digest],
+        guide: {tool: 'catsroll_guide', topics: mode == 'seek' ? %w[seed troubleshooting] :
+          (mode == 'find' ? %w[find tracks guaranteed] : %w[tracks guaranteed colors])},
         events: prepared_events.map { |event| event.slice(:lang, :event, :label, :displayName, :start_on, :end_on) },
         siteUrl: site_url(request),
         warnings: ['계산 준비만 완료했습니다. 앱에서 계산을 실행한 뒤 결과를 공유해야 합니다.']}

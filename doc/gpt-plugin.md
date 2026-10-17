@@ -31,11 +31,13 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 
 | 도구 | 입력·반환 |
 | --- | --- |
+| `catsroll_guide` | 초심자 자연어 질문 또는 `topic`으로 검증 안내 1~3개 검색. 기본 2개, 본문 합계 최대 16,000자 |
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달 |
 | `catsroll_cats` | 모든 형태 이름 또는 ID로 캐릭터 검색, 페이지 최대 50개 |
 | `catsroll_prepare` | `multi`, `find`, `seek` 조건을 검증하고 앱에서 실행할 데이터를 준비 |
 
 `catsroll_prepare`의 `structuredContent.status`는 **prepared**이며 결과가 아니다.
+준비 응답의 `guide`는 모드별 설명 주제만 제안하며 계산 결과를 담지 않는다.
 풀과 WASM 입력은 `_meta['catsroll/data']`에만 담아 모델 문맥을 불필요하게 채우지 않는다.
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
@@ -56,6 +58,17 @@ Multi의 초기 횟수는 100이며, 명시적으로 전달한 횟수는 그대�
 
 ## 로컬 실행과 검증
 
+### 초심자 설명 검색
+
+[지식 목차](gpt-knowledge/index.md)와 짧은 주제별 문서를 `catsroll_guide`로 조회한다.
+한국어/영어 키워드·동의어는 `gpt-knowledge/manifest.json`, 검색은 `local/gpt_guide.rb`가 관리한다.
+실행 중 외부 게시글 수집, 임베딩, 벡터 DB, 추가 모델/API 호출은 없다. 로컬 문서만 읽는다.
+개념·초심자·모호한 요청에는 먼저 사용자의 말로 검색하고 핵심 누락 정보 1~2개만 묻도록
+초기화 지침과 도구 설명에 명시했다. 빈 검색/불일치는 목차, `topic`은 정확한 문서를 반환한다.
+목차는 `catsroll://guide/index` MCP resource로도 제공한다. 문서는 예측값을 생성하지 않는다.
+서버 배너/풀과 앱의 공유 결과를 최종 기준으로 사용한다. [출처 선별·검증](gpt-knowledge-sources.md)을 참고한다.
+검색 가중치의 일반 질문 검사와 실제 ChatGPT 도구 선택/무료 계정 수용은 다른 검증이다.
+
 Ruby/Bundler 환경은 기존 README의 개발 환경을 사용한다. 별도 npm 런타임은 필요 없다.
 
 ```sh
@@ -68,6 +81,7 @@ CATSROLL_GPT_ENABLED=1 WEB_BIND=127.0.0.1:17867 bundle exec yahns -c config/yahn
 
 ```sh
 node test/test_gpt_runtime.js
+bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp.rb
 # Playwright가 제공되는 환경에서 별도 실행한 로컬 서버에 연결:
 node test/test_gpt_browser.cjs

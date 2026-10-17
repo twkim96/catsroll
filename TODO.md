@@ -1,5 +1,8 @@
 ## ChatGPT 플러그인
 
+* 초심자 안내 `catsroll_guide`를 실제 ChatGPT의 모호한 질문과 무료 계정에서 확인한다.
+  로컬 검색과 Luna 문서 검토는 실제 무료 계정 수용을 대신하지 않는다.
+
 * [GPT 연동](doc/gpt-plugin.md)의 첫 앱 표시·결과 공유 후 설명 응답 오류를 해결하고,
   무료 웹 계정 수용을 확인한다. 실제 ChatGPT Multi/Find/WASM 실행은 확인했으며
   공개 배포·무료 계정 호환성은 별도다.
