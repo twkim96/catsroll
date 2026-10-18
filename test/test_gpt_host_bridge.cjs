@@ -1,32 +1,63 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-function make(embedded=true){
- const listeners=new Map(),sent=[],errors=[];
- let ready=0;
- const root={AbortController,setTimeout,clearTimeout,requestAnimationFrame:()=>1,cancelAnimationFrame(){},
+function make(embedded=true,options={}){
+ const listeners=new Map(),sent=[],errors=[],frames=new Map(),timers=new Set();
+ let ready=0,frameId=0,disconnected=0;
+ const root={AbortController,setTimeout:(fn,ms)=>{const id=setTimeout(fn,ms);timers.add(id);return id;},
+  clearTimeout:id=>{timers.delete(id);clearTimeout(id);},
+  requestAnimationFrame:fn=>{frames.set(++frameId,fn);return frameId;},cancelAnimationFrame:id=>frames.delete(id),
+  ResizeObserver:class{constructor(fn){this.callback=fn;}observe(){}disconnect(){disconnected++;}},
   addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),
   document:{documentElement:{clientWidth:390},body:{getBoundingClientRect:()=>({height:200})}}};
  root.parent=embedded?{postMessage:(m,origin)=>sent.push({m,origin})}:root;
  vm.createContext(root);vm.runInContext(fs.readFileSync('lib/battle-cats-rolls/asset/gpt-host-bridge.js','utf8'),root);
- const bridge=root.CatsrollHostBridge({onReady:()=>ready++,onError:message=>errors.push(message)});
+ const bridge=root.CatsrollHostBridge({...options,onReady:()=>{ready++;options.onReady?.();},onError:message=>errors.push(message)});
  function reply(m,origin='https://host.test',source=root.parent){listeners.get('message')?.({source,origin,data:{jsonrpc:'2.0',...m}});}
- return {root,sent,errors,bridge,reply,ready:()=>ready};
+ return {root,sent,errors,bridge,reply,listeners,frames,timers,disconnected:()=>disconnected,ready:()=>ready};
 }
 (async()=>{
- const host=make();host.bridge.connect();
+ const stages=[];
+ const host=make(true,{onDiagnostic:(...args)=>stages.push(args)});host.bridge.connect();
+ assert.deepEqual(stages,[['bridge-start'],['initialize-sent']]);
  const init=host.sent[0].m;
  assert.equal(init.method,'ui/initialize');assert.equal(host.sent[0].origin,'*');
+ assert.deepEqual(Array.from(init.params.appCapabilities.availableDisplayModes),['inline','fullscreen']);
+ for(const malformed of [
+  {id:init.id,method:'host/request',result:{}},
+  {id:init.id,method:'host/request'},
+  {id:init.id,result:{},error:{code:-1,message:'ambiguous'}},
+  {id:init.id,error:{}}, {id:init.id,result:null}, {id:init.id},
+  {id:String(init.id),result:{}}
+ ])host.reply(malformed,'https://untrusted.test');
+ assert.equal(host.ready(),0,'only a valid matching response can pin initialization origin');
+ assert.equal(stages.length,2,'malformed initialization messages produce no diagnostic payload');
  host.reply({id:init.id,result:{}},'https://host.test',{});
  assert.equal(host.ready(),0,'only parent can initialize');
  host.reply({id:init.id,result:{}},'null');
  assert.equal(host.ready(),0,'opaque origin is rejected');
  host.reply({id:init.id,result:{hostCapabilities:{serverTools:{},message:{text:{}}}}});
  assert.equal(host.ready(),1);
+ assert.deepEqual(stages,[['bridge-start'],['initialize-sent'],['initialize-ready']]);
  assert.equal(host.sent.at(-1).m.method,'ui/notifications/initialized');
  await assert.rejects(host.bridge.updateContext('test'),/문맥 갱신/);
  const pending=host.bridge.callTool('catsroll_result',{result_id:'synthetic'});
  const call=host.sent.at(-1).m;
  let settled=false;pending.then(()=>settled=true);
+ const beforeCollision=host.sent.length;
+ host.reply({id:call.id,method:'host/unknown',params:{}});
+ assert.equal(host.sent.length,beforeCollision+1);
+ assert.equal(host.sent.at(-1).origin,'https://host.test');
+ assert.equal(host.sent.at(-1).m.id,call.id);
+ assert.equal(host.sent.at(-1).m.error.code,-32601,'unknown host requests get method-not-found');
+ await Promise.resolve();assert.equal(settled,false,'host request ID collision does not consume app pending');
+ for(const malformed of [
+  {id:call.id}, {id:call.id,result:{},error:{code:-1,message:'ambiguous'}},
+  {id:call.id,error:null}, {id:call.id,error:{message:'missing code'}},
+  {id:call.id,method:'host/unknown',result:{}},
+  {id:call.id,method:42}, {id:call.id,method:'host/unknown',params:null},
+  {id:String(call.id),result:{status:'wrong type'}}
+ ])host.reply(malformed);
+ await Promise.resolve();assert.equal(settled,false,'malformed envelopes and mismatched ID types cannot resolve pending');
  host.reply({id:call.id,result:{status:'wrong'}},'https://other.test');
  await Promise.resolve();assert.equal(settled,false,'response cannot change pinned origin');
  host.reply({id:call.id,result:{status:'ok'}});
@@ -38,11 +69,84 @@ function make(embedded=true){
  assert.equal(host.ready(),1,'late response after close cannot reconnect');
  assert.equal(host.bridge.isConnected(),false);
  await assert.rejects(host.bridge.callTool('catsroll_result',{}),/Connection closed/);
+ await assert.rejects(host.bridge.sendMessage('closed'),/Connection closed/);
+ await assert.rejects(host.bridge.updateContext('closed'),/Connection closed/);
+
+ const notifications=[],contexts=[],order=[];
+ const contextHost=make(true,{onHostContext:context=>{contexts.push(context);order.push('context');},
+  onReady:()=>order.push('ready'),onNotification:message=>notifications.push(message)});
+ contextHost.bridge.connect();
+ contextHost.reply({id:contextHost.sent[0].m.id,result:{hostContext:{theme:'dark',displayMode:'inline',
+  availableDisplayModes:['inline','fullscreen'],styles:{variables:{'--color-text-primary':'red'}},customField:{value:1}}}});
+ assert.deepEqual(order,['context','ready'],'initial context callback precedes onReady');
+ assert.equal(contextHost.bridge.getHostContext(),contexts[0]);
+ contextHost.reply({method:'ui/notifications/host-context-changed',params:{displayMode:'fullscreen',viewport:{width:800}}});
+ assert.equal(contextHost.bridge.getHostContext().theme,'dark');
+ assert.equal(contextHost.bridge.getHostContext().displayMode,'fullscreen');
+ assert.equal(contextHost.bridge.getHostContext().customField.value,1,'unknown protocol context fields are preserved');
+ assert.equal(contextHost.bridge.getHostContext().styles.variables['--color-text-primary'],'red');
+ assert.equal(contexts.length,2);assert.equal(notifications.length,1);
+ contextHost.reply({method:'ui/notifications/host-context-changed',params:[]});
+ contextHost.reply({id:800,result:{}});
+ contextHost.reply({method:'ui/notifications/tool-result',params:{result:'ok'}});
+ assert.equal(contexts.length,2,'malformed context update is ignored');
+ assert.equal(notifications.length,2,'only notifications reach notification callback');
+ contextHost.reply({method:'ui/notifications/host-context-changed',params:JSON.parse('{"__proto__":{"polluted":true},"theme":"light"}')});
+ assert.equal(contextHost.bridge.getHostContext().theme,'light');
+ assert.equal(contextHost.bridge.getHostContext().polluted,undefined,'context merge does not set prototypes');
+ assert.equal(Object.hasOwn(contextHost.bridge.getHostContext(),'__proto__'),true,'context merge preserves fields safely');
+ contextHost.bridge.close();
+
+ let stopped=0,deviceRunning=true;
+ const teardownStages=[];
+ const teardown=make(true,{onDiagnostic:(...args)=>teardownStages.push(args),
+  onTeardown:params=>{assert.equal(params.reason,'test');stopped++;deviceRunning=false;}});
+ teardown.bridge.connect();teardown.reply({id:teardown.sent[0].m.id,result:{}});
+ const teardownPending=teardown.bridge.callTool('catsroll_result',{});
+ const teardownId=teardown.sent.at(-1).m.id;
+ const rejection=assert.rejects(teardownPending,/Connection closed/);
+ const sizeFrame=Array.from(teardown.frames.values())[0];
+ const post=teardown.root.parent.postMessage;
+ teardown.root.parent.postMessage=(message,origin)=>{
+  assert.equal(deviceRunning,false,'device run stops synchronously before teardown ack');
+  post(message,origin);
+ };
+ teardown.reply({id:teardownId,method:'ui/resource-teardown',params:{reason:'test'}},'https://other.test');
+ assert.equal(stopped,0,'teardown is restricted to pinned origin');
+ teardown.reply({id:teardownId,method:'ui/resource-teardown',params:{reason:'test'}});
+ await rejection;
+ assert.equal(stopped,1);
+ assert.deepEqual(teardownStages,[['bridge-start'],['initialize-sent'],['initialize-ready'],['teardown']],
+  'diagnostics contain only one fixed stage argument, without teardown reason or RPC ID');
+ assert.equal(JSON.stringify(teardown.sent.at(-1)),JSON.stringify({m:{jsonrpc:'2.0',id:teardownId,result:{}},origin:'https://host.test'}));
+ assert.equal(teardown.bridge.isConnected(),false);assert.equal(teardown.bridge.phase(),'disconnected');
+ assert.equal(teardown.disconnected(),1);assert.equal(teardown.frames.size,0);assert.equal(teardown.timers.size,0);
+ assert.equal(teardown.listeners.size,0,'teardown removes message and resize listeners');
+ const afterTeardown=teardown.sent.length;
+ sizeFrame();teardown.reply({id:teardownId,result:{}});
+ teardown.reply({id:teardownId,method:'ui/resource-teardown',params:{reason:'test'}});
+ assert.equal(teardown.sent.length,afterTeardown,'queued observer and host messages are fenced after teardown');
+ assert.equal(stopped,1);
+ await assert.rejects(teardown.bridge.callTool('catsroll_result',{}),/Connection closed/);
+ assert.throws(()=>teardown.bridge.connect(),/Connection closed/);
+ const timeoutStages=[];
+ const timeoutHost=make(true,{onDiagnostic:(...args)=>timeoutStages.push(args)});
+ let expireInitialize;
+ timeoutHost.root.setTimeout=fn=>{expireInitialize=fn;return 1;};
+ timeoutHost.bridge.connect();expireInitialize();
+ assert.deepEqual(timeoutStages,[['bridge-start'],['initialize-sent'],['initialize-timeout']]);
+ assert.equal(timeoutHost.bridge.phase(),'failed');timeoutHost.bridge.close();
+ const failingDiagnostic=make(true,{onDiagnostic:()=>{throw new Error('diagnostic callback failure');}});
+ failingDiagnostic.bridge.connect();failingDiagnostic.reply({id:failingDiagnostic.sent[0].m.id,result:{}});
+ assert.equal(failingDiagnostic.ready(),1,'optional diagnostics cannot interrupt initialization');
+ failingDiagnostic.reply({id:99,method:'ui/resource-teardown'});
+ assert.equal(failingDiagnostic.bridge.isConnected(),false,'optional diagnostics cannot interrupt teardown');
+ assert.equal(failingDiagnostic.listeners.size,0);
  const browser=make(false);let requests=[];
  browser.root.fetch=async(url,args)=>{requests.push({url,args});return {ok:true,text:async()=>JSON.stringify({result:{status:'data_ready'}})};};
  browser.bridge.connect();assert.equal(browser.ready(),1);assert.equal(browser.bridge.isConnected(),false);
  assert.equal((await browser.bridge.callTool('catsroll_multi_data',{section:'bootstrap'})).status,'data_ready');
  assert.equal(requests[0].url,'/mcp');assert.equal(JSON.parse(requests[0].args.body).params.name,'catsroll_multi_data');
  browser.bridge.close();
- console.log('host bridge: pinned-origin handshake, explicit capabilities, pending cleanup, closed-response fence and standalone transport passed');
+ console.log('host bridge: RPC classification/collisions, pinned-origin handshake, capabilities, host context, teardown cleanup, closed fences and standalone transport passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -95,6 +95,19 @@ describe 'Temporary client-computed result snapshots' do
     expect(invalid? { store.publish(data) }).eq true
   end
 
+  would 'retain effective guarantee settings without requiring them in older snapshots' do
+    data = snapshot(rows: 2)
+    guarantee = {'requested_override' => 0, 'effective_rolls' => 11, 'source' => 'banner_default'}
+    data['banners'][0]['guarantee'] = guarantee
+    store = BattleCatsRolls::GptResults.new
+    id = store.publish(data)['result_id']
+    expect(store.lookup({'result_id' => id})['banners'][0]['guarantee']).eq guarantee
+    expect(store.lookup({'result_id' => id, 'view' => 'array', 'banner' => 0})['guarantee']).eq guarantee
+    data['banners'][0]['guarantee']['effective_rolls'] = 10
+    expect(invalid? { store.publish(data) }).eq true
+    expect(invalid? { store.publish(snapshot(rows: 2)) }).eq false
+  end
+
   would 'page all detailed actions including the final acquisition without converting partial to success' do
     data = snapshot
     data['input']['findEnabled'] = true
@@ -111,6 +124,8 @@ describe 'Temporary client-computed result snapshots' do
     expect(tail['actions'][0]['resultLabel']).eq '300A'
     expect(tail['targetsAcquired'][0]['drawNumber']).eq 300
     expect(store.lookup({'result_id' => id})['find']['message']).eq 'Not proven optimal'
+    expect(store.lookup({'result_id' => id})['find']['engine_position']['next_track_offset']).eq 600
+    expect(store.lookup({'result_id' => id})['find'].key?('nextOffset')).eq false
     expect(tail['nextTrackOffset']).eq 600
     expect(tail['nextOffset']).eq nil
     seen = []

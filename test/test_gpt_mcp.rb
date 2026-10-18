@@ -183,6 +183,9 @@ describe 'Catsroll MCP device-computation adapter' do
           expect(request.fetch('targets').all? { |target| target.fetch('allow_ticket') == false }).eq true
           expect(request.key?('targetSelection')).eq false # fallback replays normalized direct targets
           selection = data.fetch('targetSelection')
+          expect(selection.fetch('ticket_policy')).eq({
+            'allow_ticket' => false, 'explicit' => false, 'status' => 'not_permitted',
+            'reason' => 'allowTicket was omitted and defaults to false; a ticket budget does not grant permission'})
           expect(selection.fetch('matched_ids')).eq expected_ids
           expect(selection.fetch('matched_count')).eq expected_ids.size
           expect(selection.fetch('included_count')).eq expected_ids.size - 1
@@ -192,9 +195,24 @@ describe 'Catsroll MCP device-computation adapter' do
           expect(selection.fetch('included').all? { |target| target.fetch('reason') == 'selected_banner_rarity_slot' }).eq true
           expect(reply.dig('_meta', 'catsroll/data', 'targetSelection')).eq selection
           expect(reply.dig('_meta', 'catsroll/data', 'request')).eq request
+
+          opted_in = rpc(host, 'tools/call', {name: 'catsroll_prepare', arguments: base.merge(
+            targetSelection: base.fetch(:targetSelection).merge(allowTicket: true))}, path: path).
+            last.fetch('result').fetch('structuredContent')
+          expect(opted_in.fetch('status')).eq 'prepared'
+          expect(opted_in.dig('targetSelection', 'allowTicket')).eq true
+          expect(opted_in.dig('request', 'targets').all? { |target| target.fetch('allow_ticket') == true }).eq true
+          expect(opted_in.dig('targetSelection', 'ticket_policy')).eq({
+            'allow_ticket' => true, 'explicit' => true, 'status' => 'permitted',
+            'reason' => 'explicitly_allowed; a matching ticket pool and positive budget are still required'})
         end
         disabled = call_tool(client, 'catsroll_prepare', base.merge(findEnabled: false))
         expect(disabled.dig('structuredContent', 'request', 'findEnabled')).eq false
+        explicitly_denied = call_tool(client, 'catsroll_prepare', base.merge(
+          targetSelection: base.fetch(:targetSelection).merge(allowTicket: false))).fetch('structuredContent')
+        expect(explicitly_denied.dig('targetSelection', 'ticket_policy')).eq({
+          'allow_ticket' => false, 'explicit' => true, 'status' => 'not_permitted',
+          'reason' => 'explicitly_denied; ticket budgets do not override this choice'})
       end
     end
   end
@@ -247,6 +265,8 @@ describe 'Catsroll MCP device-computation adapter' do
     [nil, [], selection.merge(type: 'other'), selection.merge(lang: 'xx'), selection.merge(lang: 'jp'),
       selection.merge(event: 'missing'), selection.merge(event: '2026-02-13_1042'),
       selection.merge(rarity: 5), selection.merge(rarity: 4.0), selection.merge(extra: true),
+      selection.merge(allowTicket: nil), selection.merge(allowTicket: 'true'),
+      selection.merge(allowTicket: 1),
       selection.merge(excludeOwnedIds: '418'), selection.merge(excludeOwnedIds: [0]),
       selection.merge(excludeOwnedIds: ['418']), selection.merge(excludeOwnedIds: [999_999])].each do |value|
       bad << base.merge(targetSelection: value)
@@ -261,6 +281,29 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(direct.dig('structuredContent', 'status')).eq 'prepared'
     expect(direct.dig('structuredContent', 'request', 'targets').first.fetch('cat_id')).eq 418
     expect(direct.fetch('structuredContent').key?('targetSelection')).eq false
+  end
+
+  would 'require explicit target-selection ticket consent even when a ticket budget is available' do
+    event = '2026-02-13_1042'
+    pool = BattleCatsRolls::TrackApi.compact_find_pool_data(BattleCatsRolls::Route.ball_kr, event)
+    ids = pool.dig(:slots, 4).uniq
+    expect(pool[:platinum]).eq 'platinum'
+    expect(ids.include?(160)).eq true
+    selection = {type: 'banner_collection', lang: 'kr', event: event, rarity: 4,
+      excludeOwnedIds: ids.reject { |id| id == 160 }}
+    base = {mode: 'multi', seed: 42, maxPlatinum: 1, rows: [{lang: 'kr', event: event}],
+      targetSelection: selection}
+
+    denied = call_tool(client, 'catsroll_prepare', base)
+    expect(denied.fetch('isError')).eq true
+    expect(denied.fetch('content').first.fetch('text').include?('absent from selected regular pools and permitted tickets')).eq true
+
+    permitted = call_tool(client, 'catsroll_prepare', base.merge(targetSelection: selection.merge(allowTicket: true)))
+    expect(permitted.dig('structuredContent', 'status')).eq 'prepared'
+    expect(permitted.dig('structuredContent', 'request', 'targets')).eq [
+      {'cat_id' => 160, 'cat_name' => BattleCatsRolls::Route.ball_kr.cats.fetch(160).fetch('name').first,
+        'allow_ticket' => true}]
+    expect(permitted.dig('structuredContent', 'targetSelection', 'ticket_policy', 'status')).eq 'permitted'
   end
 
   would 'publish only explicit computed snapshots and query late rows without recalculation' do

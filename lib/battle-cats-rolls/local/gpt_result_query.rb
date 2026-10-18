@@ -56,10 +56,11 @@ module BattleCatsRolls
       plan = snapshot['plan'] || {}
       acquisitions = Array(find['targetsAcquired'])
       brief_find = {'status' => find['status'] || 'unknown'}
-      (@summary_keys - %w[enabled]).each do |key|
+      (@summary_keys - %w[enabled nextOffset]).each do |key|
         brief_find[key] = find[key] if find.key?(key)
       end
       brief_find['enabled'] = snapshot.dig('input', 'findEnabled')
+      brief_find['engine_position'] = {'next_track_offset' => find['nextOffset']} if find.key?('nextOffset')
       brief_find['targetsAcquired'] = acquisitions.first(20)
       brief_find['targetsAcquiredTotal'] = acquisitions.length
       brief_plan = {
@@ -89,7 +90,9 @@ module BattleCatsRolls
             'rowsOmitted' => banner['rowsOmitted'],
             'conditionalTotal' => banner['conditionalTotal'],
             'conditionalIncluded' => banner['conditionalIncluded'],
-            'conditionalOmitted' => banner['conditionalOmitted']}
+            'conditionalOmitted' => banner['conditionalOmitted']}.tap do |item|
+              item['guarantee'] = banner['guarantee'] if banner.key?('guarantee')
+            end
         end
       }
     end
@@ -162,6 +165,7 @@ module BattleCatsRolls
         'conditionalOmitted' => [branches.length - conditional_offset - conditional_page.length, 0].max,
         'conditional' => conditional_page.map { |item| expand_conditional(item, banner['names']) }
       }
+      result['guarantee'] = banner['guarantee'] if banner.key?('guarantee')
       if banner.key?('rarities')
         page_ids = {}
         collect_ids = lambda do |cell|

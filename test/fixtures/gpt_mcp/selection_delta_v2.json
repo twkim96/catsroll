@@ -1,0 +1,30 @@
+{
+  "chatgpt": {
+    "prepare": {
+      "description": "Prepare the on-device app. Default count is 100 and maximum is 300; preserve any explicit count within that range. Multi includes optional Find, Found cats list, route stamps and planMode. For vague beginner questions use catsroll_guide first. Resolve exact banner/cat IDs with catalog tools and pass cat_name with each target to verify identity; never guess numeric IDs. For known-banner uber collection use targetSelection={type:\"banner_collection\",lang,event:exact_ID,rarity:4,excludeOwnedIds:[explicitly owned IDs],allowTicket:true} instead of enumerating catalog pages. Set allowTicket:true only when the user explicitly permits ticket acquisition. allowTicket is optional and defaults to false; it is the only selection-level permission for matching ticket pools. A positive ticket budget alone never permits a ticket. It selects all distinct IDs from actual rarity slots; event/lang must match a selected row. Do not combine with targets; Find defaults true. Preserve seed, last, count and resource budgets. needs_input with target_limit_exceeded or no_remaining_targets includes full selection metadata: ask the user to narrow or revise; never silently truncate or claim preparation succeeded. Other rarities use catalog pages and direct targets. Before choosing a new banner for a target, use catsroll_events(cat_id=...) to verify pool membership. Missing targets in selected pools or explicitly permitted tickets are rejected. maxGuaranteed is a resource budget, not proof a banner offers a guarantee; forceGuaranteed explicitly simulates it. Ask missing seed, region, banner, target and resource permissions only. seek accepts ordered character IDs; no seed required. This is NOT a computed result. User clicks Calculate in app; no server fallback.",
+      "targetSelection": {
+        "properties": {
+          "allowTicket": {
+            "type": "boolean",
+            "default": false,
+            "description": "Explicitly permits matching platinum or legend ticket pools for every included target. Defaults to false; ticket budgets alone do not grant permission."
+          }
+        }
+      }
+    }
+  },
+  "claude": {
+    "prepare": {
+      "description": "배열표를 열 때 mode=multi와 seed, rows를 사용한다. targets는 선택이며 없어도 정상이다. 목표를 얻는 경로 요청에만 targets/Find를 사용한다. 시드가 없으면 mode=seek로 화면을 연다. 관측도 화면에서 입력 가능하다. count 생략은 100, 최대 300. forceGuaranteed=0은 배너 기본값이다. 준비는 계산 결과가 아니며 화면에서 계산 후 공유한 결과만 설명한다. 알려진 배너의 울슈레 수집 목표는 targetSelection={type:banner_collection,lang,event,rarity:4,excludeOwnedIds:[명시적으로 보유한 ID],allowTicket:true}로 모든 대상을 구성한다. 사용자가 특수티켓 획득을 명시적으로 허용한 경우에만 allowTicket:true로 지정한다. allowTicket 생략은 false이며 티켓 예산만으로 허용하지 않는다. needs_input이면 제한·제외 정보를 설명하고 범위를 좁힌다.",
+      "targetSelection": {
+        "properties": {
+          "allowTicket": {
+            "type": "boolean",
+            "default": false,
+            "description": "Explicitly permits matching platinum or legend ticket pools for every included target. Defaults to false; ticket budgets alone do not grant permission."
+          }
+        }
+      }
+    }
+  }
+}

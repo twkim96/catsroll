@@ -37,7 +37,11 @@ body {
 }
 button, input, select { font: inherit; color-scheme: light; }
 button { color: inherit; background: var(--panel); }
-.app-shell { width: min(900px, 100%); min-width: 0; margin: 0 auto; padding: 20px 20px 26px; }
+.app-shell { width: min(900px, 100%, var(--host-width, 100vw)); min-width: 0; margin: 0 auto;
+  padding: calc(20px + var(--host-safe-top, 0px)) calc(20px + var(--host-safe-right, 0px))
+    calc(26px + var(--host-safe-bottom, 0px)) calc(20px + var(--host-safe-left, 0px)); }
+html[data-display-mode="fullscreen"] body { max-height: var(--host-height, none); overflow-y: auto; }
+html[data-display-mode="fullscreen"] .app-shell { width: min(100%, var(--host-width, 100vw)); }
 .app-header, .section-heading, .action-buttons, .search-line, .row-top, .row-bottom,
 .target-chip, .result-head, .seek-roll { display: flex; align-items: center; }
 .app-header, .section-heading, .result-head { justify-content: space-between; gap: 14px; }
@@ -182,7 +186,8 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 [hidden] { display: none !important; }
 
 @media (max-width: 640px) {
-  .app-shell { padding: 14px 12px 20px; }
+  .app-shell { padding: calc(14px + var(--host-safe-top, 0px)) calc(12px + var(--host-safe-right, 0px))
+    calc(20px + var(--host-safe-bottom, 0px)) calc(12px + var(--host-safe-left, 0px)); }
   .panel { padding: 12px; border-radius: 9px; }
   .mode-panel { grid-template-columns: 1fr; gap: 10px; }
   .seed-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }

@@ -61,6 +61,20 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   assert.equal(await frame.locator('#share-recovery-json').evaluate(el=>el.selectionEnd-el.selectionStart),JSON.stringify(saved).length);
   const downloading=page.waitForEvent('download');await frame.locator('#download-share-json').click();
   const download=await downloading;assert.deepEqual(JSON.parse(fs.readFileSync(await download.path(),'utf8')),saved);
+  // A newer successful job must not change the result still displayed for recovery.
+  await frame.locator('#seed').fill('99');
+  await frame.locator('#calculate').click();
+  await frame.locator('#multi_tables table').first().waitFor();
+  await page.evaluate(()=>{rejectMessage=false;});
+  await share();
+  assert.equal(await frame.locator('#share-recovery-json').inputValue(),JSON.stringify(saved));
+  const downloadingA=page.waitForEvent('download');await frame.locator('#download-share-json').click();
+  assert.deepEqual(JSON.parse(fs.readFileSync(await (await downloadingA).path(),'utf8')),saved,
+    'download stays bound to the displayed recovery job A after job B succeeds');
+  assert.match(await frame.locator('#share-recovery-provenance').innerText(),/입력이 바뀌었습니다/);
+  await frame.locator('#seed').fill('42');
+  await frame.locator('#calculate').click();
+  await frame.locator('#multi_tables table').first().waitFor();
   // Storage saturation falls back to bounded computed data, with a complete local export.
   await page.evaluate(()=>{rejectMessage=false;writeFailure={status:'error',code:'storage_full',retryable:true,message:'Storage full'};});
   await share();
@@ -117,6 +131,80 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   assert.equal(await page.locator('#mode').inputValue(),'seek');
   assert.deepEqual(await page.locator('#seek-rolls select').evaluateAll(els=>els.map(el=>Number(el.value))),observations);
   assert.equal(await page.locator('#seek-result').innerText(),'');
+  // Host notifications are fenced independently of local Calculate RPCs.
+  await open();
+  await page.evaluate(()=>{holdHostResult=true;});
+  await page.locator('#prepare').click();
+  await page.waitForFunction(()=>hostResultReleases.length===1);
+  await frame.locator('#seed').fill('99');
+  await page.evaluate(()=>{holdHostResult=false;hostResultReleases.shift()();});
+  await frame.locator('#status').getByText(/이전 준비 결과/).waitFor();
+  assert.equal(await frame.locator('#seed').inputValue(),'99');
+  // Different host calls must not consume one another's results.
+  await page.evaluate(()=>{holdHostResult=true;});
+  await page.locator('#arguments').fill(JSON.stringify({...request,seed:42}));
+  await page.locator('#prepare').click();await page.waitForFunction(()=>hostResultReleases.length===1);
+  await page.locator('#arguments').fill(JSON.stringify({...request,seed:43}));
+  await page.locator('#prepare').click();await page.waitForFunction(()=>hostResultReleases.length===2);
+  await page.evaluate(()=>document.querySelector('iframe').contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:{isError:true,content:[{type:'text',text:'Old host failure'}]}},location.origin));
+  await frame.locator('#status').getByText('Old host failure',{exact:true}).waitFor();
+  await page.evaluate(()=>hostResultReleases.shift()());
+  await frame.locator('#status').getByText(/현재 요청과 다른/).waitFor();
+  assert.equal(await frame.locator('#seed').inputValue(),'43');
+  await page.evaluate(()=>{holdHostResult=false;hostResultReleases.shift()();});
+  await frame.locator('#status').getByText('설정을 불러왔습니다. 계산하기를 누르세요.',{exact:true}).waitFor();
+  // Both needs_input reasons are visible and block stale calculation/sharing.
+  const allOwned={...request,targetSelection:{type:'banner_collection',lang:'kr',event:'2019-01-23_348',rarity:4,excludeOwnedIds:[418,356,307,306,305]}};
+  await page.locator('#arguments').fill(JSON.stringify(allOwned));await page.locator('#prepare').click();
+  await frame.locator('#status').getByText(/남은 목표가 없습니다/).waitFor();
+  assert.equal(await frame.locator('#calculate').isEnabled(),false);
+  assert.equal(await frame.locator('#send-context').isEnabled(),false);
+  assert.equal(await frame.locator('#multi_tables table').count(),0);
+  await page.evaluate(args=>{
+    const win=document.querySelector('iframe').contentWindow;
+    win.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-input',params:{arguments:args}},location.origin);
+    win.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:{structuredContent:{status:'needs_input',reason:'target_limit_exceeded',maximum:30,targetSelection:{...args.targetSelection,included_count:31}},_meta:{'catsroll/data':{targetSelection:{...args.targetSelection,included_count:31}}}}},location.origin);
+  },allOwned);
+  await frame.locator('#status').getByText(/선택한 목표 31종이 한도 30종/).waitFor();
+  assert.equal(await frame.locator('#calculate').isEnabled(),false);
+  const needsHash='#catsroll-input='+Buffer.from(JSON.stringify({version:1,arguments:allOwned})).toString('base64url');
+  await page.goto(base+'/gpt'+needsHash);
+  await page.locator('#status').getByText(/남은 목표가 없습니다/).waitFor();
+  assert.equal(await page.locator('#calculate').isEnabled(),false,'fragment restoration handles needs_input');
+  await page.goto(base+'/gpt-test-host?holdBootstrap=1');await page.waitForFunction(()=>ready&&bootstrapReleases.length===1);
+  await page.locator('#arguments').fill(JSON.stringify(allOwned));await page.locator('#prepare').click();
+  await frame.locator('#status').getByText(/남은 목표가 없습니다/).waitFor();
+  await page.evaluate(()=>{holdBootstrap=false;bootstrapReleases.shift()();});
+  await frame.locator('#multi-container').waitFor({state:'visible'});
+  await frame.locator('#status').getByText(/남은 목표가 없습니다/).waitFor();
+  assert.equal(await frame.locator('#calculate').isEnabled(),false,'bootstrap preserves needs_input');
+  await open();
+  await page.evaluate(()=>{rejectPrepare=true;});
+  await frame.locator('#mode').selectOption('seek');
+  await frame.locator('#status').getByText('Prepare rejected',{exact:true}).waitFor();
+  assert.equal(await frame.locator('#calculate-seek').isEnabled(),true,'failed choice preparation can be retried');
+  await page.evaluate(()=>{rejectPrepare=false;});
+  await frame.locator('#calculate-seek').click();
+  await frame.locator('#seek-rolls select').first().waitFor();
+  assert.equal(await frame.locator('#seek-result').innerText(),'','retry prepares choices without running WASM');
+  // Host context updates and explicit teardown affect the actual app, without publishing.
+  await open();
+  await page.evaluate(()=>document.querySelector('iframe').contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/host-context-changed',params:{displayMode:'fullscreen',safeAreaInsets:{top:12,right:7,bottom:20,left:4},containerDimensions:{width:390,height:700}}},location.origin));
+  await page.waitForFunction(()=>document.querySelector('iframe').contentDocument.documentElement.dataset.displayMode==='fullscreen');
+  assert.equal(await frame.locator('html').evaluate(el=>el.style.getPropertyValue('--host-safe-top')),'12px');
+  assert.equal(await frame.locator('.app-shell').evaluate(el=>el.getBoundingClientRect().width<=390),true);
+  assert.equal(await frame.locator('.app-shell').evaluate(el=>parseFloat(getComputedStyle(el).paddingTop)>=26),true,
+    'mobile padding includes the host safe area');
+  const diag=await frame.locator('body').evaluate(()=>CatsrollDiagnostics());
+  assert(diag.steps.some(s=>s.stage==='ui-mounted'));
+  assert(!JSON.stringify(diag).includes('seed'));
+  await page.evaluate(()=>{holdPrepare=true;messages=[];});
+  await frame.locator('#calculate').click();await page.waitForFunction(()=>releases.length===1);
+  await page.evaluate(()=>document.querySelector('iframe').contentWindow.postMessage({jsonrpc:'2.0',id:'teardown-test',method:'ui/resource-teardown',params:{}},location.origin));
+  await page.waitForFunction(()=>messages.some(m=>m.id==='teardown-test'&&m.result));
+  await page.evaluate(()=>{holdPrepare=false;releases.shift()();});
+  assert.equal(await frame.locator('#calculate').isEnabled(),false);
+  assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='tools/call'&&m.params.name==='catsroll_share_result')),false);
   assert.deepEqual(errors,[]);
   console.log('share recovery: GPT normal flow, context/message denial, idempotent retry, clipboard/download, size-bounded saturation fallback, immutable capture, advertised/legacy capabilities, full multi/seek fragment restoration passed');
  } finally{await browser.close();}

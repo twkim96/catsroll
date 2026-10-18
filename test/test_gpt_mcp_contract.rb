@@ -20,13 +20,23 @@ describe 'Frozen 870cc54d MCP contracts' do
   would 'preserve complete descriptors and representative handler replies for both hosts' do
     baseline = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/870cc54d.json')))
     # Explicit versioned delta: only collection instructions, prepare descriptions
-    # and one additive input field change. Every other old contract stays exact.
+    # and additive targetSelection schema changes. Every other old contract stays exact.
     delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/selection_delta_v1.json')))
     delta.each do |host, changes|
       baseline.fetch(host).fetch('initialize')['instructions'] = changes.fetch('instructions')
       prepare = baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == 'catsroll_prepare' }
       prepare['description'] = changes.fetch('prepare').fetch('description')
-      prepare.fetch('inputSchema').fetch('properties')['targetSelection'] = changes.fetch('prepare').fetch('targetSelection')
+      properties = prepare.fetch('inputSchema').fetch('properties')
+      properties['targetSelection'] = changes.fetch('prepare').fetch('targetSelection')
+    end
+    ticket_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/selection_delta_v2.json')))
+    ticket_delta.each do |host, changes|
+      prepare = baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == 'catsroll_prepare' }
+      prepare['description'] = changes.fetch('prepare').fetch('description')
+      selection_properties = prepare.fetch('inputSchema').fetch('properties').fetch('targetSelection').fetch('properties')
+      changes.fetch('prepare').fetch('targetSelection').fetch('properties').each do |name, property|
+        selection_properties[name] = property
+      end
     end
     expect(GptMcpContractSupport.capture).eq baseline
   end

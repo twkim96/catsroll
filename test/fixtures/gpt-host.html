@@ -8,6 +8,9 @@
 window.messages=[];window.latestResult=null;window.ready=false;window.holdPrepare=false;window.releases=[];
 window.rejectModelContext=false;window.rejectResultSharing=false;window.rejectMessage=false;window.rejectContextResult=false;
 window.holdShare=false;window.shareReleases=[];window.writeFailure=null;
+window.holdHostResult=false;window.hostResultReleases=[];
+window.prepareVersion=null;
+window.rejectPrepare=false;
 window.hostCapabilities={serverTools:{},updateModelContext:{text:{}},message:{text:{}}};
 window.holdBootstrap=new URLSearchParams(location.search).has('holdBootstrap');window.bootstrapReleases=[];
 const iframe=document.querySelector('iframe');
@@ -16,7 +19,9 @@ async function prepare(){
  iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-input',params:{arguments:args}},location.origin);
  const response=await fetch(new URLSearchParams(location.search).has('claude')?'/mcp/claude':'/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:99,method:'tools/call',params:{name:'catsroll_prepare',arguments:args}})});
  latestResult=(await response.json()).result;
- iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:latestResult},location.origin);
+ const captured=latestResult;
+ if(holdHostResult)await new Promise(resolve=>hostResultReleases.push(resolve));
+ iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:captured},location.origin);
 }
 document.querySelector('#prepare').onclick=prepare;
 document.querySelector('#cancel-host').onclick=()=>iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-cancelled',params:{}},location.origin);
@@ -31,9 +36,11 @@ addEventListener('message',async event=>{
  if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:window.hostCapabilities,hostContext:{}};
  else if(m.method==='ui/notifications/size-changed')iframe.style.height=Math.min(m.params.height,1000)+'px';
  else if(m.method==='tools/call'){
+  if(rejectPrepare && m.params.name==='catsroll_prepare'){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32000,message:'Prepare rejected'}},event.origin);return;}
   if(writeFailure && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,structuredContent:writeFailure,content:[{type:'text',text:writeFailure.message}]}},event.origin);return;}
   if(rejectResultSharing && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,content:[{type:'text',text:'Unknown tool'}]}},event.origin);return;}
   const response=await fetch(new URLSearchParams(location.search).has('claude')?'/mcp/claude':'/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(m)});result=(await response.json()).result;
+  if(prepareVersion && m.params.name==='catsroll_prepare' && result._meta?.['catsroll/data'])result._meta['catsroll/data'].dataVersion=prepareVersion;
   if(m.params.name==='catsroll_share_result'){window.lastShareReply=result;if(holdShare)await new Promise(resolve=>shareReleases.push(resolve));}
   if(holdPrepare && m.params.name==='catsroll_prepare')await new Promise(resolve=>releases.push(resolve));
   if(holdBootstrap && m.params.name==='catsroll_multi_data' && m.params.arguments.section==='bootstrap')await new Promise(resolve=>bootstrapReleases.push(resolve));

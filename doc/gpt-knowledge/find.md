@@ -15,6 +15,8 @@ Find는 선택한 배너들을 어떤 순서로 뽑으면 목표를 얻는지, �
 다음 차례에 필요한 배너·허용 자원을 좁힌다.
 이미 말한 정보는 다시 묻지 않는다. 사용자가 모르는 기술 옵션을 한꺼번에 늘어놓지 않는다.
 허용받지 않은 티켓/확뽑은 한도를 0으로 유지한다. 각 목표의 `allow_ticket`과 티켓 총 한도는 별도 설정이다.
+올컬 자동 선택에서도 `targetSelection.allowTicket`은 기본 false다. 사용자가 목표를 특수티켓으로
+얻어도 된다고 명시한 경우에만 true로 설정하고 `maxPlatinum`/`maxLegendTicket`은 별도 한도로 유지한다.
 
 ## 준비와 설명
 
@@ -33,7 +35,8 @@ GPT 앱의 플랜 저장은 해당 앱 세션 동안 유지된다.
 내용을 조회 도구로 다시 읽을 필요는 없다. 결과 ID가 있으면 생략된 상세를
 `catsroll_result(view="summary")` 등으로 보충할 수 있다.
 실행 순서는 `view="route"`, 배열 특정 구간은 `view="array"`, 캐릭터 위치는 `view="character"`,
-플랜은 `view="plan"`을 사용하고 nextOffset/다음 구간을 따라 필요한 페이지를 읽는다.
+플랜은 `view="plan"`을 사용하고 조회 응답의 nextOffset/다음 구간을 따라 필요한 페이지를 읽는다.
+모델용 Find 요약의 `engine_position.next_track_offset`은 엔진의 진행 위치로, 페이지 커서가 아니다.
 배열의 `nextConditionalQuery`는 행 범위를 고정한 조건부 분기 전용 계속 조회이므로 그대로 사용한다.
 해당 페이지는 기본 배열 행을 반복하지 않는다. `nextStart`로 다음 행 범위로 넘어간다.
 경로의 `nextOffset`이 null이면 페이지 조회를 끝낸다. `nextTrackOffset`은 엔진 진행 위치이며 페이지 커서가 아니다.

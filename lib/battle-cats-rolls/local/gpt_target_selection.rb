@@ -8,7 +8,7 @@ module BattleCatsRolls
   class GptTargetSelection
     include GptValidation
     MAXIMUM = 30
-    KEYS = %w[type lang event rarity excludeOwnedIds].freeze
+    KEYS = %w[type lang event rarity excludeOwnedIds allowTicket].freeze
 
     def initialize(value, prepared_events)
       GptValidation.object!(value, 'targetSelection must be an object')
@@ -16,6 +16,8 @@ module BattleCatsRolls
       raise GptMcp::InvalidInput, 'targetSelection type must be banner_collection' unless value['type'] == 'banner_collection'
       raise GptMcp::InvalidInput, 'targetSelection lang must be kr or jp' unless TrackApi::MultiLangs.include?(value['lang'])
       raise GptMcp::InvalidInput, 'targetSelection rarity must be 4' unless value['rarity'].is_a?(Integer) && value['rarity'] == 4
+      @allow_ticket = boolean(value.fetch('allowTicket', false), 'targetSelection allowTicket')
+      @allow_ticket_explicit = value.key?('allowTicket')
       @event = prepared_events.find { |event| event[:lang] == value['lang'] && event[:event] == value['event'] }
       raise GptMcp::InvalidInput, 'targetSelection event/lang must match a selected banner row' unless @event
 
@@ -39,11 +41,13 @@ module BattleCatsRolls
       end
       excluded, included = matched.partition { |target| @owned.include?(target[:cat_id]) }
       selection = {type: 'banner_collection', lang: @value['lang'], event: @value['event'], rarity: 4,
+        allowTicket: @allow_ticket,
         excludeOwnedIds: @owned, matched_count: matched.size,
         included_count: included.size, excluded_count: excluded.size,
         matched_ids: ids, included_ids: included.map { |target| target[:cat_id] },
         excluded_ids: excluded.map { |target| target[:cat_id] },
-        included: included.map { |target| target.merge(reason: 'selected_banner_rarity_slot') },
+        ticket_policy: ticket_policy,
+        included: included.map { |target| target.merge(allow_ticket: @allow_ticket, reason: 'selected_banner_rarity_slot') },
         excluded: excluded.map { |target| target.merge(reason: 'explicitly_owned') },
         unmatched_owned_ids: @owned - ids}
       reason = if included.empty?
@@ -51,8 +55,22 @@ module BattleCatsRolls
       elsif included.size > MAXIMUM
         'target_limit_exceeded'
       end
-      {targets: included.map { |target| target.transform_keys(&:to_s) }, selection: selection,
+      {targets: included.map { |target| target.merge(allow_ticket: @allow_ticket).transform_keys(&:to_s) }, selection: selection,
        reason: reason}
+    end
+
+    private
+
+    def ticket_policy
+      reason = if @allow_ticket
+        'explicitly_allowed; a matching ticket pool and positive budget are still required'
+      elsif @allow_ticket_explicit
+        'explicitly_denied; ticket budgets do not override this choice'
+      else
+        'allowTicket was omitted and defaults to false; a ticket budget does not grant permission'
+      end
+      {allow_ticket: @allow_ticket, explicit: @allow_ticket_explicit,
+       status: @allow_ticket ? 'permitted' : 'not_permitted', reason: reason}
     end
   end
 end

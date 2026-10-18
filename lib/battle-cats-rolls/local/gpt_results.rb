@@ -63,7 +63,7 @@ module BattleCatsRolls
       maxLegendTicket targets].freeze
     BANNER_KEYS = %w[banner lang rowsTotal rowsIncluded rowsOmitted
       conditionalTotal conditionalIncluded conditionalOmitted names rows
-      conditional rarities].freeze
+      conditional rarities guarantee].freeze
     PLAN_KEYS = %w[enabled name marks route cats progress].freeze
     MARK_KEYS = %w[column position kind variant].freeze
     CAT_KEYS = %w[id name rarity positions].freeze
@@ -554,7 +554,15 @@ module BattleCatsRolls
     def validate_banners!(banners)
       array!(banners, 'banners', max: MAX_BANNERS)
       banners.each do |banner|
-        exact_keys!(banner, BANNER_KEYS, required: BANNER_KEYS - %w[rarities])
+        exact_keys!(banner, BANNER_KEYS, required: BANNER_KEYS - %w[rarities guarantee])
+        if banner.key?('guarantee')
+          guarantee = banner['guarantee']
+          exact_keys!(guarantee, %w[requested_override effective_rolls source], required: %w[requested_override effective_rolls source])
+          %w[requested_override effective_rolls].each do |key|
+            raise InvalidInput, 'Invalid guarantee rolls' unless [0, 2, 7, 11, 15].include?(guarantee[key])
+          end
+          raise InvalidInput, 'Invalid guarantee source' unless %w[explicit_override banner_default].include?(guarantee['source'])
+        end
         string!(banner['banner'], 'banner name', max: 300)
         string!(banner['lang'], 'banner lang', max: 12)
         total = integer_value!(banner['rowsTotal'], 0, MAX_ROWS, 'rowsTotal')

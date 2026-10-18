@@ -51,12 +51,21 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 멱등성 키·결과 ID, publishing/published/delivering/delivered/recoverable_error를 소유한다.
 입력 변경은 현재 계산을 무효화하지만 이미 고정한 ShareJob은 유지한다. 플랜 편집은 별도 revision으로
 새 공유를 만들 수 있고 배열 재계산을 요구하지 않는다. 전송 실패는 계산 실패로 표시하지 않는다.
+호스트 준비 알림은 시작 시점의 입력/플랜 revision과 명시된 요청 필드를 함께 대조한다.
+표준 알림에는 호출 ID가 없으므로 다른 입력의 결과나 수정 뒤 결과를 자동 적용하지 않고 보류한다.
+상관관계를 알 수 없는 오류도 새 pending 준비를 소비하지 않는다. 동일 인수의 겹친 호출은
+프로토콜만으로 구분할 수 없으므로 호출별 버전의 우선 도착 순서를 보장한다고 주장하지 않는다.
+`prepared`/`needs_input`/오류/알 수 없는 응답은 호스트·앱 RPC·fragment 복원에서 같은 해석을 사용한다.
+남은 목표 0/30종 초과는 상태를 표시하고 기존 결과의 계산/공유를 막으며, 입력을 수정해 다시 준비한다.
+복구 패널은 고정 recoveryJob을 소유하므로 다른 결과 공유가 성공해도 표시·복사·다운로드는 같은 JSON이다.
+`ui/resource-teardown`은 호스트 요청으로 분리해 계산 취소·pending 정리·응답·종료하며 자동 업로드하지 않는다.
 목표 검색처럼 목록만 좁히는 입력은 계산을 취소하지 않는다. 실제 목표 추가·제거·티켓 허용·예산 변경은
 공통 컨트롤러의 `multi-find:settings-changed`로 계산/공유 revision을 무효화한다.
 
 `test/fixtures/gpt_mcp/870cc54d.json`은 구조 변경 전 initialize·tools/list·resources/list와
 대표 성공/실패 응답의 기준본이다. UI 지문과 데이터 버전처럼 의도적으로 변하는 값만 정규화한다.
-올컬 선택의 추가 입력·설명 변경은 `selection_delta_v1.json`에 명시한다. 기준본 자동 갱신은 하지 않는다.
+올컬 선택의 추가 입력·설명 변경은 `selection_delta_v1.json`, 명시적 티켓 허용은
+`selection_delta_v2.json`에 명시한다. 기준본 자동 갱신은 하지 않는다.
 도구의 app visibility는 호스트 표시 메타데이터이며 서버 사용자 인증이 아니다. 현재 익명 공개 조회와
 명시적 공유·비밀 결과 ID의 권한 경계는 그대로 유지한다.
 호스트가 이전 도구 스키마를 캐시해 `targetSelection`을 받지 못하면 기존 `catsroll_cats`의
@@ -87,6 +96,8 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 풀과 WASM 입력은 `_meta['catsroll/data']`에만 담아 모델 문맥을 불필요하게 채우지 않는다.
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.
 공유 원본은 `asset/gpt-snapshot.js`가 계산된 출력·입력·플랜에서 직접 정규화한다.
+시드 찾기도 `captureSeek`로 `kind=seek`·계산에 사용한 request·status/begin/end/count·해당 payload의
+data_version을 고정한다. 설명과 JSON은 이 원본을 사용하며, 시드 결과의 서버 임시 저장은 하지 않는다.
 `capture`는 모든 배열·조건부 R/G/RG·Find·플랜을 보존하며 표시 텍스트를 만들거나 역파싱하지 않고 엔진도 다시 실행하지 않는다.
 `gpt-result-summary.js`의 기존 `capture/build/buildCaptured` API는 호환을 유지한다. 원본 캡처·모델 문맥·전체 JSON·저장/조회는 동일한 스냅샷을 사용한다.
 공유 버튼은 `catsroll_share_result`로 서버 메모리에 저장한 뒤 결과 ID·만료와 함께
@@ -98,7 +109,10 @@ GPT의 기존 짧은 후속 메시지와 Claude의 본문 전달 방식은 유�
 배열의 `nextConditionalQuery`는 결과 ID와 `start`·`rowEnd`를 포함해 행 범위를 고정하고 조건부 분기만 이어 읽는다.
 조건부 페이지에서는 배열 행을 반복하지 않으며 `nextStart`는 같은 행 범위 끝을 유지한다.
 경로의 `nextOffset`은 액션 페이지 커서로 마지막/범위 밖 페이지에서 null이다. 엔진 진행 위치는
-경로 응답에서 `nextTrackOffset`으로 분리하며 요약의 `find.nextOffset`은 엔진 원래 값이다.
+경로 응답에서 `nextTrackOffset`으로 분리한다. 저장 원본의 `find.nextOffset`은 호환을 유지하지만,
+모델 문맥·summary 조회 투영에서는 `find.engine_position.next_track_offset`으로 제공한다.
+배너의 선택적 `guarantee`는 requested_override/effective_rolls/source로 실제 계산 풀의 확정 조건을
+보존한다. 0 override는 배너 기본값이며 effective_rolls와 구분한다. 이 필드가 없는 이전 결과도 조회한다.
 모델은 클라이언트가 명시적으로 공유한 결과를 읽으며 서버 검증된 결과로 표현하지 않는다.
 공유 전에는 서버 보관하지 않는다. 결과 ID는 256비트 난수인 읽기 권한으로 해당 호스트
 (GPT/Claude) 네임스페이스에서 사용한다. 같은 호스트의 계정·대화를 인증하거나 격리하지 않으므로
@@ -144,6 +158,8 @@ MCP 앱의 초기 횟수는 100이며 최대 300이다. 명시적 범위는 이 
 확인으로 표현하지 않는다. 새 최적 경로 계산은 기존 기기 Find로 확인한다.
 “다마군 울슈레 다/올컬”은 기존 입력을 유지한 `catsroll_prepare`의 `targetSelection`을 사용한다.
 `{type:"banner_collection",lang:"kr",event:"확인된 배너 ID",rarity:4,excludeOwnedIds:[명시한 보유 ID]}`가 계약이다.
+`allowTicket`은 선택적 boolean이며 기본 false다. 사용자가 특수티켓 획득을 명시한 경우에만 true로
+설정한다. 양수 티켓 예산만으로 허용하지 않으며, 선택 응답의 ticket_policy가 허용 여부·이유를 제공한다.
 선택 지역·배너는 rows에 있어야 하며 seek나 명시적 targets와 동시에 쓰지 않는다. 서버가 실제 풀의
 울슈레 ID를 중복 제거하고 보유 제외한 전체 목표를 구성한다. 포함·제외 ID/이름/이유·개수를
 `targetSelection`에 반환하며 정규화된 request.targets는 기존 기기 Find 입력과 같다.
@@ -309,6 +325,18 @@ JP 배너의 한국어 표시 우선순위와 원본 날짜 유지 규칙은
 
 ## 실제 ChatGPT 웹 확인
 
+### 초기 표시 진단
+
+앱의 `CatsrollDiagnostics()`는 기기 메모리에만 보관하는 최대 40개 단계·경과 시간과 UI build ID를
+반환한다. 기본 콘솔 출력이나 서버 전송은 하지 않으며 시드·관측·본문·결과 ID·계정 정보는 담지 않는다.
+app-start → bridge-start/initialize-sent/initialize-ready → bootstrap-start/ready → ui-mounted,
+시드 Worker start/completed 및 teardown을 구분한다. UI 리소스가 스크립트 실행 전 실패하면 앱 단계도
+없으므로 리소스 응답·외부 sandbox 표시와 함께 비교해야 한다. 단계 추가만으로 최초 표시 문제 해결을
+선언하지 않는다. 초기/변경 hostContext의 displayMode·containerDimensions·safeAreaInsets는 로컬 화면
+폭·전체 화면 스크롤·안전 여백에 반영한다. 임의 호스트 CSS나 코드를 실행하지 않는다.
+
+### 구조 개편 이전 확인
+
 - 준비 도구로 전달한 시드 `2762818371`, KR `2026-02-13_1042`, 10회 조건이 앱에
   채워지고 버튼을 누르기 전에는 계산 결과가 표시되지 않았다.
 - 앱에서 Multi를 실행해 A/B 10행을 표시했다. 첫 A 결과는 비명의 왕 포노아
@@ -371,6 +399,20 @@ GPT/Claude 100/300 직접 배열, 올컬, 999×8 이전 스냅샷, WASM을 통�
 멱등 재시도·플랜 편집·BFCache·문맥/메시지 거부·내보내기를 통과했다. Ruby GPT 각 파일 검사는
 독립 프로세스로 실행한다. 한 프로세스에 합쳐 실행하면 기존 전역 분당 공유 제한을 누적해
 저장 검사가 실패할 수 있으며, 이를 피하려고 운영 제한을 완화하지 않는다.
+
+#### 61d0745d 외부 리뷰 경계 수정
+
+호스트의 늦은 준비 응답·목표 0/31종 추가 입력·초기 bootstrap 경합·종료 요청을
+페이지 회귀로 확인했다. 실패 결과 A 뒤 결과 B 공유가 성공해도 복구 패널의 표시·복사·JSON
+다운로드는 A로 일치한다. 실제 WASM Seek 결과 내보내기는 실행 요청·시작/관측 후 시드·
+실행 데이터 버전을 구조화해 보존하며 공유로 재계산하거나 서버에 저장하지 않는다.
+호스트 문맥의 fullscreen·가용 크기·safe area도 로컬 페이지에서 검사했다.
+
+HostBridge/Lifecycle/Runtime/ResultSummary Node 검사와 GPT/Claude 100/300행 및 999×8
+이전 스냅샷 브라우저 검사를 통과했다. Ruby 결과 저장/조회는 15개·152 assertions,
+MCP는 26개·662 assertions, 동결 계약은 2개·8 assertions를 통과했다.
+이 검증은 모의 호스트/직접 서버 검사이며 수정 후 실제 GPT/Claude 수용과
+첫 카드 표시 실패의 원인 규명은 별도다. 진단 데이터는 기기 메모리의 단계/시간/빌드 ID에 한정한다.
 
 #### 앞선 직접 연결 측정
 

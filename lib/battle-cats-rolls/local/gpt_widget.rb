@@ -67,6 +67,7 @@ module BattleCatsRolls
         html = File.read(TEMPLATE).gsub(/\{\{(?:STYLE|MULTI|ICON_DATA_URI|SCRIPTS|WORKER_SOURCE|FIND_WORKER_SOURCE)\}\}/) { |key|
           replacements.fetch(key)
         }
+        html = html.sub('<html ', "<html data-catsroll-build=\"#{digest[0, 16]}\" ")
         {uri: "ui://catsroll/multi-#{digest[0, 16]}.html", text: html, digest: digest}
       end
     end

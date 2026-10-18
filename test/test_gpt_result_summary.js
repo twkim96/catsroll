@@ -6,6 +6,25 @@ const vm = require("vm");
 const summary = require("../lib/battle-cats-rolls/asset/gpt-result-summary.js");
 const snapshot = require("../lib/battle-cats-rolls/asset/gpt-snapshot.js");
 const captureBaseline = require("./fixtures/gpt-result-summary-capture-v1.json");
+const seekCapture=snapshot.captureSeek({request:{mode:'seek',rows:[{lang:'kr',event:'synthetic'}],rolls:[38,57]},
+  dataVersion:'seek-v2',result:{status:1,count:1,begin:42,end:123}});
+assert.equal(seekCapture.data_version,'seek-v2');
+assert.deepEqual(seekCapture.result,{status:'success',engine_status:1,begin:42,end:123,count:1});
+assert.deepEqual(seekCapture.input.request.rolls,[38,57]);
+assert.match(summary.buildCaptured(seekCapture),/시작 시드 42, 관측 후 시드 123/);
+assert.equal(snapshot.captureSeek({result:{status:1,count:2,begin:42,end:123}}).result.begin,null,
+  'ambiguous seeker candidates are never exported as confirmed seeds');
+const positionCapture=snapshot.capture({findEnabled:true,find:{status:'success',nextOffset:366}});
+const positionProjection=JSON.parse(summary.buildCaptured(positionCapture).split('\n').find(l=>l.startsWith('Find 계산: ')).slice(9));
+assert.deepEqual(positionProjection.engine_position,{next_track_offset:366});
+assert.equal('nextOffset' in positionProjection,false);
+assert.equal(positionCapture.find.nextOffset,366,'legacy original position remains unchanged');
+for(const [override,effective,source] of [[0,11,'banner_default'],[7,7,'explicit_override']]) {
+ const input={track:{rows:[{forceGuaranteed:override}]},outputs:[{row:{lang:'kr',forceGuaranteed:override},pool:{guaranteed_rolls:effective},out:{cats:[]}}]};
+ const stored=snapshot.capture(input);
+ assert.deepEqual(stored.banners[0].guarantee,{requested_override:override,effective_rolls:effective,source});
+ assert.deepEqual(JSON.parse(summary.buildCaptured(stored).split('\n').find(l=>l.startsWith('배너 배열: ')).slice(7)).guarantee,stored.banners[0].guarantee);
+}
 
 function cat(id, position, next, options) {
   options = options || {};
