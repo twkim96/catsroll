@@ -12,8 +12,10 @@ Run with the same Playwright environment used by [GPT browser checks](gpt-plugin
 
 `test_recent_seeds_client.cjs` checks that submitting a new seed with client compute
 updates recent-seed storage and the visible panel, and survives reload. The client
-navigation emits `catsroll:track-seed-change`; the existing history helper owns
-validation and persistence. It does not change GPT's temporary, isolated storage.
+navigation and ordinary Multi seed changes emit `catsroll:track-seed-change`; the
+existing history helper owns validation and persistence. Multi coordinate moves,
+Apply, recent-seed links and reload are covered. Temporary shared Multi and GPT
+sessions do not write personal history.
 
 * With Banner at its default, the local series filter shows all dated events
   from any selected series, without pagination.
