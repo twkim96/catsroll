@@ -34,14 +34,14 @@ module BattleCatsRolls
 
     def lookup(args)
       validate_args!(args)
-      query = args['query']
+      query = normalize_query(args['query'])
       topic = args['topic']
       limit = args.fetch('limit', DEFAULT_LIMIT)
 
       if topic
         document = @documents.fetch(topic)
         required = section_matches(document, query).select { |section| !section[:hits].empty? }.map { |section| section.merge(document: document) }
-        return result(query, [document], true, 'topic', required)
+        return result(args['query'], [document], true, 'topic', required)
       end
 
       candidates = @documents.values.reject { |document| document.fetch('id') == 'index' }
@@ -60,14 +60,14 @@ module BattleCatsRolls
       hits = hits.reject { |hit| hits.any? { |other| other != hit && other[0] <= hit[0] && other[1] >= hit[1] } }
       required = hits.filter_map do |hit|
         ranked_sections.select { |section| section[:hits].include?(hit) }.
-          max_by { |section| [section[:score] + 2 * document_scores.fetch(section[:document]['id']), section[:score]] }
+          max_by { |section| [section[:definitions].include?(hit) ? 1 : 0, section[:score] + 2 * document_scores.fetch(section[:document]['id']), section[:score]] }
       end.uniq { |section| [section[:document]['id'], section[:heading]] }
       ranked = candidates.filter_map do |document|
         sections = ranked_sections.select { |section| section[:document] == document }
         value = 2 * document_scores.fetch(document['id']) + (sections.first&.fetch(:score) || 0)
         [document, value] if value >= 4
       end.sort_by { |document, value| [-value, document.fetch('id')] }
-      return result(query, [@documents.fetch('index')], false, query.to_s.strip.empty? ? 'index' : 'fallback') if ranked.empty?
+      return result(args['query'], [@documents.fetch('index')], false, query.to_s.strip.empty? ? 'index' : 'fallback') if ranked.empty?
 
       best = ranked.first.last
       required_ids = required.map { |section| section[:document]['id'] }.uniq
@@ -75,7 +75,7 @@ module BattleCatsRolls
       # Coverage wins over a weak filler match; limit remains a hard upper bound.
       protected, fillers = eligible.partition { |document, _value| required_ids.include?(document['id']) }
       selected = (protected + fillers).first(limit).sort_by { |document, _value| ranked.index { |entry| entry.first == document } }.map(&:first)
-      result(query, selected, true, 'matched', required)
+      result(args['query'], selected, true, 'matched', required)
     end
 
     # Recovery for hosts that send a concept word to the character catalog.
@@ -130,11 +130,18 @@ module BattleCatsRolls
         unless sections.is_a?(Array) && sections.all? { |section|
             section.is_a?(Hash) && section['heading'].is_a?(String) &&
               section['keywords'].is_a?(Array) && section['keywords'].all? { |word| word.is_a?(String) } &&
-              section.fetch('include', []).is_a?(Array) && section.fetch('include', []).all? { |heading| heading.is_a?(String) }
+              section.fetch('include', []).is_a?(Array) && section.fetch('include', []).all? { |heading| heading.is_a?(String) } &&
+              section.fetch('defines', []).is_a?(Array) && section.fetch('defines', []).all? { |word| word.is_a?(String) }
           }
           raise InvalidManifest, 'Sections need a heading, keywords, and optional included headings'
         end
+        if document.key?('defaultSection') && !document['defaultSection'].is_a?(String)
+          raise InvalidManifest, 'defaultSection must be an authored heading'
+        end
         headings = sections.map { |section| section.fetch('heading') }
+        if document.key?('defaultSection') && !headings.include?(document['defaultSection'])
+          raise InvalidManifest, 'defaultSection must be a registered section'
+        end
         raise InvalidManifest, 'Section headings must be unique' unless headings.uniq == headings
       end
     end
@@ -152,6 +159,7 @@ module BattleCatsRolls
         end
         headings = split_sections(File.read(path, encoding: 'UTF-8')).last.keys
         configured = document.fetch('sections', []).flat_map { |section| [section.fetch('heading')] + section.fetch('include', []) }
+        configured += [document.fetch('defaultSection')] if document.key?('defaultSection')
         missing = configured - headings
         raise InvalidManifest, "Missing section heading in #{file}: #{missing.first}" unless missing.empty?
       end
@@ -176,7 +184,10 @@ module BattleCatsRolls
         documents << {'id' => document.fetch('id'), 'title' => document.fetch('title'), 'content' => content,
           'related' => document.fetch('related'), 'truncated' => clipped,
           'contentMode' => mode, 'sections' => sections, 'omittedSections' => omitted,
-          'contentHash' => Digest::SHA256.hexdigest(@corpus.fetch(document.fetch('id'))[:content])}
+          'contentHash' => Digest::SHA256.hexdigest(@corpus.fetch(document.fetch('id'))[:content]),
+          'nextQueries' => mode == 'summary' ? document.fetch('sections', []).first(1).map { |section|
+            {'topic' => document.fetch('id'), 'query' => section.fetch('heading')}
+          } : []}
         break if clipped
       end
       topic_ids = selected.flat_map { |document| [document.fetch('id')] + document.fetch('related') }.uniq
@@ -190,6 +201,7 @@ module BattleCatsRolls
       } }.map { |section| {'topic' => section[:document]['id'], 'query' => section[:heading]} }.uniq
       {'guideRevision' => @revision, 'unansweredSections' => pending,
        'version' => @manifest.fetch('version'), 'query' => query, 'matched' => matched, 'status' => status,
+       'coverage' => 'recognized_guide_terms_only_not_full_language_understanding',
        'documents' => documents, 'topics' => topics, 'truncated' => truncated}
     end
 
@@ -239,6 +251,7 @@ module BattleCatsRolls
     end
 
     def section_matches(document, query)
+      query = normalize_query(query)
       return [] if query.to_s.strip.empty?
 
       entry = @corpus.fetch(document.fetch('id'))
@@ -249,7 +262,8 @@ module BattleCatsRolls
         record = {'id' => '', 'title' => heading, 'summary' => '', 'keywords' => section.fetch('keywords')}
         hits = section.fetch('keywords').flat_map { |keyword| exact_keyword_matches(keyword, query) }.uniq
         value = score(record, terms, compact, query, body_source: entry[:sections].fetch(heading)) + hits.length * (document.fetch('id') == 'glossary' ? 4 : 8)
-        {heading: heading, score: value, hits: hits, include: section.fetch('include', [])}
+        definitions = section.fetch('defines', []).flat_map { |keyword| exact_keyword_matches(keyword, query) }
+        {heading: heading, score: value, hits: hits, definitions: definitions, include: section.fetch('include', [])}
       end.select { |section| section[:score] >= 4 }.sort_by { |section| -section[:score] }
     end
 
@@ -264,6 +278,11 @@ module BattleCatsRolls
       headings = (chosen + required).uniq
       headings += entry[:records].select { |section| headings.include?(section['heading']) }.flat_map { |section| section.fetch('include', []) }
       chosen = sections.keys.select { |heading| headings.include?(heading) }
+      if chosen.empty? && document['defaultSection']
+        chosen = [document.fetch('defaultSection')]
+        chosen += entry[:records].find { |section| section['heading'] == chosen.first }.fetch('include', [])
+        chosen = sections.keys.select { |heading| chosen.include?(heading) }
+      end
       if chosen.empty?
         summary = "# #{document.fetch('title')}\n\n#{document.fetch('summary')}\n"
         return [summary, [], sections.keys, 'summary']
@@ -277,7 +296,7 @@ module BattleCatsRolls
       normalized = keyword.unicode_normalize(:nfkc).downcase.delete(' ')
       return [] unless normalized.match?(/\A[가-힣a-z0-9_\/+]+\z/)
 
-      pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*')
+      pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*').gsub('\\+') { '\\s*\\+\\s*' }
       # Compact registered Korean phrases accept optional spacing. Pure ASCII
       # identifiers stay intact: R G denotes two facets, not RG.
       pattern = normalized.chars.map { |char| Regexp.escape(char) }.join('\\s*') if normalized.match?(/[가-힣]/)
@@ -289,8 +308,31 @@ module BattleCatsRolls
       }
     end
 
+    # Normalize domain notation and constraint families before ranking, rather
+    # than registering complete user sentences. Keep the original query in replies.
+    def normalize_query(query)
+      return query if query.nil?
+
+      text = query.unicode_normalize(:nfkc).downcase.gsub(/\blast\s+roll\b/, 'lastroll')
+      # These are a list of result markers, unlike the atomic controls F/U, S/G.
+      text = text.gsub(/(?<![가-힣a-z0-9_\/+])(?:rg|r|g)(?:\s*\/\s*(?:rg|r|g))+(?=(?:은|는|와|과|이|가|을|를)?(?:[^가-힣a-z0-9_\/+]|$))/) { |markers| markers.tr('/', ' ') }
+      # Normalize the subject noun separately so particles and wording changes
+      # do not hide a missing seed or a failure after observation input.
+      text = text.gsub(/(?:시드|seed)\s*(?:번호|숫자)/, '시드')
+      additions = []
+      additions << '시드없' if text.match?(/(?:시드|seed)(?:은|는|이|가|을|를|도)?\s*(?:(?:아직|잘)\s*)?(?:몰라|모르|없)/)
+      if text.match?(/시드|seed|관측|후보/) && text.match?(/후보(?:은|는|이|가)?\s*(?:없|0\s*개)|안\s*(?:맞|돼|되|나오|나와)|틀리|틀려|실패|못\s*찾/)
+        additions << '검색실패'
+      end
+      negative = /(?:없이|제외|빼고|(?:사용|투자|포함|소모)\s*하지\s*(?:않|말)|쓰지\s*(?:않|말)|안\s*(?:쓰|사용|넣))/
+      {'티켓' => '티켓 없이', '본능' => '본능 없이'}.each do |noun, canonical|
+        additions << canonical if text.match?(/#{noun}(?:은|는|을|를|도)?\s*#{negative}/)
+      end
+      ([text] + additions.reject { |addition| text.include?(addition) }).join(' ')
+    end
+
     def query_terms(query)
-      words = query.to_s.downcase.scan(/[가-힣]+|[a-z0-9]+/)
+      words = query.to_s.downcase.scan(/[a-z0-9]+(?:\s*[\/+]\s*[a-z0-9]+)+|[가-힣]+|[a-z0-9]+/).map { |word| word.delete(' ') }
       words.filter_map do |word|
         normalized = strip_particle(word)
         normalized = normalize_verb(normalized)
@@ -370,9 +412,9 @@ module BattleCatsRolls
       normalized = keyword.unicode_normalize(:nfkc).downcase.delete(' ')
       return false unless normalized.match?(/\A[가-힣a-z0-9\/+]+\z/) &&
         (normalized.length == 1 || normalized.match?(/\A[a-z0-9]{1,2}\z/) ||
-          normalized.match?(/[가-힣]/) && normalized.match?(/[a-z0-9]/) || normalized.include?('/'))
+          normalized.match?(/[가-힣]/) && normalized.match?(/[a-z0-9]/) || normalized.include?('/') || normalized.include?('+'))
 
-      pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*')
+      pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*').gsub('\\+') { '\\s*\\+\\s*' }
       suffixes = (PARTICLES + %w[이랑 이나 란 이란 뜻 이면 인지]).uniq.sort_by { |word| -word.length }.map { |word| Regexp.escape(word) }.join('|')
       query.to_s.unicode_normalize(:nfkc).downcase.match?(/(?<![가-힣a-z0-9\/+])#{pattern}(?:(?:#{suffixes})(?:은|는|도|만)?)?(?![가-힣a-z0-9\/+])/)
     end

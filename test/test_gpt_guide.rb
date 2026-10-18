@@ -301,4 +301,91 @@ describe 'Catsroll curated GPT guide retrieval' do
     end
   end
 
+  would 'normalize result-marker lists and bundle notation while keeping atomic controls and boundaries' do
+    guide = BattleCatsRolls::GptGuide.new
+    ['R과 RG 차이', 'R, G, RG 차이', 'R/G/RG 차이', 'R / G / RG 차이', 'RG/R 차이'].each do |question|
+      data = guide.lookup('query' => question)
+      text = data.fetch('documents').map { |doc| doc.fetch('content') }.join
+      expect(text.include?('표의 `R`은 그 재추첨 결과')).eq true
+      expect(text.include?('`RG`는 시작 결과')).eq true
+      expect(data.fetch('unansweredSections')).eq []
+      expect(data.fetch('query')).eq question
+    end
+    ['10+1 뜻', '10 + 1은 뭐야?', '１０＋１ 뜻'].each do |question|
+      data = guide.lookup('query' => question)
+      expect(data.fetch('documents').first.fetch('id')).eq 'guaranteed'
+      text = data.fetch('documents').map { |doc| doc.fetch('content') }.join
+      expect(text.include?('일반 11연과 확정 11연은 다르다')).eq true
+      expect(text.include?('표기만으로 확정 여부를 판단하지')).eq true
+      expect(data.fetch('documents').none? { |doc| doc['id'] == 'seed' }).eq true
+    end
+    question = 'R/G/RG 차이와 Last roll, S/G, F/U 알려줘'
+    data = guide.lookup('query' => question)
+    all_docs = data.fetch('documents') + data.fetch('unansweredSections').flat_map { |args| guide.lookup(args).fetch('documents') }
+    text = all_docs.map { |doc| doc.fetch('content') }.join
+    ['표의 `R`', '`RG`는 시작 결과', '## F/U', '## S/G', '직전 캐릭터 ID'].each { |required| expect(text.include?(required)).eq true }
+    ['F/USER', 'A/B/C', 'xR/G/RG', 'x_R/G/RG', '한R/G/RG글', '110+1', '10+11', 'large', '111'].each do |question|
+      expect(guide.lookup('query' => question).fetch('matched')).eq false
+    end
+  end
+
+  would 'preserve seed failure and negative constraint families across natural wording' do
+    guide = BattleCatsRolls::GptGuide.new
+    groups = [
+      [['시드 없어', '시드를 몰라요', '시드번호를 모르겠어요', '시드 숫자를 잘 모르겠는데', 'seed 번호가 없어요'],
+        ['mode="seek"', '관측 기록을 아직 모으지 않았어도']],
+      [['후보가 없어요', '후보가 안 나와요', '후보 0개래', '관측 10개 넣었는데 안 맞아', '시드 검색 실패했어', '관측 열 개 넣었는데 틀려'],
+        ['## 검색 실패 분기', '더 뽑게 하지 말고', '지역·당시 배너·ID·순서']],
+      [['티켓 없이 경로 찾아줘', '티켓 안 쓰고 경로 찾아줘', '티켓은 사용하지 않고 경로 찾아줘', '티켓을 쓰지 않고 경로 찾아줘', '티켓 제외해서 경로 찾아줘'],
+        ['allow_ticket', '한도를 0', 'maxPlatinum']],
+      [['본능 없이 추천해', '본능은 사용하지 않고 추천해', '본능을 쓰지 않고 추천해', '본능 투자하지 않고 추천해', '본능 제외하고 추천해'],
+        ['investment="none"']]
+    ]
+    groups.each do |questions, required|
+      questions.each do |question|
+        data = guide.lookup('query' => question)
+        text = data.fetch('documents').map { |doc| doc.fetch('content') }.join
+        required.each { |value| expect(text.include?(value)).eq true }
+        expect(data.fetch('unansweredSections')).eq []
+        expect(data.fetch('query')).eq question
+        expect(data.fetch('coverage')).eq 'recognized_guide_terms_only_not_full_language_understanding'
+      end
+    end
+    # The scoped constraint classifier must not turn a positive request into a
+    # prohibition or treat a missing character as a failed seed search.
+    ['티켓을 사용해서 경로 찾아줘', '본능을 사용하고 추천해', '본능옥 없이 추천해', '후보 캐릭터를 추천해'].each do |question|
+      normalized = guide.send(:normalize_query, question)
+      expect(normalized.include?('티켓 없이')).eq false
+      expect(normalized.include?('본능 없이')).eq false
+      expect(normalized.include?('검색실패')).eq false
+    end
+  end
+
+  would 'supply an actionable default or exact follow-up for summary recovery and keep authored headings reachable' do
+    guide = BattleCatsRolls::GptGuide.new
+    seed = guide.lookup('topic' => 'seed', 'query' => '아무 관련 없는 표현').fetch('documents').first
+    expect(seed.fetch('sections')).eq ['관측 입력과 준비']
+    expect(seed.fetch('content').include?('mode="seek"')).eq true
+    summary = guide.lookup('topic' => 'find', 'query' => '아무 관련 없는 표현').fetch('documents').first
+    expect(summary.fetch('contentMode')).eq 'summary'
+    expect(summary.fetch('nextQueries').empty?).eq false
+    summary.fetch('nextQueries').each do |args|
+      expect(guide.lookup(args).fetch('documents').first.fetch('sections').include?(args.fetch('query'))).eq true
+    end
+    JSON.parse(File.read('doc/gpt-knowledge/manifest.json')).fetch('documents').each do |document|
+      document.fetch('sections', []).each do |section|
+        args = {'topic' => document.fetch('id'), 'query' => section.fetch('heading')}
+        expect(guide.lookup(args).fetch('documents').first.fetch('sections').include?(section.fetch('heading'))).eq true
+      end
+    end
+    Dir.mktmpdir do |root|
+      guide_with(root)
+      path = File.join(root, 'manifest.json')
+      manifest = JSON.parse(File.read(path))
+      manifest.fetch('documents').find { |doc| doc['id'] == 'seed' }['defaultSection'] = 'not registered'
+      File.write(path, JSON.generate(manifest))
+      expect(raises?(BattleCatsRolls::GptGuide::InvalidManifest) { BattleCatsRolls::GptGuide.new(root: root) }).eq true
+    end
+  end
+
 end

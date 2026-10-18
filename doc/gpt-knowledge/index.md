@@ -31,7 +31,7 @@
 
 `catsroll_guide(query="사용자가 한 말")`로 먼저 검색한다. `contentMode="sections"`는 질문에 맞춘 일부 절이다.
 `sections`가 전달한 절, `omittedSections`가 생략한 절을 나타내며, 생략된 내용까지 확인했다고 말하지 않는다.
-`unansweredSections`에 요청했지만 미전달한 절이 있으면 그 `topic`/`query`로 보충한다. `summary`는 주제 요약만 반환한 상태다. `guideRevision`과 문서별 `contentHash`는 받은 안내 원문을 식별하는 지문이다.
+`unansweredSections`는 검색기가 인식한 항목 중 미전달한 절이다. 비어 있어도 질문 전체의 의미를 빠짐없이 이해했다는 보장은 아니다. 항목이 있으면 그 `topic`/`query`로 보충한다. `summary`는 주제 요약만 반환한 상태이며, `nextQueries`의 정확한 후속 조회로 구체적인 안내를 보충한다. `guideRevision`과 문서별 `contentHash`는 받은 안내 원문을 식별하는 지문이다.
 다른 설명이 필요하면 `topic`과 구체적인 `query`로 다시 조회한다. `topic`만 지정하면 전체 문서를 읽는다.
 검색이 맞지 않으면 이 목록에서 골라 질문을 좁힌다. 사용자의 현재 질문과 무관한 문서를 한꺼번에 설명하지 않는다.
 

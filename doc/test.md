@@ -10,12 +10,21 @@ upstream CSS changes. `test_web_controls.cjs` exercises these controls and confi
 that turning plan mode off hides its message without discarding marks or routes.
 Run with the same Playwright environment used by [GPT browser checks](gpt-plugin.md).
 
-`test_recent_seeds_client.cjs` checks that submitting a new seed with client compute
-updates recent-seed storage and the visible panel, and survives reload. The client
-navigation and ordinary Multi seed changes emit `catsroll:track-seed-change`; the
-existing history helper owns validation and persistence. Multi coordinate moves,
-Apply, recent-seed links and reload are covered. Temporary shared Multi and GPT
-sessions do not write personal history.
+`test_recent_seeds_client.cjs` uses the running local server and production pools
+and engines. It checks client submission/reload, Multi result advance and exact
+restoration of seed + Last, first results, R/G/RG branches, next positions and
+share inputs. Known Last 0 and different Last values for the same seed remain
+separate records. The v1 storage key/container, legacy arrays/pins and four-link
+limit remain supported. Legacy seed-only links show “Last 미확인” and open Multi
+with no inherited Last; calculation and sharing stay pending until the user
+enters Last explicitly (0 when there is no previous result) and presses Apply.
+Full links preserve known Last for ordinary pages and new tabs. Temporary shared
+Multi and GPT sessions preserve personal history/settings.
+
+Run against the existing opt-in server from [GPT browser checks](gpt-plugin.md),
+without restarting it, using its Playwright environment:
+
+    CATSROLL_TEST_URL=http://127.0.0.1:17867 node test/test_recent_seeds_client.cjs
 
 `test_track_client_race.cjs` delays actual pool delivery while using the shared
 engine/renderer. It reverses two request completions and checks late errors,

@@ -330,7 +330,7 @@ module BattleCatsRolls
       data['scope'] = 'explanation_only'
       data['authority'] = 'New inputs use current catalogs; existing snapshots use their own inputs/data version/records. User-supplied computed tables, screenshots and route text support explanations of visible evidence. prepared is not computed. Performance assessments remain sourced opinions with form/investment conditions.'
       data['responsePolicy'] = '초심자에게 먼저 핵심 2~4문장과 다음 행동 하나를 제안한다. 누락된 필수 정보 1~2개만 묻고 ID는 도구로 찾는다. prepared는 계산 전이다. 모르는 사실은 추측하지 않는다.'
-      data['retrievalPolicy'] = 'contentMode=sections는 일부 절, summary는 주제 요약만 전달한 상태다. omittedSections는 미전달 제목이며 읽은 내용이 아니다. unansweredSections는 질문에서 요청했지만 한도 때문에 미전달한 항목이므로 topic/query로 보충한 뒤 답한다. guideRevision과 contentHash는 안내 원문의 내용 지문이다. 추가 내용은 topic과 query로 조회하고, 전체 문서가 필요할 때만 query 없이 topic을 지정한다.'
+      data['retrievalPolicy'] = 'contentMode=sections는 일부 절, summary는 주제 요약만 전달한 상태다. summary의 nextQueries는 구체적인 후속 조회다. omittedSections는 미전달 제목이며 읽은 내용이 아니다. unansweredSections는 검색기가 인식한 항목 중 미전달한 절이다. 비어 있어도 질문의 모든 의미를 이해하거나 답했다는 보장은 아니다. 항목이 있으면 topic/query로 보충한 뒤 답한다. guideRevision과 contentHash는 안내 원문의 내용 지문이다. 추가 내용은 topic과 query로 조회하고, 전체 문서가 필요할 때만 query 없이 topic을 지정한다.'
       data.fetch('documents').each do |document|
         document['sourceUrl'] = "https://github.com/twkim96/catsroll/blob/main/doc/gpt-knowledge/#{document.fetch('id')}.md"
       end
