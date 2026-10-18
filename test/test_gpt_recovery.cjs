@@ -22,6 +22,10 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   await page.goto(base+'/gpt-test-host');await page.waitForFunction(()=>window.ready);
   await page.locator('#arguments').fill(JSON.stringify(request));await page.locator('#prepare').click();
   await page.waitForFunction(()=>latestResult?.structuredContent?.request?.seed===42);
+  await frame.locator('#multi-container').waitFor({state:'visible'});
+  await frame.locator('#count').evaluate((element,count)=>new Promise(resolve=>{
+    const ready=()=>element.value===String(count)?resolve():setTimeout(ready,10);ready();
+  }),request.count);
   await frame.locator('#calculate').click();await frame.locator('#multi_tables table').first().waitFor();
  }
  async function share(){
@@ -34,6 +38,7 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
  }
  try{
   await open();
+  await frame.locator('body').evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));
   // A prior successful context must never make a failed retry send text without data.
   assert.equal(await share(),'현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.');
   const originalId=await page.evaluate(()=>lastShareReply.structuredContent.result_id);
@@ -62,6 +67,21 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   assert.match(await frame.locator('#share-recovery-status').innerText(),/storage_full/);
   const direct=await page.evaluate(()=>messages.filter(m=>m.method==='ui/update-model-context').at(-1).params.content[0].text);
   assert.match(direct,/배너 배열:/);assert(direct.length<=60000);
+  // Plan editing is separate from array input: freeze the old plan while a
+  // publish is in flight, then share the edited plan without another engine run.
+  await page.evaluate(()=>{writeFailure=null;holdShare=true;messages=[];});
+  await frame.locator('#send-context').click();await page.waitForFunction(()=>shareReleases.length===1);
+  await frame.locator('#multi_plan_name').evaluate(el=>{el.value='편집한 플랜';el.dispatchEvent(new Event('input',{bubbles:true}));});
+  await page.evaluate(()=>{holdShare=false;shareReleases.shift()();});
+  await page.waitForFunction(()=>!document.querySelector('iframe').contentDocument.querySelector('#send-context').disabled);
+  assert.equal(await page.evaluate(()=>messages.some(x=>x.method==='ui/message')),false);
+  const oldPlan=JSON.parse(await frame.locator('#share-recovery-json').inputValue());
+  assert.notEqual(oldPlan.plan.name,'편집한 플랜');
+  assert.equal(await frame.locator('#multi_tables table').first().locator('tbody tr').count(),300);
+  await share();
+  assert.equal(await page.evaluate(()=>messages.some(x=>x.method==='tools/call'&&x.params.name==='catsroll_prepare')),false,
+    'editing and sharing a plan never recalculates the array');
+  assert.equal(await page.evaluate(()=>messages.filter(x=>x.method==='tools/call'&&x.params.name==='catsroll_share_result').at(-1).params.arguments.snapshot.plan.name),'편집한 플랜');
   // Snapshot is frozen before the async upload and never mixed with a newer seed.
   await page.evaluate(()=>{writeFailure=null;holdShare=true;messages=[];});
   await frame.locator('#send-context').click();await page.waitForFunction(()=>shareReleases.length===1);

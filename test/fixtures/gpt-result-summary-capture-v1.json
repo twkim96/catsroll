@@ -1,0 +1,268 @@
+{
+  "schema_version": 1,
+  "data_version": "fixture-v1",
+  "banners": [
+    {
+      "banner": "Synthetic 42",
+      "lang": "kr",
+      "rowsTotal": 1,
+      "rowsIncluded": 1,
+      "rowsOmitted": 0,
+      "conditionalTotal": 1,
+      "conditionalIncluded": 1,
+      "conditionalOmitted": 0,
+      "names": {
+        "1": "Rare",
+        "2": "Reroll",
+        "5": "Guaranteed Uber",
+        "6": "Super Rare",
+        "7": "Conditional Uber",
+        "870": "Goal"
+      },
+      "rarities": {
+        "1": 2,
+        "2": 3,
+        "5": 5,
+        "6": 3,
+        "7": 4,
+        "870": 4
+      },
+      "rows": [
+        [
+          [
+            1,
+            "1A",
+            "2A",
+            [
+              2,
+              "1AR",
+              "2B",
+              [
+                870,
+                "1ARG",
+                "12A"
+              ]
+            ],
+            [
+              5,
+              "1AG",
+              "12B"
+            ]
+          ],
+          [
+            6,
+            "1B",
+            "2B",
+            null,
+            null
+          ]
+        ]
+      ],
+      "conditional": [
+        [
+          "1AR",
+          [
+            "guaranteed",
+            "rerolled",
+            7,
+            "1ARG",
+            true,
+            true,
+            "12A",
+            "12A",
+            [
+              0,
+              "1AR",
+              "Rare",
+              "reroll"
+            ],
+            1
+          ]
+        ]
+      ]
+    }
+  ],
+  "input": {
+    "track": {
+      "seed": 42,
+      "last": 0,
+      "count": 300,
+      "formIndex": 0,
+      "rows": [
+        {
+          "lang": "kr",
+          "event": "synthetic42",
+          "ubers": 0,
+          "seriesIds": [
+            17,
+            null
+          ]
+        }
+      ]
+    },
+    "findEnabled": true,
+    "findSettings": {
+      "optimization": "cost",
+      "maxGuaranteed": 1,
+      "scheduleAware": true,
+      "maxPlatinum": 0,
+      "maxLegendTicket": 0,
+      "targets": [
+        {
+          "cat_id": 870,
+          "allow_ticket": false
+        }
+      ]
+    }
+  },
+  "find": {
+    "status": "partial",
+    "message": "search limit; best route retained",
+    "destination": "35B",
+    "optimization": "cost",
+    "cost": 1.48,
+    "rawCost": 1.48,
+    "baseCost": 1.48,
+    "regularUnitCost": 0.02,
+    "balanceCredit": 0,
+    "uberDraws": 0,
+    "regularUses": 24,
+    "ticketUses": 0,
+    "guaranteedUses": 1,
+    "targetAcquired": 1,
+    "targetTotal": 1,
+    "actionContexts": [
+      {
+        "lang": "kr",
+        "event": "synthetic42",
+        "eventLabel": "Synthetic 42",
+        "scheduleDay": "2026-10-18"
+      }
+    ],
+    "actionCats": {},
+    "regularActions": 24,
+    "ticketActions": 0,
+    "guaranteedActions": 1,
+    "totalDraws": 35,
+    "targetsAcquired": [
+      {
+        "actionIndex": 25,
+        "targetIndex": 0,
+        "catId": 870,
+        "catName": "Goal",
+        "resultLabel": "25AG",
+        "drawNumber": 35
+      }
+    ],
+    "actions": [
+      {
+        "type": "rollBatch",
+        "lang": "kr",
+        "event": "synthetic42",
+        "eventLabel": "Synthetic 42",
+        "scheduleDay": "2026-10-18",
+        "count": 24,
+        "start": "1A",
+        "next": "25A",
+        "actionStart": 1,
+        "actionEnd": 24
+      },
+      {
+        "actionIndex": 25,
+        "type": "guaranteed",
+        "start": "25A",
+        "next": "35B",
+        "pulls": 11,
+        "guaranteedLabel": "25AG",
+        "routePulls": [
+          {
+            "resultLabel": "25A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "26A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "27A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "28A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "29A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "30A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "31A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "32A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "33A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "34A",
+            "rerolled": false,
+            "guaranteed": false
+          },
+          {
+            "resultLabel": "25AG",
+            "rerolled": false,
+            "guaranteed": true
+          }
+        ],
+        "acquired": [
+          {
+            "targetIndex": 0,
+            "catId": 870,
+            "catName": "Goal",
+            "resultLabel": "25AG"
+          }
+        ],
+        "context": 0
+      }
+    ]
+  },
+  "plan": {
+    "enabled": true,
+    "name": "synthetic42 goal",
+    "marks": [
+      {
+        "column": 0,
+        "position": "25AG"
+      }
+    ],
+    "route": [
+      null,
+      null
+    ],
+    "cats": [
+      {
+        "cat_id": 870
+      }
+    ],
+    "progress": {
+      "drawCount": null
+    }
+  }
+}

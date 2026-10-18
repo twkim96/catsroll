@@ -15,11 +15,18 @@ iframe에서 Multi·Find·WASM 실행을 확인했다. 무료 웹 계정, 결과
 
 ## 파일과 유지보수
 
-- `lib/battle-cats-rolls/local/gpt_mcp.rb`: opt-in `/mcp`, `/gpt`와 입력 검증·데이터 준비.
-- `local/gpt_results.rb`: 한시적 공유 스냅샷 보관·접근 경계·조회 페이지.
+- `lib/battle-cats-rolls/local/gpt_mcp.rb`: opt-in HTTP/JSON-RPC와 기존 도구 핸들러·입력 준비.
+- `local/gpt_tool_registry.rb`: 도구 이름·스키마·노출·annotations·접근 정책·핸들러의 정적 정의. 목록과 실행이 같은 정의를 사용한다. `local/gpt_validation.rb`는 공통 검증이다.
+- `local/gpt_widget.rb`: 기존 UI/Worker 자산 조립과 콘텐츠 지문 생성. 현재 런타임 조립 방식을 보존하고 배포 전 빌드는 후속 검토한다.
+- `local/gpt_target_selection.rb`: 실제 배너 풀에서 올컬 목표·명시적 보유 제외·제한 상태를 구성한다. 계산 엔진을 실행하지 않는다.
+- `local/gpt_results.rb`: 스냅샷 검증·한시적 보관·만료·할당량·멱등성·접근 경계. `local/gpt_result_query.rb`는 저장소와 독립된 불변 스냅샷 투영·페이지 생성이다.
 - `local/gpt_banner_preview.rb`: 기존 KR/JP 시리즈 연결과 최신 참고 풀 조회. 서버 계산은 하지 않는다.
 - `asset/gpt-runtime.js`, `asset/gpt-worker.js`: 기존 엔진의 기기 실행과 취소·직렬화.
-- `asset/gpt-app.js`, `asset/gpt-inputs.js`, `asset/gpt-input-transfer.js`, `asset/gpt-app.css`, `view/gpt_app.html`: 호스트 브리지·기존 GPT 입력 UI·독립 미리보기.
+- `asset/gpt-host-bridge.js`: 수동 MCP/브라우저 전송, 출처 고정·capability·pending·연결 종료. SDK 교체는 이 경계 안에서 검토한다.
+- `asset/gpt-application-state.js`: 입력/플랜 revision, 계산 실행 세대·취소·완료 상태. 이전 세대 응답은 현재 결과를 변경하지 못한다.
+- `asset/gpt-share.js`: 고정 스냅샷별 저장·전달·재시도와 복구 상태. GPT/Claude 차이는 전송 정책에만 있다.
+- `asset/gpt-app.js`, `asset/gpt-inputs.js`, `asset/gpt-input-transfer.js`, `asset/gpt-app.css`, `view/gpt_app.html`: UI·공통 Multi 컨트롤러 연결·독립 미리보기.
+- `asset/gpt-snapshot.js`: 텍스트를 거치지 않는 구조화 캡처. `gpt-result-summary.js`는 고정 스냅샷의 제한된 모델 문맥만 생성한다.
 - `view/multi.erb`, `asset/multi-{track,find,plan}.js`: 표·목표 선택·경로 도장·플랜의 공통 UI. `CatsrollMultiHost`가 있을 때만 MCP 데이터·Worker·임시 저장소를 사용한다.
 - `plugins/catsroll/{plugin,mcp}.json`: 원격 MCP 플러그인 패키지 원본.
 - `bin/package-gpt-plugin.rb`: 설정된 공개 origin으로 ZIP 생성. 생성물은 `temp/`.
@@ -34,6 +41,20 @@ SHA-256 지문이 들어간다. 준비한 풀의 버전은 별도 `dataVersion`�
 GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트와 이 어댑터 테스트를 확인한다.
 연결은 기존 `local_features.rb`와 `local/server_middleware.rb` 안에 한정한다.
 컨트롤서버의 기존 merge/push 경로는 변경하지 않는다.
+
+## 상태 소유권과 계약 회귀
+
+연결의 초기화·출처·RPC pending은 HostBridge가 소유한다. 계산 실행은 ApplicationState의
+세대 번호로 늦은 응답을 차단하며 기존 엔진/컨트롤러가 결과를 소유한다. ShareJob은 고정 캡처,
+멱등성 키·결과 ID, publishing/published/delivering/delivered/recoverable_error를 소유한다.
+입력 변경은 현재 계산을 무효화하지만 이미 고정한 ShareJob은 유지한다. 플랜 편집은 별도 revision으로
+새 공유를 만들 수 있고 배열 재계산을 요구하지 않는다. 전송 실패는 계산 실패로 표시하지 않는다.
+
+`test/fixtures/gpt_mcp/870cc54d.json`은 구조 변경 전 initialize·tools/list·resources/list와
+대표 성공/실패 응답의 기준본이다. UI 지문과 데이터 버전처럼 의도적으로 변하는 값만 정규화한다.
+올컬 선택의 추가 입력·설명 변경은 `selection_delta_v1.json`에 명시한다. 기준본 자동 갱신은 하지 않는다.
+도구의 app visibility는 호스트 표시 메타데이터이며 서버 사용자 인증이 아니다. 현재 익명 공개 조회와
+명시적 공유·비밀 결과 ID의 권한 경계는 그대로 유지한다.
 
 ## 도구 계약
 
@@ -58,8 +79,9 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 준비 응답의 `guide`는 모드별 설명 주제만 제안하며 계산 결과를 담지 않는다.
 풀과 WASM 입력은 `_meta['catsroll/data']`에만 담아 모델 문맥을 불필요하게 채우지 않는다.
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.
-공유 직렬화는 `asset/gpt-result-summary.js`가 계산된 출력만 읽는다. `capture`는 모든
-배열·조건부 R/G/RG·Find·플랜을 구조화한 스냅샷으로 만들며 엔진을 다시 실행하지 않는다.
+공유 원본은 `asset/gpt-snapshot.js`가 계산된 출력·입력·플랜에서 직접 정규화한다.
+`capture`는 모든 배열·조건부 R/G/RG·Find·플랜을 보존하며 표시 텍스트를 만들거나 역파싱하지 않고 엔진도 다시 실행하지 않는다.
+`gpt-result-summary.js`의 기존 `capture/build/buildCaptured` API는 호환을 유지한다. 원본 캡처·모델 문맥·전체 JSON·저장/조회는 동일한 스냅샷을 사용한다.
 공유 버튼은 `catsroll_share_result`로 서버 메모리에 저장한 뒤 결과 ID·만료와 함께
 압축 A/B 배열·R/G·이름/희귀도 사전·Find 경로·플랜을 모델에 직접 전달한다.
 GPT의 기존 짧은 후속 메시지와 Claude의 본문 전달 방식은 유지한다.
@@ -113,9 +135,14 @@ MCP 앱의 초기 횟수는 100이며 최대 300이다. 명시적 범위는 이 
 배너를 다시 검색하거나 예산을 늘리지 않는다. AI는 알려진 R/G/RG 조건·다음 위치를 따라
 후보 경로의 획득 개수·종류·뽑기 수를 비교해 제안할 수 있지만 엔진 계산이나 전역 최적성
 확인으로 표현하지 않는다. 새 최적 경로 계산은 기존 기기 Find로 확인한다.
-“다마군 울슈레 다/올컬”은 알려진 event/lang의 `catsroll_cats(event=...,rarity=4)`를
-끝 페이지까지 읽어 목표 ID·이름을 구성한다. 보유분은 사용자가 밝힌 것만 제외하고
-레레 포함 여부를 명시한다. 최대 목표 수를 넘으면 조용히 자르지 않고 나눠 진행할지 확인한다.
+“다마군 울슈레 다/올컬”은 기존 입력을 유지한 `catsroll_prepare`의 `targetSelection`을 사용한다.
+`{type:"banner_collection",lang:"kr",event:"확인된 배너 ID",rarity:4,excludeOwnedIds:[명시한 보유 ID]}`가 계약이다.
+선택 지역·배너는 rows에 있어야 하며 seek나 명시적 targets와 동시에 쓰지 않는다. 서버가 실제 풀의
+울슈레 ID를 중복 제거하고 보유 제외한 전체 목표를 구성한다. 포함·제외 ID/이름/이유·개수를
+`targetSelection`에 반환하며 정규화된 request.targets는 기존 기기 Find 입력과 같다.
+레레는 포함하지 않는다. 30개 초과 또는 남은 목표 0개면 prepared 대신 구조화된
+`needs_input`과 `reason`·`matched_count`·`maximum`·`next_action`을 반환하고 조용히 자르지 않는다.
+이미 받은 직접 targets와 기존 catsroll_cats(event,rarity) 페이지 조회도 계속 지원한다.
 호스트 준비 결과가 bootstrap보다 먼저 도착해도 시드 찾기 payload와 관측 순서를 유지한다.
 초기 목록 로딩 뒤 입력을 다시 적용하면서 payload를 지우지 않으며 사용자 계산 버튼으로 실행한다.
 목표 캐릭터는 먼저 `catsroll_cats`로 식별한 다음 `catsroll_events(cat_id=...)`로 포함 배너를 찾는다.
@@ -191,12 +218,15 @@ CATSROLL_GPT_ENABLED=1 WEB_BIND=127.0.0.1:17867 bundle exec yahns -c config/yahn
 ```sh
 node test/test_gpt_runtime.js
 node test/test_gpt_result_summary.js
+node test/test_gpt_host_bridge.cjs
+node test/test_gpt_lifecycle.cjs
 node test/test_gpt_input_transfer.cjs
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_input_transfer.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_results.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_recommendations.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp.rb
+bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp_contract.rb
 # Playwright가 제공되는 환경에서 별도 실행한 로컬 서버에 연결:
 node test/test_gpt_browser.cjs
 node test/test_gpt_recovery.cjs

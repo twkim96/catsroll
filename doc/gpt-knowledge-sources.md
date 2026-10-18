@@ -45,7 +45,7 @@ MCP 어댑터 순이다. 이 기록은 게임 클라이언트 자체나 모든 �
 | Find 한계·일정·비용 | `multi-find-engine.js`의 `scheduleDayFor`, `betterGoal`, `search` 상태와 비용 상수 |
 | 실제 MCP 지원 범위 | `local/gpt_mcp.rb`의 `tools`, `prepare`, `seeker_data`; 시드 찾기 WASM 어댑터 |
 | 목표와 배너 연결 | `catsroll_events(cat_id=...)`의 실제 GachaPool 슬롯 역검색과 `prepare`의 선택 풀/허용 티켓 검증. 변신소녀 단(ID 870)을 다크 히어로즈에 잘못 설정한 사례를 회귀로 유지 |
-| 기존 배열 후속 비교·올컬 | `gpt-result-summary.js`의 희귀도 사전과 직접 배열 공유, `catsroll_cats(event,rarity)`의 실제 슬롯 명단. AI 후보 비교는 기기 Find 최적성 확인과 구분. `harvestCount`는 목표 외 울슈레/레레 지표이며 cost 모드 요약 합계가 아님 |
+| 기존 배열 후속 비교·올컬 | `gpt-snapshot.js`의 구조화 캡처·희귀도, `gpt-result-summary.js`의 직접 문맥, `gpt_target_selection.rb`의 실제 슬롯 전체 목표/보유 제외. AI 후보 비교는 기기 Find 최적성 확인과 구분. `harvestCount`는 목표 외 울슈레/레레 지표이며 cost 모드 요약 합계가 아님 |
 | 일반 배열 조회와 배너 이름 | 목표 없는 `prepare(mode=multi)`와 기본 100회·최대 300회. `EventSeriesNames.shortcuts`를 공유한 별명/공백 검색. 일반 배열 조회에는 목표 캐릭터가 필요하지 않음 |
 
 ## 공개 Catsroll 서버와의 대조

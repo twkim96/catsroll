@@ -107,6 +107,14 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await page.evaluate(()=>{window.holdPrepare=false;releases.splice(0).forEach(resolve=>resolve());});
     await frame.locator("#status").getByText("계산을 중단했습니다.",{exact:true}).waitFor();
     assert.equal(await frame.locator("#multi_tables table").count(),0,"a cancelled preparation never publishes a late array");
+    await page.evaluate(()=>{window.holdPrepare=true;});
+    await frame.locator("#calculate").click();
+    await page.waitForFunction(()=>releases.length===1);
+    if (!await frame.locator("#gpt-find-settings").evaluate(el=>el.open)) await frame.locator("#gpt-find-settings summary").click();
+    await frame.locator("#multi_find_max_guaranteed").fill("1");
+    assert.equal(await frame.locator("#calculate").isEnabled(),true,"budget edit cancels pending preparation and restores controls");
+    await page.evaluate(()=>{window.holdPrepare=false;releases.splice(0).forEach(resolve=>resolve());});
+    assert.equal(await frame.locator("#multi_tables table").count(),0,"late pre-edit data cannot become current");
     // Reference arrays keep provenance through calculation, plan saving and model sharing.
     const lookup=await fetch(base+"/mcp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:3,method:"tools/call",params:{name:"catsroll_banner_preview",arguments:{query:"검심",lang:"kr"}}})}).then(r=>r.json());
     const referenceRows=lookup.result.structuredContent.prepare_rows;
@@ -288,6 +296,26 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
       if (hostPath) assert(baseline.visible.includes(baseline.snapshot));
       else assert.equal(baseline.visible, "현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.");
       console.log((hostPath ? "Claude" : "GPT") + " count=" + count + ": direct arrays exact, full Find acquisition, chars=" + baseline.snapshot.length);
+      if (count === 100) {
+        const roster = await resultRpc(endpoint, "catsroll_cats", {lang: "kr", event: "2019-01-23_348", rarity: 4, limit: 50});
+        const owned = roster.cats[0].id;
+        const expected = roster.cats.filter(cat => cat.id !== owned).map(cat => cat.id).sort((a,b) => a-b);
+        await page.locator("#arguments").fill(JSON.stringify({mode: "multi", seed: 42, count,
+          rows: [{lang: "kr", event: "2019-01-23_348"}], maxGuaranteed: 1, maxPlatinum: 0,
+          targetSelection: {type: "banner_collection", lang: "kr", event: "2019-01-23_348", rarity: 4, excludeOwnedIds: [owned]}}));
+        await page.locator("#prepare").click();
+        await page.waitForFunction(() => latestResult?.structuredContent?.targetSelection?.excluded_count === 1);
+        await page.waitForFunction(ids => {
+          const targets = document.querySelector("iframe").contentWindow.MultiFindApp.getShareSettings().targets;
+          return JSON.stringify(targets.map(t => t.cat_id).sort((a,b)=>a-b)) === JSON.stringify(ids);
+        }, expected);
+        const selected = await page.evaluate(() => latestResult.structuredContent);
+        assert.equal(selected.request.maxGuaranteed, 1);
+        assert.equal(selected.request.count, 100);
+        assert.equal(selected.request.findEnabled, true);
+        assert.equal(await frame.locator("#multi_tables table").count(), 0, "collection preparation never computes automatically");
+        console.log((hostPath ? "Claude" : "GPT") + " collection: all " + expected.length + " remaining targets reached the shared selector, budget preserved");
+      }
     }
     // At the maximum count, multiple banners may omit arrays but never the route or plan.
     const stress = await frame.locator("body").evaluate(() => {

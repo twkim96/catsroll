@@ -156,6 +156,113 @@ describe 'Catsroll MCP device-computation adapter' do
     end
   end
 
+  would 'select complete KR and JP banner collections without pagination and preserve every input' do
+    {'kr' => '2019-01-23_348', 'jp' => '2018-12-18_348'}.each do |lang, event|
+      ball = BattleCatsRolls::Route.public_send("ball_#{lang}")
+      expected_ids = BattleCatsRolls::TrackApi.compact_find_pool_data(ball, event).dig(:slots, 4).uniq
+      owned = [expected_ids.first, expected_ids.first, 38]
+      %w[multi find].each do |mode|
+        rows = [{lang: lang, event: event, ubers: 2, forceGuaranteed: 11}]
+        base = {mode: mode, seed: 42, last: 17, count: 287, rows: rows,
+          optimization: 'balance', maxGuaranteed: 2, maxPlatinum: 3, maxLegendTicket: 4,
+          scheduleAware: true, planMode: true, planName: '수집 계획',
+          targetSelection: {type: 'banner_collection', lang: lang, event: event,
+            rarity: 4, excludeOwnedIds: owned}}
+        [[client, '/mcp'], [Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: :claude)), '/mcp/claude']].each do |host, path|
+          reply = rpc(host, 'tools/call', {name: 'catsroll_prepare', arguments: base}, path: path).last.fetch('result')
+          data = reply.fetch('structuredContent')
+          expect(data.fetch('status')).eq 'prepared'
+          request = data.fetch('request')
+          %i[mode seed last count optimization maxGuaranteed maxPlatinum maxLegendTicket scheduleAware planMode planName].each do |key|
+            expect(request.fetch(key.to_s)).eq base.fetch(key)
+          end
+          expect(request.fetch('rows')).eq JSON.parse(JSON.generate(rows))
+          expect(request.fetch('findEnabled')).eq true
+          expect(request.fetch('targets').map { |target| target.fetch('cat_id') }).eq expected_ids.drop(1)
+          expect(request.fetch('targets').map { |target| target.fetch('cat_name') }).eq expected_ids.drop(1).map { |id| ball.cats.fetch(id).fetch('name').first }
+          expect(request.fetch('targets').all? { |target| target.fetch('allow_ticket') == false }).eq true
+          expect(request.key?('targetSelection')).eq false # fallback replays normalized direct targets
+          selection = data.fetch('targetSelection')
+          expect(selection.fetch('matched_ids')).eq expected_ids
+          expect(selection.fetch('matched_count')).eq expected_ids.size
+          expect(selection.fetch('included_count')).eq expected_ids.size - 1
+          expect(selection.fetch('excluded_ids')).eq [expected_ids.first]
+          expect(selection.fetch('unmatched_owned_ids')).eq [38]
+          expect(selection.fetch('excluded').first.fetch('reason')).eq 'explicitly_owned'
+          expect(selection.fetch('included').all? { |target| target.fetch('reason') == 'selected_banner_rarity_slot' }).eq true
+          expect(reply.dig('_meta', 'catsroll/data', 'targetSelection')).eq selection
+          expect(reply.dig('_meta', 'catsroll/data', 'request')).eq request
+        end
+        disabled = call_tool(client, 'catsroll_prepare', base.merge(findEnabled: false))
+        expect(disabled.dig('structuredContent', 'request', 'findEnabled')).eq false
+      end
+    end
+  end
+
+  would 'report every large collection match and prepare only after explicit owned exclusions fit the limit' do
+    event = '2026-10-30_1069'
+    ids = BattleCatsRolls::TrackApi.compact_find_pool_data(BattleCatsRolls::Route.ball_kr, event).dig(:slots, 4).uniq
+    expect(ids.size > 50).eq true # exceeds a catsroll_cats page as well as the target limit
+    base = {mode: 'multi', seed: 42, last: 6, count: 273,
+      maxGuaranteed: 0, maxPlatinum: 0, maxLegendTicket: 0,
+      rows: [{lang: 'kr', event: event}],
+      targetSelection: {type: 'banner_collection', lang: 'kr', event: event, rarity: 4}}
+    reply = call_tool(client, 'catsroll_prepare', base)
+    data = reply.fetch('structuredContent')
+    expect(data.fetch('status')).eq 'needs_input'
+    expect(data.fetch('reason')).eq 'target_limit_exceeded'
+    expect(data.fetch('maximum')).eq 30
+    expect(data.fetch('matched_count')).eq ids.size
+    expect(data.fetch('next_action').empty?).eq false
+    expect(data.dig('targetSelection', 'included_ids')).eq ids
+    expect(data.dig('targetSelection', 'included_count')).eq ids.size
+    expect(reply.dig('_meta', 'catsroll/data', 'targetSelection')).eq data.fetch('targetSelection')
+    %w[request dataVersion engineVersion execution siteUrl].each { |key| expect(data.key?(key)).eq false }
+    expect(reply.fetch('_meta').fetch('catsroll/data').key?('events')).eq false
+
+    # No model/catalog page traversal: one prepare call sees IDs after page 1.
+    narrowed = base.merge(targetSelection: base.fetch(:targetSelection).merge(excludeOwnedIds: ids[0...-30]))
+    prepared = call_tool(client, 'catsroll_prepare', narrowed).fetch('structuredContent')
+    expect(prepared.fetch('status')).eq 'prepared'
+    request = prepared.fetch('request')
+    expect(request.fetch('targets').map { |target| target.fetch('cat_id') }).eq ids.last(30)
+    %i[seed last count maxGuaranteed maxPlatinum maxLegendTicket].each do |key|
+      expect(request.fetch(key.to_s)).eq base.fetch(key)
+    end
+    none = call_tool(client, 'catsroll_prepare', base.merge(targetSelection:
+      base.fetch(:targetSelection).merge(excludeOwnedIds: ids))).fetch('structuredContent')
+    expect(none.fetch('status')).eq 'needs_input'
+    expect(none.fetch('reason')).eq 'no_remaining_targets'
+    expect(none.fetch('maximum')).eq 30
+    expect(none.fetch('matched_count')).eq ids.size
+    expect(none.dig('targetSelection', 'included_ids')).eq []
+    expect(none.dig('targetSelection', 'excluded_ids')).eq ids
+    expect(none.key?('request')).eq false
+  end
+
+  would 'reject ambiguous collections and invalid selection IDs without changing direct target compatibility' do
+    selection = {type: 'banner_collection', lang: 'kr', event: '2019-01-23_348', rarity: 4}
+    base = {mode: 'multi', seed: 42, rows: [{lang: 'kr', event: '2019-01-23_348'}], targetSelection: selection}
+    bad = [base.merge(targets: []), base.merge(targets: [{cat_id: 418}]), base.merge(mode: 'seek')]
+    [nil, [], selection.merge(type: 'other'), selection.merge(lang: 'xx'), selection.merge(lang: 'jp'),
+      selection.merge(event: 'missing'), selection.merge(event: '2026-02-13_1042'),
+      selection.merge(rarity: 5), selection.merge(rarity: 4.0), selection.merge(extra: true),
+      selection.merge(excludeOwnedIds: '418'), selection.merge(excludeOwnedIds: [0]),
+      selection.merge(excludeOwnedIds: ['418']), selection.merge(excludeOwnedIds: [999_999])].each do |value|
+      bad << base.merge(targetSelection: value)
+    end
+    bad.each do |args|
+      reply = call_tool(client, 'catsroll_prepare', args)
+      expect(reply.fetch('isError', false)).eq true
+      expect(reply.key?('_meta')).eq false
+    end
+    direct = call_tool(client, 'catsroll_prepare', base.reject { |key, _| key == :targetSelection }.
+      merge(targets: [{cat_id: 418}]))
+    expect(direct.dig('structuredContent', 'status')).eq 'prepared'
+    expect(direct.dig('structuredContent', 'request', 'targets').first.fetch('cat_id')).eq 418
+    expect(direct.fetch('structuredContent').key?('targetSelection')).eq false
+  end
+
   would 'publish only explicit computed snapshots and query late rows without recalculation' do
     snapshot = {'schema_version' => 1, 'data_version' => 'fixture-v1',
       'input' => {'track' => {'seed' => 42, 'last' => 0, 'formIndex' => 0, 'count' => 300, 'rows' => []}, 'findEnabled' => false, 'findSettings' => {}},

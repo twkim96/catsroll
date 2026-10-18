@@ -1,7 +1,11 @@
 "use strict";
 
 const assert = require("assert");
+const fs = require("fs");
+const vm = require("vm");
 const summary = require("../lib/battle-cats-rolls/asset/gpt-result-summary.js");
+const snapshot = require("../lib/battle-cats-rolls/asset/gpt-snapshot.js");
+const captureBaseline = require("./fixtures/gpt-result-summary-capture-v1.json");
 
 function cat(id, position, next, options) {
   options = options || {};
@@ -55,6 +59,88 @@ const routeInput = {
   plan: {enabled: true, name: "goal", marks: [], route: [], cats: [], progress: {}},
   dataVersion: "fixture-v1", outputs: []
 };
+
+// Freeze the pre-refactor output from one representative structured fixture.
+// The baseline exercises base A/B, R/G/RG, a conditional branch, a partial
+// Find route, plan data and the 24-roll + 11-pull draw count.
+const legacyCat = (id, position, next, name, rarity, rerolled, guaranteed) => ({
+  id, rarity, number: () => position, pickName: () => name,
+  next: next ? {number: () => next} : null,
+  rerolled: rerolled || null, guaranteed: guaranteed || null
+});
+const legacyActions = Array.from({length: 24}, (_, index) => roll(index,
+  `${index + 1}A`, `${index + 2}A`)).map(action => ({...action,
+  event: "synthetic42", eventLabel: "Synthetic 42"}));
+const legacyPulls = Array.from({length: 10}, (_, index) => ({
+  resultLabel: `${25 + index}A`, rerolled: false, guaranteed: false
+}));
+legacyPulls.push({resultLabel: "25AG", rerolled: false, guaranteed: true});
+legacyActions.push({type: "guaranteed", lang: "kr", event: "synthetic42",
+  eventLabel: "Synthetic 42", scheduleDay: "2026-10-18", start: "25A",
+  guaranteedLabel: "25AG", next: "35B", pulls: 11, routePulls: legacyPulls,
+  acquired: [{targetIndex: 0, catId: 870, catName: "Goal", resultLabel: "25AG"}]});
+const legacyInput = {
+  track: {seed: 42, last: 0, count: 300, formIndex: 0,
+    rows: [{lang: "kr", event: "synthetic42", ubers: 0, seriesIds: [17, undefined]}]},
+  findEnabled: true,
+  find: {status: "partial", message: "search limit; best route retained",
+    destination: "35B", regularUses: 24, ticketUses: 0, guaranteedUses: 1,
+    targetAcquired: 1, targetTotal: 1, optimization: "cost", cost: 1.48,
+    rawCost: 1.48, baseCost: 1.48, regularUnitCost: 0.02,
+    balanceCredit: 0, uberDraws: 0, actions: legacyActions},
+  findSettings: {optimization: "cost", maxGuaranteed: 1, scheduleAware: true,
+    maxPlatinum: 0, maxLegendTicket: 0,
+    targets: [{cat_id: 870, allow_ticket: false}]},
+  plan: {enabled: true, name: "synthetic42 goal",
+    marks: [{column: 0, position: "25AG", note: undefined}],
+    route: [undefined, null], cats: [{cat_id: 870}],
+    progress: {completed: undefined, drawCount: NaN}},
+  dataVersion: "fixture-v1",
+  outputs: [{label: "Synthetic 42", row: {lang: "kr"}, out: {cats: [[
+    legacyCat(1, "1A", "2A", "Rare", 2,
+      legacyCat(2, "1AR", "2B", "Reroll", 3, null,
+        legacyCat(870, "1ARG", "12A", "Goal", 4)),
+      legacyCat(5, "1AG", "12B", "Guaranteed Uber", 5)),
+    legacyCat(6, "1B", "2B", "Super Rare", 3)]]}, alternatives: {"1AR": [{
+      kind: "guaranteed", variant: "rerolled",
+      pull: {id: 7, name: "Conditional Uber", rarity: 4,
+        resultLabel: "1ARG", rerolled: true, guaranteed: true, next: "12A"},
+      next: "12A", prerequisite: {column: 0, position: "1AR", name: "Rare", kind: "reroll"},
+      lastRareId: 1}]}}]
+};
+assert.deepEqual(snapshot.capture(legacyInput), captureBaseline,
+  "structured snapshot matches the frozen pre-refactor capture");
+assert.equal(JSON.stringify(snapshot.capture(legacyInput)),
+  JSON.stringify(captureBaseline), "snapshot JSON retains legacy field ordering and values");
+assert.deepEqual(summary.capture(legacyInput), captureBaseline,
+  "legacy summary API shares the snapshot module's capture result");
+assert.strictEqual(summary.capture, snapshot.capture,
+  "summary capture is the snapshot module's structured capture API");
+assert.equal(captureBaseline.find.totalDraws, 35);
+
+const browserContext = vm.createContext({});
+vm.runInContext(fs.readFileSync(require.resolve("../lib/battle-cats-rolls/asset/gpt-snapshot.js"), "utf8"),
+  browserContext, {filename: "gpt-snapshot.js"});
+vm.runInContext(fs.readFileSync(require.resolve("../lib/battle-cats-rolls/asset/gpt-result-summary.js"), "utf8"),
+  browserContext, {filename: "gpt-result-summary.js"});
+assert.deepEqual(JSON.parse(JSON.stringify(
+  browserContext.CatsrollSnapshot.capture(legacyInput))), captureBaseline,
+  "browser UMD globals capture the same structured fixture after snapshot loads first");
+
+// Human-readable projection remains independent of snapshot normalization.
+const snapshotBeforeProse = JSON.stringify(snapshot.capture(legacyInput));
+const originalProjection = summary.buildCaptured;
+summary.buildCaptured = () => "display prose changed";
+assert.deepEqual(summary.capture(legacyInput), captureBaseline,
+  "changing display projection prose cannot change captured JSON");
+summary.buildCaptured = originalProjection;
+assert.equal(JSON.stringify(snapshot.capture(legacyInput)), snapshotBeforeProse);
+
+// JSON sanitizer semantics from legacy capture: object undefined fields are
+// omitted; array undefined and non-finite numbers become null.
+const sanitized = snapshot.capture({track: {seed: 42}, plan: {
+  progress: {completed: undefined, values: [undefined, NaN, Infinity]}}});
+assert.deepEqual(sanitized.plan, {progress: {values: [null, null, null]}});
 const routeBefore = JSON.stringify(routeInput);
 const routeText = summary.build(routeInput);
 const routeLine = routeText.split("\n").find(line => line.startsWith("Find 계산: "));
@@ -124,6 +210,24 @@ for (const banner of manyBanners) {
 assert.match(manyText, /"status":"partial"/);
 assert.match(manyText, /"name":"kept"/);
 manyBanners.forEach(banner => assert(Array.isArray(banner.rows)));
+
+// Conditional detail uses only the budget left after all base A/B rows.
+const manyAlternatives = Object.fromEntries(Array.from({length: 300}, (_, index) => [
+  `conditional-${index}`, [{kind: "guaranteed", variant: "V".repeat(100),
+    pull: {id: index + 2000, name: `Conditional ${index} ${"N".repeat(40)}`,
+      resultLabel: "R".repeat(80), next: "next"}}]
+]));
+const priorityText = summary.build({track: {seed: 42, count: 1}, outputs: [{
+  label: "Base priority", row: {lang: "kr"},
+  out: {cats: [[cat(1, "1A", "2A"), cat(2, "1B", "2B")]]},
+  alternatives: manyAlternatives
+}]});
+const priorityBanner = outputLines(priorityText, "배너 배열: ")[0];
+assert.equal(priorityBanner.rowsIncluded, 1);
+assert.equal(priorityBanner.rowsOmitted, 0);
+assert(priorityBanner.conditionalIncluded < priorityBanner.conditionalTotal);
+assert.equal(priorityBanner.conditionalIncluded + priorityBanner.conditionalOmitted,
+  priorityBanner.conditionalTotal);
 
 // Failed statuses and their messages are retained without inventing a route.
 for (const [status, message] of [["partial", "not proven optimal"],
@@ -212,6 +316,7 @@ assert.equal(captured.schema_version, 1);
 assert.equal(captured.banners.length, 8);
 assert(captured.banners.every(b => b.rowsIncluded === 999 && b.rowsOmitted === 0 && b.conditionalOmitted === 0));
 assert.equal(captured.banners[7].rows[998][1][1], "999B");
+assert.equal(captured.input.track.count, 999, "legacy count stays the caller's value");
 assert.equal(captured.find.totalDraws, 35);
 assert(captured.banners[7].conditional.length > 0);
 console.log("full snapshot capture: 999x8 rows and all branches retained, bytes=" + Buffer.byteLength(JSON.stringify(captured)));
