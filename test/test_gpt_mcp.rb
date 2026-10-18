@@ -630,6 +630,36 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(call_tool(client, 'catsroll_recommend', {event: 'not-a-banner'})['isError']).eq true
   end
 
+  would 'expose lower source tiers and bounded recommendation coverage on both hosts' do
+    %i[chatgpt claude].each do |host|
+      adapter = BattleCatsRolls::GptMcp.new(ui_host: host)
+      cat = adapter.dispatch('tools/call', 'name' => 'catsroll_cats',
+        'arguments' => {'query' => '870', 'details' => true}).fetch(:structuredContent).fetch(:cats).first
+      expect(cat.fetch('source_ratings').any? { |rating| rating['tier'] == 'B' && rating['form_index'] == 1 }).eq true
+      result = adapter.dispatch('tools/call', 'name' => 'catsroll_recommend',
+        'arguments' => {'event' => '2026-10-16_1068'}).fetch(:structuredContent)
+      expect(result.fetch('recommendations').size).eq 5
+      expect(result.fetch('returned_count')).eq 5
+      expect(result.fetch('total_candidates') > result.fetch('returned_count')).eq true
+      expect(result.fetch('recommendations').all? { |rating| rating['availability'] == 'pool_member' }).eq true
+      expect(result.fetch('dataset_coverage').fetch('rated_characters') > 79).eq true
+      offset = 0
+      roster = []
+      loop do
+        page = adapter.dispatch('tools/call', 'name' => 'catsroll_cats',
+          'arguments' => {'event' => '2026-10-16_1068', 'rarity' => 4,
+            'details' => true, 'limit' => 5, 'offset' => offset}).fetch(:structuredContent)
+        roster.concat(page.fetch(:cats))
+        offset = page.fetch(:nextOffset)
+        break unless offset
+      end
+      expected = BattleCatsRolls::TrackApi.compact_find_pool_data(BattleCatsRolls::Route.ball_kr,
+        '2026-10-16_1068').fetch(:slots).fetch(4).uniq.sort
+      expect(roster.map { |item| item.fetch(:id) }.sort).eq expected
+      expect(roster.all? { |item| !item.fetch('source_ratings').empty? }).eq true
+    end
+  end
+
   would 'prepare original pools without calculating or exposing full pools to the model' do
     args = {mode: 'multi', seed: 2762818371, count: 30,
       rows: [{lang: 'kr', event: '2026-02-13_1042', ubers: 2, forceGuaranteed: 11}]}

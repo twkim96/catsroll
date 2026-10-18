@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "verified_on": "2026-10-17",
+  "verified_on": "2026-10-18",
   "sources": {
     "20487": {
       "url": "https://gall.dcinside.com/mgallery/board/view/?id=bbb101010&no=20487",
@@ -41,6 +41,17 @@
   },
   "entries": [
     {
+      "cat_id": 43,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "정지 활용은 인정하지만 아이캣 등 대체 전력과 투자 비용을 비교하라는 의견이다. 메탈 정지 평가는 초본능 해금이 전제다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
       "cat_id": 44,
       "observations": [
         {
@@ -80,11 +91,22 @@
       ]
     },
     {
+      "cat_id": 60,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "짧은 사거리와 활용처의 경쟁 때문에 우선도에 신중한 의견이다. 이 글은 4단 진화 이전 형태를 다뤘으므로 4진 평가로 확대하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
       "cat_id": 72,
       "observations": [
         {
           "source_id": "18442",
-          "summary": "빠르게 투입하는 파밍·속공 용도를 언급한다. 이 용도 의견으로 모호한 다른 티어표의 등급을 확정하지 않는다.",
+          "summary": "빠르게 투입하는 파밍·속공 용도를 언급한다. 특정 대항 화력과 범용 전투·수집 목적을 구분한다.",
           "form_index": 2,
           "investment": "talents"
         }
@@ -98,6 +120,17 @@
           "summary": "딜탱으로서의 사용감을 높게 본다. 뜬 적까지 같은 역할로 안내하는 부분은 초본능 대상 추가 조건을 확인해야 한다.",
           "form_index": 2,
           "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 74,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "4단 진화의 특정 대항 정지 활용은 인정하지만 대체 정지 전력과 후방 타격 제약도 함께 고려하라는 의견이다.",
+          "form_index": 3,
+          "investment": "none"
         }
       ]
     },
@@ -124,6 +157,28 @@
       ]
     },
     {
+      "cat_id": 84,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "전투 확보 우선도는 낮게 보는 의견이다. 별도 초본능 평가와 같은 조건인지 확인한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 85,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "제어 활용을 인정하되 상위 확보 후보로는 신중한 의견이다. 메탈 밀치기 언급은 초본능 조건이다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
       "cat_id": 86,
       "observations": [
         {
@@ -131,6 +186,17 @@
           "summary": "제어 역할은 인정하지만 비용·재생산 간격·공격 범위의 제약과 대체 전력을 함께 비교하라는 의견이다.",
           "form_index": 2,
           "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 87,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "전투 확보 우선도는 낮게 보는 의견이다. 수집 목적과 전투 추천을 구분한다.",
+          "form_index": 2,
+          "investment": "none"
         }
       ]
     },
@@ -168,6 +234,39 @@
       ]
     },
     {
+      "cat_id": 108,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "긴 정지 시간·비용·재생산은 장점이지만 확률 정지와 선딜을 제한으로 본다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 125,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "실전 확보 우선도는 낮게 보는 의견이다. 재미나 수집 가치와 전투 성능을 구분한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 126,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "본능 투자 후에도 대상 제한·선딜·재생산 간격을 고려해야 한다는 의견이다.",
+          "form_index": 2,
+          "investment": "talents"
+        }
+      ]
+    },
+    {
       "cat_id": 138,
       "observations": [
         {
@@ -177,6 +276,50 @@
       ],
       "aliases": [
         "냥돌"
+      ]
+    },
+    {
+      "cat_id": 144,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "초본능 제어 활용을 언급하면서도 긴 선딜과 공격 범위를 제한으로 본다. 추가 투자에 따른 평가임을 구분한다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
+      "cat_id": 159,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "확정 밀치기와 화력을 인정하면서도 비용·공격 범위·대체 전력을 제한으로 본다.",
+          "form_index": 3,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 160,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "천사 속공 화력은 인정하되 사거리와 이미 보유한 속공 대항 전력을 함께 비교하라는 의견이다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 178,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "4단 진화의 체급 활용과 별개로 높은 비용·느린 이동·재생산 간격을 투자 제약으로 본다.",
+          "form_index": 3,
+          "investment": "none"
+        }
       ]
     },
     {
@@ -192,6 +335,17 @@
       ]
     },
     {
+      "cat_id": 339,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "초본능의 악마 대상 공격력 감소를 활용할 수 있어도 본체 화력과 투자 가치를 따로 보라는 의견이다.",
+          "form_index": 2,
+          "investment": "ultra"
+        }
+      ]
+    },
+    {
       "cat_id": 352,
       "observations": [
         {
@@ -203,6 +357,28 @@
       ],
       "aliases": [
         "쌍장성"
+      ]
+    },
+    {
+      "cat_id": 397,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "속공과 체급 활용은 가능하지만 짧은 인식 사거리·히트백·비용·재생산 간격을 함께 보라는 의견이다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 428,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "공격력 감소 제어와 짧은 인식 사거리의 제약을 지적한다. 이 글의 의견을 별도의 4단 진화 평가와 혼합하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
       ]
     },
     {
@@ -264,6 +440,28 @@
       ]
     },
     {
+      "cat_id": 503,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "공격 무효를 활용하는 특정 사용처를 중심으로 보는 의견이며 범용 추천으로 확대하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 506,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "비슷한 역할의 다른 전력을 먼저 비교하라는 낮은 확보 우선도 의견이다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
       "cat_id": 520,
       "observations": [
         {
@@ -298,11 +496,44 @@
       ]
     },
     {
+      "cat_id": 619,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "대항 화력을 인정하지만 연속 공격과 비원범 때문에 피해를 온전히 넣는 조건이 필요하다는 의견이다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
       "cat_id": 620,
       "observations": [
         {
           "source_id": "18479",
           "summary": "쉴드 대응과 3진 열파 활용을 높게 본다. 짧은 사거리와 보유한 악마 대항 전력을 함께 비교한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 621,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "다른 쉴드 대응 전력이 부족할 때의 대안으로 보며 비용·재생산·범위·내구를 제한으로 지적한다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 648,
+      "observations": [
+        {
+          "source_id": "18479",
+          "summary": "느리게 제어와 재생산은 활용 가능하지만 비원범·선딜·대체 전력을 함께 확인하라는 의견이다.",
           "form_index": 2,
           "investment": "none"
         }
@@ -338,6 +569,17 @@
       ]
     },
     {
+      "cat_id": 669,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "비원범 제어와 성능 경쟁 때문에 우선 확보에는 신중한 의견이다. 이후 해금된 강화 평가를 대신하지 않는다.",
+          "form_index": 2,
+          "investment": "none"
+        }
+      ]
+    },
+    {
       "cat_id": 693,
       "observations": [
         {
@@ -355,6 +597,39 @@
         {
           "source_id": "20487",
           "summary": "레전드 레어 중 우선 확보 후보로 든다. 현재 필요한 역할과 보유 전력을 함께 본다."
+        }
+      ]
+    },
+    {
+      "cat_id": 755,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "밀치기 제어의 넓은 사각지대 때문에 사용처가 제한된다는 의견이다.",
+          "form_index": 1,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 761,
+      "observations": [
+        {
+          "source_id": "18487",
+          "summary": "제어·긴 사거리와 별개로 매우 긴 선딜과 이동·비용·재생산 부담 때문에 운용이 어렵다는 의견이다.",
+          "form_index": 1,
+          "investment": "none"
+        }
+      ]
+    },
+    {
+      "cat_id": 764,
+      "observations": [
+        {
+          "source_id": "18429",
+          "summary": "원거리 범위 공격은 장점으로 보되 인식 사거리와 천사 대항의 대체 전력을 함께 비교하라는 의견이다.",
+          "form_index": 1,
+          "investment": "none"
         }
       ]
     },
@@ -415,6 +690,17 @@
       ],
       "aliases": [
         "백루노"
+      ]
+    },
+    {
+      "cat_id": 851,
+      "observations": [
+        {
+          "source_id": "18442",
+          "summary": "느리게 제어와 폭파 활용이 가능하지만 공격 범위와 다른 제어 전력을 비교하라는 의견이다.",
+          "form_index": 1,
+          "investment": "none"
+        }
       ]
     },
     {

@@ -24,7 +24,8 @@ describe 'Catsroll tier recommendations adapter' do
           'title' => 'Fixture tier guide',
           'game_version' => '15.6',
           'updated_on' => '2026-09-24',
-          'tier_scope' => 'within_series'
+          'tier_scope' => 'within_series',
+          'coverage' => 'fixture_subset'
         },
         'ratings' => ratings
       }), encoding: 'UTF-8')
@@ -111,6 +112,42 @@ describe 'Catsroll tier recommendations adapter' do
 
       too_early = recommendations.lookup('traits' => ['zombie'], 'investment' => 'talents', 'max_form' => 1)
       expect(too_early.fetch('recommendations')).eq []
+    end
+  end
+
+  would 'accept all exact tiers and adjacent ranges, sorting ranges by their lower end' do
+    tier_rows = [
+      [1, 'SS'], [2, 'SS/S'], [3, 'S'], [4, 'S/A'], [5, 'A'],
+      [6, 'A/B'], [7, 'B'], [8, 'B/C'], [9, 'C'], [10, 'C/D'], [11, 'D']
+    ]
+    ratings = tier_rows.map { |id, tier| rating(id, series_id: 0, tier: tier, form_index: 0) }
+
+    adapter(ratings) do |recommendations|
+      full = recommendations.lookup('owned' => [1], 'limit' => 10)
+      candidates = full.fetch('recommendations')
+      expect(candidates.map { |item| item.fetch('cat_id') }.sort).eq (2..11).to_a
+      expect(candidates.to_h { |item| [item.fetch('cat_id'), item.fetch('tier')] }).eq(
+        tier_rows.drop(1).to_h)
+      conservative_ranks = candidates.map do |item|
+        Recommendations::TIER_RANK.fetch(item.fetch('tier_conservative_rank'))
+      end
+      expect(conservative_ranks).eq conservative_ranks.sort.reverse
+      expect(candidates.find { |item| item.fetch('cat_id') == 2 }.fetch('tier_conservative_rank')).eq 'S'
+      expect(candidates.find { |item| item.fetch('cat_id') == 4 }.fetch('tier_conservative_rank')).eq 'A'
+      expect(candidates.find { |item| item.fetch('cat_id') == 10 }.fetch('tier_conservative_rank')).eq 'D'
+      expect(full.fetch('tier_range_notice').include?('lower end')).eq true
+      expect(full.fetch('total_candidates')).eq 10
+      expect(full.fetch('returned_count')).eq 10
+
+      defaults = recommendations.lookup({})
+      expect(defaults.fetch('recommendations').size).eq 5
+      expect(defaults.fetch('total_candidates')).eq 11
+      expect(defaults.fetch('returned_count')).eq 5
+      expect(defaults.fetch('dataset_coverage')).eq({
+        'source_claim' => 'fixture_subset', 'rating_entries' => 11,
+        'rated_characters' => 11, 'pending_evaluations' => 0
+      })
+      expect(defaults.fetch('recommendations').first.fetch('tier')).eq 'SS'
     end
   end
 
@@ -213,6 +250,56 @@ describe 'Catsroll tier recommendations adapter' do
     adapter([rating(107, series_id: 4, tier: 'S', form_index: 2)]) do |recommendations|
       candidate = recommendations.lookup({}).fetch('recommendations').first
       expect(candidate.fetch('source_notes')).eq []
+    end
+  end
+
+  would 'include every character tier evaluation in details with its own investment and pending source context' do
+    source = {
+      'url' => 'https://example.invalid/source', 'title' => 'Full tier source',
+      'game_version' => '15.6', 'updated_on' => '2026-09-24',
+      'tier_scope' => 'within_series', 'coverage' => 'full_source_transcription'
+    }
+    tiers = %w[SS S A B C D SS/S S/A A/B B/C C/D D]
+    entries = tiers.each_with_index.map do |tier, index|
+      rating(107, series_id: 4, tier: tier, form_index: index.even? ? 1 : 2,
+        investment: index == 11 ? 'ultra' : (index.odd? ? 'talents' : 'none'),
+        source_image: index, requirements: "source condition #{index}")
+    end
+    Dir.mktmpdir do |root|
+      tier_path = File.join(root, 'tier-picks.json')
+      File.write(tier_path, JSON.generate({
+        'schema_version' => 1, 'source' => source, 'ratings' => entries,
+        'unresolved_evaluations' => [
+          {'cat_id' => 107, 'source_image' => 20, 'note' => 'transcription pending'},
+          {'cat_id' => 108, 'source_image' => 21, 'note' => 'other character'}
+        ]
+      }), encoding: 'UTF-8')
+
+      details = BattleCatsRolls::GptCharacterKnowledge.new(tier_path: tier_path).details(BALL, 107)
+      sourced = details.fetch('source_ratings')
+      expect(sourced.size).eq 12
+      expect(sourced.map { |item| item.fetch('tier') }).eq tiers
+      expect(sourced.all? { |item| item.fetch('source') == source }).eq true
+      expect(sourced.first.fetch('evaluated_form')).eq BALL.cats.fetch(107).fetch('name').fetch(1)
+      expect(sourced.last.fetch('form_index')).eq 2
+      expect(sourced.last.fetch('investment')).eq 'ultra'
+      expect(sourced.last.fetch('requirements')).eq 'source condition 11'
+      expect(sourced[6].fetch('tier_range')).eq 'SS/S'
+      expect(sourced[6].fetch('tier_conservative_rank')).eq 'S'
+      expect(details.fetch('tier_source')).eq source
+      expect(details.fetch('pending_evaluations')).eq [{
+        'cat_id' => 107, 'source_image' => 20, 'note' => 'transcription pending',
+        'kind' => 'pending_source_evaluation', 'status' => 'pending', 'source' => source
+      }]
+      expect(details.key?('tier')).eq false
+    end
+  end
+
+  would 'exclude an upgrade evaluation when the current character has no matching talents' do
+    adapter([rating(669, series_id: 1, tier: 'A', form_index: 2, investment: 'talents')]) do |recommendations|
+      result = recommendations.lookup({})
+      expect(result.fetch('recommendations')).eq []
+      expect(result.fetch('unavailable_cat_ids')).eq [669]
     end
   end
 

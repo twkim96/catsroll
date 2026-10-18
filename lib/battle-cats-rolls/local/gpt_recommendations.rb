@@ -15,8 +15,9 @@ module BattleCatsRolls
     INPUT_KEYS = %w[
       lang traits match event owned max_form investment limit
     ].freeze
-    TIERS = %w[SS S A].freeze
-    TIER_RANK = {'SS' => 3, 'S' => 2, 'A' => 1}.freeze
+    TIER_LEVELS = %w[SS S A B C D].freeze
+    TIERS = (TIER_LEVELS + TIER_LEVELS.each_cons(2).map { |upper, lower| "#{upper}/#{lower}" }).freeze
+    TIER_RANK = TIER_LEVELS.each_with_index.to_h { |tier, index| [tier, TIER_LEVELS.size - index] }.freeze
     INVESTMENT_RANK = {'none' => 0, 'talents' => 1, 'ultra' => 2}.freeze
     TRAIT_ALIASES = {
       'red' => %w[red 빨 빨간 빨적 빨강 빨간적],
@@ -36,6 +37,7 @@ module BattleCatsRolls
       end
     end.freeze
     NOTICE = 'Tiers are relative within each series and are not globally equivalent. These are recommendation candidates, not predictions.'.freeze
+    TIER_RANGE_NOTICE = 'A tier range preserves an ambiguous source-chart boundary; sorting uses its lower end. Tier opinions are within-series and do not imply global equivalence.'.freeze
     TRAIT_NOTICE = 'Target traits describe eligible enemy types; they do not imply critical hits, Zombie Killer, barrier or shield breaking, or full counter coverage.'.freeze
 
     class InvalidInput < ArgumentError; end
@@ -87,7 +89,11 @@ module BattleCatsRolls
         'source' => dataset.fetch('source'),
         'scope' => 'recommendation_candidates_not_predictions',
         'notice' => NOTICE,
+        'tier_range_notice' => TIER_RANGE_NOTICE,
         'trait_notice' => TRAIT_NOTICE,
+        'dataset_coverage' => dataset_coverage(dataset, ratings),
+        'total_candidates' => best_per_cat.size,
+        'returned_count' => selected.size,
         'availability' => event_pool ? event_pool.fetch(:status) : 'not_checked',
         'event' => options['event'],
         'filters' => {
@@ -194,11 +200,29 @@ module BattleCatsRolls
       dataset['ratings']
     end
 
+    def valid_tier?(tier)
+      return false unless tier.is_a?(String) && TIERS.include?(tier)
+
+      parts = tier.split('/')
+      parts.size == 1 || parts.each_cons(2).all? do |upper, lower|
+        TIER_LEVELS.index(lower) == TIER_LEVELS.index(upper) + 1
+      end
+    end
+
+    def dataset_coverage(dataset, ratings)
+      {
+        'source_claim' => dataset.fetch('source')['coverage'],
+        'rating_entries' => ratings.size,
+        'rated_characters' => ratings.map { |rating| rating.fetch('cat_id') }.uniq.size,
+        'pending_evaluations' => Array(dataset['unresolved_evaluations']).size
+      }
+    end
+
     def validate_rating(rating)
       unless rating.is_a?(Hash) &&
           rating['cat_id'].is_a?(Integer) && rating['cat_id'].positive? &&
           rating['series_id'].is_a?(Integer) && rating['series_id'] >= 0 &&
-          TIERS.include?(rating['tier']) &&
+          valid_tier?(rating['tier']) &&
           rating['form_index'].is_a?(Integer) && (0..3).cover?(rating['form_index']) &&
           INVESTMENT_RANK.key?(rating['investment']) &&
           rating['source_image'].is_a?(Integer) && rating['source_image'] >= 0 &&
@@ -246,10 +270,13 @@ module BattleCatsRolls
         return :outside_event
       end
 
+      available_talents = requirement == 'none' ? [] : Talent.build(info)
+      return :unavailable if requirement == 'talents' && available_talents.reject(&:ultra?).empty?
+      return :unavailable if requirement == 'ultra' && available_talents.none?(&:ultra?)
       talents = case requirement
       when 'none' then nil
-      when 'talents' then Talent.build(info).reject(&:ultra?)
-      when 'ultra' then Talent.build(info)
+      when 'talents' then available_talents.reject(&:ultra?)
+      when 'ultra' then available_talents
       end
       stat = Stat.new(id: id, info: info, index: form_index).augment(talents)
       specialization = Ability::Specialization
@@ -274,6 +301,8 @@ module BattleCatsRolls
         'matched_traits' => matched,
         'abilities' => abilities,
         'tier' => rating.fetch('tier'),
+        'tier_range' => rating.fetch('tier').include?('/') ? rating.fetch('tier') : nil,
+        'tier_conservative_rank' => rating.fetch('tier').split('/').last,
         'series_id' => rating.fetch('series_id'),
         'series_name' => series_name(ball, rating.fetch('series_id')),
         'rarity' => info['rarity'],
@@ -318,7 +347,7 @@ module BattleCatsRolls
           candidate.fetch('matched_traits').size
         end
         [
-          -TIER_RANK.fetch(candidate.fetch('tier')),
+          -TIER_RANK.fetch(candidate.fetch('tier').split('/').last),
           -tie_hint,
           INVESTMENT_RANK.fetch(candidate.fetch('investment')),
           candidate.fetch('cat_id'),
@@ -334,7 +363,11 @@ module BattleCatsRolls
         'source' => nil,
         'scope' => 'recommendation_candidates_not_predictions',
         'notice' => NOTICE,
+        'tier_range_notice' => TIER_RANGE_NOTICE,
         'trait_notice' => TRAIT_NOTICE,
+        'dataset_coverage' => nil,
+        'total_candidates' => 0,
+        'returned_count' => 0,
         'availability' => event_pool ? event_pool.fetch(:status) : 'not_checked',
         'event' => options['event'],
         'filters' => {

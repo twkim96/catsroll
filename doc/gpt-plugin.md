@@ -274,7 +274,7 @@ query가 가이드 표의 정의 용어나 정확한 절 이름이면 `status=co
 “뭐 뽑을까”·“빨적이 부족해”는 [추천 안내](gpt-knowledge/recommendations.md)에 따라
 `catsroll_recommend`로 후보를 고른다. 외부 티어 평가는 `tier-picks.json`에 ID/평가 형태/투자
 조건만 저장하며, 이름·대상 속성·능력을 복제하지 않는다. 실제 `ball.cats`와 `Stat`/`Talent`에서
-평가 형태 정보를 읽어 연결한다. 자세한 선별·검증은 [티어 출처](gpt-tier-sources.md)에 있다.
+평가 형태 정보를 읽어 연결한다. 전체 등급과 경계 범위를 저장하고 추천은 기본 5종·최대 10종으로 제한한다. 개별 `catsroll_cats(details=true)`의 `source_ratings`로 모든 평가 형태를 조회하며 미확정 매칭은 `pending_evaluations`로 구별한다. 자세한 선별·검증은 [티어 출처](gpt-tier-sources.md)에 있다.
 추가 6개 글은 `character-notes.json`의 ID별 용도/제약 의견으로 연결한다. 수집 우선순위와
 전투 티어를 합치지 않고, 사진의 불확실한 캐릭터 매칭은 제외한다. 원문 의견에는 날짜와
 형태/투자 조건을 붙이며, 현재 게임 데이터와 구분한다.

@@ -68,6 +68,13 @@ describe 'Frozen 870cc54d MCP contracts' do
         baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
       end
     end
+    # Full sourced-tier coverage changes descriptions only; inputs/UI stay frozen.
+    tier_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/tier_coverage_delta_v1.json')))
+    tier_delta.each do |host, changes|
+      changes.fetch('descriptions').each do |name, description|
+        baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
+      end
+    end
     expect(GptMcpContractSupport.capture).eq baseline
   end
 end
