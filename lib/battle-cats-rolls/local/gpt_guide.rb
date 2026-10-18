@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'digest'
 
 module BattleCatsRolls
   # Small deterministic retrieval over the curated, local GPT guide corpus.
@@ -12,7 +13,7 @@ module BattleCatsRolls
     MAX_TOPICS = 20
     MAX_SECTIONS = 2
     STOP_WORDS = %w[어떻게 무엇 어디 언제 방법 알려줘 알려주세요 부탁 설명 질문 뭐가 뭐야].freeze
-    PARTICLES = %w[으로부터 에게서 에서부터 으로부터 으로는 에서는 에게 한테 까지 부터 으로 은 는 이 가 을 를 와 과 도 만 로 의 에 랑 하고].sort_by { |word| -word.length }.freeze
+    PARTICLES = %w[으로부터 에게서 에서부터 으로부터 으로는 에서는 에게 에서 한테 까지 부터 으로 은 는 이 가 을 를 와 과 도 만 로 의 에 랑 하고].sort_by { |word| -word.length }.freeze
     VERB_ENDINGS = %w[으려면 려면 으려고 려고 나요 니까 어요 아요 어서 아서 아줘 어줘 는].sort_by { |word| -word.length }.freeze
 
     class InvalidInput < ArgumentError; end
@@ -25,6 +26,8 @@ module BattleCatsRolls
       @documents = @manifest.fetch('documents').to_h { |document| [document.fetch('id'), document] }
       @root_realpath = File.realpath(@root)
       validate_document_paths!
+      @corpus = @documents.transform_values { |document| build_document(document) }
+      @revision = Digest::SHA256.hexdigest(JSON.generate([@manifest, @corpus.map { |id, entry| [id, entry[:content]] }]))
     rescue JSON::ParserError, KeyError, TypeError => error
       raise InvalidManifest, "Invalid GPT guide manifest: #{error.message}"
     end
@@ -37,22 +40,42 @@ module BattleCatsRolls
 
       if topic
         document = @documents.fetch(topic)
-        return result(query, [document], true, 'topic')
+        required = section_matches(document, query).select { |section| !section[:hits].empty? }.map { |section| section.merge(document: document) }
+        return result(query, [document], true, 'topic', required)
       end
 
+      candidates = @documents.values.reject { |document| document.fetch('id') == 'index' }
       terms = query_terms(query)
       compact = compact_query(query)
-      ranked = @manifest.fetch('documents').reject { |document| document.fetch('id') == 'index' }.
-        filter_map { |document| [document, score(document, terms, compact, query)] }.
-        select { |_document, score_value| score_value >= 4 }.
-        sort_by { |document, score_value| [-score_value, document.fetch('id')] }
-      # limit is an upper bound, not a request to pad a precise answer with weak
-      # matches (e.g. duplicate-rares guidance for an NP disposal question).
-      best_score = ranked.first&.last || 0
-      ranked = ranked.select { |_document, value| value >= best_score * 0.75 }.first(limit).map(&:first)
+      document_scores = candidates.to_h { |document| [document.fetch('id'), score(document, terms, compact, query)] }
+      ranked_sections = candidates.flat_map do |document|
+        section_matches(document, query).map { |section| section.merge(document: document) }
+      end
+      # Preserve each explicitly named facet, even when its document/section is
+      # weaker than the best match. Synonymous hits owned by multiple topics
+      # choose one best explanation, rather than duplicating every definition.
+      hits = ranked_sections.flat_map { |section| section[:hits] }.uniq
+      # Keep the longest registered phrase at each query location. A separate R
+      # remains covered beside RG, while 본능 is not a second facet inside 본능 없이.
+      hits = hits.reject { |hit| hits.any? { |other| other != hit && other[0] <= hit[0] && other[1] >= hit[1] } }
+      required = hits.filter_map do |hit|
+        ranked_sections.select { |section| section[:hits].include?(hit) }.
+          max_by { |section| [section[:score] + 2 * document_scores.fetch(section[:document]['id']), section[:score]] }
+      end.uniq { |section| [section[:document]['id'], section[:heading]] }
+      ranked = candidates.filter_map do |document|
+        sections = ranked_sections.select { |section| section[:document] == document }
+        value = 2 * document_scores.fetch(document['id']) + (sections.first&.fetch(:score) || 0)
+        [document, value] if value >= 4
+      end.sort_by { |document, value| [-value, document.fetch('id')] }
       return result(query, [@documents.fetch('index')], false, query.to_s.strip.empty? ? 'index' : 'fallback') if ranked.empty?
 
-      result(query, ranked, true, 'matched')
+      best = ranked.first.last
+      required_ids = required.map { |section| section[:document]['id'] }.uniq
+      eligible = ranked.select { |document, value| required_ids.include?(document['id']) || value >= best * 0.75 }
+      # Coverage wins over a weak filler match; limit remains a hard upper bound.
+      protected, fillers = eligible.partition { |document, _value| required_ids.include?(document['id']) }
+      selected = (protected + fillers).first(limit).sort_by { |document, _value| ranked.index { |entry| entry.first == document } }.map(&:first)
+      result(query, selected, true, 'matched', required)
     end
 
     private
@@ -121,7 +144,7 @@ module BattleCatsRolls
       end
     end
 
-    def result(query, selected, matched, status)
+    def result(query, selected, matched, status, required = [])
       remaining = MAX_CONTENT_LENGTH
       truncated = false
       documents = []
@@ -131,14 +154,16 @@ module BattleCatsRolls
           break
         end
 
-        content, sections, omitted = focused_content(document, query)
+        wanted = required.select { |section| section[:document] == document }.map { |section| section[:heading] }
+        content, sections, omitted, mode = focused_content(document, query, wanted)
         clipped = content.length > remaining
         content = content[0, remaining] if clipped
         remaining -= content.length
         truncated ||= clipped
         documents << {'id' => document.fetch('id'), 'title' => document.fetch('title'), 'content' => content,
           'related' => document.fetch('related'), 'truncated' => clipped,
-          'contentMode' => omitted.empty? ? 'full' : 'sections', 'sections' => sections, 'omittedSections' => omitted}
+          'contentMode' => mode, 'sections' => sections, 'omittedSections' => omitted,
+          'contentHash' => Digest::SHA256.hexdigest(@corpus.fetch(document.fetch('id'))[:content])}
         break if clipped
       end
       topic_ids = selected.flat_map { |document| [document.fetch('id')] + document.fetch('related') }.uniq
@@ -147,7 +172,11 @@ module BattleCatsRolls
       topics = topic_documents.first(MAX_TOPICS).map do |document|
         {'id' => document.fetch('id'), 'title' => document.fetch('title'), 'summary' => document.fetch('summary')}
       end
-      {'version' => @manifest.fetch('version'), 'query' => query, 'matched' => matched, 'status' => status,
+      pending = required.reject { |section| documents.any? { |document|
+        document['id'] == section[:document]['id'] && !document['truncated'] && document['sections'].include?(section[:heading])
+      } }.map { |section| {'topic' => section[:document]['id'], 'query' => section[:heading]} }.uniq
+      {'guideRevision' => @revision, 'unansweredSections' => pending,
+       'version' => @manifest.fetch('version'), 'query' => query, 'matched' => matched, 'status' => status,
        'documents' => documents, 'topics' => topics, 'truncated' => truncated}
     end
 
@@ -178,26 +207,71 @@ module BattleCatsRolls
       [preamble, sections]
     end
 
-    def focused_content(document, query)
+    def build_document(document)
       content = File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
       preamble, sections = split_sections(content)
-      definitions = document.fetch('sections', [])
-      return [content, sections.keys, []] if query.to_s.strip.empty? || definitions.empty? || document.fetch('id') == 'index'
+      records = document.fetch('sections', []).map do |definition|
+        heading = definition.fetch('heading')
+        body = sections.fetch(heading)
+        # A glossary table's authored first column registers its terms. This
+        # avoids maintaining the same term list in a second manifest location.
+        table_terms = body.lines.filter_map { |line| line[/^\| ([^|]+) \|/, 1] }.
+          reject { |cell| cell.match?(/\A[- :]+\z/) || cell == '표현' }.
+          flat_map { |cell| cell.delete('`*').split(/\s+\/\s+/) }
+        definition.merge('keywords' => (definition.fetch('keywords') + table_terms).uniq { |word| word.unicode_normalize(:nfkc).downcase.delete(' ') })
+      end
+      {content: content, preamble: preamble, sections: sections, records: records}
+    end
 
+    def section_matches(document, query)
+      return [] if query.to_s.strip.empty?
+
+      entry = @corpus.fetch(document.fetch('id'))
       terms = query_terms(query)
       compact = compact_query(query)
-      ranked = definitions.each_with_index.map do |section, index|
-        record = {'id' => '', 'title' => section.fetch('heading'), 'summary' => '', 'keywords' => section.fetch('keywords')}
-        [section, index, score(record, terms, compact, query, body_source: sections.fetch(section.fetch('heading')))]
-      end.select { |_section, _index, value| value >= 4 }.
-        sort_by { |_section, index, value| [-value, index] }
-      best_score = ranked.first&.last || 0
-      ranked = ranked.select { |_section, _index, value| value >= best_score * 0.5 }.first(MAX_SECTIONS).map(&:first)
-      return [content, sections.keys, []] if ranked.empty?
+      entry[:records].map do |section|
+        heading = section.fetch('heading')
+        record = {'id' => '', 'title' => heading, 'summary' => '', 'keywords' => section.fetch('keywords')}
+        hits = section.fetch('keywords').flat_map { |keyword| exact_keyword_matches(keyword, query) }.uniq
+        value = score(record, terms, compact, query, body_source: entry[:sections].fetch(heading)) + hits.length * (document.fetch('id') == 'glossary' ? 4 : 8)
+        {heading: heading, score: value, hits: hits, include: section.fetch('include', [])}
+      end.select { |section| section[:score] >= 4 }.sort_by { |section| -section[:score] }
+    end
 
-      headings = ranked.flat_map { |section| [section.fetch('heading')] + section.fetch('include', []) }
+    def focused_content(document, query, required)
+      entry = @corpus.fetch(document.fetch('id'))
+      content, sections = entry.values_at(:content, :sections)
+      return [content, sections.keys, [], 'full'] if query.to_s.strip.empty? || entry[:records].empty? || document.fetch('id') == 'index'
+
+      ranked = section_matches(document, query)
+      best = ranked.first&.fetch(:score) || 0
+      chosen = ranked.select { |section| section[:score] >= best * 0.5 }.first(MAX_SECTIONS).map { |section| section[:heading] }
+      headings = (chosen + required).uniq
+      headings += entry[:records].select { |section| headings.include?(section['heading']) }.flat_map { |section| section.fetch('include', []) }
       chosen = sections.keys.select { |heading| headings.include?(heading) }
-      [preamble + chosen.map { |heading| sections.fetch(heading) }.join, chosen, sections.keys - chosen]
+      if chosen.empty?
+        summary = "# #{document.fetch('title')}\n\n#{document.fetch('summary')}\n"
+        return [summary, [], sections.keys, 'summary']
+      end
+      [entry[:preamble] + chosen.map { |heading| sections.fetch(heading) }.join, chosen, sections.keys - chosen, 'sections']
+    end
+
+    # Exact registered phrases allow spacing and Korean particles but cannot
+    # start halfway through a word (원범 must not match 지원 범위).
+    def exact_keyword_matches(keyword, query)
+      normalized = keyword.unicode_normalize(:nfkc).downcase.delete(' ')
+      return [] unless normalized.match?(/\A[가-힣a-z0-9_\/+]+\z/)
+
+      pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*')
+      # Compact registered Korean phrases accept optional spacing. Pure ASCII
+      # identifiers stay intact: R G denotes two facets, not RG.
+      pattern = normalized.chars.map { |char| Regexp.escape(char) }.join('\\s*') if normalized.match?(/[가-힣]/)
+      suffixes = (PARTICLES + %w[이랑 이나 란 이란 뜻 이면 인지]).uniq.sort_by { |word| -word.length }.map { |word| Regexp.escape(word) }.join('|')
+      text = query.to_s.unicode_normalize(:nfkc).downcase
+      text.enum_for(:scan, /(?<![가-힣a-z0-9_\/+])(#{pattern})(?:(?:#{suffixes})(?:은|는|도|만)?)?(?![가-힣a-z0-9_\/+])/).map {
+        match = Regexp.last_match
+        [match.begin(1), match.end(1)]
+      }
     end
 
     def query_terms(query)
@@ -234,7 +308,7 @@ module BattleCatsRolls
       id_source = document.fetch('id').tr('_-', ' ')
       keyword_sources = document.fetch('keywords')
       summary_source = document.fetch('summary')
-      body_source ||= File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
+      body_source ||= @corpus.fetch(document.fetch('id'))[:content]
       title = searchable(title_source)
       id = searchable(id_source)
       keywords = keyword_sources.map { |value| searchable(value) }
@@ -266,6 +340,10 @@ module BattleCatsRolls
       score_value += 12 * keyword_sources.count { |keyword|
         (searchable_tokens(keyword) & terms).empty? && registered_term_match?(keyword, query)
       }
+      score_value += 20 if document.key?('file') && exact_keyword_matches(title_source, query).any?
+      # Authored title tokens identify concept owners (R in tracks), while a
+      # passing mention in a broad screenshot document does not redefine it.
+      score_value += 6 if document.key?('file') && title_source.split(/[ ,·]+/).any? { |word| word.match?(/\A[a-z]{1,2}\z/i) && exact_keyword_matches(word, query).any? }
       score_value
     end
 
@@ -278,7 +356,7 @@ module BattleCatsRolls
           normalized.match?(/[가-힣]/) && normalized.match?(/[a-z0-9]/) || normalized.include?('/'))
 
       pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*')
-      suffixes = (PARTICLES + %w[이랑 이나 란 이란 뜻]).uniq.sort_by { |word| -word.length }.map { |word| Regexp.escape(word) }.join('|')
+      suffixes = (PARTICLES + %w[이랑 이나 란 이란 뜻 이면 인지]).uniq.sort_by { |word| -word.length }.map { |word| Regexp.escape(word) }.join('|')
       query.to_s.unicode_normalize(:nfkc).downcase.match?(/(?<![가-힣a-z0-9\/+])#{pattern}(?:(?:#{suffixes})(?:은|는|도|만)?)?(?![가-힣a-z0-9\/+])/)
     end
 
@@ -306,7 +384,7 @@ module BattleCatsRolls
       return false if term.length < 2
       return words.include?(term) if term.match?(/\A(?:[a-z]{1,2}|[0-9]+)\z/)
 
-      field.include?(term)
+      words.any? { |word| word.include?(term) }
     end
   end
 end

@@ -59,6 +59,15 @@ describe 'Frozen 870cc54d MCP contracts' do
         end
       end
     end
+    # Reviewed routing-only delta: focused guide calls, concept/character
+    # separation and visible user evidence. No tool inputs or engines change.
+    guide_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/guide_routing_delta_v1.json')))
+    guide_delta.each do |host, changes|
+      baseline.fetch(host).fetch('initialize')['instructions'] = changes.fetch('instructions')
+      changes.fetch('descriptions').each do |name, description|
+        baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
+      end
+    end
     expect(GptMcpContractSupport.capture).eq baseline
   end
 end

@@ -568,6 +568,25 @@ describe 'Catsroll MCP device-computation adapter' do
     end
   end
 
+  would 'expose guide facet gaps and source revisions identically for GPT and Claude' do
+    replies = %i[chatgpt claude].map do |host|
+      adapter = BattleCatsRolls::GptMcp.new(ui_host: host)
+      reply = adapter.dispatch('tools/call', 'name' => 'catsroll_guide',
+        'arguments' => {'query' => 'R과 RG 차이', 'limit' => 1})
+      data = reply.fetch(:structuredContent)
+      expect(JSON.parse(reply.fetch(:content).first.fetch(:text))).eq data
+      expect(data.fetch('guideRevision').match?(/\A[0-9a-f]{64}\z/)).eq true
+      expect(data.fetch('unansweredSections').empty?).eq false
+      data.fetch('unansweredSections').each do |args|
+        followup = adapter.dispatch('tools/call', 'name' => 'catsroll_guide', 'arguments' => args).fetch(:structuredContent)
+        expect(followup.fetch('guideRevision')).eq data.fetch('guideRevision')
+        expect(followup.fetch('documents').first.fetch('sections').include?(args.fetch('query'))).eq true
+      end
+      data
+    end
+    expect(replies.first).eq replies.last
+  end
+
   would 'connect subjective tiers to real per-form game traits and an exact banner pool' do
     result = call_tool(client, 'catsroll_recommend', {traits: %w[빨 천], limit: 10})
     data = result.fetch('structuredContent')

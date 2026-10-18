@@ -203,4 +203,100 @@ describe 'Catsroll curated GPT guide retrieval' do
       expect(raises?(BattleCatsRolls::GptGuide::InvalidManifest) { BattleCatsRolls::GptGuide.new(root: root) }).eq true
     end
   end
+  would 'route section-only and table-only vocabulary without cross-word false positives' do
+    guide = BattleCatsRolls::GptGuide.new
+    {'레티 뜻' => ['glossary', '레어 티켓'], '레티 뭐야' => ['glossary', '레어 티켓'],
+      '세2마' => ['glossary', '세이버'], '세2마춘은?' => ['glossary', '춘리'],
+      '춘블발' => ['glossary', '발로그'], '양딜 뜻' => ['glossary', '양산 딜러'],
+      '공무는?' => ['glossary', '공격 무효'], '원범 뜻' => ['glossary', '원거리 범위 공격'],
+      '살남' => ['glossary', '살아남는다'], '레제로' => ['glossary', '레전드 제로'],
+      '플랜 저장' => ['website', '저장 / 불러오기'], '최근 시드' => ['website', 'Last roll 구분'],
+      '최근 seed' => ['website', 'Last roll 구분']}.each do |question, (topic, text)|
+      result = guide.lookup('query' => question)
+      expect(result.fetch('documents').first.fetch('id')).eq topic
+      expect(result.fetch('documents').map { |doc| doc.fetch('content') }.join.include?(text)).eq true
+      expect(result.fetch('unansweredSections')).eq []
+    end
+    Dir.mktmpdir do |root|
+      guide_with(root)
+      manifest_path = File.join(root, 'manifest.json')
+      manifest = JSON.parse(File.read(manifest_path))
+      track = manifest.fetch('documents').find { |doc| doc['id'] == 'tracks' }
+      track['title'] = '지원 범위'
+      track['keywords'] = []
+      track['sections'] = [{'heading' => '약어', 'keywords' => []}]
+      File.write(File.join(root, 'tracks.md'), "## 약어\n| 표현 | 의미 |\n| --- | --- |\n| 새약어 / 다른약어 | 검증된 뜻 |\n")
+      File.write(manifest_path, JSON.generate(manifest))
+      guide = BattleCatsRolls::GptGuide.new(root: root)
+      expect(guide.lookup('query' => '원범').fetch('matched')).eq false
+      ['새약어', '다른약어 뜻'].each do |question|
+        expect(guide.lookup('query' => question).fetch('documents').first.fetch('content').include?('검증된 뜻')).eq true
+      end
+    end
+  end
+
+  would 'preserve comparison facets and negative or progress constraints ahead of relative scores' do
+    guide = BattleCatsRolls::GptGuide.new
+    {
+      'R과 RG 차이' => ['`R`', '`RG`'],
+      'S/G와 F/U, 달력 차이' => ['## S/G', '## F/U', '달력'],
+      '달력과 파레토, 플랜 저장 차이 알려줘' => ['달력', '파레토', '저장 / 불러오기'],
+      '본능 없이 쓸만한 캐릭터' => ['investment="none"'],
+      '본능 제외하고 추천해' => ['investment="none"', '성능 후보 추천'],
+      '티켓 안 쓰고 올컬' => ['allowTicket', '기본 false', '한도를 0'],
+      '특수티켓 없이 얻고싶어' => ['allow_ticket', '한도를 0'],
+      '현재 시드가 없어요' => ['관측 기록을 아직 모으지 않았어도', 'mode="seek"'],
+      '이미 뽑은 뒤' => ['현재 시드', '관측']
+    }.each do |question, required|
+      result = guide.lookup('query' => question)
+      content = result.fetch('documents').map { |doc| doc.fetch('content') }.join
+      required.each { |text| expect(content.include?(text)).eq true }
+      expect(result.fetch('unansweredSections')).eq []
+    end
+    result = guide.lookup('query' => 'S/G와 F/U, 달력 차이')
+    expect(result.fetch('documents').any? { |doc| doc.fetch('sections').size >= 3 }).eq true
+  end
+
+  would 'identify unanswered requested sections when document limits prevent complete coverage' do
+    guide = BattleCatsRolls::GptGuide.new
+    result = guide.lookup('query' => 'R G 차이', 'limit' => 1)
+    expect(result.fetch('documents').size).eq 1
+    pending = result.fetch('unansweredSections')
+    expect(pending.empty?).eq false
+    pending.each do |args|
+      followup = guide.lookup(args).fetch('documents').first
+      expect(followup.fetch('sections').include?(args.fetch('query'))).eq true
+    end
+  end
+
+  would 'avoid unrelated full document fallback and fingerprint the exact guide corpus' do
+    guide = BattleCatsRolls::GptGuide.new
+    result = guide.lookup('query' => '어떤 캐릭터 추천해')
+    expect(result.fetch('documents').map { |doc| doc.fetch('id') }).eq ['recommendations']
+    expect(result.fetch('documents').sum { |doc| doc.fetch('content').length } < 2000).eq true
+    expect(result.fetch('documents').first.fetch('content').include?('catsroll_recommend')).eq true
+    summary = guide.lookup('topic' => 'find', 'query' => '아무관련없는질문').fetch('documents').first
+    expect(summary.fetch('contentMode')).eq 'summary'
+    expect(summary.fetch('sections')).eq []
+    expect(summary.fetch('content').length < 500).eq true
+    expect(summary.fetch('content').include?('시드와 게임 지역')).eq false
+    expect(result.fetch('guideRevision')).eq BattleCatsRolls::GptGuide.new.lookup({}).fetch('guideRevision')
+    Dir.mktmpdir do |root|
+      first = guide_with(root).lookup('topic' => 'seed')
+      path = File.join(root, 'seed.md')
+      expect(first.fetch('documents').first.fetch('contentHash')).eq Digest::SHA256.hexdigest(File.read(path))
+      File.write(path, File.read(path) + '새 안내')
+      later = BattleCatsRolls::GptGuide.new(root: root).lookup('topic' => 'seed')
+      expect(later.fetch('guideRevision') == first.fetch('guideRevision')).eq false
+      # Same concatenated bytes, different per-document boundaries.
+      before = BattleCatsRolls::GptGuide.new(root: root).lookup({})
+      first_path, second_path = %w[index.md seed.md].map { |name| File.join(root, name) }
+      first_text, second_text = [first_path, second_path].map { |path| File.read(path) }
+      File.write(first_path, first_text[0...-1])
+      File.write(second_path, first_text[-1] + second_text)
+      after = BattleCatsRolls::GptGuide.new(root: root).lookup({})
+      expect(after.fetch('guideRevision') == before.fetch('guideRevision')).eq false
+    end
+  end
+
 end
