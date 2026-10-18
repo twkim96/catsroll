@@ -6,13 +6,13 @@
 <iframe title="Catsroll 앱" id="widget" sandbox="allow-scripts allow-same-origin" src="/gpt"></iframe><pre id="messages"></pre>
 <script>
 window.messages=[];window.latestResult=null;window.ready=false;window.holdPrepare=false;window.releases=[];
-window.rejectModelContext=false;
+window.rejectModelContext=false;window.rejectResultSharing=false;
 window.holdBootstrap=new URLSearchParams(location.search).has('holdBootstrap');window.bootstrapReleases=[];
 const iframe=document.querySelector('iframe');
 async function prepare(){
  const args=JSON.parse(document.querySelector('textarea').value);
  iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-input',params:{arguments:args}},location.origin);
- const response=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:99,method:'tools/call',params:{name:'catsroll_prepare',arguments:args}})});
+ const response=await fetch(new URLSearchParams(location.search).has('claude')?'/mcp/claude':'/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:99,method:'tools/call',params:{name:'catsroll_prepare',arguments:args}})});
  latestResult=(await response.json()).result;
  iframe.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:latestResult},location.origin);
 }
@@ -27,7 +27,9 @@ addEventListener('message',async event=>{
  if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:{},hostContext:{}};
  else if(m.method==='ui/notifications/size-changed')iframe.style.height=Math.min(m.params.height,1000)+'px';
  else if(m.method==='tools/call'){
-  const response=await fetch('/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(m)});result=(await response.json()).result;
+  if(rejectResultSharing && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,content:[{type:'text',text:'Unknown tool'}]}},event.origin);return;}
+  const response=await fetch(new URLSearchParams(location.search).has('claude')?'/mcp/claude':'/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(m)});result=(await response.json()).result;
+  if(m.params.name==='catsroll_share_result')window.lastShareReply=result;
   if(holdPrepare && m.params.name==='catsroll_prepare')await new Promise(resolve=>releases.push(resolve));
   if(holdBootstrap && m.params.name==='catsroll_multi_data' && m.params.arguments.section==='bootstrap')await new Promise(resolve=>bootstrapReleases.push(resolve));
  }

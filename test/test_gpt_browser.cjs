@@ -19,6 +19,7 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     const frame = page.frameLocator("#widget");
     await frame.locator("#seed").waitFor();
     await page.waitForFunction(() => window.ready);
+    await page.evaluate(() => { rejectResultSharing=true; });
     await page.locator("#prepare").click();
     await frame.locator("#seed").waitFor({state: "visible"});
     await page.waitForFunction(() => window.latestResult);
@@ -193,6 +194,7 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await page.route("**/gpt-test-claude-widget", route => route.fulfill({contentType:"text/html",body:claudeHtml}));
     await page.goto(base + "/gpt-test-host?claude=1");
     await page.waitForFunction(() => window.ready);
+    await page.evaluate(() => { rejectResultSharing=true; });
     await page.locator("#prepare").click();
     await page.waitForFunction(() => latestResult?.structuredContent?.status === "prepared");
     await frame.locator("#calculate").click();
@@ -211,17 +213,29 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     assert.equal(await page.evaluate(() => messages.find(item => item.method === "ui/message").params.content[0].text), claudeShare,
       "Claude can share computed data when hidden context fails");
     // Baseline 300: real engine output, 600 cells, complete route, both host transports.
+    async function resultRpc(endpoint, name, args) {
+      const response = await fetch(base + endpoint, {method: "POST", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "tools/call", params: {name, arguments: args}})});
+      const envelope = await response.json();
+      assert(!envelope.error, JSON.stringify(envelope.error));
+      assert(!envelope.result.isError, JSON.stringify(envelope.result));
+      return envelope.result.structuredContent;
+    }
     for (const hostPath of ["", "?claude=1"]) {
       await page.goto(base + "/gpt-test-host" + hostPath);
       await page.waitForFunction(() => window.ready);
+      await page.evaluate(() => { rejectResultSharing=false; });
       await page.locator("#arguments").fill(JSON.stringify({mode: "multi", seed: 42,
         rows: [{lang: "kr", event: "2019-01-23_348", forceGuaranteed: 11}],
         findEnabled: true, targets: [{cat_id: 306, allow_ticket: true}],
-        maxGuaranteed: 1, maxPlatinum: 1}));
+        maxGuaranteed: 1, maxPlatinum: 1, planMode: true, planName: "300행 조회 검증"}));
       await page.locator("#prepare").click();
       await page.waitForFunction(() => latestResult?.structuredContent?.request?.count === 300);
       await frame.locator("#calculate").click();
       await page.waitForFunction(() => document.querySelector("iframe").contentWindow.MultiFindApp.getResult()?.status === "success");
+      if (!await frame.locator("#gpt-plan-settings").evaluate(el => el.open)) await frame.locator("#gpt-plan-settings summary").click();
+      await frame.locator("#multi_plan_auto_draw").click();
+      await frame.locator("#multi_plan_save").click();
       await frame.locator("#send-context").click();
       await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
       const baseline = await page.evaluate(() => {
@@ -229,22 +243,37 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
         const snapshot = messages.find(item => item.method === "ui/update-model-context").params.content[0].text;
         const find = win.MultiFindApp.getResult();
         return {snapshot, visible: messages.find(item => item.method === "ui/message").params.content[0].text,
-          route: find.actions, destination: find.destination, targetAcquired: find.targetAcquired,
+          route: find.actions, destination: find.destination, targetAcquired: find.targetAcquired, plan: win.MultiPlanApp.getState(),
           rows: win.MultiTrackApp.getOutputs()[0].out.cats.map(pair => pair.map(cat => [cat.id, cat.number(), cat.next && cat.next.number()]))};
       });
       const parseLine = prefix => JSON.parse(baseline.snapshot.split("\n").find(line => line.startsWith(prefix)).slice(prefix.length));
-      const array = parseLine("배너 배열: ");
-      const route = parseLine("Find 계산: ");
-      assert.equal(array.rowsTotal, 300);
-      assert.equal(array.rowsIncluded, 300, "all default rows should fit one banner");
-      assert.equal(array.rowsOmitted, 0);
-      assert.equal(array.rows.length, 300);
-      assert.deepEqual(array.rows.map(pair => pair.map(cell => cell.slice(0, 3))), baseline.rows,
-        "all 600 serialized ID/result/next cells match the calculated table");
-      assert.equal(route.totalDraws, baseline.route.reduce((n, action) => n + (action.type === "guaranteed" ? action.pulls : 1), 0));
-      assert.equal(route.destination, baseline.destination);
-      assert.equal(route.targetAcquired, baseline.targetAcquired);
-      assert(route.targetsAcquired.some(item => item.catId === 306));
+      assert(baseline.snapshot.includes("결과 조회: "), "new result sharing failed: " + JSON.stringify(await page.evaluate(() => lastShareReply?.isError ? lastShareReply.content : null)));
+      const reference = parseLine("결과 조회: ");
+      assert.match(reference.result_id, /^[0-9a-f]{64}$/);
+      assert(baseline.snapshot.length < 16000, "conversation receives brief reference, not 600 cells");
+      const endpoint = hostPath ? "/mcp/claude" : "/mcp";
+      const allRows = [];
+      for (let start = 1; start <= 300;) {
+        const array = await resultRpc(endpoint, "catsroll_result", {result_id: reference.result_id,
+          view: "array", banner: 0, start, limit: 50});
+        allRows.push(...array.rows);
+        assert(array.rows.length > 0);
+        start = array.nextStart || 301;
+      }
+      assert.equal(allRows.length, 300);
+      assert.deepEqual(allRows.map(pair => [pair.A, pair.B].map(cell => [cell.id, cell.position, cell.next])), baseline.rows,
+        "all 600 retrieved ID/result/next cells match the calculated table");
+      const route = await resultRpc(endpoint, "catsroll_result", {result_id: reference.result_id, view: "summary"});
+      assert.equal(route.find.totalDraws, baseline.route.reduce((n, action) => n + (action.type === "guaranteed" ? action.pulls : 1), 0));
+      assert.equal(route.find.destination, baseline.destination);
+      assert.equal(route.find.targetAcquired, baseline.targetAcquired);
+      assert(route.find.targetsAcquired.some(item => item.catId === 306));
+      const plan = await resultRpc(endpoint, "catsroll_result", {result_id: reference.result_id, view: "plan", limit: 50});
+      assert.equal(plan.enabled, true);
+      assert.equal(plan.name, "300행 조회 검증");
+      assert.deepEqual(plan.collections.marks.items, baseline.plan.marks);
+      assert.deepEqual(plan.collections.route.items, baseline.plan.route);
+      assert.deepEqual(plan.collections.cats.items, baseline.plan.cats);
       if (hostPath) assert(baseline.visible.includes(baseline.snapshot));
       else assert.equal(baseline.visible, "현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.");
       console.log((hostPath ? "Claude" : "GPT") + " default300: 600 cells exact, full Find acquisition, chars=" + baseline.snapshot.length);
@@ -261,7 +290,11 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
       const snapshot = win.CatsrollGptResultSummary.build({track: Object.assign({}, inputs, {count: 999}),
         find, findEnabled: true, findSettings: win.MultiFindApp.getShareSettings(),
         plan: win.MultiPlanApp.getState(), outputs: Array.from({length: 8}, () => output)});
-      return {snapshot, elapsed: performance.now() - start, destination: find.destination};
+      const alternatives = win.MultiFindEngine.buildTrackAlternatives(Array.from({length: 8}, () => source.pool), 42, {count: 999, last: 0, formIndex: 0});
+      const captured = win.CatsrollGptResultSummary.capture({track: Object.assign({}, inputs, {count: 999}),
+        find, findEnabled: true, findSettings: win.MultiFindApp.getShareSettings(), plan: win.MultiPlanApp.getState(),
+        outputs: Array.from({length: 8}, (_, i) => Object.assign({}, output, {alternatives: alternatives[i]}))});
+      return {snapshot, elapsed: performance.now() - start, destination: find.destination, captured};
     });
     const stressLines = stress.snapshot.split("\n");
     const stressArrays = stressLines.filter(line => line.startsWith("배너 배열: ")).map(line => JSON.parse(line.slice("배너 배열: ".length)));
@@ -278,6 +311,16 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     assert(stress.snapshot.length <= 60000);
     assert(stress.elapsed < 5000, "snapshot serialization should not freeze the UI");
     console.log("999x8 banners: explicit omissions, route retained, chars=" + stress.snapshot.length + ", ms=" + Math.round(stress.elapsed));
+    assert(stress.captured.banners.every(b => b.rowsIncluded === 999 && b.rowsOmitted === 0 && b.conditionalOmitted === 0));
+    console.log("full store payload bytes=" + Buffer.byteLength(JSON.stringify(stress.captured)));
+    const extreme = await resultRpc("/mcp/claude", "catsroll_share_result", {snapshot: stress.captured});
+    for (let banner = 0; banner < 8; banner++) {
+      const tail = await resultRpc("/mcp/claude", "catsroll_result", {result_id: extreme.result_id, view: "array", banner, start: 999, limit: 1});
+      assert.equal(tail.rows.length, 1);
+      assert.equal(tail.rows[0].A.position, "999A");
+      assert.equal(tail.rows[0].B.position, "999B");
+    }
+    console.log("full result store999x8: all 15984 cells and conditional branches retained, late-row lookup passed, bytes=" + Buffer.byteLength(JSON.stringify(stress.captured)));
     assert.deepEqual(errors, []);
     console.log("GPT shared Multi: canonical targets, manual Apply, arrays+Find stamps, plan switching/save, reference provenance, host sharing, cancellation, mobile width and WASM seed recovery passed");
   } finally { await browser.close(); }

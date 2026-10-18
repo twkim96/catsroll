@@ -16,6 +16,7 @@ iframe에서 Multi·Find·WASM 실행을 확인했다. 무료 웹 계정, 결과
 ## 파일과 유지보수
 
 - `lib/battle-cats-rolls/local/gpt_mcp.rb`: opt-in `/mcp`, `/gpt`와 입력 검증·데이터 준비.
+- `local/gpt_results.rb`: 한시적 공유 스냅샷 보관·접근 경계·조회 페이지.
 - `local/gpt_banner_preview.rb`: 기존 KR/JP 시리즈 연결과 최신 참고 풀 조회. 서버 계산은 하지 않는다.
 - `asset/gpt-runtime.js`, `asset/gpt-worker.js`: 기존 엔진의 기기 실행과 취소·직렬화.
 - `asset/gpt-app.js`, `asset/gpt-inputs.js`, `asset/gpt-app.css`, `view/gpt_app.html`: 호스트 브리지·기존 GPT 입력 UI·독립 미리보기.
@@ -44,6 +45,8 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, `cat_id`로 실제 풀에 포함된 배너 역검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달하며 `cat_id`와 함께 쓰지 않음 |
 | `catsroll_cats` | 모든 형태 이름·검토한 별명 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
 | `catsroll_prepare` | `multi`, `seek`와 Find 옵션·플랜 초기 설정을 검증. 기존 `find`는 같은 Multi 화면의 호환 입력 |
+| `catsroll_share_result` | 앱 전용 쓰기. 사용자가 공유한 기기 계산 스냅샷을 서버 메모리에 최대 1시간 임시 보관하고 비밀 결과 ID·만료·요약 반환 |
+| `catsroll_result` | 모델/앱 읽기. 결과 ID와 summary/array/character/route/plan, 배너·구간·페이지로 조회. 재계산하지 않음 |
 | `catsroll_multi_data` | 앱 전용(`_meta.ui.visibility=[app]`) bootstrap/series/pool 전송. 기존 `TrackApi`의 공개 데이터만 `_meta`로 반환하며 계산하지 않음 |
 
 `catsroll_prepare`의 `structuredContent.status`는 **prepared**이며 결과가 아니다.
@@ -55,17 +58,25 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 준비 응답의 `guide`는 모드별 설명 주제만 제안하며 계산 결과를 담지 않는다.
 풀과 WASM 입력은 `_meta['catsroll/data']`에만 담아 모델 문맥을 불필요하게 채우지 않는다.
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.
-공유 직렬화는 `asset/gpt-result-summary.js`에서 계산된 출력만 읽는다. Find의 전체 행동과
-목표 획득 단계·총 실제 뽑기 수를 우선 전달하고, 연속된 일반 단뽑은 개수·시작/다음 좌표로
-묶는다. 확정 묶음의 `pulls`를 실제 뽑기 수에 포함하며 목표의 정확한 회차를 확인할 수
-없을 때는 행동 내 범위로 표시한다. `cost`는 엔진의 비교 가중치이고 `uberDraws`는
-획득 울슈레 수로서 입력의 미래 울슈레 수와 다르다.
-A/B 배열은 캐릭터 이름 사전과 좌표·ID·R/G를 보존한 압축 표로 전달한다. 기본 공유 예산은
-60,000자이며, 넘으면 배열 행 단위로 줄이고 배너별 계산/전달/생략 수를 명시한다.
-경로의 반복 배너·일정은 `actionContexts`, 반복 이름·희귀도는 `actionCats`로 연결한다.
-경로·합계·플랜은 우선 보존하며 긴 JSON을 문자 중간에서 자르지 않는다. 필수 데이터 자체가
-예산을 넘는 경우에는 전체 경로를 남기고 배열 생략 범위를 명시하므로 60,000자는 절대 전송 상한이 아니다.
-이는 공유 시점의 스냅샷이며 모델이 앱 DOM을 직접 보거나 이후 조작을 자동으로 읽는 것은 아니다.
+공유 직렬화는 `asset/gpt-result-summary.js`가 계산된 출력만 읽는다. `capture`는 모든
+배열·조건부 R/G/RG·Find·플랜을 구조화한 스냅샷으로 만들며 엔진을 다시 실행하지 않는다.
+공유 버튼은 `catsroll_share_result`로 서버 메모리에 최대 1시간 보관한 뒤 결과 ID·만료·요약만
+모델에 전달한다. `catsroll_result`가 필요한 배열 구간·캐릭터 위치·전체 경로·플랜을 페이지로 조회한다.
+모델은 클라이언트가 명시적으로 공유한 결과를 읽으며 서버 검증된 결과로 표현하지 않는다.
+공유 전에는 서버 보관하지 않는다. 결과 ID는 256비트 난수인 읽기 권한으로, 소유한 연결
+(GPT/Claude)에서만 사용한다. 로그인 계정 인증을 대신하지 않으므로 ID 유출에 주의한다.
+파일/DB 없이 단일 프로세스 메모리에 보관하고 조회는 TTL을 연장하지 않는다.
+Yahns의 GPT 활성 웹 리스너에는 명시적 공유 요청을 위한 8MiB+봉투 용량과 메모리 버퍼를
+설정한다. 일반 MCP 요청은 기존 65,536바이트 제한을 유지한다. 재시작 시
+즉시 사라질 수 있으며 만료 청소는 다음 요청에서 수행한다. 최대 32개·총 64MiB·개별 8MiB로
+제한하고 포화 시 기존 결과를 밀어내지 않고 새 저장을 거부한다. 쓰기는 프로세스 전체에서
+분당 최대 60회로 제한한다. 재배포/재시작은 기존 결과 ID를 무효화하므로 다시 공유해야 한다. 여러 서버 프로세스 간 공유는
+지원하지 않는다. 현재 단일 프로세스 HF 운영을 전제로 하며 다중 인스턴스로 늘리기 전 공유 저장소가 필요하다.
+상세 조회 도구가 승인되지 않았거나 저장이 실패하면 기존 직접 공유로 폴백한다. 이때 경로·합계·플랜을
+우선 보존하고 60,000자 예산 안에서 배열 행을 전달하며 생략 수를 표시한다. 필수 경로 자체가
+예산을 넘으면 경로는 보존하므로 이 수치는 절대 전송 상한이 아니다. `cost`는 비교 가중치이며
+게임 재화가 아니고 `uberDraws`는 획득 울슈레 수로서 입력의 미래 울슈레 수와 다르다.
+이는 공유 시점의 스냅샷이며 모델이 앱 DOM이나 이후 조작을 자동으로 읽는 것은 아니다.
 
 공유 버튼은 Multi 배열 표 바로 위에, 시드 찾기에서는 결과 바로 위에 배치한다.
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
@@ -82,7 +93,7 @@ Find 준비는 선택한 일반 풀 또는 해당 목표에 허용하고 예산�
 준비 입력을 받았다고 계산하지 않는다. 사용자의 계산하기 클릭이 실행 경계다.
 Found cats는 기존 Multi의 캐릭터·좌표 목록을 유지한다. 목표 선택은 Find 설정의 필터 창에서 한다.
 Find 성공 후 경로 도장을 자동 표시한다. 플랜 그리기·직접 선택·조회·저장은 공통 Multi 규칙을 쓴다.
-GPT의 플랜·입력 상태는 메모리에서 격리되며 해당 앱 세션 동안만 유지한다. 사이트의 저장 플랜이나 주소를 변경하지 않는다.
+공유 전 GPT의 플랜·입력 상태는 메모리에서 격리되며 해당 앱 세션 동안만 유지한다. 공유된 복사본의 서버 보관은 위 결과 조회 계약을 따른다. 사이트의 저장 플랜이나 주소를 변경하지 않는다.
 샌드박스가 native form 제출을 허용하지 않아도 계산 버튼은 명시적인 기기 API로 실행한다.
 Find 옵션은 계산 방식 옆에 두며, Find·플랜 도구는 각 패널 왼쪽 위에 모은다.
 플랜 그리기·불러오기·초기화·저장은 접근성 이름과 툴팁이 있는 아이콘이다.
@@ -146,6 +157,7 @@ CATSROLL_GPT_ENABLED=1 WEB_BIND=127.0.0.1:17867 bundle exec yahns -c config/yahn
 ```sh
 node test/test_gpt_runtime.js
 node test/test_gpt_result_summary.js
+bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_results.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_recommendations.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp.rb
@@ -155,7 +167,7 @@ node test/test_gpt_browser.cjs
 
 런타임 검사는 원본 배열·교차 배너 RG·Find 결과와 어댑터를 비교하고, 실제 WASM으로
 관측 열 개에서 시드를 복원한다. 안내 검사는 검색·입력·문서 범위를, 추천 검사는 형태/투자·속성·풀·출처 연결을 확인한다.
-MCP 검사는 opt-in, origin, 크기/타입 제한, 도구 교환·카탈로그·준비/결과 구분·풀 불변성·독립 리소스를 확인한다.
+MCP/공유 저장 검사는 만료·권한·불변성·용량·페이지와 opt-in, origin, 크기/타입 제한, 도구 교환·카탈로그·준비/결과 구분·풀 불변성·독립 리소스를 확인한다.
 실제 브라우저에서 Worker·WASM·취소와 호스트 브리지 왕복은 별도 확인한다.
 브라우저 검사는 Playwright가 설치된 환경의 `NODE_PATH` 또는 `PLAYWRIGHT_MODULE`을
 사용하고 Chrome을 실행한다. `CATSROLL_GPT_TEST_URL`로 별도 시험 서버를 지정할 수 있다.
@@ -163,7 +175,9 @@ MCP 검사는 opt-in, origin, 크기/타입 제한, 도구 교환·카탈로그�
 `test_gpt_result_summary.js`는 24단뽑+11확정, 300행동의 마지막 목표 획득, R/RG와
 부분/실패 상태를 확인한다. 브라우저 검사는 count 생략→300을 GPT/Claude 모의 호스트에서
 계산하고 공유된 600개 A/B 칸의 ID·좌표·다음 위치를 원본과 대조한다. 999행×8배너에서는
-배열의 생략 수와 전체 경로 유지도 확인한다. 실제 모델이 이 압축 형식을 해석하는지는 별도 수용이다.
+배열의 생략 수와 전체 경로 유지도 확인한다. 전체 저장/조회 검사에서는 모의 GPT·Claude 각각 300행 A/B 600칸과 실제 플랜을 조회했다.
+999행×8배너의 A/B 15,984칸과 조건부 분기 약 4.5MB도 보관·999행 재조회를 통과했다.
+실제 모델의 도구 선택·설명과 공개 도구 정의 승인은 별도 수용이다.
 앱은 인증된 부모 호스트에 `ui/notifications/size-changed`로 실제 본문 높이를 알린다.
 `ResizeObserver`와 animation frame 중복 제거로 입력·접기/펼치기·계산 결과의 크기 변화를
 전달하며 iframe viewport 높이를 본문 높이로 재사용하지 않는다. 실제 최대 높이와 폭은

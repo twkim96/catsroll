@@ -74,6 +74,47 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(call_tool(client, 'catsroll_events', {lang: 'kr', catalog: 'true'})['isError']).eq true
   end
 
+  would 'publish only explicit computed snapshots and query late rows without recalculation' do
+    snapshot = {'schema_version' => 1, 'data_version' => 'fixture-v1',
+      'input' => {'track' => {'seed' => 42, 'last' => 0, 'formIndex' => 0, 'count' => 300, 'rows' => []}, 'findEnabled' => false, 'findSettings' => {}},
+      'find' => {'status' => 'not_requested', 'actions' => [], 'totalDraws' => 0, 'targetsAcquired' => [], 'actionContexts' => [], 'actionCats' => {}},
+      'plan' => {'enabled' => false, 'name' => '', 'marks' => [], 'route' => [], 'cats' => [], 'progress' => ''},
+      'banners' => [{'banner' => 'fixture', 'lang' => 'kr', 'rowsTotal' => 300, 'rowsIncluded' => 300, 'rowsOmitted' => 0,
+        'conditionalTotal' => 0, 'conditionalIncluded' => 0, 'conditionalOmitted' => 0,
+        'names' => {'38' => '고양이 홉핑'}, 'rows' => (1..300).map { |n| [[38, "#{n}A", "#{n + 1}A", nil, nil], [38, "#{n}B", "#{n + 1}B", nil, nil]] }, 'conditional' => []}]}
+    listed = rpc(client, 'tools/list').last.dig('result', 'tools')
+    write = listed.find { |item| item['name'] == 'catsroll_share_result' }
+    expect(write.dig('_meta', 'ui', 'visibility')).eq ['app']
+    expect(write.dig('annotations', 'readOnlyHint')).eq false
+    read = listed.find { |item| item['name'] == 'catsroll_result' }
+    expect(read.dig('annotations', 'readOnlyHint')).eq true
+    shared = call_tool(client, 'catsroll_share_result', {'snapshot' => snapshot})
+    expect(shared.fetch('isError', false)).eq false
+    reference = shared.fetch('structuredContent')
+    expect(reference.fetch('result_id').match?(/\A[0-9a-f]{64}\z/)).eq true
+    result = call_tool(client, 'catsroll_result', {result_id: reference.fetch('result_id'), view: 'array', banner: 0, start: 299, limit: 2}).fetch('structuredContent')
+    expect(result.fetch('rows').size).eq 2
+    expect(result.fetch('rows').last.dig('A', 'position')).eq '300A'
+    expect(result.fetch('rows').last.dig('B', 'next')).eq '301B'
+    wrong_host = rpc(Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: :claude)), 'tools/call', {name: 'catsroll_result', arguments: {result_id: reference.fetch('result_id')}}, path: '/mcp/claude').last.fetch('result')
+    expect(wrong_host.dig('structuredContent', 'status')).eq 'expired_or_unavailable'
+    # Upload allowance is specific to snapshot transport, not ordinary MCP calls.
+    large = Marshal.load(Marshal.dump(snapshot))
+    large.fetch('banners').first.fetch('rows').concat((301..999).map { |n| [[38, "#{n}A", "#{n + 1}A", nil, nil], [38, "#{n}B", "#{n + 1}B", nil, nil]] })
+    large.fetch('banners').first.merge!('rowsTotal' => 999, 'rowsIncluded' => 999)
+    large['input']['track']['count'] = 999
+    large['banners'] *= 8
+    expect(call_tool(client, 'catsroll_share_result', {'snapshot' => large}).fetch('isError', false)).eq false
+    previous_enabled = ENV['CATSROLL_GPT_ENABLED']
+    ENV['CATSROLL_GPT_ENABLED'] = '1'
+    oversized = client.post('/mcp', 'CONTENT_TYPE' => 'application/json', input: JSON.generate(jsonrpc: '2.0', id: 1, method: 'ping', params: {ignored: 'x' * 70_000}))
+    expect(oversized.status).eq 413
+    ENV['CATSROLL_GPT_ENABLED'] = previous_enabled
+    polluted = snapshot.merge('credentials' => {'password' => 'not-a-secret'})
+    expect(call_tool(client, 'catsroll_share_result', {'snapshot' => polluted}).fetch('isError')).eq true
+    expect(call_tool(client, 'catsroll_share_result', {'snapshot' => {'schema_version' => 2}}).fetch('isError')).eq true
+  end
+
   would 'retrieve beginner guidance without opening a computation or leaking the whole corpus' do
     result = call_tool(client, 'catsroll_guide', {query: '보라칸이면 레레 확정임?'})
     data = result.fetch('structuredContent')

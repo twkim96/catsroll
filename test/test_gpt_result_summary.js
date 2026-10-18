@@ -201,3 +201,16 @@ for (const dense of [false, true]) {
   console.log(`300-action ${dense ? "dense" : "batched"}: goal at draw300 kept, chars=${text.length}, arrayRows=${banner.rowsIncluded}`);
 }
 console.log("gpt result summary tests passed");
+
+// Stored snapshots contain every row and every conditional branch, without the chat budget.
+const captured = summary.capture({track: {seed: 42, count: 999, rows: []}, findEnabled: true,
+  find: {status: "success", actions: routeActions}, plan: {enabled: false},
+  outputs: Array.from({length: 8}, (_, n) => ({label: `Banner ${n}`, row: {lang: "kr"},
+    out: {cats: longRows}, alternatives: {"999A": [{kind: "regular", pull: {id: 870, name: "Goal", resultLabel: "999A", next: "1000A"}}]}}))});
+assert.equal(captured.schema_version, 1);
+assert.equal(captured.banners.length, 8);
+assert(captured.banners.every(b => b.rowsIncluded === 999 && b.rowsOmitted === 0 && b.conditionalOmitted === 0));
+assert.equal(captured.banners[7].rows[998][1][1], "999B");
+assert.equal(captured.find.totalDraws, 35);
+assert(captured.banners[7].conditional.length > 0);
+console.log("full snapshot capture: 999x8 rows and all branches retained, bytes=" + Buffer.byteLength(JSON.stringify(captured)));
