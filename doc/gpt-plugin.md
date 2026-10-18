@@ -49,6 +49,8 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 멱등성 키·결과 ID, publishing/published/delivering/delivered/recoverable_error를 소유한다.
 입력 변경은 현재 계산을 무효화하지만 이미 고정한 ShareJob은 유지한다. 플랜 편집은 별도 revision으로
 새 공유를 만들 수 있고 배열 재계산을 요구하지 않는다. 전송 실패는 계산 실패로 표시하지 않는다.
+목표 검색처럼 목록만 좁히는 입력은 계산을 취소하지 않는다. 실제 목표 추가·제거·티켓 허용·예산 변경은
+공통 컨트롤러의 `multi-find:settings-changed`로 계산/공유 revision을 무효화한다.
 
 `test/fixtures/gpt_mcp/870cc54d.json`은 구조 변경 전 initialize·tools/list·resources/list와
 대표 성공/실패 응답의 기준본이다. UI 지문과 데이터 버전처럼 의도적으로 변하는 값만 정규화한다.
