@@ -78,10 +78,37 @@ describe 'Connection-only MCP control' do
     expect(normal.any? { |tool| tool[:name].start_with?('catsroll_probe') }).eq false
   end
 
+  would 'isolate the Claude SDK diagnostic with its endpoint-specific domain and resource URI' do
+    claude = BattleCatsRolls::GptClaudeSdkProbe.new
+    tools = claude.dispatch('tools/list', {})[:tools]
+    expect(tools.map { |tool| tool[:name] }).eq ['catsroll_probe_sdk']
+    uri = tools.first.dig(:_meta, :ui, :resourceUri)
+    expect(uri).eq BattleCatsRolls::GptSdkProbe.widget[:uri].sub('.html', '-claude-1.html')
+    expect(uri.match?(%r{\Aui://catsroll/probe-sdk-[0-9a-f]{16}-claude-1\.html\z})).eq true
+    expect(claude.dispatch('resources/list', {})[:resources].first[:uri]).eq uri
+
+    resource = claude.dispatch('resources/read', {'uri' => uri})[:contents].first
+    endpoint = "#{BattleCatsRolls::GptMcp.public_origin}/mcp/probe/sdk/claude"
+    expect(resource.dig(:_meta, :ui, :domain)).eq Digest::SHA256.hexdigest(endpoint)[0, 32] + '.claudemcpcontent.com'
+    expect(resource[:text]).eq BattleCatsRolls::GptSdkProbe.widget[:text].gsub('{{RESOURCE_ID}}', resource[:text][/data-catsroll-resource-id="([^"]+)"/, 1])
+    expect(claude.dispatch('tools/call', {'name' => 'catsroll_probe_sdk'})[:structuredContent]).eq({status: 'connection_probe', computed: false})
+    [BattleCatsRolls::GptProbe.new, BattleCatsRolls::GptSdkProbe.new].each do |other|
+      begin
+        other.dispatch('resources/read', {'uri' => uri})
+        expect(false).eq true
+      rescue BattleCatsRolls::GptMcp::InvalidInput
+        expect(true).eq true
+      end
+    end
+    normal_claude = BattleCatsRolls::GptMcp.new(ui_host: :claude).dispatch('tools/list', {})[:tools]
+    expect(normal_claude.length).eq 10
+    expect(normal_claude.map { |tool| tool[:name] }.any? { |name| name.start_with?('catsroll_probe') }).eq false
+  end
+
   would 'correlate each successful diagnostic response without recording request data or failed generation' do
     original = $stderr
     $stderr = StringIO.new
-    [BattleCatsRolls::GptProbe, BattleCatsRolls::GptSdkProbe].each do |klass|
+    [BattleCatsRolls::GptProbe, BattleCatsRolls::GptSdkProbe, BattleCatsRolls::GptClaudeSdkProbe].each do |klass|
       probe = klass.new
       uri = klass.widget[:uri]
       first = probe.dispatch('resources/read', {'uri' => uri})[:contents].first[:text]
@@ -93,7 +120,9 @@ describe 'Connection-only MCP control' do
       records = $stderr.string.lines.last(2).map { |line| JSON.parse(line) }
       expect(records.map { |record| record['resourceId'] }).eq [id, next_id]
       expect(records.all? { |record| record.keys.sort == %w[build probeVariant resourceId time] }).eq true
-      expect(records.map { |record| record['probeVariant'] }.uniq).eq [klass == BattleCatsRolls::GptProbe ? 'manual' : 'sdk']
+      variant = {BattleCatsRolls::GptProbe => 'manual', BattleCatsRolls::GptSdkProbe => 'sdk',
+        BattleCatsRolls::GptClaudeSdkProbe => 'sdk-claude'}.fetch(klass)
+      expect(records.map { |record| record['probeVariant'] }.uniq).eq [variant]
       expect(records.first['build']).eq first[/data-catsroll-build="([^"]+)"/, 1]
     end
     before = $stderr.string.dup
@@ -121,32 +150,43 @@ describe 'Connection-only MCP control' do
     original = $stderr
     $stderr = StringIO.new
     client = Rack::MockRequest.new(BattleCatsRolls::Server)
-    %w[/gpt/probe /gpt/probe/sdk /mcp/probe /mcp/probe/sdk].each do |path|
+    %w[/gpt/probe /gpt/probe/sdk /gpt/probe/sdk/claude /mcp/probe /mcp/probe/sdk /mcp/probe/sdk/claude].each do |path|
       ENV['CATSROLL_GPT_ENABLED'] = '0'
       expect(client.get(path).status).eq 404
       ENV['CATSROLL_GPT_ENABLED'] = '1'
       expect(client.get(path, 'HTTP_ORIGIN' => 'https://untrusted.example').status).eq 403
     end
     expect($stderr.string).eq ''
-    %w[/gpt/probe /gpt/probe/sdk].each do |path|
+    %w[/gpt/probe /gpt/probe/sdk /gpt/probe/sdk/claude].each do |path|
       response = client.get(path)
       expect(response.status).eq 200
       expect(response['cache-control']).eq 'no-store'
       expect(response.body.include?('{{')).eq false
       id = response.body[/data-catsroll-resource-id="([^"]+)"/, 1]
       expect(JSON.parse($stderr.string.lines.last)['resourceId']).eq id
+      expect(JSON.parse($stderr.string.lines.last)['probeVariant']).eq(path.end_with?('/claude') ? 'sdk-claude' : path.end_with?('/sdk') ? 'sdk' : 'manual')
     end
-    %w[/mcp/probe /mcp/probe/sdk].zip(%w[catsroll_probe catsroll_probe_sdk]).each do |path, name|
+    %w[/mcp/probe /mcp/probe/sdk /mcp/probe/sdk/claude].zip(%w[catsroll_probe catsroll_probe_sdk catsroll_probe_sdk]).each do |path, name|
       response = client.post(path, 'CONTENT_TYPE' => 'application/json', input: JSON.generate(
         jsonrpc: '2.0', id: 7, method: 'tools/list', params: {}))
       tool = JSON.parse(response.body).dig('result', 'tools', 0)
       expect(tool['name']).eq name
+      if path.end_with?('/claude')
+        uri = tool.dig('_meta', 'ui', 'resourceUri')
+        expect(uri.match?(%r{\Aui://catsroll/probe-sdk-[0-9a-f]{16}-claude-1\.html\z})).eq true
+      end
       response = client.post(path, 'CONTENT_TYPE' => 'application/json', input: JSON.generate(
         jsonrpc: '2.0', id: 8, method: 'resources/read', params: {uri: tool.dig('_meta', 'ui', 'resourceUri')}))
-      html = JSON.parse(response.body).dig('result', 'contents', 0, 'text')
+      content = JSON.parse(response.body).dig('result', 'contents', 0)
+      html = content.fetch('text')
       expect(response.status).eq 200
       expect(html.include?('{{')).eq false
       expect(JSON.parse($stderr.string.lines.last)['resourceId']).eq html[/data-catsroll-resource-id="([^"]+)"/, 1]
+      expect(JSON.parse($stderr.string.lines.last)['probeVariant']).eq(path.end_with?('/claude') ? 'sdk-claude' : path.end_with?('/sdk') ? 'sdk' : 'manual')
+      if path.end_with?('/claude')
+        endpoint = "#{BattleCatsRolls::GptMcp.public_origin}/mcp/probe/sdk/claude"
+        expect(content.dig('_meta', 'ui', 'domain')).eq Digest::SHA256.hexdigest(endpoint)[0, 32] + '.claudemcpcontent.com'
+      end
       expect(client.post(path, 'HTTP_ORIGIN' => 'https://untrusted.example').status).eq 403
     end
   ensure

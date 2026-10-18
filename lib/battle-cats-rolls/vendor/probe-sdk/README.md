@@ -1,7 +1,10 @@
 # Diagnostic MCP Apps SDK bundle
 
-Only `/mcp/probe/sdk` and `/gpt/probe/sdk` use this artifact. Normal connectors and
-the manual `/mcp/probe` control retain their existing transport.
+Only `/mcp/probe/sdk`, `/gpt/probe/sdk`, `/mcp/probe/sdk/claude`, and
+`/gpt/probe/sdk/claude` use this artifact. The Claude diagnostic has its own
+`ui://catsroll/probe-sdk-<digest>-claude-1.html` resource URI and a Claude UI
+domain derived from the full `/mcp/probe/sdk/claude` endpoint URL. Normal
+connectors and the manual `/mcp/probe` control retain their existing transport.
 
 `probe.js` imports the real `App` from `@modelcontextprotocol/ext-apps` **2.0.3**,
 as in the official [quickstart](https://apps.extensions.modelcontextprotocol.io/api/documents/quickstart.html)
@@ -33,8 +36,9 @@ It routes synthetic parent/widget pages and needs no running server or account.
 
 Both diagnostic resource responses (including direct HTML previews) get a random
 `data-catsroll-resource-id`. Only successful HTML generation writes one structured
-stderr line containing `resourceId`, `probeVariant`, `build`, `time`. This is a
-generation record, not proof of browser delivery. A cached HTML copy keeps that ID;
+stderr line containing exactly `resourceId`, `probeVariant`, `build`, `time`.
+The Claude SDK diagnostic uses `probeVariant: sdk-claude`. This is a generation
+record, not proof of browser delivery. A cached HTML copy keeps that ID;
 the independent browser `diagnosticId` changes on each execution. The diagnostics
 contain stage classifications only, never host payloads or exception text. No
 telemetry endpoint or server record store is added. Real host/account acceptance

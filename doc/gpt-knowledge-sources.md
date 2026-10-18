@@ -127,3 +127,11 @@ GPT 전용 화면은 좁은 폭의 배치만 조정하며 엔진 규칙을 다�
 미지원 조건·오류/needs_input을 확인했다. 브라우저에서 일반 배열의 client 모드·300행 설정과
 Multi 두 배너·Find 목표/예산·기존 localStorage 보존을 확인했다. 기존 공유 복구 브라우저 회귀도 통과했다.
 이는 실제 GPT/Claude 모델의 새 도구 선택이나 스크린샷 상담의 정확성 검증을 대신하지 않는다.
+
+Multi 세부 조작은 `view/multi.erb`의 컨트롤/도움말과 `multi-track.js`, `multi-find.js`,
+`multi-find-engine.js`, `multi-plan.js`, `multi-share.js`, `table-share.js`에 대조했다.
+`website`는 버튼·필터·플랜·공유와 화면 판독을, `find`는 달력과 여섯 검색 기준의 점수/한도를 유지한다.
+달력 엔진은 시작일 포함·종료일 제외의 날짜 비교이며 실제 시각/시간대를 조회하지 않는다.
+R/G/RG의 화살표 뒤 좌표는 다음 위치이고 별도 선행 조건과 다르다. 최근 seed 링크와 Last 입력도 구분한다.
+실제 Claude 시험에서 기존 문서의 달력/가중치 누락과 R 화살표 오독을 확인해 안내·검색어를 보강했다.
+문서 검색 검사는 통과했으며 모델의 보강 후 답변 수용은 [GPT/Claude 실사용 기록](gpt-plugin.md#claude-연결)에서 구분한다.

@@ -102,4 +102,31 @@ module BattleCatsRolls
       uri.is_a?(String) && %r{\Aui://catsroll/probe-sdk-[0-9a-f]{16}\.html\z}.match?(uri)
     end
   end
+
+  class GptClaudeSdkProbe < GptSdkProbe
+    def self.widget
+      base = super
+      base.merge(uri: base[:uri].sub(/\.html\z/, '-claude-1.html'))
+    end
+
+    def dispatch(method, params)
+      result = super
+      if method == 'resources/read' && result[:contents].is_a?(Array)
+        endpoint = "#{self.class.public_origin}/mcp/probe/sdk/claude"
+        result[:contents][0][:_meta][:ui][:domain] =
+          Digest::SHA256.hexdigest(endpoint)[0, 32] + '.claudemcpcontent.com'
+      end
+      result
+    end
+
+    private
+
+    def variant; 'sdk-claude'; end
+    def resource_name; 'catsroll-sdk-claude-connection-probe'; end
+    def preview_path; '/gpt/probe/sdk/claude'; end
+
+    def compatible_widget_uri?(uri)
+      uri.is_a?(String) && %r{\Aui://catsroll/probe-sdk-[0-9a-f]{16}-claude-1\.html\z}.match?(uri)
+    end
+  end
 end
