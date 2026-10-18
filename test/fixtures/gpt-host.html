@@ -3,10 +3,12 @@
 <button id="mobile" onclick="document.querySelector('iframe').style.width='390px'">모바일 폭</button><button id="desktop" onclick="document.querySelector('iframe').style.width='900px'">넓은 폭</button>
 <button id="prepare">입력 준비</button><button id="cancel-host">호스트 취소</button>
 <textarea id="arguments">{"mode":"multi","seed":42,"count":10,"rows":[{"lang":"kr","event":"2026-02-13_1042"}],"findEnabled":true,"targets":[{"cat_id":160,"allow_ticket":true}],"maxPlatinum":1,"planMode":true,"planName":"검증용 플랜"}</textarea>
-<iframe title="Catsroll 앱" id="widget" sandbox="allow-scripts allow-same-origin" src="/gpt"></iframe><pre id="messages"></pre>
+<iframe title="Catsroll 앱" id="widget" sandbox="allow-scripts allow-same-origin allow-downloads" src="/gpt"></iframe><pre id="messages"></pre>
 <script>
 window.messages=[];window.latestResult=null;window.ready=false;window.holdPrepare=false;window.releases=[];
-window.rejectModelContext=false;window.rejectResultSharing=false;
+window.rejectModelContext=false;window.rejectResultSharing=false;window.rejectMessage=false;window.rejectContextResult=false;
+window.holdShare=false;window.shareReleases=[];window.writeFailure=null;
+window.hostCapabilities={serverTools:{},updateModelContext:{text:{}},message:{text:{}}};
 window.holdBootstrap=new URLSearchParams(location.search).has('holdBootstrap');window.bootstrapReleases=[];
 const iframe=document.querySelector('iframe');
 async function prepare(){
@@ -23,13 +25,16 @@ addEventListener('message',async event=>{
  const m=event.data;if(!m||m.jsonrpc!=='2.0')return;
  messages.push(m);document.querySelector('#messages').textContent=messages.filter(m=>m.method!=='tools/call').map(m=>JSON.stringify(m)).join('\n');
  if(m.method==='ui/update-model-context' && rejectModelContext){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32601,message:'Context unsupported'}},event.origin);return;}
+ if(m.method==='ui/message' && rejectMessage){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32601,message:'Message rejected'}},event.origin);return;}
+ if(m.method==='ui/update-model-context' && rejectContextResult){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true}},event.origin);return;}
  let result={};
- if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:{},hostContext:{}};
+ if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:window.hostCapabilities,hostContext:{}};
  else if(m.method==='ui/notifications/size-changed')iframe.style.height=Math.min(m.params.height,1000)+'px';
  else if(m.method==='tools/call'){
+  if(writeFailure && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,structuredContent:writeFailure,content:[{type:'text',text:writeFailure.message}]}},event.origin);return;}
   if(rejectResultSharing && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,content:[{type:'text',text:'Unknown tool'}]}},event.origin);return;}
   const response=await fetch(new URLSearchParams(location.search).has('claude')?'/mcp/claude':'/mcp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(m)});result=(await response.json()).result;
-  if(m.params.name==='catsroll_share_result')window.lastShareReply=result;
+  if(m.params.name==='catsroll_share_result'){window.lastShareReply=result;if(holdShare)await new Promise(resolve=>shareReleases.push(resolve));}
   if(holdPrepare && m.params.name==='catsroll_prepare')await new Promise(resolve=>releases.push(resolve));
   if(holdBootstrap && m.params.name==='catsroll_multi_data' && m.params.arguments.section==='bootstrap')await new Promise(resolve=>bootstrapReleases.push(resolve));
  }

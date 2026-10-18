@@ -36,6 +36,7 @@ MCP 어댑터 순이다. 이 기록은 게임 클라이언트 자체나 모든 �
 
 | 주제 | 유지되는 근거 |
 | --- | --- |
+| 공유 결과 조회·페이지 종료 | `local/gpt_results.rb`와 `test_gpt_results.rb`: 엔진 진행 위치와 경로 커서 분리, 긴 한글 이름·조건부 분기 전체 순회에서 레코드별 중복/누락 대조. 실제 호스트의 설명 정확성은 별도 검증 |
 | 시드 진행·레어 재추첨 | `asset/track-engine.js`의 `advanceSeed`, `duped`, `fillCatLinks`, `finishRerolledLinks`; 원본 `gacha.rb`/`cat.rb` |
 | 직전 결과·티켓 후 초기화 | `asset/multi-find-engine.js`의 `rollRegular`, `lastRareId`, `rollGuaranteed` |
 | G/RG·2/7/11/15 | 원본 Gacha와 `TrackEngine.fillGuaranteed`, `MultiFindEngine.guaranteedRollCount`; `gpt-runtime.js` 직렬화 |

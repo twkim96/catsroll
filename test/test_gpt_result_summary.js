@@ -214,3 +214,19 @@ assert.equal(captured.banners[7].rows[998][1][1], "999B");
 assert.equal(captured.find.totalDraws, 35);
 assert(captured.banners[7].conditional.length > 0);
 console.log("full snapshot capture: 999x8 rows and all branches retained, bytes=" + Buffer.byteLength(JSON.stringify(captured)));
+
+// A route larger than the chat budget retains its state and exact export data.
+const oversizedSnapshot = JSON.parse(JSON.stringify(captured));
+oversizedSnapshot.find.status = 'partial';
+oversizedSnapshot.find.actions = Array.from({length: 300}, (_, i) => ({type: 'roll', actionIndex: i + 1,
+  catName: '한'.repeat(300), resultLabel: `${i + 1}A`, acquired: [{catId: 870, catName: '한'.repeat(300)}]}));
+oversizedSnapshot.plan.marks = Array.from({length: 300}, (_, i) => ({column: 0, position: `${i + 1}A`, note: '한'.repeat(300)}));
+const beforeOversized = JSON.stringify(oversizedSnapshot);
+const boundedCaptured = summary.buildCaptured(oversizedSnapshot, 58000);
+assert(boundedCaptured.length <= 58000);
+assert.match(boundedCaptured, /"status":"partial"/);
+assert.match(boundedCaptured, /omittedActions/);
+assert.match(boundedCaptured, /생략/);
+assert.equal(JSON.stringify(oversizedSnapshot), beforeOversized);
+assert(summary.build({track: {}, outputs: [], find: {status:'partial', actions: oversizedSnapshot.find.actions}, plan: oversizedSnapshot.plan}).length <= 60000);
+console.log('oversized captured route: hard transport cap, state/omissions retained, full JSON unchanged');

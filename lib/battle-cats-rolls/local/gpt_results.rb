@@ -9,6 +9,14 @@ module BattleCatsRolls
   # It never computes or verifies the client-reported results.
   class GptResults
     class InvalidInput < StandardError; end
+    class PublishError < InvalidInput
+      attr_reader :code, :retryable, :retry_after_seconds
+
+      def initialize(code, message, retryable: false, retry_after_seconds: nil)
+        super(message)
+        @code, @retryable, @retry_after_seconds = code, retryable, retry_after_seconds
+      end
+    end
 
     MAX_SNAPSHOT_BYTES = 8 * 1024 * 1024
     MAX_RESPONSE_BYTES = 32 * 1024
@@ -17,12 +25,16 @@ module BattleCatsRolls
     MAX_ROWS = 999
     MAX_TTL = 3600
     DEFAULT_TTL = 3600
-    DEFAULT_ENTRIES = 32
+    DEFAULT_ENTRIES = 256
     DEFAULT_BYTES = 64 * 1024 * 1024
+    SESSION_ENTRIES = 4
+    SESSION_BYTES = 16 * 1024 * 1024
+    MAX_IN_FLIGHT = 2
     HOSTS = %i[chatgpt claude].freeze
     AUTHORITY = 'client_computed_not_server_verified'.freeze
 
-    Entry = Struct.new(:json, :expires_at, :expires_iso, :bytes, keyword_init: true)
+    Entry = Struct.new(:json, :expires_at, :expires_iso, :bytes, :session,
+      :operation, keyword_init: true)
 
     FIND_SUMMARY_KEYS = %w[
       enabled status message destination nextOffset optimization cost scoreUnits
@@ -75,7 +87,10 @@ module BattleCatsRolls
         PUBLISH_MUTEX.synchronize do
           @publish_times ||= []
           @publish_times.reject! { |time| now - time >= 60 || now < time }
-          raise InvalidInput, 'Sharing is temporarily rate limited' if @publish_times.length >= 60
+          if @publish_times.length >= 60
+            raise PublishError.new('rate_limited', 'Sharing is temporarily rate limited',
+              retryable: true, retry_after_seconds: 60)
+          end
 
           @publish_times << now
         end
@@ -84,7 +99,8 @@ module BattleCatsRolls
     end
 
     def initialize(clock: nil, ttl: DEFAULT_TTL, max_entries: DEFAULT_ENTRIES,
-      max_bytes: DEFAULT_BYTES)
+      max_bytes: DEFAULT_BYTES, max_session_entries: SESSION_ENTRIES,
+      max_session_bytes: SESSION_BYTES)
       unless ttl.is_a?(Integer) && (1..MAX_TTL).cover?(ttl)
         raise ArgumentError, "ttl must be an integer from 1 to #{MAX_TTL}"
       end
@@ -94,33 +110,77 @@ module BattleCatsRolls
       unless max_bytes.is_a?(Integer) && max_bytes.positive?
         raise ArgumentError, 'max_bytes must be a positive integer'
       end
+      unless [max_session_entries, max_session_bytes].all? { |value| value.is_a?(Integer) && value.positive? }
+        raise ArgumentError, 'session budgets must be positive integers'
+      end
 
       @ttl = ttl
       @max_entries = max_entries
       @max_bytes = max_bytes
+      @max_session_entries, @max_session_bytes = max_session_entries, max_session_bytes
       @clock = clock || -> { Process.clock_gettime(Process::CLOCK_MONOTONIC) }
       raise ArgumentError, 'clock must respond to call' unless @clock.respond_to?(:call)
 
       @entries = {}
       @bytes = 0
+      @in_flight = 0
+      @session_writes = {}
       @mutex = Mutex.new
     end
 
-    def publish(snapshot, host: :chatgpt)
+    def publish(snapshot, host: :chatgpt, session_id: nil, idempotency_key: nil)
       namespace = normalize_host(host)
+      if session_id || idempotency_key
+        unless [session_id, idempotency_key].all? { |value| value.is_a?(String) && /\A[0-9a-f]{64}\z/.match?(value) }
+          raise InvalidInput, 'session_id and idempotency_key must both be 64 lowercase hex characters'
+        end
+      end
+      session = [namespace, session_id || 'legacy']
+      now, wall_now = clock_values
+      reserved = false
+      @mutex.synchronize do
+        purge_expired!(now)
+        if @in_flight >= MAX_IN_FLIGHT
+          raise PublishError.new('busy', 'Snapshot processing is busy', retryable: true, retry_after_seconds: 2)
+        end
+        retrying = idempotency_key && @entries.values.any? { |item| item.session == session && item.operation == idempotency_key }
+        unless retrying
+          @session_writes.delete_if { |_key, times| times.reject! { |time| now - time >= 60 || now < time }; times.empty? }
+          times = @session_writes.fetch(session, [])
+          if times.length >= 6 || (!@session_writes.key?(session) && @session_writes.length >= 1024)
+            raise PublishError.new('rate_limited', 'This anonymous session is temporarily rate limited', retryable: true, retry_after_seconds: 60)
+          end
+          self.class.reserve_publish!
+          (@session_writes[session] ||= []) << now
+        end
+        @in_flight += 1
+        reserved = true
+      end
       json = normalize_snapshot(snapshot)
       json_size = json.bytesize
       raise InvalidInput, 'Snapshot exceeds the 8 MiB limit' if json_size > MAX_SNAPSHOT_BYTES
 
-      self.class.reserve_publish!
-      now, wall_now = clock_values
       expires_at = now + @ttl
       expires_iso = (wall_now.utc + @ttl).iso8601
 
       @mutex.synchronize do
         purge_expired!(now)
+        owned = @entries.select { |_key, item| item.session == session }
+        if idempotency_key
+          existing = owned.find { |_key, item| item.operation == idempotency_key }
+          if existing
+            key, entry = existing
+            unless entry.json == json
+              raise PublishError.new('idempotency_conflict', 'Share key already belongs to a different snapshot')
+            end
+            return publish_response(key[1], entry)
+          end
+        end
+        if owned.length >= @max_session_entries || owned.values.sum(&:bytes) + json_size > @max_session_bytes
+          raise PublishError.new('session_full', 'This anonymous session has reached its snapshot budget')
+        end
         if @entries.length >= @max_entries || @bytes + json_size > @max_bytes
-          raise InvalidInput, 'Snapshot storage is at capacity; try again later'
+          raise PublishError.new('storage_full', 'Snapshot storage is at capacity; export your result or try later', retryable: true)
         end
 
         result_id = nil
@@ -131,18 +191,16 @@ module BattleCatsRolls
             break
           end
         end
-        @entries[[namespace, result_id]] = Entry.new(json: json.freeze,
-          expires_at: expires_at, expires_iso: expires_iso, bytes: json_size)
+        entry = Entry.new(json: json.freeze,
+          expires_at: expires_at, expires_iso: expires_iso, bytes: json_size,
+          session: session, operation: idempotency_key)
+        response = publish_response(result_id, entry)
+        @entries[[namespace, result_id]] = entry
         @bytes += json_size
-
-        response = {
-          'result_id' => result_id,
-          'expires_at' => expires_iso,
-          'ttl_seconds' => @ttl,
-          'summary' => reference_summary(JSON.parse(json))
-        }
-        bounded_response!(response)
+        response
       end
+    ensure
+      @mutex.synchronize { @in_flight -= 1 } if reserved
     end
 
     def lookup(args, host: :chatgpt)
@@ -168,6 +226,14 @@ module BattleCatsRolls
       end
       return unavailable(view) unless entry
 
+      reserved = false
+      @mutex.synchronize do
+        if @in_flight >= MAX_IN_FLIGHT
+          raise PublishError.new('busy', 'Snapshot processing is busy', retryable: true, retry_after_seconds: 2)
+        end
+        @in_flight += 1
+        reserved = true
+      end
       snapshot = JSON.parse(entry.json)
       response = case view
       when 'summary' then summary_view(snapshot)
@@ -180,10 +246,23 @@ module BattleCatsRolls
       response['view'] = view
       response['authority'] = AUTHORITY
       response['result_id'] = result_id
+      if view == 'array'
+        (response['banners'] || [response]).each do |page|
+          page['nextConditionalQuery']['result_id'] = result_id if page['nextConditionalQuery']
+        end
+      end
       bounded_response!(response)
+    ensure
+      @mutex.synchronize { @in_flight -= 1 } if reserved
     end
 
     private
+
+    def publish_response(result_id, entry)
+      bounded_response!({'result_id' => result_id, 'expires_at' => entry.expires_iso,
+        'ttl_seconds' => [entry.expires_at - monotonic_now, 0].max.floor,
+        'summary' => reference_summary(JSON.parse(entry.json))})
+    end
 
     def monotonic_now
       clock_values.first
@@ -221,7 +300,7 @@ module BattleCatsRolls
     def normalize_query(args)
       raise InvalidInput, 'arguments must be an object' unless args.is_a?(Hash) && args.keys.all? { |key| key.is_a?(String) }
 
-      allowed = %w[result_id view banner start limit offset cat_id]
+      allowed = %w[result_id view banner start rowEnd limit offset cat_id]
       unknown = args.keys - allowed
       raise InvalidInput, 'Unknown result query argument' unless unknown.empty?
       raise InvalidInput, 'result_id is required' unless args.key?('result_id')
@@ -231,6 +310,10 @@ module BattleCatsRolls
 
       integer_option(args, 'banner', 0, MAX_BANNERS - 1) if args.key?('banner')
       integer_option(args, 'start', 1, MAX_ROWS) if args.key?('start')
+      if args.key?('rowEnd')
+        integer_option(args, 'rowEnd', args.fetch('start', 1), MAX_ROWS)
+        raise InvalidInput, 'rowEnd requires an array banner continuation' unless view == 'array' && args.key?('banner')
+      end
       integer_option(args, 'limit', 1, 50) if args.key?('limit')
       integer_option(args, 'offset', 0, 100_000) if args.key?('offset')
       integer_option(args, 'cat_id', 1, 2_000_000) if args.key?('cat_id')
@@ -523,8 +606,9 @@ module BattleCatsRolls
 
     def validate_link!(link, reroll:)
       return if link.nil?
+      raise InvalidInput, 'Malformed compact linked cell' unless link.is_a?(Array)
       valid_length = reroll ? [3, 4].include?(link.length) : link.length == 3
-      raise InvalidInput, 'Malformed compact linked cell' unless link.is_a?(Array) && valid_length
+      raise InvalidInput, 'Malformed compact linked cell' unless valid_length
 
       compact_id!(link[0], 'linked cell id')
       validate_position!(link[1], max: 1100, label: 'linked position') unless link[1].nil?
@@ -700,10 +784,12 @@ module BattleCatsRolls
       selected = options.key?('banner') ? [[options['banner'], banners[options['banner']]]] : banners.each_with_index.map { |banner, index| [index, banner] }
       start = options.fetch('start', 1)
       page_size = options.fetch('limit', 20)
+      branch_size = page_size
       conditional_offset = options.fetch('offset', 0)
       loop do
         pages = selected.map do |index, banner|
-          build_array_page(index, banner, start, page_size, conditional_offset)
+          build_array_page(index, banner, start, page_size, conditional_offset,
+            branch_size, options['rowEnd'])
         end
         response = if options.key?('banner')
           pages.first.merge('status' => 'ok', 'view' => 'array')
@@ -711,16 +797,23 @@ module BattleCatsRolls
           {'status' => 'ok', 'view' => 'array', 'banners' => pages}
         end
         return response if JSON.generate(response).bytesize <= PAGE_BUDGET
-        raise InvalidInput, 'Array row or conditional branch cannot fit in a result page' if page_size <= 1
-
-        page_size -= 1
+        if branch_size > 1
+          branch_size -= 1
+        elsif !options.key?('rowEnd') && page_size > 1
+          page_size -= 1
+        else
+          raise InvalidInput, 'Array row or conditional branch cannot fit in a result page'
+        end
       end
     end
 
-    def build_array_page(index, banner, start, limit, conditional_offset = 0)
+    def build_array_page(index, banner, start, limit, conditional_offset = 0,
+      conditional_limit = limit, row_end = nil)
       rows = Array(banner['rows'])
-      finish = [start + limit - 1, banner['rowsTotal']].min
+      finish = row_end || [start + limit - 1, banner['rowsTotal']].min
+      raise InvalidInput, 'rowEnd exceeds available rows' if finish > banner['rowsTotal']
       selected = rows.each_with_index.filter_map do |pair, offset|
+        next if row_end
         row_number = offset + 1
         next if row_number < start || row_number > finish
 
@@ -732,9 +825,9 @@ module BattleCatsRolls
         number = item[0].to_s[/\A\d+/].to_i
         number >= start && number <= finish
       end
-      conditional_page = branches.slice(conditional_offset, limit) || []
-      next_start = start + selected.length
-      omitted = [banner['rowsTotal'] - (start - 1) - selected.length, 0].max
+      conditional_page = branches.slice(conditional_offset, conditional_limit) || []
+      next_start = finish + 1
+      omitted = [banner['rowsTotal'] - finish, 0].max
       result = {
         'bannerIndex' => index, 'banner' => banner['banner'], 'lang' => banner['lang'],
         'rowsTotal' => banner['rowsTotal'], 'rowsIncluded' => selected.length,
@@ -749,7 +842,7 @@ module BattleCatsRolls
       if conditional_offset + conditional_page.length < branches.length
         result['nextConditionalOffset'] = conditional_offset + conditional_page.length
         result['nextConditionalQuery'] = {'view' => 'array', 'banner' => index,
-          'start' => start, 'limit' => finish - start + 1, 'offset' => result['nextConditionalOffset']}
+          'start' => start, 'rowEnd' => finish, 'limit' => limit, 'offset' => result['nextConditionalOffset']}
       end
       result
     end
@@ -885,7 +978,7 @@ module BattleCatsRolls
           'targetsAcquired' => acquisitions,
           'targetsAcquiredTotal' => Array(find['targetsAcquired']).length
         )
-        response['nextOffset'] = offset + selected.length if offset + selected.length < actions.length
+        response['nextOffset'] = offset + selected.length < actions.length ? offset + selected.length : nil
         return response if JSON.generate(response).bytesize <= PAGE_BUDGET
         raise InvalidInput, 'Route action cannot fit in a result page' if page_size <= 1
 
@@ -895,7 +988,7 @@ module BattleCatsRolls
 
     def find_summary_for_route(find)
       FIND_SUMMARY_KEYS.each_with_object({}) do |key, result|
-        result[key] = find[key] if find.key?(key)
+        result[key == 'nextOffset' ? 'nextTrackOffset' : key] = find[key] if find.key?(key)
       end
     end
 

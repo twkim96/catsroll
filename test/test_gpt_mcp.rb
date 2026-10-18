@@ -96,6 +96,15 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(result.fetch('rows').size).eq 2
     expect(result.fetch('rows').last.dig('A', 'position')).eq '300A'
     expect(result.fetch('rows').last.dig('B', 'next')).eq '301B'
+    scoped = {snapshot: snapshot, session_id: 'a' * 64, idempotency_key: '1' * 64}
+    first_scoped = call_tool(client, 'catsroll_share_result', scoped).fetch('structuredContent')
+    expect(call_tool(client, 'catsroll_share_result', scoped).dig('structuredContent', 'result_id')).eq first_scoped.fetch('result_id')
+    (2..4).each { |n| call_tool(client, 'catsroll_share_result', scoped.merge(idempotency_key: n.to_s * 64)) }
+    full = call_tool(client, 'catsroll_share_result', scoped.merge(idempotency_key: '5' * 64))
+    expect(full.fetch('isError')).eq true
+    expect(full.dig('structuredContent', 'code')).eq 'session_full'
+    expect(full.dig('structuredContent', 'retryable')).eq false
+    expect(call_tool(client, 'catsroll_share_result', {snapshot: snapshot, session_id: 'a' * 64}).fetch('isError')).eq true
     wrong_host = rpc(Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: :claude)), 'tools/call', {name: 'catsroll_result', arguments: {result_id: reference.fetch('result_id')}}, path: '/mcp/claude').last.fetch('result')
     expect(wrong_host.dig('structuredContent', 'status')).eq 'expired_or_unavailable'
     # Upload allowance is specific to snapshot transport, not ordinary MCP calls.
@@ -136,6 +145,30 @@ describe 'Catsroll MCP device-computation adapter' do
     hint = prepared.fetch('structuredContent').fetch('guide')
     expect(hint.fetch('tool')).eq 'catsroll_guide'
     expect(hint.fetch('topics')).eq %w[tracks guaranteed colors]
+  end
+
+  would 'preserve every normalized condition in site fallback links including seek observations' do
+    options = {mode: 'multi', seed: 42, last: 38, count: 300,
+      findEnabled: false, planMode: true, planName: '복원 계획', optimization: 'balance',
+      maxGuaranteed: 2, maxPlatinum: 1, maxLegendTicket: 2, scheduleAware: false,
+      targets: [{cat_id: 38, allow_ticket: true}],
+      rows: [{lang: 'kr', event: '2019-01-23_348', ubers: 2, forceGuaranteed: 11, previewFor: 'jp'},
+        {lang: 'kr', event: '2019-01-23_348', ubers: 1, forceGuaranteed: 7}]}
+    prepared = call_tool(client, 'catsroll_prepare', options).fetch('structuredContent')
+    link = prepared.fetch('siteUrl')
+    expect(link.include?('/gpt#catsroll-input=')).eq true
+    expect(URI.parse(link).query).eq nil
+    decode = ->(url) { JSON.parse(Base64.urlsafe_decode64(url.split('=', 2).last)) }
+    envelope = decode.call(link)
+    expect(envelope.fetch('version')).eq 1
+    expect(envelope.fetch('arguments')).eq prepared.fetch('request')
+    restored = call_tool(client, 'catsroll_prepare', envelope.fetch('arguments')).fetch('structuredContent')
+    expect(restored.fetch('dataVersion')).eq prepared.fetch('dataVersion')
+    seek = call_tool(client, 'catsroll_prepare', {mode: 'seek', rows: [{lang: 'kr', event: '2019-01-23_348'}]})
+    observation = seek.fetch('_meta').fetch('catsroll/data').fetch('seeker').fetch('choices').first.fetch('id')
+    request = seek.fetch('structuredContent').fetch('request').merge('rolls' => [observation, observation])
+    seek_result = call_tool(client, 'catsroll_prepare', request).fetch('structuredContent')
+    expect(decode.call(seek_result.fetch('siteUrl')).fetch('arguments')).eq seek_result.fetch('request')
   end
 
   would 'resolve banner nicknames and spacing without requiring a character target' do

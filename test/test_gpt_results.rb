@@ -85,7 +85,7 @@ describe 'Temporary client-computed result snapshots' do
     data = snapshot
     data['input']['findEnabled'] = true
     data['find'] = {'status' => 'partial', 'message' => 'Not proven optimal', 'totalDraws' => 300,
-      'targetAcquired' => 1, 'targetTotal' => 2, 'actionCats' => {'38' => {'name' => '고양이 홉핑', 'rarity' => 2}},
+      'nextOffset' => 600, 'targetAcquired' => 1, 'targetTotal' => 2, 'actionCats' => {'38' => {'name' => '고양이 홉핑', 'rarity' => 2}},
       'actionContexts' => [{'lang' => 'kr', 'event' => 'fixture', 'scheduleDay' => 0}],
       'actions' => (1..300).map { |n| {'type' => 'roll', 'actionIndex' => n, 'context' => 0, 'catId' => 38, 'resultLabel' => "#{n}A", 'next' => "#{n + 1}A"} },
       'targetsAcquired' => [{'actionIndex' => 300, 'targetIndex' => 0, 'catId' => 38, 'catName' => '고양이 홉핑', 'resultLabel' => '300A', 'drawNumber' => 300}]}
@@ -97,6 +97,69 @@ describe 'Temporary client-computed result snapshots' do
     expect(tail['actions'][0]['resultLabel']).eq '300A'
     expect(tail['targetsAcquired'][0]['drawNumber']).eq 300
     expect(store.lookup({'result_id' => id})['find']['message']).eq 'Not proven optimal'
+    expect(tail['nextTrackOffset']).eq 600
+    expect(tail['nextOffset']).eq nil
+    seen = []
+    offset = 0
+    8.times do
+      page = store.lookup({'result_id' => id, 'view' => 'route', 'offset' => offset, 'limit' => 50})
+      seen.concat(page['actions'].map { |item| item['actionIndex'] })
+      offset = page['nextOffset']
+      break unless offset
+    end
+    expect(seen).eq (1..300).to_a
+    expect(offset).eq nil
+    beyond = store.lookup({'result_id' => id, 'view' => 'route', 'offset' => 600})
+    expect(beyond['nextOffset']).eq nil
+    expect(beyond['actions']).eq []
+  end
+
+  would 'preserve every conditional identity while following size-limited continuation queries' do
+    data = snapshot(rows: 50)
+    banner = data['banners'][0]
+    banner['names'].merge!('38' => 'Cat', '77' => '한' * 100, '870' => '한' * 100)
+    banner['rows'].each { |pair| pair.each { |cell| cell[0] = 77 } }
+    branches = (1..50).map { |n| "#{n}A" }.sort.flat_map do |position|
+      2.times.map { |i| [position, ['regular', nil, 38, position, false, false, "#{position.to_i + 1}A", "#{position.to_i + 1}A", nil, i]] }
+    end
+    branches.drop(20).each do |item|
+      item[1][2] = 870
+      item[1][8] = [0, item[0], banner['names']['870'], 'regular']
+    end
+    banner.merge!('conditional' => branches, 'conditionalTotal' => branches.size, 'conditionalIncluded' => branches.size)
+    store = BattleCatsRolls::GptResults.new
+    id = store.publish(data)['result_id']
+    seen, rows = [], []
+    start = 1
+    50.times do
+      page = store.lookup({'result_id' => id, 'view' => 'array', 'banner' => 0, 'start' => start, 'limit' => 50})
+      rows.concat(page['rows'].map { |item| item['row'] })
+      window = page.values_at('conditionalStart', 'conditionalEnd', 'nextStart')
+      100.times do
+        expect(JSON.generate(page).bytesize <= 32768).eq true
+        expect(page.values_at('conditionalStart', 'conditionalEnd', 'nextStart')).eq window
+        seen.concat(page['conditional'].map { |item| item.values_at('position', 'lastRareId') })
+        break unless page['nextConditionalQuery']
+        expect(page['nextConditionalQuery']['result_id']).eq id
+        page = store.lookup(page['nextConditionalQuery'].merge('result_id' => id))
+      end
+      start = page['nextStart']
+      break unless start
+    end
+    expect(start).eq nil
+    expect(rows).eq (1..50).to_a
+    expect(seen.tally).eq branches.map { |item| [item[0], item[1][9]] }.tally
+  end
+
+  would 'reject malformed linked cells as input errors for every JSON scalar type' do
+    [0, true, false, 'x', {}, [], [38], [38, '1A'], [38, '1A', '2A', nil, nil]].each do |value|
+      [3, 4].each do |index|
+        data = snapshot(rows: 1)
+        data['banners'][0]['rows'][0][0][index] = value
+        expect(invalid? { BattleCatsRolls::GptResults.new.publish(data) }).eq true
+      end
+    end
+    expect(invalid? { BattleCatsRolls::GptResults.new.publish(snapshot(rows: 1)) }).eq false
   end
 
   would 'bound Unicode pages and keep all branch and plan records available through cursors' do
@@ -132,6 +195,116 @@ describe 'Temporary client-computed result snapshots' do
     expect(invalid? { isolated.reserve_publish!(60) }).eq false
   end
 
+  would 'deduplicate only within a session and keep retry expiration fixed' do
+    now = 0
+    store = BattleCatsRolls::GptResults.new(clock: -> { now }, ttl: 10)
+    data = snapshot(rows: 1)
+    options = {session_id: 'a' * 64, idempotency_key: 'b' * 64}
+    first = store.publish(data, **options)
+    now = 9
+    5.times do
+      retry_result = store.publish(data, **options)
+      expect(retry_result['result_id']).eq first['result_id']
+      expect(retry_result['expires_at']).eq first['expires_at']
+      expect(retry_result['ttl_seconds']).eq 1
+    end
+    changed = snapshot(rows: 2)
+    begin
+      store.publish(changed, **options)
+      raise 'expected conflict'
+    rescue BattleCatsRolls::GptResults::PublishError => error
+      expect(error.code).eq 'idempotency_conflict'
+      expect(error.retryable).eq false
+    end
+    other = store.publish(data, session_id: 'c' * 64, idempotency_key: 'b' * 64)
+    expect(other['result_id'] != first['result_id']).eq true
+    claude = store.publish(data, host: :claude, **options)
+    expect(claude['result_id'] != first['result_id']).eq true
+    now = 10
+    expect(store.lookup({'result_id' => first['result_id']})['status']).eq 'expired_or_unavailable'
+    expect(store.publish(data, **options)['result_id'] != first['result_id']).eq true
+    expect(invalid? { store.publish(data, session_id: 'a' * 64) }).eq true
+  end
+
+  would 'enforce per-session quotas without consuming another sessions allocation' do
+    store = BattleCatsRolls::GptResults.new(max_entries: 6, max_session_entries: 2)
+    data = snapshot(rows: 1)
+    first = store.publish(data, session_id: 'a' * 64, idempotency_key: '1' * 64)
+    store.publish(data, session_id: 'a' * 64, idempotency_key: '2' * 64)
+    begin
+      store.publish(data, session_id: 'a' * 64, idempotency_key: '3' * 64)
+      raise 'expected session limit'
+    rescue BattleCatsRolls::GptResults::PublishError => error
+      expect(error.code).eq 'session_full'
+    end
+    expect(store.publish(data, session_id: 'a' * 64, idempotency_key: '1' * 64)['result_id']).eq first['result_id']
+    other = store.publish(data, session_id: 'b' * 64, idempotency_key: '1' * 64)
+    expect(store.lookup({'result_id' => other['result_id']})['status']).eq 'ok'
+    tight = BattleCatsRolls::GptResults.new(max_session_bytes: JSON.generate(data).bytesize)
+    tight.publish(data)
+    begin
+      tight.publish(data)
+      raise 'expected byte budget'
+    rescue BattleCatsRolls::GptResults::PublishError => error
+      expect(error.code).eq 'session_full'
+    end
+    full = BattleCatsRolls::GptResults.new(max_entries: 1)
+    full.publish(data, session_id: 'a' * 64, idempotency_key: '1' * 64)
+    begin
+      full.publish(data, session_id: 'b' * 64, idempotency_key: '1' * 64)
+      raise 'expected global limit'
+    rescue BattleCatsRolls::GptResults::PublishError => error
+      expect(error.code).eq 'storage_full'
+      expect(error.retryable).eq true
+    end
+  end
+
+  would 'reject further malformed writes before repeated snapshot normalization' do
+    isolated = Class.new(BattleCatsRolls::GptResults)
+    store = isolated.new
+    6.times { expect(invalid? { store.publish({}) }).eq true }
+    begin
+      store.publish({})
+      raise 'expected throttle'
+    rescue BattleCatsRolls::GptResults::PublishError => error
+      expect(error.code).eq 'rate_limited'
+      expect(error.retry_after_seconds).eq 60
+    end
+  end
+
+  would 'bound simultaneous normalization and release reservations after errors' do
+    gate, entered = Queue.new, Queue.new
+    limited = Class.new(BattleCatsRolls::GptResults) do
+      define_method(:normalize_snapshot) do |snapshot|
+        entered << true
+        gate.pop
+        super(snapshot)
+      end
+    end.new
+    gate << true
+    existing_id = limited.publish(snapshot(rows: 1))['result_id']
+    entered.pop
+    workers = 2.times.map { Thread.new { limited.publish(snapshot(rows: 1)) } }
+    2.times { entered.pop }
+    begin
+      limited.publish(snapshot(rows: 1))
+      raise 'expected busy'
+    rescue BattleCatsRolls::GptResults::PublishError => error
+      expect(error.code).eq 'busy'
+      begin
+        limited.lookup({'result_id' => existing_id})
+        raise 'expected read admission limit'
+      rescue BattleCatsRolls::GptResults::PublishError => read_error
+        expect(read_error.code).eq 'busy'
+      end
+    ensure
+      2.times { gate << true }
+    end
+    ids = workers.map { |worker| worker.value['result_id'] }
+    expect(ids.uniq.length).eq 2
+    expect(limited.lookup({'result_id' => ids.first})['status']).eq 'ok'
+  end
+
   would 'reject malformed snapshots and keep concurrent reads and writes isolated' do
     store = BattleCatsRolls::GptResults.new
     expect(invalid? { store.publish(snapshot.merge('credentials' => {})) }).eq true
@@ -142,6 +315,7 @@ describe 'Temporary client-computed result snapshots' do
     bad_context = snapshot
     bad_context['find']['actions'] = [{'type' => 'roll', 'context' => 8}]
     expect(invalid? { store.publish(bad_context) }).eq true
+    store = BattleCatsRolls::GptResults.new
     ids = Array.new(4) { Thread.new { store.publish(snapshot(rows: 2))['result_id'] } }.map(&:value)
     expect(ids.uniq.size).eq 4
     pages = ids.each_with_index.map do |id, index|

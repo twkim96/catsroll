@@ -19,7 +19,7 @@ iframe에서 Multi·Find·WASM 실행을 확인했다. 무료 웹 계정, 결과
 - `local/gpt_results.rb`: 한시적 공유 스냅샷 보관·접근 경계·조회 페이지.
 - `local/gpt_banner_preview.rb`: 기존 KR/JP 시리즈 연결과 최신 참고 풀 조회. 서버 계산은 하지 않는다.
 - `asset/gpt-runtime.js`, `asset/gpt-worker.js`: 기존 엔진의 기기 실행과 취소·직렬화.
-- `asset/gpt-app.js`, `asset/gpt-inputs.js`, `asset/gpt-app.css`, `view/gpt_app.html`: 호스트 브리지·기존 GPT 입력 UI·독립 미리보기.
+- `asset/gpt-app.js`, `asset/gpt-inputs.js`, `asset/gpt-input-transfer.js`, `asset/gpt-app.css`, `view/gpt_app.html`: 호스트 브리지·기존 GPT 입력 UI·독립 미리보기.
 - `view/multi.erb`, `asset/multi-{track,find,plan}.js`: 표·목표 선택·경로 도장·플랜의 공통 UI. `CatsrollMultiHost`가 있을 때만 MCP 데이터·Worker·임시 저장소를 사용한다.
 - `plugins/catsroll/{plugin,mcp}.json`: 원격 MCP 플러그인 패키지 원본.
 - `bin/package-gpt-plugin.rb`: 설정된 공개 origin으로 ZIP 생성. 생성물은 `temp/`.
@@ -45,7 +45,7 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, `cat_id`로 실제 풀에 포함된 배너 역검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달하며 `cat_id`와 함께 쓰지 않음 |
 | `catsroll_cats` | 모든 형태 이름·검토한 별명 또는 ID로 캐릭터 검색, 페이지 최대 50개. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
 | `catsroll_prepare` | `multi`, `seek`와 Find 옵션·플랜 초기 설정을 검증. 기존 `find`는 같은 Multi 화면의 호환 입력 |
-| `catsroll_share_result` | 앱 전용 쓰기. 사용자가 공유한 기기 계산 스냅샷을 서버 메모리에 최대 1시간 임시 보관하고 비밀 결과 ID·만료·요약 반환 |
+| `catsroll_share_result` | 앱 전용 쓰기. 사용자가 공유한 기기 계산 스냅샷을 서버 메모리에 임시 저장하고 최대 1시간 조회를 허용하며 비밀 결과 ID·만료·요약 반환 |
 | `catsroll_result` | 모델/앱 읽기. 결과 ID와 summary/array/character/route/plan, 배너·구간·페이지로 조회. 재계산하지 않음 |
 | `catsroll_multi_data` | 앱 전용(`_meta.ui.visibility=[app]`) bootstrap/series/pool 전송. 기존 `TrackApi`의 공개 데이터만 `_meta`로 반환하며 계산하지 않음 |
 
@@ -60,23 +60,45 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 사용자가 계산 버튼을 누르고, 완료 후 별도 공유 버튼을 눌러야 요약이 대화로 전달된다.
 공유 직렬화는 `asset/gpt-result-summary.js`가 계산된 출력만 읽는다. `capture`는 모든
 배열·조건부 R/G/RG·Find·플랜을 구조화한 스냅샷으로 만들며 엔진을 다시 실행하지 않는다.
-공유 버튼은 `catsroll_share_result`로 서버 메모리에 최대 1시간 보관한 뒤 결과 ID·만료·요약만
+공유 버튼은 `catsroll_share_result`로 서버 메모리에 저장한 뒤 결과 ID·만료·요약만
 모델에 전달한다. `catsroll_result`가 필요한 배열 구간·캐릭터 위치·전체 경로·플랜을 페이지로 조회한다.
+배열의 `nextConditionalQuery`는 결과 ID와 `start`·`rowEnd`를 포함해 행 범위를 고정하고 조건부 분기만 이어 읽는다.
+조건부 페이지에서는 배열 행을 반복하지 않으며 `nextStart`는 같은 행 범위 끝을 유지한다.
+경로의 `nextOffset`은 액션 페이지 커서로 마지막/범위 밖 페이지에서 null이다. 엔진 진행 위치는
+경로 응답에서 `nextTrackOffset`으로 분리하며 요약의 `find.nextOffset`은 엔진 원래 값이다.
 모델은 클라이언트가 명시적으로 공유한 결과를 읽으며 서버 검증된 결과로 표현하지 않는다.
-공유 전에는 서버 보관하지 않는다. 결과 ID는 256비트 난수인 읽기 권한으로, 소유한 연결
-(GPT/Claude)에서만 사용한다. 로그인 계정 인증을 대신하지 않으므로 ID 유출에 주의한다.
-파일/DB 없이 단일 프로세스 메모리에 보관하고 조회는 TTL을 연장하지 않는다.
+공유 전에는 서버 보관하지 않는다. 결과 ID는 256비트 난수인 읽기 권한으로 해당 호스트
+(GPT/Claude) 네임스페이스에서 사용한다. 같은 호스트의 계정·대화를 인증하거나 격리하지 않으므로
+ID 유출에 주의한다. 파일/DB 없이 단일 프로세스 메모리에 보관하고 조회 가능 시간은 최대 1시간이다.
+조회/동일 공유 재시도는 TTL을 연장하지 않으며 만료 후 메모리 정리는 다음 요청 때 수행한다.
 Yahns의 GPT 활성 웹 리스너에는 명시적 공유 요청을 위한 8MiB+봉투 용량과 메모리 버퍼를
-설정한다. 일반 MCP 요청은 기존 65,536바이트 제한을 유지한다. 재시작 시
-즉시 사라질 수 있으며 만료 청소는 다음 요청에서 수행한다. 최대 32개·총 64MiB·개별 8MiB로
-제한하고 포화 시 기존 결과를 밀어내지 않고 새 저장을 거부한다. 쓰기는 프로세스 전체에서
-분당 최대 60회로 제한한다. 재배포/재시작은 기존 결과 ID를 무효화하므로 다시 공유해야 한다. 여러 서버 프로세스 간 공유는
+설정한다. 일반 MCP 요청은 기존 65,536바이트 제한을 유지한다. 재시작 시 즉시 사라질 수 있다.
+저장 JSON은 전체 최대 256개·총 64MiB·개별 8MiB이며 기존 유효 결과를 밀어내지 않는다.
+앱은 메모리의 무작위 `session_id`와 공유별 `idempotency_key`를 보내며 같은 세션·키·내용 재시도는
+기존 ID/만료를 반환한다. 다른 내용에 키를 재사용하면 거부하며 다른 세션/호스트는 중복 제거하지 않는다.
+세션별 4개·16MiB·분당 6회, 프로세스 전체 분당 60회를 적용한다. 이전 앱의 키 없는 호출은
+공용 legacy 세션 예산으로 호환한다. 세션은 클라이언트가 발급하는 익명 식별자로 새로 발급해 우회할 수 있다.
+사용자 인증·강한 공정성·공격 방어를 보장하지 않으며 글로벌 용량 상한은 유지한다.
+저장소의 스냅샷 정규화·조회용 JSON 파싱·응답 생성은 동시에 최대 두 작업으로 제한한다. HTTP 본문 버퍼·MCP 봉투 파싱과 저장 외 Ruby 객체는
+64MiB 저장 상한 밖이므로 전체 프로세스 메모리 상한이 아니다. 새 쓰기 속도 제한은 정규화 전 적용한다.
+`session_full`, `storage_full`, `rate_limited`, `busy`, `idempotency_conflict`를 구조화된 오류로 구분한다.
+재배포/재시작은 기존 결과 ID를 무효화하므로 다시 공유해야 한다. 여러 서버 프로세스 간 공유는
 지원하지 않는다. 현재 단일 프로세스 HF 운영을 전제로 하며 다중 인스턴스로 늘리기 전 공유 저장소가 필요하다.
-상세 조회 도구가 승인되지 않았거나 저장이 실패하면 기존 직접 공유로 폴백한다. 이때 경로·합계·플랜을
-우선 보존하고 60,000자 예산 안에서 배열 행을 전달하며 생략 수를 표시한다. 필수 경로 자체가
-예산을 넘으면 경로는 보존하므로 이 수치는 절대 전송 상한이 아니다. `cost`는 비교 가중치이며
+호스트의 message/updateModelContext/serverTools 지원 여부에 맞춰 공유하고,
+GPT의 정상 경로는 문맥 업데이트 뒤 짧은 후속 메시지로 유지한다. 문맥 전송 실패 시 결과가 든
+메시지로 대체하고, 전송까지 실패하면 선택 가능한 텍스트·복사·전체 JSON 내려받기를 제공한다.
+파일 내려받기는 호스트의 다운로드 허용 여부에 따르며, 차단 시 선택 가능한 JSON을 직접 복사한다.
+상세 조회 도구가 승인되지 않았거나 저장이 실패하면 직접 요약으로 폴백한다. 전송 요약은
+60,000자 절대 상한 안에서 생략 범위를 표시하고 전체 캡처는 JSON 내보내기로 보존한다.
+`cost`는 비교 가중치이며
 게임 재화가 아니고 `uberDraws`는 획득 울슈레 수로서 입력의 미래 울슈레 수와 다르다.
 이는 공유 시점의 스냅샷이며 모델이 앱 DOM이나 이후 조작을 자동으로 읽는 것은 아니다.
+
+화면을 열 수 없을 때 `siteUrl`은 `/gpt#catsroll-input=…`로 준비 입력을 넘긴다.
+`local/gpt_input_transfer.rb`와 `asset/gpt-input-transfer.js`의 버전 1 JSON 봉투가 모든 배너,
+last·목표·티켓/확뽑 예산·일정·미래 울슈레·참고 풀·플랜·시드 찾기 관측을 보존한다.
+입력은 URL fragment에 있어 HTTP 요청 쿼리로 보내지지 않지만 링크를 받은 사람과 브라우저 기록에는
+노출될 수 있다. 복원은 같은 서버 검증을 거쳐 기기 계산 화면을 준비하며 자동 계산하지 않는다.
 
 공유 버튼은 Multi 배열 표 바로 위에, 시드 찾기에서는 결과 바로 위에 배치한다.
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
@@ -157,21 +179,29 @@ CATSROLL_GPT_ENABLED=1 WEB_BIND=127.0.0.1:17867 bundle exec yahns -c config/yahn
 ```sh
 node test/test_gpt_runtime.js
 node test/test_gpt_result_summary.js
+node test/test_gpt_input_transfer.cjs
+bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_input_transfer.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_results.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_recommendations.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp.rb
 # Playwright가 제공되는 환경에서 별도 실행한 로컬 서버에 연결:
 node test/test_gpt_browser.cjs
+node test/test_gpt_recovery.cjs
 ```
 
 런타임 검사는 원본 배열·교차 배너 RG·Find 결과와 어댑터를 비교하고, 실제 WASM으로
 관측 열 개에서 시드를 복원한다. 안내 검사는 검색·입력·문서 범위를, 추천 검사는 형태/투자·속성·풀·출처 연결을 확인한다.
 MCP/공유 저장 검사는 만료·권한·불변성·용량·페이지와 opt-in, origin, 크기/타입 제한, 도구 교환·카탈로그·준비/결과 구분·풀 불변성·독립 리소스를 확인한다.
+페이지 회귀는 300개 경로의 마지막/범위 밖 커서 종료와 길이가 다른 한글 이름의 조건부 분기 전체 순회에서
+레코드별 출현 횟수를 비교한다. 저장 회귀는 재시도의 동일 ID/고정 만료, 세션별 예산·충돌·오류 분류와
+동시 읽기/쓰기 입장 제한을 확인한다. 입력 전달은 Ruby가 만든 링크를 JS가 읽고 같은 준비 조건을 복원한다.
 실제 브라우저에서 Worker·WASM·취소와 호스트 브리지 왕복은 별도 확인한다.
 브라우저 검사는 Playwright가 설치된 환경의 `NODE_PATH` 또는 `PLAYWRIGHT_MODULE`을
 사용하고 Chrome을 실행한다. `CATSROLL_GPT_TEST_URL`로 별도 시험 서버를 지정할 수 있다.
 호스트 브리지는 로컬 모의 호스트이며 실제 ChatGPT 격리 정책의 검증을 대체하지 않는다.
+복구 검사는 문맥/메시지 거부·도구 미지원·저장 포화에서의 전송/복사/전체 JSON 저장,
+동일 공유 재시도·공유 중 입력 변경·Multi/시드 관측의 대체 링크 복원을 확인한다.
 `test_gpt_result_summary.js`는 24단뽑+11확정, 300행동의 마지막 목표 획득, R/RG와
 부분/실패 상태를 확인한다. 브라우저 검사는 count 생략→300을 GPT/Claude 모의 호스트에서
 계산하고 공유된 600개 A/B 칸의 ID·좌표·다음 위치를 원본과 대조한다. 999행×8배너에서는

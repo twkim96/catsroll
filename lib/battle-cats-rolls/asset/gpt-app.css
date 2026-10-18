@@ -304,3 +304,6 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .gpt-shell .is-plan-off .gpt-plan-warning {z-index:2;}
 .gpt-shell .gpt-multi #multi_notice {display:none;}
 .gpt-shell .gpt-multi .multi-track-pending {display:none;}
+
+.share-recovery textarea { box-sizing:border-box; display:block; width:100%; min-height:8rem; max-height:16rem; resize:vertical; font:12px/1.5 ui-monospace,monospace; white-space:pre; }
+.share-recovery-provenance { color:var(--text-muted,#6b6b73); }

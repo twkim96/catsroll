@@ -31,6 +31,9 @@ GPT 앱의 플랜 저장은 해당 앱 세션 동안 유지된다.
 공유 메시지에 결과 ID가 있으면 `catsroll_result(view="summary")`로 전체 합계와 목표 획득을 읽는다.
 실행 순서는 `view="route"`, 배열 특정 구간은 `view="array"`, 캐릭터 위치는 `view="character"`,
 플랜은 `view="plan"`을 사용하고 nextOffset/다음 구간을 따라 필요한 페이지를 읽는다.
+배열의 `nextConditionalQuery`는 행 범위를 고정한 조건부 분기 전용 계속 조회이므로 그대로 사용한다.
+해당 페이지는 기본 배열 행을 반복하지 않는다. `nextStart`로 다음 행 범위로 넘어간다.
+경로의 `nextOffset`이 null이면 페이지 조회를 끝낸다. `nextTrackOffset`은 엔진 진행 위치이며 페이지 커서가 아니다.
 만료·미공유 결과를 prepared에서 복원하지 말고 앱에서 다시 공유하도록 안내한다.
 서버가 재계산한 값이 아니라 사용자가 기기에서 계산해 공유한 스냅샷이라고 설명한다.
 
