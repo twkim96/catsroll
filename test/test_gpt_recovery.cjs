@@ -153,8 +153,15 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   assert.equal(await frame.locator('#seed').inputValue(),'43');
   await page.evaluate(()=>{holdHostResult=false;hostResultReleases.shift()();});
   await frame.locator('#status').getByText('설정을 불러왔습니다. 계산하기를 누르세요.',{exact:true}).waitFor();
+  // Server normalization of set-like ownership must still correlate to its request.
+  const collection={...request,targetSelection:{type:'banner_collection',lang:'kr',event:'2019-01-23_348',rarity:4,excludeOwnedIds:[418,418]}};
+  await page.locator('#arguments').fill(JSON.stringify(collection));await page.locator('#prepare').click();
+  await page.waitForFunction(()=>latestResult?._meta?.['catsroll/data']?.targetSelection?.excludeOwnedIds.length===1);
+  await frame.locator('#status').getByText('설정을 불러왔습니다. 계산하기를 누르세요.',{exact:true}).waitFor();
+  assert.equal(await frame.locator('#calculate').isEnabled(),true);
+  assert.equal(await frame.locator('#multi_tables table').count(),0);
   // Both needs_input reasons are visible and block stale calculation/sharing.
-  const allOwned={...request,targetSelection:{type:'banner_collection',lang:'kr',event:'2019-01-23_348',rarity:4,excludeOwnedIds:[418,356,307,306,305]}};
+  const allOwned={...request,targetSelection:{type:'banner_collection',lang:'kr',event:'2019-01-23_348',rarity:4,excludeOwnedIds:[418,418,356,307,306,305]}};
   await page.locator('#arguments').fill(JSON.stringify(allOwned));await page.locator('#prepare').click();
   await frame.locator('#status').getByText(/남은 목표가 없습니다/).waitFor();
   assert.equal(await frame.locator('#calculate').isEnabled(),false);
@@ -178,6 +185,36 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   await frame.locator('#multi-container').waitFor({state:'visible'});
   await frame.locator('#status').getByText(/남은 목표가 없습니다/).waitFor();
   assert.equal(await frame.locator('#calculate').isEnabled(),false,'bootstrap preserves needs_input');
+  // Initialization and catalog retries preserve edits and never calculate or remount.
+  await page.goto(base+'/gpt-test-host?rejectInitialize=1');
+  await frame.locator('#retry-connection').waitFor({state:'visible'});
+  await frame.locator('#seed').fill('99');await frame.locator('#count').fill('300');
+  await frame.locator('#retry-connection').click();
+  await frame.locator('#multi-container').waitFor({state:'visible'});
+  assert.equal(await frame.locator('#seed').inputValue(),'99');
+  assert.equal(await frame.locator('#count').inputValue(),'300');
+  assert.equal(await frame.locator('#multi_tables table').count(),0);
+  assert.equal(await page.evaluate(()=>messages.filter(m=>m.method==='ui/initialize').length),2);
+  await page.goto(base+'/gpt-test-host?rejectBootstrap=1');
+  await frame.locator('#retry-bootstrap').waitFor({state:'visible'});
+  await page.locator('#arguments').fill(JSON.stringify(request));await page.locator('#prepare').click();
+  await page.waitForFunction(()=>latestResult?.structuredContent?.request?.seed===42);
+  await frame.locator('#seed').evaluate(element=>new Promise(resolve=>{
+    const ready=()=>element.value==='42'?resolve():setTimeout(ready,10);ready();
+  }));
+  await frame.locator('#seed').fill('99');
+  await page.evaluate(()=>{rejectBootstrap=false;});
+  await frame.locator('#retry-bootstrap').click();
+  await frame.locator('#multi-container').waitFor({state:'visible'});
+  assert.equal(await frame.locator('#seed').inputValue(),'99');
+  assert.equal(await frame.locator('#multi_track_data').count(),1);
+  assert.equal(await frame.locator('#gpt-plan-settings').count(),1);
+  assert.equal(await frame.locator('#multi_tables table').count(),0);
+  assert.equal(await page.evaluate(()=>messages.filter(m=>m.method==='tools/call'&&m.params.name==='catsroll_share_result').length),0);
+  const readyStages=await frame.locator('body').evaluate(()=>CatsrollDiagnostics().steps.map(s=>s.stage));
+  assert(readyStages.indexOf('bootstrap-failed')<readyStages.indexOf('ui-mount-start'));
+  assert(readyStages.indexOf('ui-mount-start')<readyStages.indexOf('ui-mounted'));
+  assert.equal(readyStages.filter(s=>s==='ui-mounted').length,1);
   await open();
   await page.evaluate(()=>{rejectPrepare=true;});
   await frame.locator('#mode').selectOption('seek');
@@ -196,8 +233,13 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   assert.equal(await frame.locator('.app-shell').evaluate(el=>parseFloat(getComputedStyle(el).paddingTop)>=26),true,
     'mobile padding includes the host safe area');
   const diag=await frame.locator('body').evaluate(()=>CatsrollDiagnostics());
+  assert.match(diag.diagnosticId,/^[0-9a-f-]{36}$/);
+  assert.equal(diag.steps[0].stage,'html-start');
   assert(diag.steps.some(s=>s.stage==='ui-mounted'));
   assert(!JSON.stringify(diag).includes('seed'));
+  const visibleDiag=JSON.parse(await frame.locator('#connection-diagnostics').textContent());
+  assert.equal(visibleDiag.diagnosticId,diag.diagnosticId);
+  assert(visibleDiag.steps.some(s=>s.stage==='ui-mounted'));
   await page.evaluate(()=>{holdPrepare=true;messages=[];});
   await frame.locator('#calculate').click();await page.waitForFunction(()=>releases.length===1);
   await page.evaluate(()=>document.querySelector('iframe').contentWindow.postMessage({jsonrpc:'2.0',id:'teardown-test',method:'ui/resource-teardown',params:{}},location.origin));
@@ -205,6 +247,15 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   await page.evaluate(()=>{holdPrepare=false;releases.shift()();});
   assert.equal(await frame.locator('#calculate').isEnabled(),false);
   assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='tools/call'&&m.params.name==='catsroll_share_result')),false);
+  // Same-origin minimal control performs the handshake without catalog or engine calls.
+  await page.route('**/gpt-probe-host',route=>{
+    let body=fs.readFileSync(path.join(__dirname,'fixtures/gpt-host.html'),'utf8');
+    return route.fulfill({contentType:'text/html',body:body.replace('src="/gpt"','src="/gpt/probe"')});
+  });
+  await page.goto(base+'/gpt-probe-host');
+  await frame.locator('#connection').getByText('연결 완료 · 계산 실행 없음',{exact:true}).waitFor();
+  assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='tools/call')),false);
+  assert.equal(await frame.locator('#diagnostics').innerText().then(text=>JSON.parse(text).steps.some(s=>s.stage==='probe-ready')),true);
   assert.deepEqual(errors,[]);
   console.log('share recovery: GPT normal flow, context/message denial, idempotent retry, clipboard/download, size-bounded saturation fallback, immutable capture, advertised/legacy capabilities, full multi/seek fragment restoration passed');
  } finally{await browser.close();}

@@ -11,6 +11,8 @@ window.holdShare=false;window.shareReleases=[];window.writeFailure=null;
 window.holdHostResult=false;window.hostResultReleases=[];
 window.prepareVersion=null;
 window.rejectPrepare=false;
+window.rejectInitialize=new URLSearchParams(location.search).has('rejectInitialize');
+window.rejectBootstrap=new URLSearchParams(location.search).has('rejectBootstrap');
 window.hostCapabilities={serverTools:{},updateModelContext:{text:{}},message:{text:{}}};
 window.holdBootstrap=new URLSearchParams(location.search).has('holdBootstrap');window.bootstrapReleases=[];
 const iframe=document.querySelector('iframe');
@@ -29,6 +31,7 @@ addEventListener('message',async event=>{
  if(event.source!==iframe.contentWindow||event.origin!==location.origin)return;
  const m=event.data;if(!m||m.jsonrpc!=='2.0')return;
  messages.push(m);document.querySelector('#messages').textContent=messages.filter(m=>m.method!=='tools/call').map(m=>JSON.stringify(m)).join('\n');
+ if(m.method==='ui/initialize' && rejectInitialize){rejectInitialize=false;event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32000,message:'Initialize rejected'}},event.origin);return;}
  if(m.method==='ui/update-model-context' && rejectModelContext){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32601,message:'Context unsupported'}},event.origin);return;}
  if(m.method==='ui/message' && rejectMessage){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32601,message:'Message rejected'}},event.origin);return;}
  if(m.method==='ui/update-model-context' && rejectContextResult){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true}},event.origin);return;}
@@ -36,6 +39,7 @@ addEventListener('message',async event=>{
  if(m.method==='ui/initialize')result={protocolVersion:'2026-01-26',hostInfo:{name:'local-test-host',version:'1'},hostCapabilities:window.hostCapabilities,hostContext:{}};
  else if(m.method==='ui/notifications/size-changed')iframe.style.height=Math.min(m.params.height,1000)+'px';
  else if(m.method==='tools/call'){
+  if(rejectBootstrap && m.params.name==='catsroll_multi_data' && m.params.arguments.section==='bootstrap'){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32000,message:'Bootstrap rejected'}},event.origin);return;}
   if(rejectPrepare && m.params.name==='catsroll_prepare'){event.source.postMessage({jsonrpc:'2.0',id:m.id,error:{code:-32000,message:'Prepare rejected'}},event.origin);return;}
   if(writeFailure && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,structuredContent:writeFailure,content:[{type:'text',text:writeFailure.message}]}},event.origin);return;}
   if(rejectResultSharing && m.params.name==='catsroll_share_result'){event.source.postMessage({jsonrpc:'2.0',id:m.id,result:{isError:true,content:[{type:'text',text:'Unknown tool'}]}},event.origin);return;}

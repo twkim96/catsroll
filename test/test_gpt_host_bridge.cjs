@@ -1,19 +1,22 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 function make(embedded=true,options={}){
- const listeners=new Map(),sent=[],errors=[],frames=new Map(),timers=new Set();
- let ready=0,frameId=0,disconnected=0;
- const root={AbortController,setTimeout:(fn,ms)=>{const id=setTimeout(fn,ms);timers.add(id);return id;},
-  clearTimeout:id=>{timers.delete(id);clearTimeout(id);},
+ const listeners=new Map(),sent=[],errors=[],frames=new Map(),timers=new Map();
+ let ready=0,frameId=0,disconnected=0,timerId=0,now=0;
+ const root={AbortController,setTimeout:(fn,ms)=>{const id=++timerId;timers.set(id,{fn,due:now+ms});return id;},
+  clearTimeout:id=>timers.delete(id),
   requestAnimationFrame:fn=>{frames.set(++frameId,fn);return frameId;},cancelAnimationFrame:id=>frames.delete(id),
   ResizeObserver:class{constructor(fn){this.callback=fn;}observe(){}disconnect(){disconnected++;}},
-  addEventListener:(name,fn)=>listeners.set(name,fn),removeEventListener:name=>listeners.delete(name),
+  addEventListener:(name,fn)=>{if(!listeners.has(name))listeners.set(name,new Set());listeners.get(name).add(fn);},
+  removeEventListener:(name,fn)=>{const group=listeners.get(name);if(!group)return;group.delete(fn);if(!group.size)listeners.delete(name);},
   document:{documentElement:{clientWidth:390},body:{getBoundingClientRect:()=>({height:200})}}};
  root.parent=embedded?{postMessage:(m,origin)=>sent.push({m,origin})}:root;
  vm.createContext(root);vm.runInContext(fs.readFileSync('lib/battle-cats-rolls/asset/gpt-host-bridge.js','utf8'),root);
  const bridge=root.CatsrollHostBridge({...options,onReady:()=>{ready++;options.onReady?.();},onError:message=>errors.push(message)});
- function reply(m,origin='https://host.test',source=root.parent){listeners.get('message')?.({source,origin,data:{jsonrpc:'2.0',...m}});}
- return {root,sent,errors,bridge,reply,listeners,frames,timers,disconnected:()=>disconnected,ready:()=>ready};
+ function reply(m,origin='https://host.test',source=root.parent){for(const fn of listeners.get('message')||[])fn({source,origin,data:{jsonrpc:'2.0',...m}});}
+ function advance(ms){now+=ms;while(true){const due=Array.from(timers.entries()).filter(([,timer])=>timer.due<=now).sort((a,b)=>a[1].due-b[1].due)[0];if(!due)break;timers.delete(due[0]);due[1].fn();}}
+ function listenerCount(name){return listeners.get(name)?.size||0;}
+ return {root,sent,errors,bridge,reply,listeners,frames,timers,advance,listenerCount,disconnected:()=>disconnected,ready:()=>ready};
 }
 (async()=>{
  const stages=[];
@@ -35,14 +38,30 @@ function make(embedded=true,options={}){
  assert.equal(host.ready(),0,'only parent can initialize');
  host.reply({id:init.id,result:{}},'null');
  assert.equal(host.ready(),0,'opaque origin is rejected');
- host.reply({id:init.id,result:{hostCapabilities:{serverTools:{},message:{text:{}}}}});
+ assert.equal(host.bridge.phase(),'failed');
+ host.bridge.connect();
+ const retryInit=host.sent.at(-1).m;
+ assert.ok(retryInit.id>init.id);
+ host.reply({id:init.id,result:{}},'https://host.test');
+ assert.equal(host.ready(),0,'a response from the failed attempt cannot complete its retry');
+ host.reply({id:retryInit.id,result:{hostCapabilities:{serverTools:{},message:{text:{}}}}});
  assert.equal(host.ready(),1);
- assert.deepEqual(stages,[['bridge-start'],['initialize-sent'],['initialize-ready']]);
+ assert.deepEqual(stages,[['bridge-start'],['initialize-sent'],['bridge-start'],['initialize-sent'],['initialize-ready']]);
  assert.equal(host.sent.at(-1).m.method,'ui/notifications/initialized');
  await assert.rejects(host.bridge.updateContext('test'),/문맥 갱신/);
  const pending=host.bridge.callTool('catsroll_result',{result_id:'synthetic'});
  const call=host.sent.at(-1).m;
  let settled=false;pending.then(()=>settled=true);
+ const beforeRejectedPings=host.sent.length;
+ host.reply({id:call.id,method:'ping',params:{}},'https://other.test');
+ host.reply({id:call.id,method:'ping',params:{}},'https://host.test',{});
+ assert.equal(host.sent.length,beforeRejectedPings,'wrong-origin and spoofed ping requests are ignored');
+ await Promise.resolve();assert.equal(settled,false,'rejected ping requests cannot resolve an app RPC');
+ host.reply({id:call.id,method:'ping',params:{}});
+ assert.equal(host.sent.length,beforeRejectedPings+1);
+ assert.deepEqual(JSON.parse(JSON.stringify(host.sent.at(-1).m)),{jsonrpc:'2.0',id:call.id,result:{}});
+ assert.equal(host.sent.at(-1).origin,'https://host.test','ping response uses the pinned origin');
+ await Promise.resolve();assert.equal(settled,false,'ping request ID collision does not consume the app RPC');
  const beforeCollision=host.sent.length;
  host.reply({id:call.id,method:'host/unknown',params:{}});
  assert.equal(host.sent.length,beforeCollision+1);
@@ -129,13 +148,59 @@ function make(embedded=true,options={}){
  assert.equal(stopped,1);
  await assert.rejects(teardown.bridge.callTool('catsroll_result',{}),/Connection closed/);
  assert.throws(()=>teardown.bridge.connect(),/Connection closed/);
- const timeoutStages=[];
- const timeoutHost=make(true,{onDiagnostic:(...args)=>timeoutStages.push(args)});
- let expireInitialize;
- timeoutHost.root.setTimeout=fn=>{expireInitialize=fn;return 1;};
- timeoutHost.bridge.connect();expireInitialize();
+ const timeoutStages=[],connectionStates=[];
+ const timeoutHost=make(true,{onDiagnostic:(...args)=>timeoutStages.push(args),
+  onConnection:(label,state)=>connectionStates.push([label,state])});
+ timeoutHost.bridge.connect();
+ const oldInit=timeoutHost.sent[0].m;
+ assert.deepEqual(connectionStates.at(-1),['ChatGPT 연결 중','connecting']);
+ assert.equal(timeoutHost.listenerCount('message'),1);
+ timeoutHost.advance(10000);
  assert.deepEqual(timeoutStages,[['bridge-start'],['initialize-sent'],['initialize-timeout']]);
- assert.equal(timeoutHost.bridge.phase(),'failed');timeoutHost.bridge.close();
+ assert.equal(timeoutHost.bridge.phase(),'failed');
+ assert.equal(connectionStates.at(-1)[1],'error');assert.equal(timeoutHost.timers.size,0);
+ assert.equal(timeoutHost.listenerCount('message'),0,'failed attempt removes its message listener');
+ timeoutHost.bridge.connect();
+ const freshInit=timeoutHost.sent.at(-1).m;
+ assert.ok(freshInit.id>oldInit.id,'retry keeps initialization IDs monotonic');
+ assert.equal(timeoutHost.bridge.phase(),'connecting');assert.equal(timeoutHost.listenerCount('message'),1);
+ timeoutHost.bridge.connect();
+ assert.equal(timeoutHost.sent.length,2,'connect while connecting is a no-op');
+ timeoutHost.reply({id:oldInit.id,result:{hostContext:{displayMode:'stale'}}},'https://host.test');
+ assert.equal(timeoutHost.ready(),0,'old same-origin handshake response is rejected after retry');
+ timeoutHost.reply({id:freshInit.id,result:{}});
+ assert.equal(timeoutHost.ready(),1);assert.equal(timeoutHost.bridge.phase(),'ready');
+ timeoutHost.bridge.connect();
+ assert.equal(timeoutHost.sent.length,3,'connect while ready is a no-op');
+ assert.equal(timeoutHost.ready(),1,'explicit retry delivers onReady only once');
+ assert.equal(timeoutHost.listenerCount('message'),1,'retry does not duplicate message listeners');
+ timeoutHost.bridge.close();
+
+ const rpcFailure=make(true,{onConnection:(label,state)=>connectionStates.push([label,state])});
+ rpcFailure.bridge.connect();
+ const rejectedInit=rpcFailure.sent[0].m;
+ rpcFailure.reply({id:rejectedInit.id,error:{code:-32000,message:'initialize rejected'}});
+ assert.equal(rpcFailure.bridge.phase(),'failed');assert.equal(rpcFailure.listenerCount('message'),0);
+ rpcFailure.bridge.connect();
+ const retriedInit=rpcFailure.sent.at(-1).m;
+ assert.ok(retriedInit.id>rejectedInit.id);
+ rpcFailure.reply({id:rejectedInit.id,result:{}},'https://host.test');
+ assert.equal(rpcFailure.ready(),0,'failed initialize response cannot complete a later attempt');
+ rpcFailure.reply({id:retriedInit.id,result:{}});
+ assert.equal(rpcFailure.ready(),1);assert.equal(rpcFailure.bridge.phase(),'ready');
+ rpcFailure.bridge.close();
+
+ const nullOrigin=make(true,{onConnection:(label,state)=>connectionStates.push([label,state])});
+ nullOrigin.bridge.connect();
+ const opaqueInit=nullOrigin.sent[0].m;
+ nullOrigin.reply({id:opaqueInit.id,result:{}},'null');
+ assert.equal(nullOrigin.bridge.phase(),'failed');assert.equal(nullOrigin.timers.size,0);
+ assert.equal(nullOrigin.listenerCount('message'),0);assert.equal(connectionStates.at(-1)[1],'error');
+ nullOrigin.bridge.connect();
+ const nonOpaqueInit=nullOrigin.sent.at(-1).m;
+ assert.ok(nonOpaqueInit.id>opaqueInit.id);
+ nullOrigin.reply({id:nonOpaqueInit.id,result:{}});
+ assert.equal(nullOrigin.ready(),1);nullOrigin.bridge.close();
  const failingDiagnostic=make(true,{onDiagnostic:()=>{throw new Error('diagnostic callback failure');}});
  failingDiagnostic.bridge.connect();failingDiagnostic.reply({id:failingDiagnostic.sent[0].m.id,result:{}});
  assert.equal(failingDiagnostic.ready(),1,'optional diagnostics cannot interrupt initialization');
@@ -145,6 +210,7 @@ function make(embedded=true,options={}){
  const browser=make(false);let requests=[];
  browser.root.fetch=async(url,args)=>{requests.push({url,args});return {ok:true,text:async()=>JSON.stringify({result:{status:'data_ready'}})};};
  browser.bridge.connect();assert.equal(browser.ready(),1);assert.equal(browser.bridge.isConnected(),false);
+ browser.bridge.connect();assert.equal(browser.ready(),1,'standalone repeated connect does not duplicate onReady');
  assert.equal((await browser.bridge.callTool('catsroll_multi_data',{section:'bootstrap'})).status,'data_ready');
  assert.equal(requests[0].url,'/mcp');assert.equal(JSON.parse(requests[0].args.body).params.name,'catsroll_multi_data');
  browser.bridge.close();

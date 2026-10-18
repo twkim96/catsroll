@@ -183,6 +183,8 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .route-list li { padding-left: 2px; overflow-wrap: anywhere; }
 .context-actions { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); }
 .app-footer { margin-top: 14px; color: var(--muted); font-size: 10px; text-align: center; overflow-wrap: anywhere; }
+.gpt-connection-diagnostics {margin-top:12px;color:var(--muted);font-size:11px;}
+.gpt-connection-diagnostics pre {white-space:pre-wrap;overflow-wrap:anywhere;}
 [hidden] { display: none !important; }
 
 @media (max-width: 640px) {

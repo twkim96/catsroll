@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Catsroll · Multi</title>
+  <script>{{DIAGNOSTICS}}</script>
   <style>{{STYLE}}</style>
 </head>
 <body>
@@ -16,7 +17,7 @@
           <p class="eyebrow">Multi · 배열 · Find · 시드 찾기</p>
         </div>
       </div>
-      <span class="bridge-pill" id="bridge-state">연결 확인 중</span>
+      <div class="action-buttons"><span class="bridge-pill" id="bridge-state">연결 확인 중</span><button class="button button-small" id="retry-connection" type="button" hidden>연결 다시 시도</button></div>
     </header>
 
 
@@ -48,7 +49,8 @@
       <div class="row-list" id="rows"></div>
     </section>
 
-<section class="action-panel" id="multi-actions-panel"><div class="action-buttons" id="multi-actions"><button class="button button-primary" id="calculate" type="button">계산하기</button><button class="button button-cancel" id="cancel" type="button" hidden>중단</button></div><p id="status" class="status-message" role="status" aria-live="polite"></p></section>
+<section class="action-panel" id="multi-actions-panel"><div class="action-buttons" id="multi-actions"><button class="button button-primary" id="calculate" type="button" disabled>계산하기</button><button class="button button-cancel" id="cancel" type="button" hidden>중단</button></div><p id="status" class="status-message" role="status" aria-live="polite">호스트 연결과 선택 목록을 준비하고 있습니다.</p></section>
+<button class="button button-secondary" id="retry-bootstrap" type="button" hidden>목록 다시 불러오기</button>
 <div class="gpt-share"><button id="send-context" type="button" disabled>결과를 GPT에 전달</button><span>공유하면 서버 메모리에 저장하며 최대 1시간 조회할 수 있습니다. 만료본은 후속 요청 때 정리하며 서버 재시작 시 사라집니다.</span></div>
 <section class="panel share-recovery" id="share-recovery" hidden aria-labelledby="share-recovery-title">
   <h2 id="share-recovery-title">결과 내보내기</h2>
@@ -73,6 +75,7 @@
   <div id="seek-result"></div>
 </section>
 <p class="gpt-footer">계산은 이 기기에서 실행합니다. 플랜 저장은 현재 앱을 연 동안 유지됩니다.</p>
+<details class="gpt-connection-diagnostics"><summary>연결 진단</summary><pre id="connection-diagnostics"></pre></details>
 </main>
 <script id="catsroll-worker-source" type="application/json">{{WORKER_SOURCE}}</script>
 <script id="catsroll-find-worker-source" type="application/json">{{FIND_WORKER_SOURCE}}</script>

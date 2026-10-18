@@ -52,6 +52,7 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 입력 변경은 현재 계산을 무효화하지만 이미 고정한 ShareJob은 유지한다. 플랜 편집은 별도 revision으로
 새 공유를 만들 수 있고 배열 재계산을 요구하지 않는다. 전송 실패는 계산 실패로 표시하지 않는다.
 호스트 준비 알림은 시작 시점의 입력/플랜 revision과 명시된 요청 필드를 함께 대조한다.
+보유 제외 ID만 집합으로 비교해 서버의 중복 제거를 허용한다. 배너·관측·목표 배열은 순서를 유지한다.
 표준 알림에는 호출 ID가 없으므로 다른 입력의 결과나 수정 뒤 결과를 자동 적용하지 않고 보류한다.
 상관관계를 알 수 없는 오류도 새 pending 준비를 소비하지 않는다. 동일 인수의 겹친 호출은
 프로토콜만으로 구분할 수 없으므로 호출별 버전의 우선 도착 순서를 보장한다고 주장하지 않는다.
@@ -59,6 +60,12 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 남은 목표 0/30종 초과는 상태를 표시하고 기존 결과의 계산/공유를 막으며, 입력을 수정해 다시 준비한다.
 복구 패널은 고정 recoveryJob을 소유하므로 다른 결과 공유가 성공해도 표시·복사·다운로드는 같은 JSON이다.
 `ui/resource-teardown`은 호스트 요청으로 분리해 계산 취소·pending 정리·응답·종료하며 자동 업로드하지 않는다.
+같은 출처의 부모가 보낸 iframe `ping` 요청에는 빈 성공 결과를 반환한다.
+초기화 실패/10초 초과 뒤에는 ‘연결 다시 시도’로 이전 pending·타이머·출처·capability를 지우고
+새 ID로 초기화한다. 이전 시도의 응답은 무시하며 ready/connecting 중 재연결은 중복 실행하지 않는다.
+종료된 연결은 복구하지 않는다. 목록 요청 실패는 ‘목록 다시 불러오기’로 별도 복구하고 입력을 유지한다.
+목록 재시도는 DOM 이동·컨트롤러/이벤트 장착을 반복하지 않는다. 장착 중 코드 오류는 재로딩을 안내하며
+부분 장착 상태에서 다시 실행하지 않는다. 복구만으로 계산하거나 결과를 공유하지 않는다.
 목표 검색처럼 목록만 좁히는 입력은 계산을 취소하지 않는다. 실제 목표 추가·제거·티켓 허용·예산 변경은
 공통 컨트롤러의 `multi-find:settings-changed`로 계산/공유 revision을 무효화한다.
 
@@ -253,6 +260,7 @@ bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_mcp_contract.rb
 # Playwright가 제공되는 환경에서 별도 실행한 로컬 서버에 연결:
 node test/test_gpt_browser.cjs
 node test/test_gpt_recovery.cjs
+bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_probe.rb
 ```
 
 런타임 검사는 원본 배열·교차 배너 RG·Find 결과와 어댑터를 비교하고, 실제 WASM으로
@@ -327,13 +335,25 @@ JP 배너의 한국어 표시 우선순위와 원본 날짜 유지 규칙은
 
 ### 초기 표시 진단
 
-앱의 `CatsrollDiagnostics()`는 기기 메모리에만 보관하는 최대 40개 단계·경과 시간과 UI build ID를
-반환한다. 기본 콘솔 출력이나 서버 전송은 하지 않으며 시드·관측·본문·결과 ID·계정 정보는 담지 않는다.
-app-start → bridge-start/initialize-sent/initialize-ready → bootstrap-start/ready → ui-mounted,
-시드 Worker start/completed 및 teardown을 구분한다. UI 리소스가 스크립트 실행 전 실패하면 앱 단계도
+앱의 `CatsrollDiagnostics()`는 기기 메모리에만 보관하는 최대 40개 단계·경과 시간과 UI build ID,
+페이지마다 새로 생성한 임의 diagnosticId를 반환한다. 화면 하단 ‘연결 진단’에도 같은 정보만 표시한다.
+기본 콘솔 출력이나 서버 전송은 하지 않으며 시드·관측·본문·결과 ID·계정 정보는 담지 않는다.
+큰 스크립트보다 앞선 작은 스크립트에서 html-start를 기록하고 script-error/unhandled-rejection/
+csp-violation은 예외 본문·URL·stack 없이 분류만 기록한다. app-start → bridge-start/
+initialize-sent/initialize-ready → bootstrap-start/ready → ui-mount-start/ui-mounted,
+시드 Worker start/completed 및 teardown을 구분한다. ui-mounted는 카탈로그·이벤트 연결·입력 적용 후다.
+초기화·목록 재시도의 단계는 같은 diagnosticId에 추가된다. UI 리소스가 스크립트 실행 전 실패하면 앱 단계도
 없으므로 리소스 응답·외부 sandbox 표시와 함께 비교해야 한다. 단계 추가만으로 최초 표시 문제 해결을
 선언하지 않는다. 초기/변경 hostContext의 displayMode·containerDimensions·safeAreaInsets는 로컬 화면
 폭·전체 화면 스크롤·안전 여백에 반영한다. 임의 호스트 CSS나 코드를 실행하지 않는다.
+
+`/mcp/probe`는 같은 origin의 연결 전용 대조 서버다. 정상 `/mcp`·`/mcp/claude`의 도구 정의에는
+추가하지 않으며 임시 개발 연결로만 따로 사용할 수 있다. `catsroll_probe` 하나와 작은 UI만 제공하고
+배열/Find/Seek/WASM·카탈로그 요청·결과 저장 도구는 없다. `/gpt/probe`는 독립 미리보기다.
+정상 앱과 동일한 HostBridge를 사용하므로 크기·카탈로그·장착 비용 비교용이며 SDK 구현 간 비교는 아니다.
+두 UI와 일반 텍스트 대조를 같은 시점에 확인해야 한다. 리소스를 호스트가 캐시했으면 새 resources/read가
+없어도 정상일 수 있다. 현재 진단은 호스트/프록시 요청 자체의 서버 기록을 제공하지 않으므로,
+HTML이 실행되기 전의 실패를 이 정보만으로 특정하지 않는다. 실사용 비교 전에는 최초 표시 해결로 취급하지 않는다.
 
 ### 구조 개편 이전 확인
 

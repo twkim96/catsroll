@@ -15,7 +15,7 @@ module BattleCatsRolls
       shared = %w[event-series-search.js multi-track-virtual.js multi-track.js
         multi-find-catalog.js multi-find.js multi-plan.js]
       files = %w[track-engine.js multi-find-engine.js seeker-vampireflower.js
-        seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-inputs.js gpt-input-transfer.js gpt-snapshot.js gpt-result-summary.js gpt-host-bridge.js gpt-application-state.js gpt-share.js gpt-app.js gpt-app.css
+        seeker-vampireflower.wasm gpt-runtime.js gpt-worker.js gpt-inputs.js gpt-input-transfer.js gpt-snapshot.js gpt-result-summary.js gpt-host-bridge.js gpt-application-state.js gpt-share.js gpt-app.js gpt-app.css gpt-diagnostics.js
         multi-find-worker.js multi-find.css multi-plan.css event-filter.css style/tacit.css] + shared
       multi_template = File.read(File.expand_path('../view/multi.erb', __dir__))
       digest = Digest::SHA256.hexdigest(files.map { |file|
@@ -55,6 +55,7 @@ module BattleCatsRolls
         base_style = File.read(File.join(ASSETS, 'style/tacit.css'))
         track_colors = base_style[base_style.index('.position {')...base_style.index('.attack {')]
         replacements = {
+          '{{DIAGNOSTICS}}' => File.read(File.join(ASSETS, 'gpt-diagnostics.js')),
           '{{STYLE}}' => track_colors + %w[event-filter.css multi-find.css multi-plan.css gpt-app.css].map { |file|
             File.read(File.join(ASSETS, file))
           }.join("\n"),
@@ -64,7 +65,7 @@ module BattleCatsRolls
           '{{WORKER_SOURCE}}' => JSON.generate(worker).gsub('<', '\\u003c'),
           '{{FIND_WORKER_SOURCE}}' => JSON.generate(find_worker).gsub('<', '\\u003c')
         }
-        html = File.read(TEMPLATE).gsub(/\{\{(?:STYLE|MULTI|ICON_DATA_URI|SCRIPTS|WORKER_SOURCE|FIND_WORKER_SOURCE)\}\}/) { |key|
+        html = File.read(TEMPLATE).gsub(/\{\{(?:DIAGNOSTICS|STYLE|MULTI|ICON_DATA_URI|SCRIPTS|WORKER_SOURCE|FIND_WORKER_SOURCE)\}\}/) { |key|
           replacements.fetch(key)
         }
         html = html.sub('<html ', "<html data-catsroll-build=\"#{digest[0, 16]}\" ")
