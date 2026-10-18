@@ -25,7 +25,12 @@
   <% if route.pos == '1A' %>
   <label for="last_select" title="This is used to determine if 1A is a duplicated rare or not">Last roll:</label>
   <select id="last_select" name="last" onchange="roll(this)">
+    <% if route.last_unknown? %>
+    <option value="" selected="selected" disabled="disabled">직전 결과 선택</option>
+    <option value="0">직전 결과 없음</option>
+    <% else %>
     <option value="<%= route.last %>"></option>
+    <% end %>
 
     <optgroup label="Rare:">
       <% gacha.rare_cats.uniq(&:id).each do |cat| %>
@@ -56,6 +61,7 @@
     </optgroup>
   </select>
   <% end %>
+  <p id="last-unknown-notice"<%= ' hidden="hidden"' unless route.last_unknown? %>>Last 미확인: 직전 실제 결과를 Last roll에서 선택하세요. 직전 결과가 없을 때만 ‘직전 결과 없음’을 선택하세요.</p>
 </div>
 <% else %>
 <%= hidden_inputs('seed', 'details', 'count', 'last') %>

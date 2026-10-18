@@ -15,9 +15,11 @@ and engines. It checks client submission/reload, Multi result advance and exact
 restoration of seed + Last, first results, R/G/RG branches, next positions and
 share inputs. Known Last 0 and different Last values for the same seed remain
 separate records. The v1 storage key/container, legacy arrays/pins and four-link
-limit remain supported. Legacy seed-only links show “Last 미확인” and open Multi
-with no inherited Last; calculation and sharing stay pending until the user
-enters Last explicitly (0 when there is no previous result) and presses Apply.
+limit remain supported. The list displays seed numbers only and keeps Last internally. Links preserve
+the current ordinary/Multi screen. Legacy seed-only links show “Last 미확인”
+in a tooltip and on the opened screen, with no inherited Last; calculation and sharing stay pending until the user
+confirms Last explicitly (0 only when there is no previous result) using the
+ordinary Last roll control or Multi Apply.
 Full links preserve known Last for ordinary pages and new tabs. Temporary shared
 Multi and GPT sessions preserve personal history/settings.
 

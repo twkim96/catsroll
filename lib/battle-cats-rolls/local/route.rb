@@ -11,7 +11,11 @@ module BattleCatsRolls
 
   module LocalRoute
     def show_tracks?
-      super && !compute_client?
+      super && !compute_client? && !last_unknown?
+    end
+
+    def last_unknown?
+      request.params.key?('last_unknown')
     end
 
     def multi_uri
@@ -189,6 +193,7 @@ module BattleCatsRolls
         result[key] = value
       end.tap do |result|
         result[:compute] = query[:compute] || compute
+        result[:last_unknown] = '1' if last_unknown?
       end
     end
 

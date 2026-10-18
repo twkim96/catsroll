@@ -7,7 +7,7 @@ const base = process.env.CATSROLL_TEST_URL || 'http://127.0.0.1:17868';
 const storageKey = 'battle-cats-rolls.recentSeeds.v1';
 const query = 'event=2026-10-16_1068&lang=kr&count=30';
 const history = page => page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey);
-const recent = (page, seed, last) => page.locator('#recent-seeds a').filter({hasText: new RegExp('^' + seed + ' · Last ' + last + '$')});
+const recent = (page, seed, last) => page.locator('#recent-seeds a[data-seed="' + seed + '"][data-last="' + (last === '미확인' ? '' : last) + '"]');
 const ready = page => page.locator('#multi_tables table').first().waitFor();
 const clientReady = page => page.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
 const snapshot = page => page.evaluate(() => ({
@@ -76,10 +76,15 @@ const snapshot = page => page.evaluate(() => ({
       // A modified click follows href, bypassing Multi's handler. Test both
       // client and ordinary server pages with that same full link.
       const tab = await context.newPage();
-      await tab.goto(href + '&compute=client');
+      assert.equal(new URL(href).pathname, '/multi', 'Multi full links preserve screen');
+      await tab.goto(href);
+      await ready(tab);
+      assert.deepEqual(await snapshot(tab), before);
+      const ordinaryHref = new URL(href); ordinaryHref.pathname = '/';
+      await tab.goto(ordinaryHref.href + '&compute=client');
       await clientReady(tab);
       assert.equal(await tab.locator('#last_select').inputValue(), String(last));
-      await tab.goto(href + '&compute=server');
+      await tab.goto(ordinaryHref.href + '&compute=server');
       await tab.locator('#content .table').first().waitFor();
       assert.equal(await tab.locator('#last_select').inputValue(), String(last));
       await tab.close();
@@ -120,13 +125,31 @@ const snapshot = page => page.evaluate(() => ({
       assert.equal(await page.evaluate(() => MultiTrackApp.getShareState().last),0);
       assert.equal(new URL(page.url()).searchParams.has('last_unknown'),false);
       assert.ok((await history(page)).seeds.some(item => item.seed === '777' && item.last === 0));
-      // Full legacy href enters the same pending state, even from ordinary page.
+      // Legacy ordinary links keep the ordinary screen and require Last there.
       await page.goto(base + '/?seed=123&last=38&' + query + '&compute=client');
       await clientReady(page);
+      const ordinaryLegacy = await recent(page,777,'미확인').getAttribute('href');
+      assert.equal(new URL(ordinaryLegacy).pathname, '/');
+      assert.equal(await recent(page,777,'미확인').innerText(), '777', 'seed-only compact label');
       await recent(page,777,'미확인').click();
-      await page.waitForURL(url => url.pathname === '/multi');
-      await page.locator('.multi-track-pending').waitFor();
+      await page.waitForURL(url => url.pathname === '/' && url.searchParams.has('last_unknown'));
+      await page.locator('#last-unknown-notice').waitFor();
+      assert.equal(await page.locator('#content .table').count(), 0);
+      await page.locator('#content form input[type=submit]').click();
+      assert.equal(new URL(page.url()).searchParams.has('last_unknown'), true);
+      await page.locator('#last_select').selectOption('0');
+      await clientReady(page);
+      assert.equal(new URL(page.url()).pathname, '/');
+      assert.equal(new URL(page.url()).searchParams.has('last_unknown'), false);
       const tab = await context.newPage();
+      const ordinaryServer = new URL(ordinaryLegacy); ordinaryServer.searchParams.set('compute','server');
+      await tab.goto(ordinaryServer.href);
+      assert.equal(await tab.locator('#content .table').count(), 0);
+      assert.equal(await tab.locator('#last_select').inputValue(), '');
+      await tab.locator('#last_select').selectOption('0');
+      await tab.waitForURL(url => !url.searchParams.has('last_unknown'));
+      await tab.locator('#content .table').first().waitFor();
+      assert.equal(new URL(tab.url()).pathname, '/');
       await tab.goto(href);
       await tab.locator('.multi-track-pending').waitFor();
       assert.equal(await tab.locator('#multi_tables table').count(),0);
