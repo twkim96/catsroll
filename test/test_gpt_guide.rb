@@ -127,4 +127,80 @@ describe 'Catsroll curated GPT guide retrieval' do
     expect(website.fetch('topics').any? { |item| item['id'] == 'website' }).eq true
     expect(guide.lookup('topic' => 'glossary').fetch('documents').first.fetch('id')).eq 'glossary'
   end
+
+  would 'recognize only registered short domain terms and their Korean particles' do
+    guide = BattleCatsRolls::GptGuide.new
+    {'A/B' => 'tracks', 'A / B 설명' => 'tracks', 'A열' => 'tracks', 'B열은?' => 'tracks',
+      '4진' => 'recommendations', '4진 뜻' => 'recommendations', '4진뜻' => 'recommendations',
+      '4진이랑' => 'recommendations', '4진이랑 뭐가 달라?' => 'recommendations',
+      'D옥' => 'recommendations', 'D옥 설명' => 'recommendations', 'D옥은?' => 'recommendations',
+      'D옥에는 뭐가 필요해?' => 'recommendations', 'D옥으로도?' => 'recommendations',
+      '색' => 'colors', '색은?' => 'colors', 'F/U' => 'website', 'F / U는?' => 'website',
+      'S/G' => 'website', 'S/G와 확뽑 최대 차이' => 'website', 'R' => 'tracks', 'G' => 'guaranteed'}.each do |query, id|
+      result = guide.lookup('query' => query)
+      expect(result.fetch('matched')).eq true
+      expect(result.fetch('documents').first.fetch('id')).eq id
+    end
+    ['large', '111', 'x4진', 'ad옥', 'A/B/C', 'F/USER', 'GROW', 'q'].each do |query|
+      result = guide.lookup('query' => query)
+      expect(result.fetch('matched')).eq false
+      expect(result.fetch('documents').first.fetch('id')).eq 'index'
+    end
+  end
+
+  would 'deliver the answer section and required context without unrelated procedures' do
+    guide = BattleCatsRolls::GptGuide.new
+    cases = [
+      ['4진 뜻', 'recommendations', %w[4진 초본능], ['NP와 중복 처리']],
+      ['D옥에는 뭐가 필요해?', 'recommendations', ['장착 가능한 슬롯', '합성·교환'], ['캐릭터 비교']],
+      ['S/G와 확뽑 최대 차이', 'website', ['배너 기본', '11연', '최대 한 번'], ['사이트로 이어주기', '플랜명 / 저장']],
+      ['중복 울슈레 NP로 바꿀까', 'recommendations', %w[플러스 본능 보관], ['성능 후보 추천', '흑슬리', '트릭시']],
+      ['레전드 티켓 언제 쓸까', 'banners', ['서로 다른 풀', '현재 시드', '대안 경로'], ['예정 배너 미리보기', 'previewFor']],
+      ['이 스샷에서 R 뒤 어디로 가?', 'website', ['직전', '다음 뽑기가 34A', '다시 요구'], ['사이트로 이어주기', '플랜명 / 저장']],
+      ['파레토와 탐욕 차이', 'find', ['0.14', '15%', 'partial', '통조림·현금'], ['nextConditionalQuery', '페이지 커서']],
+      ['달력 아이콘은 뭐야?', 'find', ['종료일 제외', '기본', '시각'], ['nextConditionalQuery', 'paretoBudget']]
+    ]
+    cases.each do |query, id, required, excluded|
+      result = guide.lookup('query' => query)
+      expect(result.fetch('documents').first.fetch('id')).eq id
+      expect(result.fetch('truncated')).eq false
+      content = result.fetch('documents').map { |document| document.fetch('content') }.join
+      required.each { |text| expect(content.include?(text)).eq true }
+      excluded.each { |text| expect(content.include?(text)).eq false }
+      expect(result.fetch('documents').first.fetch('contentMode')).eq 'sections'
+      expect(result.fetch('documents').first.fetch('omittedSections').empty?).eq false
+    end
+
+    focused = guide.lookup('topic' => 'recommendations', 'query' => 'NP')
+    expect(focused.fetch('documents').first.fetch('sections')).eq ['NP와 중복 처리']
+    expect(focused.fetch('topics').size < guide.lookup({}).fetch('topics').size).eq true
+    full = guide.lookup('topic' => 'recommendations')
+    expect(full.fetch('documents').first.fetch('contentMode')).eq 'full'
+    expect(full.fetch('documents').first.fetch('omittedSections')).eq []
+    expect(full.fetch('documents').first.fetch('content')).eq File.read('doc/gpt-knowledge/recommendations.md', encoding: 'UTF-8')
+  end
+
+  would 'keep authored dependencies and fenced examples intact and validate section references' do
+    Dir.mktmpdir do |root|
+      guide_with(root)
+      path = File.join(root, 'manifest.json')
+      manifest = JSON.parse(File.read(path))
+      document = manifest.fetch('documents').find { |item| item['id'] == 'tracks' }
+      document['sections'] = [{'heading' => 'R 판독', 'keywords' => ['r'], 'include' => ['공통 조건']}]
+      body = "# 표\n항상 전달할 조건.\n\n## 공통 조건\n직전 결과 필요.\n\n## R 판독\n```text\n```ruby\n## 가짜 제목\n```\n| R | next |\n\n## 무관한 절\n보내지 않음.\n"
+      File.write(File.join(root, 'tracks.md'), body)
+      File.write(path, JSON.generate(manifest))
+      guide = BattleCatsRolls::GptGuide.new(root: root)
+      result = guide.lookup('topic' => 'tracks', 'query' => 'R')
+      content = result.fetch('documents').first.fetch('content')
+      expect(content.include?('항상 전달할 조건')).eq true
+      expect(content.include?('직전 결과 필요')).eq true
+      expect(content.include?("```text\n```ruby\n## 가짜 제목\n```\n| R | next |")).eq true
+      expect(content.include?('무관한 절')).eq false
+      expect(result.fetch('documents').first.fetch('omittedSections')).eq ['무관한 절']
+      document.fetch('sections').first['include'] = ['누락된 제목']
+      File.write(path, JSON.generate(manifest))
+      expect(raises?(BattleCatsRolls::GptGuide::InvalidManifest) { BattleCatsRolls::GptGuide.new(root: root) }).eq true
+    end
+  end
 end

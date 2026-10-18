@@ -10,7 +10,8 @@ module BattleCatsRolls
     DEFAULT_LIMIT = 2
     MAX_LIMIT = 3
     MAX_TOPICS = 20
-    STOP_WORDS = %w[어떻게 무엇 어디 언제 방법 알려줘 알려주세요 부탁 설명 질문].freeze
+    MAX_SECTIONS = 2
+    STOP_WORDS = %w[어떻게 무엇 어디 언제 방법 알려줘 알려주세요 부탁 설명 질문 뭐가 뭐야].freeze
     PARTICLES = %w[으로부터 에게서 에서부터 으로부터 으로는 에서는 에게 한테 까지 부터 으로 은 는 이 가 을 를 와 과 도 만 로 의 에 랑 하고].sort_by { |word| -word.length }.freeze
     VERB_ENDINGS = %w[으려면 려면 으려고 려고 나요 니까 어요 아요 어서 아서 아줘 어줘 는].sort_by { |word| -word.length }.freeze
 
@@ -40,15 +41,16 @@ module BattleCatsRolls
       end
 
       terms = query_terms(query)
-      return result(query, [@documents.fetch('index')], false, query.to_s.strip.empty? ? 'index' : 'fallback') if terms.empty?
-
       compact = compact_query(query)
       ranked = @manifest.fetch('documents').reject { |document| document.fetch('id') == 'index' }.
-        filter_map { |document| [document, score(document, terms, compact)] }.
+        filter_map { |document| [document, score(document, terms, compact, query)] }.
         select { |_document, score_value| score_value >= 4 }.
-        sort_by { |document, score_value| [-score_value, document.fetch('id')] }.
-        first(limit).map(&:first)
-      return result(query, [@documents.fetch('index')], false, 'fallback') if ranked.empty?
+        sort_by { |document, score_value| [-score_value, document.fetch('id')] }
+      # limit is an upper bound, not a request to pad a precise answer with weak
+      # matches (e.g. duplicate-rares guidance for an NP disposal question).
+      best_score = ranked.first&.last || 0
+      ranked = ranked.select { |_document, value| value >= best_score * 0.75 }.first(limit).map(&:first)
+      return result(query, [@documents.fetch('index')], false, query.to_s.strip.empty? ? 'index' : 'fallback') if ranked.empty?
 
       result(query, ranked, true, 'matched')
     end
@@ -88,6 +90,16 @@ module BattleCatsRolls
       docs.each do |document|
         missing = document.fetch('related') - ids
         raise InvalidManifest, "Unknown related document id: #{missing.first}" unless missing.empty?
+        sections = document.fetch('sections', [])
+        unless sections.is_a?(Array) && sections.all? { |section|
+            section.is_a?(Hash) && section['heading'].is_a?(String) &&
+              section['keywords'].is_a?(Array) && section['keywords'].all? { |word| word.is_a?(String) } &&
+              section.fetch('include', []).is_a?(Array) && section.fetch('include', []).all? { |heading| heading.is_a?(String) }
+          }
+          raise InvalidManifest, 'Sections need a heading, keywords, and optional included headings'
+        end
+        headings = sections.map { |section| section.fetch('heading') }
+        raise InvalidManifest, 'Section headings must be unique' unless headings.uniq == headings
       end
     end
 
@@ -102,6 +114,10 @@ module BattleCatsRolls
         unless File.dirname(path) == @root && File.file?(path) && File.dirname(File.realpath(path)) == @root_realpath
           raise InvalidManifest, "Document file must resolve under the guide root: #{file}"
         end
+        headings = split_sections(File.read(path, encoding: 'UTF-8')).last.keys
+        configured = document.fetch('sections', []).flat_map { |section| [section.fetch('heading')] + section.fetch('include', []) }
+        missing = configured - headings
+        raise InvalidManifest, "Missing section heading in #{file}: #{missing.first}" unless missing.empty?
       end
     end
 
@@ -115,20 +131,73 @@ module BattleCatsRolls
           break
         end
 
-        content = File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
+        content, sections, omitted = focused_content(document, query)
         clipped = content.length > remaining
         content = content[0, remaining] if clipped
         remaining -= content.length
         truncated ||= clipped
         documents << {'id' => document.fetch('id'), 'title' => document.fetch('title'), 'content' => content,
-          'related' => document.fetch('related'), 'truncated' => clipped}
+          'related' => document.fetch('related'), 'truncated' => clipped,
+          'contentMode' => omitted.empty? ? 'full' : 'sections', 'sections' => sections, 'omittedSections' => omitted}
         break if clipped
       end
-      topics = @manifest.fetch('documents').first(MAX_TOPICS).map do |document|
+      topic_ids = selected.flat_map { |document| [document.fetch('id')] + document.fetch('related') }.uniq
+      topic_documents = selected.any? { |document| document.fetch('id') == 'index' } ? @manifest.fetch('documents') :
+        topic_ids.map { |id| @documents.fetch(id) }
+      topics = topic_documents.first(MAX_TOPICS).map do |document|
         {'id' => document.fetch('id'), 'title' => document.fetch('title'), 'summary' => document.fetch('summary')}
       end
       {'version' => @manifest.fetch('version'), 'query' => query, 'matched' => matched, 'status' => status,
        'documents' => documents, 'topics' => topics, 'truncated' => truncated}
+    end
+
+    # ## is the authored retrieval boundary. Keep tables, lists and ### examples
+    # intact; a heading inside a fenced code block is ordinary content.
+    def split_sections(content)
+      preamble = +''
+      sections = {}
+      current = preamble
+      fence = nil
+      content.each_line do |line|
+        if line =~ /^\s{0,3}(`{3,}|~{3,})/
+          marker = Regexp.last_match(1)
+          if fence
+            fence = nil if marker[0] == fence[0] && marker.length >= fence.length &&
+              line.match?(/^\s{0,3}[`~]+[\t ]*$/)
+          else
+            fence = marker
+          end
+        end
+        if !fence && line =~ /^## (.+?)\s*$/
+          heading = Regexp.last_match(1)
+          raise InvalidManifest, "Duplicate section heading: #{heading}" if sections.key?(heading)
+          current = sections[heading] = +''
+        end
+        current << line
+      end
+      [preamble, sections]
+    end
+
+    def focused_content(document, query)
+      content = File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
+      preamble, sections = split_sections(content)
+      definitions = document.fetch('sections', [])
+      return [content, sections.keys, []] if query.to_s.strip.empty? || definitions.empty? || document.fetch('id') == 'index'
+
+      terms = query_terms(query)
+      compact = compact_query(query)
+      ranked = definitions.each_with_index.map do |section, index|
+        record = {'id' => '', 'title' => section.fetch('heading'), 'summary' => '', 'keywords' => section.fetch('keywords')}
+        [section, index, score(record, terms, compact, query, body_source: sections.fetch(section.fetch('heading')))]
+      end.select { |_section, _index, value| value >= 4 }.
+        sort_by { |_section, index, value| [-value, index] }
+      best_score = ranked.first&.last || 0
+      ranked = ranked.select { |_section, _index, value| value >= best_score * 0.5 }.first(MAX_SECTIONS).map(&:first)
+      return [content, sections.keys, []] if ranked.empty?
+
+      headings = ranked.flat_map { |section| [section.fetch('heading')] + section.fetch('include', []) }
+      chosen = sections.keys.select { |heading| headings.include?(heading) }
+      [preamble + chosen.map { |heading| sections.fetch(heading) }.join, chosen, sections.keys - chosen]
     end
 
     def query_terms(query)
@@ -160,12 +229,12 @@ module BattleCatsRolls
       word
     end
 
-    def score(document, terms, compact)
+    def score(document, terms, compact, query, body_source: nil)
       title_source = document.fetch('title')
       id_source = document.fetch('id').tr('_-', ' ')
       keyword_sources = document.fetch('keywords')
       summary_source = document.fetch('summary')
-      body_source = File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
+      body_source ||= File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
       title = searchable(title_source)
       id = searchable(id_source)
       keywords = keyword_sources.map { |value| searchable(value) }
@@ -194,7 +263,23 @@ module BattleCatsRolls
       primary = [title, id] + keywords
       score_value += 5 if phrase.length >= 4 && primary.any? { |value| value.include?(phrase) }
       score_value += 5 * keywords.count { |keyword| compact_keyword_match?(keyword, compact) }
+      score_value += 12 * keyword_sources.count { |keyword|
+        (searchable_tokens(keyword) & terms).empty? && registered_term_match?(keyword, query)
+      }
       score_value
+    end
+
+    # Only registered short/mixed terms bypass ordinary token filtering. Require
+    # word boundaries (including / and +), so rg in large and 11 in 111 stay false.
+    def registered_term_match?(keyword, query)
+      normalized = keyword.unicode_normalize(:nfkc).downcase.delete(' ')
+      return false unless normalized.match?(/\A[가-힣a-z0-9\/+]+\z/) &&
+        (normalized.length == 1 || normalized.match?(/\A[a-z0-9]{1,2}\z/) ||
+          normalized.match?(/[가-힣]/) && normalized.match?(/[a-z0-9]/) || normalized.include?('/'))
+
+      pattern = Regexp.escape(normalized).gsub('/', '\\s*/\\s*')
+      suffixes = (PARTICLES + %w[이랑 이나 란 이란 뜻]).uniq.sort_by { |word| -word.length }.map { |word| Regexp.escape(word) }.join('|')
+      query.to_s.unicode_normalize(:nfkc).downcase.match?(/(?<![가-힣a-z0-9\/+])#{pattern}(?:(?:#{suffixes})(?:은|는|도|만)?)?(?![가-힣a-z0-9\/+])/)
     end
 
     def compact_query(query)

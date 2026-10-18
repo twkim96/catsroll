@@ -330,6 +330,7 @@ module BattleCatsRolls
       data['scope'] = 'explanation_only'
       data['authority'] = 'Use live Catsroll catalogs and explicitly shared app results for actual predictions.'
       data['responsePolicy'] = '초심자에게 먼저 핵심 2~4문장과 다음 행동 하나를 제안한다. 누락된 필수 정보 1~2개만 묻고 ID는 도구로 찾는다. prepared는 계산 전이다. 모르는 사실은 추측하지 않는다.'
+      data['retrievalPolicy'] = 'contentMode=sections이면 필요한 절만 전달했다. omittedSections는 미전달 제목이며 읽은 내용이 아니다. 추가 내용은 topic과 query로 조회하고, 전체 문서가 필요할 때만 query 없이 topic을 지정한다.'
       data.fetch('documents').each do |document|
         document['sourceUrl'] = "https://github.com/twkim96/catsroll/blob/main/doc/gpt-knowledge/#{document.fetch('id')}.md"
       end

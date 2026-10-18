@@ -69,7 +69,53 @@
         "banners",
         "troubleshooting"
       ],
-      "file": "seed.md"
+      "file": "seed.md",
+      "sections": [
+        {
+          "heading": "시드와 A/B 위치",
+          "keywords": [
+            "시드란",
+            "시드뜻",
+            "현재위치",
+            "1a"
+          ]
+        },
+        {
+          "heading": "관측 입력과 준비",
+          "keywords": [
+            "관측",
+            "시드찾",
+            "입력",
+            "10개",
+            "처음"
+          ]
+        },
+        {
+          "heading": "검색 결과와 현재 위치",
+          "keywords": [
+            "후보",
+            "현재시드",
+            "시작시드",
+            "ambiguous",
+            "last"
+          ]
+        },
+        {
+          "heading": "검색 실패 분기",
+          "keywords": [
+            "안돼",
+            "안되",
+            "검색실패",
+            "후보없",
+            "후보여러",
+            "오류"
+          ],
+          "include": [
+            "관측 입력과 준비",
+            "검색 결과와 현재 위치"
+          ]
+        }
+      ]
     },
     {
       "id": "tracks",
@@ -106,14 +152,67 @@
         "스킵",
         "배열밀",
         "배열미는",
-        "중간칸"
+        "중간칸",
+        "r",
+        "a/b열"
       ],
       "related": [
         "guaranteed",
         "find",
         "website"
       ],
-      "file": "tracks.md"
+      "file": "tracks.md",
+      "sections": [
+        {
+          "heading": "짧은 답",
+          "keywords": [
+            "a/b",
+            "a열",
+            "b열",
+            "트랙"
+          ]
+        },
+        {
+          "heading": "R은 무엇인가요?",
+          "keywords": [
+            "r",
+            "중복",
+            "재추첨",
+            "직전",
+            "last"
+          ]
+        },
+        {
+          "heading": "배너나 티켓을 섞으면?",
+          "keywords": [
+            "플티",
+            "티켓",
+            "섞",
+            "조건부"
+          ]
+        },
+        {
+          "heading": "자주 묻는 질문: 열 유지와 건너뛰기",
+          "keywords": [
+            "열유지",
+            "b엔중복",
+            "b열중복",
+            "건너뛰",
+            "스킵",
+            "배열밀",
+            "배열미는"
+          ]
+        },
+        {
+          "heading": "사이트·스크린샷 상담",
+          "keywords": [
+            "스크린샷",
+            "갱신",
+            "1a",
+            "열안넘"
+          ]
+        }
+      ]
     },
     {
       "id": "guaranteed",
@@ -130,14 +229,51 @@
         "guaranteed",
         "rg",
         "7회",
-        "15회"
+        "15회",
+        "g"
       ],
       "related": [
         "tracks",
         "banners",
         "find"
       ],
-      "file": "guaranteed.md"
+      "file": "guaranteed.md",
+      "sections": [
+        {
+          "heading": "짧은 답",
+          "keywords": [
+            "g",
+            "rg",
+            "확정",
+            "확뽑"
+          ]
+        },
+        {
+          "heading": "다음 위치",
+          "keywords": [
+            "다음위치",
+            "11연",
+            "11회"
+          ]
+        },
+        {
+          "heading": "설정의 의미",
+          "keywords": [
+            "forceguaranteed",
+            "s/g",
+            "기본값",
+            "스텝업"
+          ]
+        },
+        {
+          "heading": "물을 것과 도구",
+          "keywords": [
+            "maxguaranteed",
+            "확뽑최대",
+            "허용"
+          ]
+        }
+      ]
     },
     {
       "id": "banners",
@@ -184,7 +320,75 @@
         "colors",
         "troubleshooting"
       ],
-      "file": "banners.md"
+      "file": "banners.md",
+      "sections": [
+        {
+          "heading": "배너와 캐릭터 찾기",
+          "keywords": [
+            "배너",
+            "캐릭터찾",
+            "event",
+            "다마군"
+          ]
+        },
+        {
+          "heading": "현재 풀과 준비 조건",
+          "keywords": [
+            "목표포함",
+            "현재풀",
+            "준비",
+            "100",
+            "300"
+          ]
+        },
+        {
+          "heading": "예정 배너 미리보기",
+          "keywords": [
+            "예정",
+            "미정",
+            "복각",
+            "미리보기",
+            "참고배열",
+            "previewfor"
+          ]
+        },
+        {
+          "heading": "미래 울슈레 가정",
+          "keywords": [
+            "ubers",
+            "미래울슈레",
+            "가상신캐",
+            "추가"
+          ]
+        },
+        {
+          "heading": "플래티넘·레전드 티켓",
+          "keywords": [
+            "플티",
+            "플래티넘",
+            "레전드티켓",
+            "레전드티켓언제",
+            "티켓언제",
+            "티켓풀",
+            "언제쓸",
+            "언제써",
+            "아깝"
+          ]
+        },
+        {
+          "heading": "배너 변경과 시드",
+          "keywords": [
+            "변경일",
+            "배열바뀌",
+            "신캐",
+            "업데이트",
+            "일판",
+            "한판",
+            "일판배너",
+            "한판시드"
+          ]
+        }
+      ]
     },
     {
       "id": "colors",
@@ -264,14 +468,140 @@
         "올컬후",
         "추가확뽑",
         "손해",
-        "뽑기계획"
+        "뽑기계획",
+        "달력아이콘"
       ],
       "related": [
         "tracks",
         "guaranteed",
         "banners"
       ],
-      "file": "find.md"
+      "file": "find.md",
+      "sections": [
+        {
+          "heading": "짧은 답",
+          "keywords": [
+            "find",
+            "경로",
+            "목표"
+          ]
+        },
+        {
+          "heading": "초심자에게 물을 것",
+          "keywords": [
+            "시드없",
+            "입력",
+            "예산",
+            "허용",
+            "allow_ticket",
+            "특수티켓허용"
+          ]
+        },
+        {
+          "heading": "준비와 설명",
+          "keywords": [
+            "준비",
+            "계산하기",
+            "prepared",
+            "100",
+            "300"
+          ]
+        },
+        {
+          "heading": "달력: 배너 일정 순서 고려",
+          "keywords": [
+            "달력",
+            "캘린더",
+            "일정순서",
+            "scheduleaware",
+            "calendar"
+          ]
+        },
+        {
+          "heading": "검색 기준: 최소코스트·최단거리·탐욕·파레토",
+          "keywords": [
+            "최소코스트",
+            "코스트",
+            "탐욕",
+            "파레토",
+            "최단거리",
+            "cost40",
+            "cost50",
+            "balance",
+            "pareto",
+            "가중치"
+          ]
+        },
+        {
+          "heading": "결과 상세 조회와 페이지 커서",
+          "keywords": [
+            "결과조회",
+            "페이지",
+            "커서",
+            "만료",
+            "result_id",
+            "nextoffset",
+            "nextstart",
+            "조회"
+          ]
+        },
+        {
+          "heading": "결과 필드·총 뽑기 수·생략 범위",
+          "keywords": [
+            "몇뽑",
+            "총뽑기",
+            "결과설명",
+            "35회",
+            "생략",
+            "uberdraws",
+            "conditionalomitted"
+          ]
+        },
+        {
+          "heading": "기존 배열에서 울슈레 수확 비교",
+          "keywords": [
+            "울슈레많이",
+            "수확",
+            "harvestdraws"
+          ]
+        },
+        {
+          "heading": "배너 올컬 목표 자동 선택",
+          "keywords": [
+            "올컬",
+            "전부",
+            "다먹",
+            "목표선택",
+            "excludeownedids"
+          ],
+          "include": [
+            "초심자에게 물을 것"
+          ]
+        },
+        {
+          "heading": "자주 묻는 질문: 재화가 이만큼인데 올컬할까요?",
+          "keywords": [
+            "재화",
+            "통조림",
+            "손해",
+            "예산",
+            "더뽑",
+            "올컬후"
+          ]
+        },
+        {
+          "heading": "결과의 한계",
+          "keywords": [
+            "success",
+            "partial",
+            "limit",
+            "impossible",
+            "cancelled",
+            "불가능",
+            "중단"
+          ]
+        }
+      ]
     },
     {
       "id": "troubleshooting",
@@ -309,7 +639,49 @@
         "find",
         "website"
       ],
-      "file": "troubleshooting.md"
+      "file": "troubleshooting.md",
+      "sections": [
+        {
+          "heading": "실제 뽑기와 다릅니다",
+          "keywords": [
+            "안맞",
+            "다르",
+            "불일치",
+            "업데이트",
+            "달라",
+            "틀려",
+            "예상과다"
+          ]
+        },
+        {
+          "heading": "이미 게임에서 뽑았어요",
+          "keywords": [
+            "이미뽑",
+            "진행",
+            "갱신",
+            "현재시드"
+          ]
+        },
+        {
+          "heading": "냥티·럭티·이벤트 뽑기도 되나요?",
+          "keywords": [
+            "냥티",
+            "럭티",
+            "이벤트뽑기",
+            "닼캣아"
+          ]
+        },
+        {
+          "heading": "앱이 안 열리거나 결과를 못 읽을 때",
+          "keywords": [
+            "안열",
+            "앱오류",
+            "에러",
+            "링크",
+            "결과못읽"
+          ]
+        }
+      ]
     },
     {
       "id": "recommendations",
@@ -395,7 +767,127 @@
         "find",
         "banners"
       ],
-      "file": "recommendations.md"
+      "file": "recommendations.md",
+      "sections": [
+        {
+          "heading": "성능 후보 추천",
+          "keywords": [
+            "뭐뽑",
+            "뽑을까",
+            "좋은캐릭터",
+            "추천해"
+          ]
+        },
+        {
+          "heading": "속성별 후보",
+          "keywords": [
+            "속성",
+            "빨적",
+            "검적",
+            "천사",
+            "악마",
+            "메탈",
+            "좀비",
+            "부족",
+            "match"
+          ]
+        },
+        {
+          "heading": "티어와 투자 조건",
+          "keywords": [
+            "티어",
+            "등급",
+            "초본능",
+            "투자조건",
+            "investment",
+            "2진"
+          ]
+        },
+        {
+          "heading": "실제 배너에서 획득",
+          "keywords": [
+            "뽑는방법",
+            "현재배너",
+            "획득",
+            "event"
+          ]
+        },
+        {
+          "heading": "수집 목표와 성능",
+          "keywords": [
+            "수집",
+            "콜라보넘겨",
+            "확보",
+            "복각",
+            "우선순위"
+          ]
+        },
+        {
+          "heading": "캐릭터 비교",
+          "keywords": [
+            "비교",
+            "뭐가좋",
+            "성능",
+            "아누비스",
+            "흑슬리",
+            "냥돌이",
+            "트릭시",
+            "details"
+          ]
+        },
+        {
+          "heading": "형태·레벨·일반 육성",
+          "keywords": [
+            "4진",
+            "4진뜻",
+            "초본",
+            "레벨",
+            "60렙",
+            "55렙",
+            "고방",
+            "캣아",
+            "캣츠아이",
+            "다크캣츠아이",
+            "육성"
+          ],
+          "include": [
+            "티어와 투자 조건"
+          ]
+        },
+        {
+          "heading": "NP와 중복 처리",
+          "keywords": [
+            "np",
+            "중복울슈레",
+            "중복울레",
+            "중복레레",
+            "갈아",
+            "플러스레벨",
+            "처분",
+            "본능순서"
+          ]
+        },
+        {
+          "heading": "본능옥",
+          "keywords": [
+            "본능옥",
+            "d옥",
+            "옥합성",
+            "교환"
+          ]
+        },
+        {
+          "heading": "덱·스테이지 한계",
+          "keywords": [
+            "덱",
+            "편성",
+            "스테이지",
+            "클리어",
+            "고정덱",
+            "냥콤보"
+          ]
+        }
+      ]
     },
     {
       "id": "glossary",
@@ -422,7 +914,57 @@
         "recommendations",
         "find"
       ],
-      "file": "glossary.md"
+      "file": "glossary.md",
+      "sections": [
+        {
+          "heading": "배너·캐릭터 별명",
+          "keywords": [
+            "별명",
+            "줄임말",
+            "문단",
+            "라길",
+            "베카",
+            "블아",
+            "쌍포노",
+            "쌍슬리"
+          ]
+        },
+        {
+          "heading": "묶음 별명",
+          "keywords": [
+            "세2마",
+            "세2마춘",
+            "2마",
+            "춘블발",
+            "쿠블아"
+          ]
+        },
+        {
+          "heading": "일반 용어",
+          "keywords": [
+            "레티",
+            "플티",
+            "블티",
+            "고방",
+            "기캐",
+            "대구력",
+            "중구력",
+            "뉴절먹",
+            "냥티",
+            "럭티"
+          ]
+        },
+        {
+          "heading": "강화와 본능옥",
+          "keywords": [
+            "4진",
+            "초본",
+            "본능",
+            "본능옥",
+            "d옥"
+          ]
+        }
+      ]
     },
     {
       "id": "website",
@@ -462,7 +1004,8 @@
         "lastroll",
         "최근seed",
         "foundcats",
-        "확뽑최대"
+        "확뽑최대",
+        "r"
       ],
       "related": [
         "tracks",
@@ -470,7 +1013,210 @@
         "troubleshooting",
         "find"
       ],
-      "file": "website.md"
+      "file": "website.md",
+      "sections": [
+        {
+          "heading": "사이트로 이어주기",
+          "keywords": [
+            "사이트링크",
+            "링크",
+            "안열",
+            "앱오류",
+            "독립앱",
+            "대체",
+            "직접보기"
+          ]
+        },
+        {
+          "heading": "일반 배열: 입력부터 실제 진행까지",
+          "keywords": [
+            "일반배열",
+            "roll",
+            "findnext",
+            "내기기연산"
+          ]
+        },
+        {
+          "heading": "Multi: 배너 비교·Find·플랜",
+          "keywords": [
+            "멀티",
+            "multi",
+            "사용법",
+            "어떻게써"
+          ]
+        },
+        {
+          "heading": "Seed / Count / Last roll / Apply",
+          "keywords": [
+            "seed",
+            "count",
+            "lastroll",
+            "apply",
+            "횟수",
+            "직전입력"
+          ]
+        },
+        {
+          "heading": "배너 추가·삭제·시리즈 필터·Custom name",
+          "keywords": [
+            "배너추가",
+            "배너삭제",
+            "시리즈필터",
+            "customname",
+            "깔때기"
+          ]
+        },
+        {
+          "heading": "F/U",
+          "keywords": [
+            "f/u",
+            "미래울슈레"
+          ]
+        },
+        {
+          "heading": "S/G",
+          "keywords": [
+            "s/g",
+            "확뽑최대",
+            "묶음길이",
+            "확정가정"
+          ]
+        },
+        {
+          "heading": "달력 아이콘",
+          "keywords": [
+            "달력아이콘",
+            "달력"
+          ]
+        },
+        {
+          "heading": "목표 선택 깔때기·선택한 캐릭터",
+          "keywords": [
+            "목표선택",
+            "특수티켓허용"
+          ]
+        },
+        {
+          "heading": "목표 그룹의 올컬렉 / 초기화",
+          "keywords": [
+            "올컬렉",
+            "목표초기화"
+          ]
+        },
+        {
+          "heading": "검색 기준 / ?",
+          "keywords": [
+            "검색기준",
+            "최소코스트",
+            "탐욕",
+            "파레토"
+          ]
+        },
+        {
+          "heading": "Found cats",
+          "keywords": [
+            "foundcats",
+            "캐릭터위치"
+          ]
+        },
+        {
+          "heading": "플랜 모드 / 그리기 실행",
+          "keywords": [
+            "플랜모드",
+            "그리기",
+            "도장",
+            "플랜끄"
+          ]
+        },
+        {
+          "heading": "플랜명 / 저장 / 불러오기 / 초기화",
+          "keywords": [
+            "플랜명",
+            "저장",
+            "불러오기",
+            "플랜초기화"
+          ]
+        },
+        {
+          "heading": "선택 레어·슈레·울슈레·레레",
+          "keywords": [
+            "선택레어",
+            "표시할캐릭터"
+          ]
+        },
+        {
+          "heading": "공유 / PNG 저장·복사",
+          "keywords": [
+            "공유",
+            "png",
+            "이미지",
+            "복사"
+          ]
+        },
+        {
+          "heading": "스크린샷으로 “열 넘어가?”를 상담하는 순서",
+          "keywords": [
+            "스크린샷",
+            "스샷",
+            "캡처",
+            "열넘어",
+            "열안넘",
+            "왜안넘",
+            "안넘어"
+          ]
+        },
+        {
+          "heading": "R 다음 좌표와 조건부 경로",
+          "keywords": [
+            "r",
+            "r뒤",
+            "r다음",
+            "왼쪽화살표",
+            "조건부",
+            "다음좌표",
+            "직전결과"
+          ],
+          "include": [
+            "스크린샷으로 “열 넘어가?”를 상담하는 순서"
+          ]
+        },
+        {
+          "heading": "최근 seed와 Last roll 구분",
+          "keywords": [
+            "최근seed",
+            "최근시드",
+            "lastroll"
+          ],
+          "include": [
+            "스크린샷으로 “열 넘어가?”를 상담하는 순서"
+          ]
+        },
+        {
+          "heading": "진행 후 새 1A로 재기준화",
+          "keywords": [
+            "새1a",
+            "시드갱신",
+            "재기준",
+            "50a",
+            "다시1a"
+          ],
+          "include": [
+            "스크린샷으로 “열 넘어가?”를 상담하는 순서"
+          ]
+        },
+        {
+          "heading": "짧은 상담 예시",
+          "keywords": [
+            "확뽑했는데",
+            "7a",
+            "같은레어",
+            "b열클릭"
+          ],
+          "include": [
+            "스크린샷으로 “열 넘어가?”를 상담하는 순서"
+          ]
+        }
+      ]
     }
   ]
 }

@@ -545,6 +545,29 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(recommend_guide.fetch('structuredContent').fetch('documents').first.fetch('id')).eq 'recommendations'
   end
 
+  would 'expose focused guide scope and full-topic recovery identically on both hosts' do
+    %i[chatgpt claude].each do |host|
+      adapter = BattleCatsRolls::GptMcp.new(ui_host: host)
+      focused = adapter.dispatch('tools/call', 'name' => 'catsroll_guide',
+        'arguments' => {'topic' => 'recommendations', 'query' => 'NP'})
+      data = focused.fetch(:structuredContent)
+      text_data = JSON.parse(focused.fetch(:content).first.fetch(:text))
+      expect(text_data).eq data
+      expect(data.fetch('scope')).eq 'explanation_only'
+      expect(data.fetch('retrievalPolicy').include?('omittedSections')).eq true
+      document = data.fetch('documents').first
+      expect(document.fetch('contentMode')).eq 'sections'
+      expect(document.fetch('sections')).eq ['NP와 중복 처리']
+      expect(document.fetch('content').include?('보관')).eq true
+      expect(document.fetch('content').include?('속성별 후보')).eq false
+      expect(document.fetch('sourceUrl').end_with?('/recommendations.md')).eq true
+      full = adapter.dispatch('tools/call', 'name' => 'catsroll_guide',
+        'arguments' => {'topic' => 'recommendations'}).fetch(:structuredContent).fetch('documents').first
+      expect(full.fetch('contentMode')).eq 'full'
+      expect(full.fetch('content').include?('속성별 후보')).eq true
+    end
+  end
+
   would 'connect subjective tiers to real per-form game traits and an exact banner pool' do
     result = call_tool(client, 'catsroll_recommend', {traits: %w[빨 천], limit: 10})
     data = result.fetch('structuredContent')
