@@ -38,6 +38,27 @@ describe 'Frozen 870cc54d MCP contracts' do
         selection_properties[name] = property
       end
     end
+    # Additive navigation-only tool, guide topics and website links. Keep every
+    # pre-existing prepare field, UI metadata and handler contract unchanged.
+    site_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/site_links_delta_v1.json')))
+    site_delta.each do |host, changes|
+      cases = baseline.fetch(host)
+      cases.fetch('initialize')['instructions'] = changes.fetch('instructions')
+      cases.fetch('tools').fetch('tools') << changes.fetch('siteTool')
+      guide = cases.fetch('tools').fetch('tools').find { |tool| tool['name'] == 'catsroll_guide' }
+      guide.fetch('inputSchema').fetch('properties').fetch('topic')['enum'] = changes.fetch('guideTopics')
+      changes.fetch('websiteLinks').each do |name, links|
+        reply = cases.fetch(name)
+        reply.fetch('structuredContent')['websiteLinks'] = links
+        reply.fetch('content').each do |item|
+          data = JSON.parse(item.fetch('text'))
+          data = data.to_a.flat_map { |key, value|
+            key == 'warnings' ? [['websiteLinks', links], [key, value]] : [[key, value]]
+          }.to_h
+          item['text'] = JSON.generate(data)
+        end
+      end
+    end
     expect(GptMcpContractSupport.capture).eq baseline
   end
 end

@@ -114,4 +114,17 @@ describe 'Catsroll curated GPT guide retrieval' do
       }).eq true
     end
   end
+
+  would 'retrieve website controls and screenshot track-switch guidance from the shipped corpus' do
+    guide = BattleCatsRolls::GptGuide.new
+    ['OO는 어떻게 써야해?', '이 스크린샷이면 열 넘어가?', '왜 열이 안넘어가지?',
+      '멀티 플랜모드 사용법', '앱이 안열려 사이트 링크 줘'].each do |query|
+      result = guide.lookup('query' => query)
+      expect(result.fetch('documents').first.fetch('id')).eq 'website'
+      expect(result.fetch('truncated')).eq false
+    end
+    website = guide.lookup('topic' => 'website')
+    expect(website.fetch('topics').any? { |item| item['id'] == 'website' }).eq true
+    expect(guide.lookup('topic' => 'glossary').fetch('documents').first.fetch('id')).eq 'glossary'
+  end
 end

@@ -9,7 +9,7 @@ module BattleCatsRolls
     MAX_CONTENT_LENGTH = 16_000
     DEFAULT_LIMIT = 2
     MAX_LIMIT = 3
-    MAX_TOPICS = 10
+    MAX_TOPICS = 20
     STOP_WORDS = %w[어떻게 무엇 어디 언제 방법 알려줘 알려주세요 부탁 설명 질문].freeze
     PARTICLES = %w[으로부터 에게서 에서부터 으로부터 으로는 에서는 에게 한테 까지 부터 으로 은 는 이 가 을 를 와 과 도 만 로 의 에 랑 하고].sort_by { |word| -word.length }.freeze
     VERB_ENDINGS = %w[으려면 려면 으려고 려고 나요 니까 어요 아요 어서 아서 아줘 어줘 는].sort_by { |word| -word.length }.freeze

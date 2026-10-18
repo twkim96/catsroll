@@ -16,6 +16,12 @@
       "title": "사용자가 승인한 한국어 축약",
       "retrieval": "user_approved_contraction",
       "verified_on": "2026-10-18"
+    },
+    "user-alias-list-20261018": {
+      "title": "사용자가 제공한 냥코대전쟁 배너 캐릭터 별명 모음",
+      "retrieval": "user_supplied_markdown",
+      "verified_on": "2026-10-18",
+      "verification": "현재 KR 이름/모든 형태/ID로 식별 검증. 원문의 확인 등급이나 커뮤니티 사용 빈도는 독립 인증하지 않음. 명확한 축약은 사용자 제안으로 수록."
     }
   },
   "entries": [
@@ -76,10 +82,12 @@
     {
       "cat_id": 45,
       "aliases": [
-        "헬옹마"
+        "헬옹마",
+        "냥마"
       ],
       "source_ids": [
-        "arca-46071094"
+        "arca-46071094",
+        "user-alias-list-20261018"
       ]
     },
     {
@@ -139,10 +147,12 @@
     {
       "cat_id": 139,
       "aliases": [
-        "대공이"
+        "대공이",
+        "대공"
       ],
       "source_ids": [
-        "arca-46071094"
+        "arca-46071094",
+        "user-alias-list-20261018"
       ]
     },
     {
@@ -170,6 +180,15 @@
       ],
       "source_ids": [
         "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 186,
+      "aliases": [
+        "하슈"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
       ]
     },
     {
@@ -274,6 +293,15 @@
       ]
     },
     {
+      "cat_id": 323,
+      "aliases": [
+        "떠악"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
+      ]
+    },
+    {
       "cat_id": 325,
       "aliases": [
         "거북카"
@@ -292,6 +320,24 @@
       ]
     },
     {
+      "cat_id": 338,
+      "aliases": [
+        "프린세스 공주 호"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
+      ]
+    },
+    {
+      "cat_id": 349,
+      "aliases": [
+        "갓플레이트"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
+      ]
+    },
+    {
       "cat_id": 352,
       "aliases": [
         "코마리"
@@ -307,6 +353,15 @@
       ],
       "source_ids": [
         "arca-46071094"
+      ]
+    },
+    {
+      "cat_id": 355,
+      "aliases": [
+        "여름카이"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
       ]
     },
     {
@@ -368,11 +423,13 @@
     {
       "cat_id": 442,
       "aliases": [
-        "흑타냥"
+        "흑타냥",
+        "블랙달"
       ],
       "source_ids": [
         "arca-46071094",
-        "arca-74042366"
+        "arca-74042366",
+        "user-alias-list-20261018"
       ]
     },
     {
@@ -542,6 +599,15 @@
       ]
     },
     {
+      "cat_id": 588,
+      "aliases": [
+        "초코디테"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
+      ]
+    },
+    {
       "cat_id": 610,
       "aliases": [
         "흑제수",
@@ -550,6 +616,15 @@
       "source_ids": [
         "arca-46071094",
         "arca-74042366"
+      ]
+    },
+    {
+      "cat_id": 634,
+      "aliases": [
+        "혀잘참"
+      ],
+      "source_ids": [
+        "user-alias-list-20261018"
       ]
     },
     {

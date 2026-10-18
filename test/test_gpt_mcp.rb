@@ -403,6 +403,31 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(decode.call(seek_result.fetch('siteUrl')).fetch('arguments')).eq seek_result.fetch('request')
   end
 
+  would 'offer validated site links without a UI descriptor or source pools on either host' do
+    widget_builder = BattleCatsRolls::GptMcp.method(:widget)
+    BattleCatsRolls::GptMcp.define_singleton_method(:widget) { raise 'Navigation must not build the UI bundle' }
+    %i[chatgpt claude].each do |host|
+      adapter = BattleCatsRolls::GptMcp.new(ui_host: host)
+      response = adapter.dispatch('tools/call', 'name' => 'catsroll_site_link',
+        'arguments' => {'mode' => 'multi', 'seed' => 42, 'rows' => [{'lang' => 'kr', 'event' => '2019-01-23_348'}]})
+      data = response.fetch(:structuredContent)
+      expect(data[:status]).eq 'links_ready'
+      expect(data[:computed]).eq false
+      expect(response.key?(:_meta)).eq false
+      expect(data[:websiteLinks][:multi][:url].include?('/multi#share=')).eq true
+      expect(data[:events].any? { |event| event.key?(:pool) }).eq false
+      selection = adapter.dispatch('tools/call', 'name' => 'catsroll_site_link',
+        'arguments' => {'mode' => 'multi', 'seed' => 42, 'rows' => [{'lang' => 'kr', 'event' => '2019-01-23_348'}],
+          'targetSelection' => {'type' => 'banner_collection', 'lang' => 'kr', 'event' => '2019-01-23_348',
+            'rarity' => 4, 'excludeOwnedIds' => [305, 306, 307, 356, 418]}})
+      expect(selection.fetch(:structuredContent)[:status]).eq 'needs_input'
+      expect(selection.fetch(:structuredContent).key?(:websiteLinks)).eq false
+      expect(selection.key?(:_meta)).eq false
+    end
+  ensure
+    BattleCatsRolls::GptMcp.define_singleton_method(:widget, widget_builder)
+  end
+
   would 'resolve banner nicknames and spacing without requiring a character target' do
     named = call_tool(client, 'catsroll_events', {lang: 'kr', query: '다이너마이트 군단'}).
       fetch('structuredContent').fetch('events')
@@ -467,6 +492,29 @@ describe 'Catsroll MCP device-computation adapter' do
       BattleCatsRolls::Route.ball_kr.cats.key?(entry.fetch('cat_id')) &&
         entry.fetch('source_ids').all? { |id| aliases.fetch('sources').key?(id) }
     end).eq true
+  end
+
+  would 'resolve the additional supplied aliases while retaining ambiguous candidates and correcting bad identities' do
+    {'떠악'=>323,'혀잘참'=>634,'냥마'=>45,'초코디테'=>588,'여름카이'=>355,
+      '하슈'=>186,'갓플레이트'=>349,'프린세스공주호'=>338,'블랙달'=>442}.each do |term,id|
+      cats = call_tool(client,'catsroll_cats',{query:term}).dig('structuredContent','cats')
+      expect(cats.map { |cat| cat['id'] }).eq [id]
+      expect(cats.first['name']).eq BattleCatsRolls::Route.ball_kr.cats.fetch(id).fetch('name').first
+    end
+    expect(call_tool(client,'catsroll_cats',{query:'대공'}).dig('structuredContent','cats').map { |cat| cat['id'] }).eq [139,358]
+    expect(call_tool(client,'catsroll_cats',{query:'베카'}).dig('structuredContent','cats').map { |cat| cat['id'] }).eq [60]
+    {'바살'=>2,'소울즈'=>6,'메르스토'=>13,'크피'=>25,'파워풀'=>36,'미쿠 뽑기'=>43,
+      '바키 콜라보'=>72,'소닉 뽑기'=>73,'귀칼'=>74}.each do |term,id|
+      expect(BattleCatsRolls::EventSeriesNames.exact_shortcut_ids(term)).eq [id]
+      events=call_tool(client,'catsroll_events',{query:term}).dig('structuredContent','events')
+      # This KR catalog has no dated Power Pro event. The alias must not
+      # fabricate one merely because series 36 exists in the name catalog.
+      expect(events.empty?).eq(id == 36)
+      expect(events.all? { |event| event['series_id']==id }).eq true
+    end
+    catalog=BattleCatsRolls::TrackApi.multi_find_cats(0)
+    expect(catalog.find { |cat| cat[:id]==139 }.fetch(:aliases).include?('대공')).eq true
+    expect(call_tool(client,'catsroll_cats',{query:'세2마'}).dig('structuredContent','cats')).eq []
   end
 
   would 'route actual novice wording to explanations and supported boundaries' do

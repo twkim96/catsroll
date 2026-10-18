@@ -14,7 +14,8 @@
       "related": [
         "start",
         "seed",
-        "find"
+        "find",
+        "website"
       ],
       "file": "index.md"
     },
@@ -99,7 +100,8 @@
       ],
       "related": [
         "guaranteed",
-        "find"
+        "find",
+        "website"
       ],
       "file": "tracks.md"
     },
@@ -262,7 +264,8 @@
       "related": [
         "seed",
         "banners",
-        "find"
+        "find",
+        "website"
       ],
       "file": "troubleshooting.md"
     },
@@ -350,6 +353,38 @@
         "find"
       ],
       "file": "glossary.md"
+    },
+    {
+      "id": "website",
+      "title": "일반 배열·Multi 사이트 사용법과 화면 상담",
+      "summary": "앱 표시 실패 시 배너·시드 링크, 웹 조작, 스크린샷의 R/G/RG와 열 이동 판독",
+      "keywords": [
+        "사이트",
+        "웹사이트",
+        "멀티",
+        "multi",
+        "일반배열",
+        "버튼",
+        "사용법",
+        "스크린샷",
+        "스샷",
+        "캡처",
+        "열안넘어",
+        "열넘어",
+        "안넘어",
+        "왜안넘",
+        "어떻게써",
+        "어떻게쓰",
+        "화면상담",
+        "링크",
+        "직접보기"
+      ],
+      "related": [
+        "tracks",
+        "guaranteed",
+        "troubleshooting"
+      ],
+      "file": "website.md"
     }
   ]
 }

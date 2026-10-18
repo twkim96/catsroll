@@ -84,6 +84,7 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | 도구 | 입력·반환 |
 | --- | --- |
 | `catsroll_guide` | 초심자 자연어 질문 또는 `topic`으로 검증 안내 1~3개 검색. 기본 2개, 본문 합계 최대 16,000자 |
+| `catsroll_site_link` | 준비와 같은 입력 검증 후 iframe 없이 일반 배열·Multi·독립 앱 링크 반환. 계산·결과 저장 없음 |
 | `catsroll_recommend` | 속성/육성/보유/배너 풀로 상위 티어 후보 조회. 이름·형태·능력은 기존 게임 데이터에서 읽음 |
 | `catsroll_banner_preview` | 일정 미정 콜라보/이벤트의 시리즈를 KR·JP 이름/별명/캐릭터 ID로 연결하고 지역별 최신 참고 풀과 `prepare_rows` 반환. 예측·미래 일정 아님 |
 | `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, `cat_id`로 실제 풀에 포함된 배너 역검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달하며 `cat_id`와 함께 쓰지 않음 |
@@ -153,6 +154,19 @@ GPT의 정상 경로는 문맥 업데이트 뒤 짧은 후속 메시지로 유�
 last·목표·티켓/확뽑 예산·일정·미래 울슈레·참고 풀·플랜·시드 찾기 관측을 보존한다.
 입력은 URL fragment에 있어 HTTP 요청 쿼리로 보내지지 않지만 링크를 받은 사람과 브라우저 기록에는
 노출될 수 있다. 복원은 같은 서버 검증을 거쳐 기기 계산 화면을 준비하며 자동 계산하지 않는다.
+
+앱 카드 오류나 일반 웹 사용 요청은 `catsroll_site_link`를 사용한다. `catsroll_prepare`와 동일한 입력·
+카탈로그 검증을 재사용하지만 UI 메타데이터와 원본 풀을 반환하지 않는다. `links_ready`는 계산 결과가 아니다.
+두 도구의 `websiteLinks`는 `app`(전체 입력), `multi`(배열/활성 Find), `tracks`(배너별 일반 배열),
+`unavailable`(전달 불가능 조건)을 제공한다. `siteUrl`의 기존 의미는 유지한다.
+Multi는 기존 `multi-share.js` v1의 비압축 base64url 봉투를 사용해 저장 설정과 분리되는 편집 세션을 연다.
+일반 배열은 `compute=client`와 지역/event/seed/last/count/ubers/force_guaranteed를 전달한다.
+둘은 열면 기기에서 계산하므로 앱의 수동 계산과 구별하고 자동 서버 계산 폴백은 추가하지 않는다.
+참고 풀 또는 Multi 미래 울슈레 20 초과·일반 배열 9 초과·웹 Find 선택기에 없는 목표는 해당 링크를 생략하고 독립 앱으로 안내한다.
+Multi에 플랜 상태/이름은 전달하지 않으며 일반 배열은 Find·예산·다른 배너도 전달하지 않는다.
+상세 생략은 응답에 명시한다. 일반 웹의 결과는 채팅에 자동 공유하지 않는다.
+`catsroll_guide(topic="website")`가 일반/Multi 조작과 스크린샷 열 이동 상담의 유지보수 위치다.
+UI 실패와 MCP 연결 실패를 구별하며, 후자는 고정 사이트/수동 설정으로 안내한다.
 
 공유 버튼은 Multi 배열 표 바로 위에, 시드 찾기에서는 결과 바로 위에 배치한다.
 요약에 없는 행이나 생략한 경로를 GPT가 추정해서는 안 된다.
@@ -251,6 +265,7 @@ node test/test_gpt_result_summary.js
 node test/test_gpt_host_bridge.cjs
 node test/test_gpt_lifecycle.cjs
 node test/test_gpt_input_transfer.cjs
+node test/test_gpt_site_links.cjs
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_input_transfer.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_results.rb
 bundle exec ruby -EUTF-8 -Ilib:test test/test_gpt_guide.rb
