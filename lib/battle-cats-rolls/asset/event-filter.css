@@ -99,13 +99,16 @@
 .event-filter-header h2 { font-size: 1.15rem; }
 .event-filter-section h3 { font-size: .95rem; }
 .event-filter-close {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
   width: 32px;
   height: 32px;
   margin: 0;
   padding: 0;
   border-radius: 50%;
   font-size: 26px;
-  line-height: 30px;
+  line-height: 1;
 }
 .event-filter-search-wrap { padding: 14px 16px 8px; }
 .event-filter-search-wrap label {

@@ -3,6 +3,18 @@
 
 ## Event filters
 
+The fork keeps neutral button defaults in `view/local_styles.erb`, separate from
+upstream Tacit's submit-button theme. Check actual foreground/background contrast
+for single and Multi series filters, and selected/unselected Find targets after
+upstream CSS changes. `test_web_controls.cjs` exercises these controls and confirms
+that turning plan mode off hides its message without discarding marks or routes.
+Run with the same Playwright environment used by [GPT browser checks](gpt-plugin.md).
+
+`test_recent_seeds_client.cjs` checks that submitting a new seed with client compute
+updates recent-seed storage and the visible panel, and survives reload. The client
+navigation emits `catsroll:track-seed-change`; the existing history helper owns
+validation and persistence. It does not change GPT's temporary, isolated storage.
+
 * With Banner at its default, the local series filter shows all dated events
   from any selected series, without pagination.
 * Without a local series filter, the default Banner keeps the ordinary event
