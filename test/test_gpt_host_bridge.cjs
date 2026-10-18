@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 function make(embedded=true,options={}){
  const listeners=new Map(),sent=[],errors=[],frames=new Map(),timers=new Map();
  let ready=0,frameId=0,disconnected=0,timerId=0,now=0;
- const root={AbortController,setTimeout:(fn,ms)=>{const id=++timerId;timers.set(id,{fn,due:now+ms});return id;},
+ const root={AbortController,URL,setTimeout:(fn,ms)=>{const id=++timerId;timers.set(id,{fn,due:now+ms});return id;},
   clearTimeout:id=>timers.delete(id),
   requestAnimationFrame:fn=>{frames.set(++frameId,fn);return frameId;},cancelAnimationFrame:id=>frames.delete(id),
   ResizeObserver:class{constructor(fn){this.callback=fn;}observe(){}disconnect(){disconnected++;}},
@@ -19,6 +19,43 @@ function make(embedded=true,options={}){
  return {root,sent,errors,bridge,reply,listeners,frames,timers,advance,listenerCount,disconnected:()=>disconnected,ready:()=>ready};
 }
 (async()=>{
+ const preinitEvents=[],preinitHost=make(true,{onDiagnostic:(...args)=>preinitEvents.push(['diagnostic',...args]),
+  onNotification:message=>preinitEvents.push(['notification',message]),onReady:()=>preinitEvents.push(['ready'])});
+ preinitHost.reply({id:'before-connect',method:'ping',params:{}},'https://early.test');
+ assert.equal(preinitHost.sent.length,0,'messages before connect have no listener');
+ preinitHost.bridge.connect();
+ const preinitId=preinitHost.sent[0].m.id;
+ const preinitSent=preinitHost.sent.length;
+ for(const ignored of [
+  [{id:'null-origin',method:'ping',params:{}},'null',preinitHost.root.parent],
+  [{id:'empty-origin',method:'ping',params:{}},'',preinitHost.root.parent],
+  [{id:'non-http-origin',method:'ping',params:{}},'file://host.test',preinitHost.root.parent],
+  [{id:'wrong-source',method:'ping',params:{}},'https://host.test',{}],
+  [{id:'bad-params',method:'ping',params:null},'https://host.test',preinitHost.root.parent],
+  [{id:1.5,method:'ping',params:{}},'https://host.test',preinitHost.root.parent],
+  [{method:'ping',params:{}},'https://host.test',preinitHost.root.parent],
+  [{id:'bad-envelope',method:'ping',params:{},result:{}},'https://host.test',preinitHost.root.parent],
+  [{id:'business',method:'tools/call',params:{name:'catsroll_result'}},'https://host.test',preinitHost.root.parent]
+ ])preinitHost.reply(...ignored);
+ assert.equal(preinitHost.sent.length,preinitSent,'invalid-origin, malformed and business requests are ignored before initialize');
+ assert.deepEqual(preinitEvents,[['diagnostic','bridge-start'],['diagnostic','initialize-sent']],
+  'ignored pre-initialize messages invoke no notification or ready handlers');
+ preinitHost.reply({id:preinitId,method:'ping',params:{}},'https://ping-only.test');
+ preinitHost.reply({id:'ping-string',method:'ping'},'http://ping-only.test');
+ assert.deepEqual(preinitHost.sent.slice(preinitSent).map(item=>({m:JSON.parse(JSON.stringify(item.m)),origin:item.origin})),[
+  {m:{jsonrpc:'2.0',id:preinitId,result:{}},origin:'https://ping-only.test'},
+  {m:{jsonrpc:'2.0',id:'ping-string',result:{}},origin:'http://ping-only.test'}
+ ],'pre-initialize ping supports integer collision and string IDs, replying only to each event origin');
+ assert.equal(preinitHost.bridge.phase(),'connecting');assert.equal(preinitHost.bridge.isConnected(),false);
+ assert.equal(preinitHost.timers.size,1,'pre-initialize ping leaves the initialize request pending');
+ assert.equal(preinitEvents.length,2,'pre-initialize ping does not announce initialization');
+ preinitHost.reply({id:preinitId,result:{}},'https://host.test');
+ assert.equal(preinitHost.bridge.phase(),'ready','initialize response from a different valid origin pins normally');
+ assert.equal(preinitHost.ready(),1);
+ assert.equal(preinitHost.sent.at(-1).origin,'https://host.test');
+ assert.equal(preinitHost.sent.at(-1).m.method,'ui/notifications/initialized');
+ preinitHost.bridge.close();
+
  const stages=[];
  const host=make(true,{onDiagnostic:(...args)=>stages.push(args)});host.bridge.connect();
  assert.deepEqual(stages,[['bridge-start'],['initialize-sent']]);
@@ -160,6 +197,9 @@ function make(embedded=true,options={}){
  assert.equal(timeoutHost.bridge.phase(),'failed');
  assert.equal(connectionStates.at(-1)[1],'error');assert.equal(timeoutHost.timers.size,0);
  assert.equal(timeoutHost.listenerCount('message'),0,'failed attempt removes its message listener');
+ const afterTimeout=timeoutHost.sent.length;
+ timeoutHost.reply({id:'late-ping',method:'ping',params:{}},'https://late.test');
+ assert.equal(timeoutHost.sent.length,afterTimeout,'failed attempt does not reply to pings');
  timeoutHost.bridge.connect();
  const freshInit=timeoutHost.sent.at(-1).m;
  assert.ok(freshInit.id>oldInit.id,'retry keeps initialization IDs monotonic');
@@ -175,6 +215,15 @@ function make(embedded=true,options={}){
  assert.equal(timeoutHost.ready(),1,'explicit retry delivers onReady only once');
  assert.equal(timeoutHost.listenerCount('message'),1,'retry does not duplicate message listeners');
  timeoutHost.bridge.close();
+
+ const closedWhileConnecting=make(true);
+ closedWhileConnecting.bridge.connect();
+ const closedInitId=closedWhileConnecting.sent[0].m.id;
+ closedWhileConnecting.bridge.close();
+ const afterClose=closedWhileConnecting.sent.length;
+ closedWhileConnecting.reply({id:closedInitId,method:'ping',params:{}},'https://late.test');
+ assert.equal(closedWhileConnecting.sent.length,afterClose,'closed bridge does not reply to late pre-initialize pings');
+ assert.equal(closedWhileConnecting.listenerCount('message'),0);
 
  const rpcFailure=make(true,{onConnection:(label,state)=>connectionStates.push([label,state])});
  rpcFailure.bridge.connect();

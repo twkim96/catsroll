@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="ko" data-catsroll-build="{{BUILD}}">
+<html lang="ko" data-catsroll-build="{{BUILD}}" data-catsroll-resource-id="{{RESOURCE_ID}}">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Catsroll · 연결 진단</title><script>{{DIAGNOSTICS}}</script>
 <style>body{font:16px system-ui;margin:20px;color:#222;background:white}button{padding:8px 12px}pre{white-space:pre-wrap;font:12px monospace}</style></head>
 <body><h1>Catsroll 연결 진단</h1><p>목록 로딩과 계산 없이 호스트 연결만 확인합니다.</p>
+<p>리소스 ID: <code>{{RESOURCE_ID}}</code> · 캐시된 HTML의 ID는 새 요청을 뜻하지 않습니다.</p>
 <p id="connection" role="status">연결 확인 중</p><button id="retry" hidden>연결 다시 시도</button><pre id="diagnostics"></pre>
 <script>{{BRIDGE}}</script><script>
 (function(){
  var status=document.getElementById('connection'),retry=document.getElementById('retry');
- function report(){document.getElementById('diagnostics').textContent=JSON.stringify(CatsrollDiagnostics(),null,2);}
+ function report(){document.getElementById('diagnostics').textContent=JSON.stringify(Object.assign({},CatsrollDiagnostics(),{resourceId:document.documentElement.dataset.catsrollResourceId}),null,2);}
  var bridge=CatsrollHostBridge({onDiagnostic:function(stage){CatsrollRecordDiagnostic(stage);report();},
   onConnection:function(message,kind){status.textContent=message;retry.hidden=kind!=='error';},
   onError:function(message){status.textContent=message;},

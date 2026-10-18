@@ -14,6 +14,7 @@ module BattleCatsRolls
       @gpt_mcp = GptMcp.new
       @claude_mcp = GptMcp.new(ui_host: :claude)
       @gpt_probe = GptProbe.new
+      @gpt_sdk_probe = GptSdkProbe.new
       @gpt_public_pages = GptPublicPages.new
     end
 
@@ -29,6 +30,8 @@ module BattleCatsRolls
         @claude_mcp.call(env)
       when '/mcp/probe', '/gpt/probe'
         @gpt_probe.call(env)
+      when '/mcp/probe/sdk', '/gpt/probe/sdk'
+        @gpt_sdk_probe.call(env)
       when '/track.json', '/events.json'
         @track_api.call(env)
       when '/sw.js'

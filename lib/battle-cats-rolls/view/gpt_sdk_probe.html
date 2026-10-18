@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko" data-catsroll-build="{{BUILD}}" data-catsroll-resource-id="{{RESOURCE_ID}}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Catsroll · SDK 연결 진단</title>
+<script>
+(function(){
+  'use strict';
+  var started=performance.now(), steps=[], root=document.documentElement;
+  var info={buildId:root.dataset.catsrollBuild,resourceId:root.dataset.catsrollResourceId,
+    diagnosticId:crypto.randomUUID(),variant:'sdk',steps:steps};
+  window.CatsrollSdkDiagnostics=function(){return JSON.parse(JSON.stringify(info));};
+  window.CatsrollSdkRecordDiagnostic=function(stage){
+    if(steps.length>=40)steps.shift();
+    steps.push({stage:stage,elapsedMs:Math.round(performance.now()-started)});
+    var out=document.getElementById('diagnostics');if(out)out.textContent=JSON.stringify(info,null,2);
+  };
+  addEventListener('error',function(){CatsrollSdkRecordDiagnostic('script-error');});
+  addEventListener('unhandledrejection',function(){CatsrollSdkRecordDiagnostic('unhandled-rejection');});
+  addEventListener('securitypolicyviolation',function(){CatsrollSdkRecordDiagnostic('csp-violation');});
+  CatsrollSdkRecordDiagnostic('html-start');
+})();
+</script>
+<style>body{font:16px system-ui;margin:20px;color:#222;background:white}pre{white-space:pre-wrap;font:12px monospace}</style></head>
+<body><h1>Catsroll SDK 연결 진단</h1><p>공식 MCP Apps SDK · 목록과 계산 실행 없음</p>
+<p id="connection" role="status">SDK 연결 확인 중</p>
+<p>리소스 ID는 HTML 응답별로 생성됩니다. 캐시된 HTML의 ID는 새 요청을 뜻하지 않습니다.</p>
+<pre id="diagnostics"></pre><script>{{SDK}}</script></body></html>

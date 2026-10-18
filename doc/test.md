@@ -17,6 +17,16 @@ existing history helper owns validation and persistence. Multi coordinate moves,
 Apply, recent-seed links and reload are covered. Temporary shared Multi and GPT
 sessions do not write personal history.
 
+`test_track_client_race.cjs` delays actual pool delivery while using the shared
+engine/renderer. It reverses two request completions and checks late errors,
+missing pools, input edits, seedless navigation, region lists, popstate and
+pagehide/BFCache. A new request removes the old clickable table; only its current
+generation can render or update status. Editing during a region-list fetch
+cancels that selection and restores the matching prior region/menu. BFCache
+retains unsubmitted form edits without displaying an old result as current.
+Run with `CATSROLL_TEST_URL` pointing at the local web server and the same
+Playwright environment as the other browser checks.
+
 * With Banner at its default, the local series filter shows all dated events
   from any selected series, without pagination.
 * Without a local series filter, the default Banner keeps the ordinary event

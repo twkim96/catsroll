@@ -366,9 +366,27 @@ initialize-sent/initialize-ready → bootstrap-start/ready → ui-mount-start/ui
 추가하지 않으며 임시 개발 연결로만 따로 사용할 수 있다. `catsroll_probe` 하나와 작은 UI만 제공하고
 배열/Find/Seek/WASM·카탈로그 요청·결과 저장 도구는 없다. `/gpt/probe`는 독립 미리보기다.
 정상 앱과 동일한 HostBridge를 사용하므로 크기·카탈로그·장착 비용 비교용이며 SDK 구현 간 비교는 아니다.
-두 UI와 일반 텍스트 대조를 같은 시점에 확인해야 한다. 리소스를 호스트가 캐시했으면 새 resources/read가
-없어도 정상일 수 있다. 현재 진단은 호스트/프록시 요청 자체의 서버 기록을 제공하지 않으므로,
-HTML이 실행되기 전의 실패를 이 정보만으로 특정하지 않는다. 실사용 비교 전에는 최초 표시 해결로 취급하지 않는다.
+`/mcp/probe/sdk`의 `catsroll_probe_sdk`는 공식 MCP Apps SDK의 `App.connect()`를 사용하는 독립 대조다.
+`/gpt/probe/sdk`에서 미리 볼 수 있다. SDK와 전이 의존성은 버전·무결성을 고정해 번들로 포함하며
+실행 중 CDN은 필요 없다. 출처·라이선스·재생성 방법은
+[SDK 진단 번들](../lib/battle-cats-rolls/vendor/probe-sdk/README.md)에 유지한다.
+정상 앱의 브리지·도구 목록·계산·공유를 SDK로 교체한 것은 아니다.
+
+두 진단 HTML을 생성할 때마다 임의 resourceId를 넣고 stderr에 resourceId/probeVariant/build/UTC time만 기록한다.
+화면의 resourceId를 이 생성 기록과 비교하고, 실행마다 달라지는 diagnosticId의 html-start/연결 단계를 확인한다.
+시드·본문·결과·계정·요청 헤더는 기록하지 않는다. 생성 기록은 호스트 수신·브라우저 전달 증명이 아니며,
+호스트가 HTML을 캐시하면 같은 resourceId로 새 diagnosticId가 나타나고 새 생성 기록은 없을 수 있다.
+SDK·수동 UI와 일반 텍스트를 같은 시점에 비교한다. 공통 서버·리소스 메타데이터 경로는 여전히 공유하므로,
+독립 SDK도 실패한다는 사실만으로 호스트 원인을 확정하지 않는다.
+
+초기화 전 부모 창의 유효한 HTTP(S) origin에서 온 ping에도 빈 응답을 보낸다. 이 응답은 origin 고정,
+연결 완료 또는 대기 중 초기화 요청 완료로 취급하지 않는다. 정상 초기화 응답으로 origin을 고정한 뒤에는
+기존 출처 검사를 유지한다. 초기화 이전 ping이 실제 첫 카드 실패의 원인이었다는 증거는 없다.
+
+`b5085527` 후 로컬 검사는 SDK 연결 성공/거부/시간 초과/캐시 재사용, 양쪽 probe의 리소스 생성 기록,
+MCP 및 동결된 공개 계약, 기존 GPT 300행 공유·복구 왕복을 통과했다. 공유 복구 검사의 첫 실행은
+입력 준비 응답 대기에서 시간 초과했고, 같은 입력의 준비 응답을 확인한 뒤 한 차례 재실행은 전체 통과했다.
+이 로컬 재실행을 실사용 첫 카드 문제 해결이나 무료 계정 수용으로 취급하지 않는다.
 
 2026-10-18 `7e8b3883` 배포 뒤 같은 GPT Instant 계정에서 최소 UI·전체 UI·일반 텍스트를 대조했다.
 

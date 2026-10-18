@@ -23,6 +23,9 @@ const context = {
     }
   },
   enabled() { return clientEnabled; },
+  renderGeneration: 0,
+  discardTracks() {},
+  cancelPendingRegion() {},
   originalRoll(element) { originalElement = element; },
   handleRegionChange(element) { regionChange = element; },
   navigate(query) { navigated = query; },
