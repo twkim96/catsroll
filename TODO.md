@@ -48,7 +48,6 @@
 
 ## Help pages
 
-* Add a table of contents to the help page
 * Reword `lib/battle-cats-rolls/view/table_notes.erb` accordingly
 * Refactor `lib/battle-cats-rolls/help.rb`. It's a mess! Need DSL.
 * A workflow guide for advanced usages with the golden cat CPU icon

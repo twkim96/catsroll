@@ -55,6 +55,89 @@ describe BattleCatsRolls::View do
       stub(cat).img_src(0, 'en'){ '/avatar.png' }
     end
 
+    describe '.generate_list' do
+      def generate *sequence
+        BattleCatsRolls::View.generate_list(
+          sequence.map.with_index{ [_1.to_s, ('A'.ord + _2).chr] }
+        )
+      end
+
+      would 'return an empty list for empty input' do
+        expect(generate).eq []
+      end
+
+      would 'render a flat list with 1, 1' do
+        list = generate(1, 1)
+
+        expect(list).eq <<~HTML.lines.map(&:chomp)
+          <ol><li><a href="#a">A</a>
+          </li><li><a href="#b">B</a>
+          </li></ol>
+        HTML
+      end
+
+      would 'render a nested list with 1, 2, 3, 2, 1' do
+        list = generate(1, 2, 3, 2, 1)
+
+        expect(list).eq <<~HTML.lines.map(&:chomp)
+          <ol><li><a href="#a">A</a>
+          <ol><li><a href="#b">B</a>
+          <ol><li><a href="#c">C</a>
+          </li></ol></li><li><a href="#d">D</a>
+          </li></ol></li><li><a href="#e">E</a>
+          </li></ol>
+        HTML
+      end
+
+      would 'wrap with a missing leading header with 2, 2' do
+        list = generate(2, 2)
+
+        expect(list).eq <<~HTML.lines.map(&:chomp)
+          <ol><li>&nbsp;
+          <ol><li><a href="#a">A</a>
+          </li><li><a href="#b">B</a>
+          </li></ol></li></ol>
+        HTML
+      end
+
+      would 'fill a missing leading header with 2, 1' do
+        list = generate(2, 1)
+
+        expect(list).eq <<~HTML.lines.map(&:chomp)
+          <ol><li>&nbsp;
+          <ol><li><a href="#a">A</a>
+          </li></ol></li><li><a href="#b">B</a>
+          </li></ol>
+        HTML
+      end
+
+      would 'fill a skipped header with 1, 3, 2, 2' do
+        list = generate(1, 3, 2, 2)
+
+        expect(list).eq <<~HTML.lines.map(&:chomp)
+          <ol><li><a href="#a">A</a>
+          <ol><li>&nbsp;
+          <ol><li><a href="#b">B</a>
+          </li></ol></li><li><a href="#c">C</a>
+          </li><li><a href="#d">D</a>
+          </li></ol></li></ol>
+        HTML
+      end
+
+      would 'fill 2 missing headers with 3, 1, 2' do
+        list = generate(3, 1, 2)
+
+        expect(list).eq <<~HTML.lines.map(&:chomp)
+          <ol><li>&nbsp;
+          <ol><li>&nbsp;
+          <ol><li><a href="#a">A</a>
+          </li></ol></li></ol></li><li><a href="#b">B</a>
+          <ol><li><a href="#c">C</a>
+          </li></ol></li></ol>
+        HTML
+      end
+    end
+
     describe '#link_to_roll' do
       would 'render correct avatar' do
         html = view.__send__(:link_to_roll, cat, image: true, text: false)
