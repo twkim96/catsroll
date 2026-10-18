@@ -41,6 +41,7 @@
 
 * 초심자 안내 `catsroll_guide`와 추천 `catsroll_recommend`를 실제 ChatGPT의 모호한 질문과 무료 계정에서 확인한다.
   로컬 검색과 Luna 문서 검토는 실제 무료 계정 수용을 대신하지 않는다.
+  사용자 FAQ 초안의 검증된 질문을 기존 안내에 합쳤다. 새 티켓/육성 상담의 문서 검색과 실제 모델 답변 수용은 구분한다.
 
 * [GPT 연동](doc/gpt-plugin.md)의 첫 앱 표시 실패·간헐적인 설명 응답 오류를 해결하고,
   무료 웹 계정 수용을 확인한다. 실제 ChatGPT Multi/Find/WASM 실행은 확인했으며

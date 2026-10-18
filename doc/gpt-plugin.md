@@ -237,6 +237,9 @@ Multi로 돌아올 때의 배너·시뮬레이션 설정은 보존한다. 관측
 목차는 `catsroll://guide/index` MCP resource로도 제공한다. 문서는 예측값을 생성하지 않는다.
 서버 배너/풀과 앱의 공유 결과를 최종 기준으로 사용한다. [출처 선별·검증](gpt-knowledge-sources.md)을 참고한다.
 검색 가중치의 일반 질문 검사와 실제 ChatGPT 도구 선택/무료 계정 수용은 다른 검증이다.
+사용자 FAQ의 질문은 티켓/지역·배너·열 이동·자원·캐릭터/육성의 기존 주제에 합쳤다.
+초안의 답변을 그대로 학습하지 않으며, 질문 본문 확인·게임 데이터 대조·미검증 댓글의 구분은
+[FAQ 검토](gpt-knowledge-sources.md#2026-10-18-사용자-faq-초안-검토)에 유지한다.
 
 “뭐 뽑을까”·“빨적이 부족해”는 [추천 안내](gpt-knowledge/recommendations.md)에 따라
 `catsroll_recommend`로 후보를 고른다. 외부 티어 평가는 `tier-picks.json`에 ID/평가 형태/투자
