@@ -6,6 +6,8 @@ require 'battle-cats-rolls/route'
 require 'battle-cats-rolls/request'
 
 describe BattleCatsRolls::View do
+  BattleCatsRolls::Route.reload_balls
+
   def view
     @view ||= BattleCatsRolls::View.new(route)
   end
