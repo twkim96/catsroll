@@ -81,6 +81,20 @@ describe 'Temporary client-computed result snapshots' do
     expect(invalid? { store.lookup({'result_id' => id, 'view' => 'array', 'banner' => 8}) }).eq true
   end
 
+  would 'retain optional rarity metadata for existing-array reasoning and reject unbound metadata' do
+    data = snapshot(rows: 2)
+    data['banners'][0]['rarities'] = {'38' => 2, '870' => 4}
+    data['banners'][0]['rows'][1][0][4] = [870, '2AG', '12B']
+    store = BattleCatsRolls::GptResults.new
+    id = store.publish(data)['result_id']
+    expect(store.lookup({'result_id' => id, 'view' => 'array', 'banner' => 0})['rarities']).eq({'38' => 2, '870' => 4})
+    expect(store.lookup({'result_id' => id, 'view' => 'array', 'banner' => 0, 'limit' => 1})['rarities']).eq({'38' => 2})
+    data['banners'][0]['rarities']['870'] = 'uber'
+    expect(invalid? { store.publish(data) }).eq true
+    data['banners'][0]['rarities'] = {'999' => 4}
+    expect(invalid? { store.publish(data) }).eq true
+  end
+
   would 'page all detailed actions including the final acquisition without converting partial to success' do
     data = snapshot
     data['input']['findEnabled'] = true

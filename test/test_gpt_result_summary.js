@@ -7,6 +7,7 @@ function cat(id, position, next, options) {
   options = options || {};
   return {
     id,
+    rarity: options.rarity,
     number: () => position,
     pickName: () => options.name || `Cat ${id}`,
     next: next ? {number: () => next} : null,
@@ -230,3 +231,24 @@ assert.match(boundedCaptured, /생략/);
 assert.equal(JSON.stringify(oversizedSnapshot), beforeOversized);
 assert(summary.build({track: {}, outputs: [], find: {status:'partial', actions: oversizedSnapshot.find.actions}, plan: oversizedSnapshot.plan}).length <= 60000);
 console.log('oversized captured route: hard transport cap, state/omissions retained, full JSON unchanged');
+
+// Follow-up reasoning receives rarity for base, R, G, RG and conditional-only cats.
+const reasoningInput = {track: {seed: 42, count: 100, rows: [{lang: 'kr', event: 'fixture'}]},
+  findEnabled: false, outputs: [{label: 'Fixture', row: {lang: 'kr'}, out: {cats: [[
+    cat(1, '1A', '2A', {rarity: 2, rerolled: cat(2, '1AR', '2B', {rarity: 3,
+      guaranteed: cat(4, '1ARG', '12A', {rarity: 4})}),
+      guaranteed: cat(5, '1AG', '12B', {rarity: 5})}),
+    cat(6, '1B', '2B', {rarity: 4})]]}, alternatives: {'1A': [{kind: 'regular',
+      pull: {id: 7, name: 'Conditional uber', rarity: 4, resultLabel: '1AR', next: '2B'}}]}}]};
+const reasoningCapture = summary.capture(reasoningInput);
+assert.deepEqual(reasoningCapture.banners[0].rarities, {'1': 2, '2': 3, '4': 4, '5': 5, '6': 4, '7': 4});
+const reasoningText = summary.buildCaptured(reasoningCapture, 56000);
+const reasoningBanner = outputLines(reasoningText, '배너 배열: ')[0];
+assert.deepEqual(reasoningBanner.rarities, reasoningCapture.banners[0].rarities);
+assert.equal(reasoningBanner.rows[0][0][3][3][0], 4);
+assert.match(reasoningText, /4 울슈레, 5 레레/);
+assert.match(reasoningText, /prerequisite/);
+const legacyCapture = JSON.parse(JSON.stringify(reasoningCapture));
+delete legacyCapture.banners[0].rarities;
+assert.doesNotThrow(() => summary.buildCaptured(legacyCapture));
+console.log('follow-up reasoning: base/R/G/RG/conditional rarities and legacy capture supported');

@@ -38,6 +38,14 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(body.dig('result', 'protocolVersion')).eq '2025-06-18'
     expect(body.dig('result', 'capabilities', 'tools')).eq({})
     expect(body.dig('result', 'instructions').include?('does NOT compute')).eq true
+    expect(body.dig('result', 'instructions').include?('For a shared result, use information already present in context first')).eq true
+    expect(body.dig('result', 'instructions').include?('call catsroll_result only for missing or omitted details')).eq true
+    expect(body.dig('result', 'instructions').include?('Do not search banners unless the user requests a new banner')).eq true
+    claude = rpc(Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: :claude)),
+      'initialize', {}, path: '/mcp/claude').last.dig('result', 'instructions')
+    expect(claude.include?('For a shared result, use information already present in context first')).eq true
+    expect(claude.include?('call catsroll_result only for missing or omitted details')).eq true
+    expect(claude.include?('Do not search banners unless the user requests a new banner')).eq true
     _, body = rpc(client, 'ping', {}, {'HTTP_MCP_PROTOCOL_VERSION' => 'bad'})
     expect(body['error']).eq 'Unsupported MCP protocol version'
     previous = ENV['CATSROLL_GPT_ENABLED']
@@ -72,6 +80,80 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(selected.fetch('series_name')).eq expected_name
     expect(selected.fetch('group')).eq 'past'
     expect(call_tool(client, 'catsroll_events', {lang: 'kr', catalog: 'true'})['isError']).eq true
+  end
+
+  would 'filter cats by actual event pool IDs and paginate every rarity match' do
+    cat_tool = rpc(client, 'tools/list').last.dig('result', 'tools').find { |tool| tool['name'] == 'catsroll_cats' }
+    properties = cat_tool.dig('inputSchema', 'properties')
+    expect(properties.key?('event') && properties.key?('rarity')).eq true
+    expect(cat_tool.dig('inputSchema', 'properties', 'rarity', 'minimum')).eq 2
+    expect(cat_tool.dig('inputSchema', 'properties', 'rarity', 'maximum')).eq 5
+    ball = BattleCatsRolls::Route.ball_kr
+    event = '2026-02-13_1042'
+    pool_ids = BattleCatsRolls::TrackApi.compact_find_pool_data(ball, event).dig(:slots, 4)
+    expected_ids = ball.cats.filter_map do |id, info|
+      id if pool_ids.include?(id) && info['rarity'] == 4
+    end
+    args = {lang: 'kr', event: event, rarity: 4, limit: 50}
+    first = call_tool(client, 'catsroll_cats', args).fetch('structuredContent')
+    expect(first.fetch('nextOffset')).eq 50
+    actual = first.fetch('cats')
+    offset = first.fetch('nextOffset')
+    while offset
+      page = call_tool(client, 'catsroll_cats', args.merge(offset: offset)).fetch('structuredContent')
+      actual.concat(page.fetch('cats'))
+      offset = page.fetch('nextOffset')
+    end
+    expect(first.fetch('total')).eq expected_ids.size
+    expect(actual.map { |cat| cat.fetch('id') }).eq expected_ids
+    expect(actual.all? { |cat| cat.fetch('rarity') == 4 && pool_ids.include?(cat.fetch('id')) }).eq true
+    expect(call_tool(client, 'catsroll_cats', {event: 'missing'})['isError']).eq true
+    [1, 6].each do |rarity|
+      expect(call_tool(client, 'catsroll_cats', {rarity: rarity})['isError']).eq true
+    end
+  end
+
+  would 'prepare the complete event uber roster with unchanged inputs for both MCP hosts' do
+    event = '2019-01-23_348'
+    ball = BattleCatsRolls::Route.ball_kr
+    pool = BattleCatsRolls::TrackApi.compact_find_pool_data(ball, event)
+    event_uber_ids = Array(pool.dig(:slots, 4))
+    expected_ids = ball.cats.filter_map do |id, info|
+      id if event_uber_ids.include?(id) && info['rarity'] == 4
+    end
+    cats = call_tool(client, 'catsroll_cats', {lang: 'kr', event: event, rarity: 4, limit: 50}).
+      fetch('structuredContent')
+    expect(cats.fetch('nextOffset')).eq nil
+    expect(cats.fetch('cats').map { |cat| cat.fetch('id') }).eq expected_ids
+    targets = cats.fetch('cats').map do |cat|
+      {cat_id: cat.fetch('id'), cat_name: cat.fetch('name')}
+    end
+    expect(targets.size <= 30).eq true
+
+    hosts = [[client, '/mcp'],
+      [Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: :claude)), '/mcp/claude']]
+    hosts.each do |host_client, path|
+      base = {mode: 'multi', seed: 42, rows: [{lang: 'kr', event: event}],
+        targets: targets, findEnabled: true, planMode: true, planName: '풀 울슈레 확인',
+        optimization: 'balance', maxGuaranteed: 1, maxPlatinum: 1, maxLegendTicket: 0}
+      [nil, [BattleCatsRolls::TrackMaxCount, 300].min].each do |count|
+        arguments = count ? base.merge(count: count) : base
+        prepared = rpc(host_client, 'tools/call',
+          {name: 'catsroll_prepare', arguments: arguments}, path: path).last.fetch('result')
+        expect(prepared.fetch('isError', false)).eq false
+        request = prepared.dig('structuredContent', 'request')
+        expect(request.fetch('seed')).eq 42
+        expect(request.fetch('count')).eq(count || 100)
+        expect(request.fetch('targets').map { |target| target.fetch('cat_id') }).eq expected_ids
+        expect(request.fetch('targets').map { |target| target.fetch('cat_name') }).eq cats.fetch('cats').map { |cat| cat.fetch('name') }
+        expect(request.fetch('maxGuaranteed')).eq 1
+        expect(request.fetch('maxPlatinum')).eq 1
+        expect(request.fetch('maxLegendTicket')).eq 0
+        expect(request.fetch('findEnabled')).eq true
+        expect(request.fetch('planMode')).eq true
+        expect(request.fetch('planName')).eq '풀 울슈레 확인'
+      end
+    end
   end
 
   would 'publish only explicit computed snapshots and query late rows without recalculation' do
@@ -188,7 +270,7 @@ describe 'Catsroll MCP device-computation adapter' do
     prepared = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
       rows: [{lang: 'kr', event: named.first.fetch('event')}]})
     expect(prepared.fetch('isError', false)).eq false
-    expect(prepared.dig('structuredContent', 'request', 'count')).eq 300
+    expect(prepared.dig('structuredContent', 'request', 'count')).eq 100
     expect(prepared.dig('structuredContent', 'request', 'findEnabled')).eq false
   end
 
@@ -311,9 +393,14 @@ describe 'Catsroll MCP device-computation adapter' do
 
   would 'validate real calculation inputs instead of silently changing conditions' do
     base = {mode: 'multi', seed: 42, rows: [{lang: 'kr', event: '2026-02-13_1042'}]}
-    expect(call_tool(client, 'catsroll_prepare', base).fetch('structuredContent').fetch('request').fetch('count')).eq 300
+    expect(call_tool(client, 'catsroll_prepare', base).fetch('structuredContent').fetch('request').fetch('count')).eq 100
     expect(call_tool(client, 'catsroll_prepare', base.merge(count: 100)).fetch('structuredContent').fetch('request').fetch('count')).eq 100
-    [{seed: 0}, {seed: 2**32}, {count: 1000}, {seed: '42'},
+    max_count = [BattleCatsRolls::TrackMaxCount, 300].min
+    expect(call_tool(client, 'catsroll_prepare', base.merge(count: max_count)).fetch('structuredContent').fetch('request').fetch('count')).eq max_count
+    listed = rpc(client, 'tools/list').last.dig('result', 'tools').find { |tool| tool['name'] == 'catsroll_prepare' }
+    expect(listed.dig('inputSchema', 'properties', 'count', 'default')).eq 100
+    expect(listed.dig('inputSchema', 'properties', 'count', 'maximum')).eq max_count
+    [{seed: 0}, {seed: 2**32}, {count: max_count + 1}, {seed: '42'},
       {rows: [{lang: 'kr', event: 'missing'}]}, {scheduleAware: 'false'},
       {mode: 'find', targets: []}, {rows: []}, {custom: 1}].each do |change|
       expect(call_tool(client, 'catsroll_prepare', base.merge(change))['isError']).eq true
@@ -348,7 +435,8 @@ describe 'Catsroll MCP device-computation adapter' do
     bootstrap = call_tool(client, 'catsroll_multi_data', {section: 'bootstrap'})
     catalog = bootstrap.fetch('_meta').fetch('catsroll/multi')
     expect(catalog.fetch('initial').fetch('seed')).eq 0
-    expect(catalog.fetch('initial').fetch('count')).eq 300
+    expect(catalog.fetch('initial').fetch('count')).eq 100
+    expect(catalog.fetch('limits').fetch('count')).eq [BattleCatsRolls::TrackMaxCount, 300].min
     expect(catalog.fetch('find_cats').any? { |cat| cat['id'] == 545 && cat['name'] != '545' }).eq true
     expect(bootstrap.fetch('structuredContent').key?('regions')).eq false
     hidden = rpc(client, 'tools/list').last.dig('result', 'tools').find { |tool| tool['name'] == 'catsroll_multi_data' }

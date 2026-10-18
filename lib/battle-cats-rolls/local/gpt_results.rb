@@ -62,7 +62,7 @@ module BattleCatsRolls
       maxLegendTicket targets].freeze
     BANNER_KEYS = %w[banner lang rowsTotal rowsIncluded rowsOmitted
       conditionalTotal conditionalIncluded conditionalOmitted names rows
-      conditional].freeze
+      conditional rarities].freeze
     PLAN_KEYS = %w[enabled name marks route cats progress].freeze
     MARK_KEYS = %w[column position kind variant].freeze
     CAT_KEYS = %w[id name rarity positions].freeze
@@ -564,7 +564,7 @@ module BattleCatsRolls
     def validate_banners!(banners)
       array!(banners, 'banners', max: MAX_BANNERS)
       banners.each do |banner|
-        exact_keys!(banner, BANNER_KEYS, required: BANNER_KEYS)
+        exact_keys!(banner, BANNER_KEYS, required: BANNER_KEYS - %w[rarities])
         string!(banner['banner'], 'banner name', max: 300)
         string!(banner['lang'], 'banner lang', max: 12)
         total = integer_value!(banner['rowsTotal'], 0, MAX_ROWS, 'rowsTotal')
@@ -588,6 +588,13 @@ module BattleCatsRolls
         banner['names'].each do |id, name|
           raise InvalidInput, 'Name keys must be integer IDs' unless /\A-?\d{1,8}\z/.match?(id)
           string!(name, 'character name', max: 300)
+        end
+        if banner.key?('rarities')
+          hash!(banner['rarities'], 'banner rarities', max: 100_000)
+          banner['rarities'].each do |id, rarity|
+            raise InvalidInput, 'Rarity keys must name known character IDs' unless banner['names'].key?(id)
+            integer_value!(rarity, 0, 10, 'character rarity')
+          end
         end
         conditionals.each { |item| validate_conditional!(item) }
       end
@@ -838,6 +845,18 @@ module BattleCatsRolls
         'conditionalOmitted' => [branches.length - conditional_offset - conditional_page.length, 0].max,
         'conditional' => conditional_page.map { |item| expand_conditional(item, banner['names']) }
       }
+      if banner.key?('rarities')
+        page_ids = {}
+        collect_ids = lambda do |cell|
+          next unless cell
+          page_ids[cell['id'].to_s] = true
+          collect_ids.call(cell['reroll'])
+          collect_ids.call(cell['guaranteed'])
+        end
+        selected.each { |row| collect_ids.call(row['A']); collect_ids.call(row['B']) }
+        conditional_page.each { |item| page_ids[item[1][2].to_s] = true }
+        result['rarities'] = banner['rarities'].select { |id, _rarity| page_ids.key?(id) }
+      end
       result['nextStart'] = next_start if next_start <= rows.length
       if conditional_offset + conditional_page.length < branches.length
         result['nextConditionalOffset'] = conditional_offset + conditional_page.length

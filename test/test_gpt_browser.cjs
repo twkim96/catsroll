@@ -212,7 +212,7 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
     await page.waitForFunction(() => messages.some(item => item.method === "ui/message"));
     assert.equal(await page.evaluate(() => messages.find(item => item.method === "ui/message").params.content[0].text), claudeShare,
       "Claude can share computed data when hidden context fails");
-    // Baseline 300: real engine output, 600 cells, complete route, both host transports.
+    // Default 100 and explicit 300: arrays arrive in context on both hosts.
     async function resultRpc(endpoint, name, args) {
       const response = await fetch(base + endpoint, {method: "POST", headers: {"Content-Type": "application/json"},
         body: JSON.stringify({jsonrpc: "2.0", id: 1, method: "tools/call", params: {name, arguments: args}})});
@@ -221,16 +221,20 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
       assert(!envelope.result.isError, JSON.stringify(envelope.result));
       return envelope.result.structuredContent;
     }
-    for (const hostPath of ["", "?claude=1"]) {
+    for (const [hostPath, count] of [["", 100], ["?claude=1", 100], ["", 300], ["?claude=1", 300]]) {
       await page.goto(base + "/gpt-test-host" + hostPath);
       await page.waitForFunction(() => window.ready);
       await page.evaluate(() => { rejectResultSharing=false; });
-      await page.locator("#arguments").fill(JSON.stringify({mode: "multi", seed: 42,
+      await page.locator("#arguments").fill(JSON.stringify({mode: "multi", seed: 42, ...(count === 300 ? {count} : {}),
         rows: [{lang: "kr", event: "2019-01-23_348", forceGuaranteed: 11}],
         findEnabled: true, targets: [{cat_id: 306, allow_ticket: true}],
         maxGuaranteed: 1, maxPlatinum: 1, planMode: true, planName: "300행 조회 검증"}));
       await page.locator("#prepare").click();
-      await page.waitForFunction(() => latestResult?.structuredContent?.request?.count === 300);
+      await page.waitForFunction(n => latestResult?.structuredContent?.request?.count === n, count);
+      await frame.locator("#count").fill("301");
+      await frame.locator("#calculate").click();
+      assert.equal(await frame.locator("#multi_tables table").count(), 0, "UI rejects counts above the MCP maximum");
+      await frame.locator("#count").fill(String(count));
       await frame.locator("#calculate").click();
       await page.waitForFunction(() => document.querySelector("iframe").contentWindow.MultiFindApp.getResult()?.status === "success");
       if (!await frame.locator("#gpt-plan-settings").evaluate(el => el.open)) await frame.locator("#gpt-plan-settings summary").click();
@@ -250,17 +254,24 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
       assert(baseline.snapshot.includes("결과 조회: "), "new result sharing failed: " + JSON.stringify(await page.evaluate(() => lastShareReply?.isError ? lastShareReply.content : null)));
       const reference = parseLine("결과 조회: ");
       assert.match(reference.result_id, /^[0-9a-f]{64}$/);
-      assert(baseline.snapshot.length < 16000, "conversation receives brief reference, not 600 cells");
+      assert(baseline.snapshot.length <= 60000, "direct arrays plus lookup reference stay bounded");
+      const direct = parseLine("배너 배열: ");
+      assert.equal(direct.rowsIncluded, count);
+      assert.equal(direct.rowsOmitted, 0);
+      assert.deepEqual(direct.rows.map(pair => pair.map(cell => cell.slice(0, 3))), baseline.rows,
+        "all A/B ID/result/next cells are already in context before any lookup");
+      assert(Object.values(direct.rarities).includes(4), "shared arrays identify ubers without a catalog search");
+      assert.match(baseline.snapshot, /새 배너 요청이 없으면/);
       const endpoint = hostPath ? "/mcp/claude" : "/mcp";
       const allRows = [];
-      for (let start = 1; start <= 300;) {
+      for (let start = 1; start <= count;) {
         const array = await resultRpc(endpoint, "catsroll_result", {result_id: reference.result_id,
           view: "array", banner: 0, start, limit: 50});
         allRows.push(...array.rows);
         assert(array.rows.length > 0);
-        start = array.nextStart || 301;
+        start = array.nextStart || count + 1;
       }
-      assert.equal(allRows.length, 300);
+      assert.equal(allRows.length, count);
       assert.deepEqual(allRows.map(pair => [pair.A, pair.B].map(cell => [cell.id, cell.position, cell.next])), baseline.rows,
         "all 600 retrieved ID/result/next cells match the calculated table");
       const route = await resultRpc(endpoint, "catsroll_result", {result_id: reference.result_id, view: "summary"});
@@ -276,7 +287,7 @@ const base = process.env.CATSROLL_GPT_TEST_URL || "http://127.0.0.1:17867";
       assert.deepEqual(plan.collections.cats.items, baseline.plan.cats);
       if (hostPath) assert(baseline.visible.includes(baseline.snapshot));
       else assert.equal(baseline.visible, "현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.");
-      console.log((hostPath ? "Claude" : "GPT") + " default300: 600 cells exact, full Find acquisition, chars=" + baseline.snapshot.length);
+      console.log((hostPath ? "Claude" : "GPT") + " count=" + count + ": direct arrays exact, full Find acquisition, chars=" + baseline.snapshot.length);
     }
     // At the maximum count, multiple banners may omit arrays but never the route or plan.
     const stress = await frame.locator("body").evaluate(() => {
