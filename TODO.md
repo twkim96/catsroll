@@ -34,6 +34,7 @@
 
 ## Features and utilities
 
+* Show exclude guaranteed option when simulate guaranteed is used
 * What if we add /tracks and make /help the landing page?
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
