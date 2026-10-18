@@ -78,6 +78,19 @@ module BattleCatsRolls
       result(query, selected, true, 'matched', required)
     end
 
+    # Recovery for hosts that send a concept word to the character catalog.
+    # Only authored definition terms or exact section names qualify; unknown
+    # character names must remain ordinary empty catalog results.
+    def definition(term)
+      normalized = term.to_s.unicode_normalize(:nfkc).downcase.gsub(/\s+/, '')
+      return nil if normalized.empty?
+
+      owner = @corpus.find { |_id, entry|
+        entry[:definition_terms].any? { |word| word.unicode_normalize(:nfkc).downcase.gsub(/\s+/, '') == normalized }
+      }
+      owner && lookup('topic' => owner.first, 'query' => term)
+    end
+
     private
 
     def validate_args!(args)
@@ -210,6 +223,7 @@ module BattleCatsRolls
     def build_document(document)
       content = File.read(File.join(@root, document.fetch('file')), encoding: 'UTF-8')
       preamble, sections = split_sections(content)
+      definition_terms = sections.keys.select { |heading| heading.match?(/\A[가-힣a-zA-Z0-9_\/ ]{1,30}\z/) }
       records = document.fetch('sections', []).map do |definition|
         heading = definition.fetch('heading')
         body = sections.fetch(heading)
@@ -218,9 +232,10 @@ module BattleCatsRolls
         table_terms = body.lines.filter_map { |line| line[/^\| ([^|]+) \|/, 1] }.
           reject { |cell| cell.match?(/\A[- :]+\z/) || cell == '표현' }.
           flat_map { |cell| cell.delete('`*').split(/\s+\/\s+/) }
+        definition_terms.concat(table_terms)
         definition.merge('keywords' => (definition.fetch('keywords') + table_terms).uniq { |word| word.unicode_normalize(:nfkc).downcase.delete(' ') })
       end
-      {content: content, preamble: preamble, sections: sections, records: records}
+      {content: content, preamble: preamble, sections: sections, records: records, definition_terms: definition_terms.uniq}
     end
 
     def section_matches(document, query)
@@ -334,7 +349,9 @@ module BattleCatsRolls
       end
 
       phrase = terms.join
-      primary = [title, id] + keywords
+      # Compact matching is intentional for registered keywords, but ordinary
+      # titles/IDs must not synthesize phrases across word boundaries.
+      primary = title_words + id_words + keywords
       score_value += 5 if phrase.length >= 4 && primary.any? { |value| value.include?(phrase) }
       score_value += 5 * keywords.count { |keyword| compact_keyword_match?(keyword, compact) }
       score_value += 12 * keyword_sources.count { |keyword|

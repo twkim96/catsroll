@@ -222,13 +222,15 @@ describe 'Catsroll curated GPT guide retrieval' do
       manifest_path = File.join(root, 'manifest.json')
       manifest = JSON.parse(File.read(manifest_path))
       track = manifest.fetch('documents').find { |doc| doc['id'] == 'tracks' }
-      track['title'] = '지원 범위'
+      track['title'] = '지원 범위 안내문'
       track['keywords'] = []
       track['sections'] = [{'heading' => '약어', 'keywords' => []}]
       File.write(File.join(root, 'tracks.md'), "## 약어\n| 표현 | 의미 |\n| --- | --- |\n| 새약어 / 다른약어 | 검증된 뜻 |\n")
       File.write(manifest_path, JSON.generate(manifest))
       guide = BattleCatsRolls::GptGuide.new(root: root)
-      expect(guide.lookup('query' => '원범').fetch('matched')).eq false
+      ['원범', '원범위안내'].each do |question|
+        expect(guide.lookup('query' => question).fetch('matched')).eq false
+      end
       ['새약어', '다른약어 뜻'].each do |question|
         expect(guide.lookup('query' => question).fetch('documents').first.fetch('content').include?('검증된 뜻')).eq true
       end

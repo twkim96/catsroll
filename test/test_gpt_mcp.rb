@@ -587,6 +587,27 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(replies.first).eq replies.last
   end
 
+  would 'recover misrouted exact concept searches without redefining catalog misses' do
+    %i[chatgpt claude].each do |host|
+      adapter = BattleCatsRolls::GptMcp.new(ui_host: host)
+      {'레티' => '레어 티켓', '원범' => '원거리 범위 공격', '초본능' => '다른 강화 조건', '4진' => '4단 진화'}.each do |term, meaning|
+        reply = adapter.dispatch('tools/call', 'name' => 'catsroll_cats', 'arguments' => {'query' => term})
+        data = reply.fetch(:structuredContent)
+        expect(data.fetch(:cats)).eq []
+        expect(data.fetch(:status)).eq 'concept_not_character'
+        expect(data.fetch(:guide).fetch('documents').map { |doc| doc.fetch('content') }.join.include?(meaning)).eq true
+        expect(reply.key?(:_meta)).eq false
+      end
+      ['미등록캐릭터xyz', '세2마', '아누비스'].each do |term|
+        data = adapter.dispatch('tools/call', 'name' => 'catsroll_cats', 'arguments' => {'query' => term}).fetch(:structuredContent)
+        expect(data.key?(:guide)).eq false
+      end
+      data = adapter.dispatch('tools/call', 'name' => 'catsroll_cats',
+        'arguments' => {'query' => '레티', 'event' => '2019-01-23_348'}).fetch(:structuredContent)
+      expect(data.key?(:guide)).eq false
+    end
+  end
+
   would 'connect subjective tiers to real per-form game traits and an exact banner pool' do
     result = call_tool(client, 'catsroll_recommend', {traits: %w[빨 천], limit: 10})
     data = result.fetch('structuredContent')

@@ -373,6 +373,14 @@ module BattleCatsRolls
       if details
         result[:cats].each { |cat| cat.merge!(knowledge.details(ball, cat.fetch(:id))) }
       end
+      if entries.empty? && !term.empty? && !args.key?('event') && !args.key?('rarity') && args.fetch('offset', 0).zero?
+        definition = GptGuide.new.definition(term)
+        if definition
+          result[:status] = 'concept_not_character'
+          result[:message] = '일반 용어 질문이다. 캐릭터가 없다는 답 대신 guide의 정의를 설명한다. 추가 캐릭터/웹 검색은 필요하지 않다.'
+          result[:guide] = definition
+        end
+      end
       result
     end
 
