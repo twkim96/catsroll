@@ -34,7 +34,6 @@
 
 ## Features and utilities
 
-* Show exclude guaranteed option when simulate guaranteed is used
 * Rename "Found cats" to "Exclusive and legend cats", and add a new
   "Found cats" section when "Find next" is used, showing next 5.
 * What if we add /tracks and make /help the landing page?
