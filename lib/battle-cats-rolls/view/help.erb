@@ -1,3 +1,5 @@
+<%= self.class.table_of_contents __FILE__ %>
+
 <%= header(1, 'What is this?') %>
 <%= erb :description %>
 
@@ -13,22 +15,44 @@
   <li>
     Will I ever need to find my seed a second time?
     <ul>
-      <li>No, <strong>you only need to find your seed once</strong>. Your seed will never change without rolling, and you can <a href="#advancing-the-tracks">update it as you roll</a> in the game.</li>
-      <li>All events including platinum and legend ones share the same seed.</li>
-    </ul>
-  </li>
-  <li>
-    Can I go backward in my track?
-    <ul>
-      <li>No, your tracks can only be advanced forward.</li>
+      <li>
+        No, <strong>you only need to find your seed once</strong>. Your seed
+        will never change without rolling, and you can
+        <a href="#advancing-the-tracks">update your seed as you roll</a>
+        in the game.
+      </li>
+      <li>
+        All events including platinum and legend ones share the same seed, so
+        rolling anything will affect all events.
+      </li>
     </ul>
   </li>
   <li><a href="#switching-tracks">How can I switch to the other track</a>?</li>
   <li>
     When will my tracks shuffle, or seed reset?
     <ul>
-      <li><strong>Your tracks and seed will never shuffle or reset</strong>. Your tracks will only change when you select a different event, and the same banner comes in the future are different events.</li>
-      <li>The ubers in the uber positions can change when a new uber is added to the banner. Likewise, the legends in the legend positions can change when the banner has multiple legends.</li>
+      <li>
+        <strong>Your tracks and seed will never shuffle or reset by themselves</strong>.
+        Your tracks will only change when you select a different event, and
+        the same banner comes in the future are different events.
+      </li>
+      <li>
+        The ubers in the uber positions can change when a new uber is added to
+        the banner. Likewise, the legends in the legend positions can change
+        when the banner has multiple legends.
+      </li>
+      <li>
+        To make sure you're checking the right events, check the date of the
+        events. <strong>For platinum and legend events, they switch to the new
+        one along with the new uber or legend added to the other events</strong>.
+        This means if you see the event for the new uber/legend is up, then
+        the new platinum/legend event is up as well.
+      </li>
+      <li>
+        For the exact time specifically, it's conventionally <strong>11AM your
+        local time</strong>. To verify this, you can see when's your current
+        banners will end. The new banners will be up when the old banners end.
+      </li>
     </ul>
   </li>
   <li>

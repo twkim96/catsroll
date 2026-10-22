@@ -19,6 +19,68 @@ module BattleCatsRolls
 
     def_delegator :route, :gacha
 
+    def self.table_of_contents path
+      (@table_of_contents ||= {})[path] ||= begin
+        contents = File.read(path)
+        toc = generate_list(contents.scan(/<%= header\((\d+), (.+?)\) %>/))
+
+        <<~HTML
+          <h1>Table of contents</h1>
+          #{toc.join("\n")}
+        HTML
+      end
+    end
+
+    def self.generate_list headings
+      level = []
+      toc = normalize_headings(headings).map do |n, str|
+        prefix = if level.empty? || n > level.last
+          level << n
+          '<ol>'
+        else
+          close_tags!(n, level)
+        end
+        "#{prefix}<li>#{header(str)}"
+      end
+      toc << "#{close_tags!(1, level)}</ol>" if toc.any?
+      toc
+    end
+
+    def self.normalize_headings headings
+      previous = 0
+      headings.flat_map do |n, str|
+        n = n.to_i
+        filler = (previous.succ...n).map{ [_1, nil] }
+        previous = n
+        [*filler, [n, str]]
+      end
+    end
+
+    def self.close_tags! n, level
+      tags = ['</li>']
+      while n < level.last
+        tags << '</ol></li>'
+        level.pop
+      end
+      tags.join
+    end
+
+    def self.header str
+      if str
+        name = str.gsub(/^(?:['"]|%Q{)|['"}]$/, '').gsub(%r{<.+?/?>}, '')
+        %Q{<a href="##{to_anchor(name)}">#{name}</a>}
+      else
+        '&nbsp;'
+      end
+    end
+
+    def self.to_anchor name
+      name.to_s.downcase.
+        gsub(%r{<.+?/?>}, ''). # Stripping tags
+        gsub(/\W+/, '-'). # Stripping non-letters
+        gsub(/^-|-$/, '') # Same as strip('-') in Ruby 4
+    end
+
     def render name
       erb(:layout){ erb(name) }
     end
@@ -751,7 +813,7 @@ module BattleCatsRolls
       header(2, "#{label} (#{size})", label.downcase.gsub(/\W+/, '-'))
     end
 
-    def header n, name, id=name.to_s.downcase.gsub(/\W+/, '-')
+    def header n, name, id=self.class.to_anchor(name)
       <<~HTML
         <a href="##{id}">⚓</a> <h#{n} id="#{id}">#{name}</h#{n}>
       HTML

@@ -118,6 +118,8 @@
 
 ## Features and utilities
 
+* Rename "Found cats" to "Exclusive and legend cats", and add a new
+  "Found cats" section when "Find next" is used, showing next 5.
 * What if we add /tracks and make /help the landing page?
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
@@ -132,7 +134,6 @@
 
 ## Help pages
 
-* Add a table of contents to the help page
 * Reword `lib/battle-cats-rolls/view/table_notes.erb` accordingly
 * Refactor `lib/battle-cats-rolls/help.rb`. It's a mess! Need DSL.
 * A workflow guide for advanced usages with the golden cat CPU icon

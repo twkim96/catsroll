@@ -3,12 +3,14 @@
 require_relative 'gacha'
 require_relative 'cat'
 
+require 'set'
+
 module BattleCatsRolls
   class FindCat < Struct.new(:gacha, :ids)
     Max = 999
 
     def self.exclusives
-      @exclusives ||= [
+      @exclusives ||= Set.new([
         270, # "Baby Gao",
         284, # "Pai-Pai",
         287, # "Strike Unit R.E.I.",
@@ -40,7 +42,7 @@ module BattleCatsRolls
         838, # "Squire Luno",
         860, # "Lone Moon Lunos",
         874, # "Metal Maiden Koneko",
-      ].freeze
+      ]).freeze
     end
 
     def self.search gacha, find, **args
