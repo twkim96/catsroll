@@ -31,7 +31,9 @@ without restarting it, using its Playwright environment:
 `test_track_client_race.cjs` delays actual pool delivery while using the shared
 engine/renderer. It first checks that turning client computation on from a server
 result and recalculating keeps the usage notes below a single result table.
-Direct client-mode navigation also works when no usage notes are present.
+Direct client-mode navigation also works when no usage notes are present:
+the initial simulator introduction and help paragraph disappear after a successful
+calculation, while a seedless page retains them.
 It reverses two request completions and checks late errors,
 missing pools, input edits, seedless navigation, region lists, popstate and
 pagehide/BFCache. A new request removes the old clickable table; only its current

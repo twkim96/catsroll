@@ -24,8 +24,17 @@ const event = '2019-01-23_348';
     await page.locator('#content form input[type=submit]').click();
     await page.waitForFunction(() => document.querySelector('#client-compute-status').textContent === '✓');
     await notesFollowTable();
+    await page.goto(`${base}/?lang=kr&event=${event}&compute=client`);
+    assert.equal(await page.locator('#content > p.section').count(), 1,
+      'the introduction remains when there is no calculated result');
+    assert.equal(await page.locator('#content > p a[href*="/help"]').count(), 1);
     await page.goto(`${base}/?seed=42&event=${event}&lang=kr&count=10&compute=client`);
     await page.waitForFunction(() => document.querySelector('#client-compute-status').textContent === '✓');
+    assert.equal(await page.locator('#content .table').count(), 1);
+    assert.equal(await page.locator('#content > p.section').count(), 0,
+      'a calculated result replaces the initial simulator introduction');
+    assert.equal(await page.locator('#content > p a[href*="/help"]').count(), 0,
+      'the introductory help paragraph is also removed after calculation');
     // Delay only data delivery. Compute and render with the actual shared engine
     // and pools so the final UI is checked, not an excerpt of the controller.
     await page.evaluate(async () => {
