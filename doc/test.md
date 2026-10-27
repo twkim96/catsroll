@@ -29,7 +29,10 @@ without restarting it, using its Playwright environment:
     CATSROLL_TEST_URL=http://127.0.0.1:17867 node test/test_recent_seeds_client.cjs
 
 `test_track_client_race.cjs` delays actual pool delivery while using the shared
-engine/renderer. It reverses two request completions and checks late errors,
+engine/renderer. It first checks that turning client computation on from a server
+result and recalculating keeps the usage notes below a single result table.
+Direct client-mode navigation also works when no usage notes are present.
+It reverses two request completions and checks late errors,
 missing pools, input edits, seedless navigation, region lists, popstate and
 pagehide/BFCache. A new request removes the old clickable table; only its current
 generation can render or update status. Editing during a region-list fetch

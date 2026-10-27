@@ -7,6 +7,23 @@ const event = '2019-01-23_348';
   const browser = await chromium.launch({headless: true, channel: process.env.GPT_BROWSER_CHANNEL || 'chrome'});
   try {
     const page = await browser.newPage();
+    async function notesFollowTable() {
+      assert.equal(await page.locator('#content .table').count(), 1);
+      assert.equal(await page.locator('#content .note').count(), 1);
+      assert.equal(await page.locator('#content .table').evaluate(table =>
+        !!(table.compareDocumentPosition(document.querySelector('#content .note')) &
+          Node.DOCUMENT_POSITION_FOLLOWING)), true,
+      'usage notes must stay below the calculated table');
+    }
+    await page.goto(`${base}/?seed=42&event=${event}&lang=kr&count=10`);
+    await notesFollowTable();
+    await page.locator('#client-compute-toggle').check();
+    await page.waitForFunction(() => document.querySelector('#client-compute-status').textContent === '✓');
+    await notesFollowTable();
+    await page.locator('#seed_input').fill('43');
+    await page.locator('#content form input[type=submit]').click();
+    await page.waitForFunction(() => document.querySelector('#client-compute-status').textContent === '✓');
+    await notesFollowTable();
     await page.goto(`${base}/?seed=42&event=${event}&lang=kr&count=10&compute=client`);
     await page.waitForFunction(() => document.querySelector('#client-compute-status').textContent === '✓');
     // Delay only data delivery. Compute and render with the actual shared engine
@@ -143,6 +160,6 @@ const event = '2019-01-23_348';
     await page.locator('#content form input[type=submit]').click();
     await settle(16); await shownSeed(112);
     await page.screenshot({path: '/tmp/catsroll-client-race.png'});
-    console.log('track-client race: reversed success/error/empty, pending-table removal, edits, seedless, region, popstate and pagehide/BFCache fences passed');
+    console.log('track-client race: table before notes on toggle/recalculation, reversed success/error/empty, pending-table removal, edits, seedless, region, popstate and pagehide/BFCache fences passed');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
