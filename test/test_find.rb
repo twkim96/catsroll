@@ -22,4 +22,12 @@ describe BattleCatsRolls::FindCat do
       expect(exclusive_text).include?('Baby Gao 🐾 : 3B')
     end
   end
+
+  would 'give nothing if there is nothing' do
+    expect_request('/', 'seed=1&event=2026-10-26_926') do |body|
+      doc = Nokogiri::HTML.parse(body)
+
+      expect(cleanup_text(doc.css('.found_cats').text)).empty?
+    end
+  end
 end

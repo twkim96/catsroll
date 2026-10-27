@@ -62,7 +62,7 @@ module BattleCatsRolls
 
     def search! cats: [], guaranteed: true, max: Max
       if ids.empty?
-        []
+        {}
       else
         found = search_deep(cats, guaranteed, max)
 
