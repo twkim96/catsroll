@@ -38,5 +38,9 @@ module BattleCatsRolls
 
       block&.call(body.first, headers)
     end
+
+    def cleanup_text text
+      text.tr("\n", ' ').squeeze(' ').strip
+    end
   end
 end

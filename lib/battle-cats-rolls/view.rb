@@ -231,6 +231,12 @@ module BattleCatsRolls
       end
     end
 
+    def found_and_exclusive_cats
+      found_cats = arg[:found_cats]
+      found = found_cats.delete(route.find)
+      [found, found_cats.values.flatten]
+    end
+
     # Major priority:
     #   Owned/Found/Exclusive/Score
     # Minor priority:

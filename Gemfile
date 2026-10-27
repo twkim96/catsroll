@@ -23,4 +23,5 @@ group :test do
   gem 'rake'
   gem 'pork'
   gem 'muack'
+  gem 'nokogiri'
 end

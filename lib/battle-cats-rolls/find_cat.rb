@@ -8,6 +8,7 @@ require 'set'
 module BattleCatsRolls
   class FindCat < Struct.new(:gacha, :ids)
     Max = 999
+    Count = 5
 
     def self.exclusives
       @exclusives ||= Set.new([
@@ -46,63 +47,63 @@ module BattleCatsRolls
     end
 
     def self.search gacha, find, **args
-      new(gacha, exclusives + [find]).search(**args)
+      ids_in_gacha = filter(gacha, [find, *exclusives])
+      ids_in_gacha.concat([find] * (Count - 1)) if ids_in_gacha.member?(find)
+
+      new(gacha, ids_in_gacha).search!(**args)
     end
 
-    def initialize new_gacha, target_ids
-      ids_in_gacha = %i[rare_cats supa_cats uber_cats legend_cats].
-        flat_map(&new_gacha.method(:public_send)).select do |cat|
-          target_ids.member?(cat.id)
-        end.map(&:id)
-
-      ids_in_gacha.concat(new_gacha.legend_cats.map(&:id))
-
-      super(new_gacha, ids_in_gacha)
+    def self.filter gacha, ids
+      %i[rare_cats supa_cats uber_cats].
+        flat_map(&gacha.method(:public_send)).filter_map do |cat|
+          cat.id if ids.member?(cat.id)
+        end + gacha.legend_cats.map(&:id)
     end
 
-    def search cats: [], guaranteed: true, max: Max
+    def search! cats: [], guaranteed: true, max: Max
       if ids.empty?
         []
       else
         found = search_deep(cats, guaranteed, max)
 
-        if found.size < ids.size
-          found.values + (ids - found.keys).map do |missing_id|
-            info = gacha.pool.dig_cat(missing_id)
+        ids.uniq.each do |missing_id|
+          info = gacha.pool.dig_cat(missing_id)
+          found[missing_id] <<
             Cat.new(id: missing_id, info: info, sequence: max)
-          end
-        else
-          found.values
         end
+
+        found
       end
     end
 
     private
 
     def search_deep cats, guaranteed, max
-      found = search_from_cats(cats, guaranteed, ids)
+      found = search_from_cats(cats, guaranteed)
 
-      if found.size < ids.size
-        search_from_rolling(found, cats, guaranteed, max)
-      else
+      if ids.empty?
         found
+      else
+        search_from_rolling(found, cats, guaranteed, max)
       end
     end
 
-    def search_from_cats cats, guaranteed, remaining_ids
-      cats.each.inject({}) do |result, ab|
-        (remaining_ids - result.keys).each do |id|
-          ab.each do |cat|
+    def search_from_cats cats, guaranteed
+      cats.each.inject(Hash.new{ |h, k| h[k] = [] }) do |result, ab|
+        ab.each do |cat|
+          index = ids.index do |id|
             case id
             when cat.id
-              result[id] = cat
+              result[id] << cat
             when cat.guaranteed&.id
-              result[id] = cat.guaranteed if guaranteed
+              result[id] << cat.guaranteed if guaranteed
             end
           end
+
+          ids.delete_at(index) if index
         end
 
-        if result.size == remaining_ids.size
+        if ids.empty?
           break result
         else
           next result
@@ -112,7 +113,7 @@ module BattleCatsRolls
 
     def search_from_rolling found, cats, guaranteed, max
       cats.size.succ.upto(max).inject(found) do |result, sequence|
-        if result.size == ids.size
+        if ids.empty?
           break result
         else
           new_ab = gacha.roll_both!(sequence)
@@ -122,8 +123,9 @@ module BattleCatsRolls
           # thus guaranteed information doesn't exist.
           # We could fix this by rolling 11 times for each attempt
 
-          next result.merge(
-            search_from_cats([new_ab], guaranteed, ids - result.keys))
+          result.merge(search_from_cats([new_ab], guaranteed)) do |id, a, b|
+            a + b
+          end
         end
       end
     end
