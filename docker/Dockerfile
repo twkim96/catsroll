@@ -19,4 +19,4 @@ RUN set -eux; \
 
 USER nobody
 ENTRYPOINT ["docker/entrypoint.sh"]
-CMD ["bin/server_puma"]
+CMD ["bin/server-puma"]
