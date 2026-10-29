@@ -5,6 +5,8 @@ require 'puma'
 require 'puma/server'
 require 'puma/events'
 
+require_relative '../lib/battle-cats-rolls/server_status'
+
 servers = []
 threads = []
 running = true
@@ -52,5 +54,6 @@ if BattleCatsRolls::SeekHost
     BattleCatsRolls::SeekThreads)
 end
 
+BattleCatsRolls::PumaStatus.servers = servers
 servers.each{ _1.stop(false) } unless running
 threads.each(&:join)
