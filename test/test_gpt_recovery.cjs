@@ -264,6 +264,14 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
    assert(delivered[1].text.includes(count+'B'),'last computed B row is still available to the model');
    assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='ui/update-model-context')),false);
    assert.equal(await frame.locator('#share-recovery').isVisible(),false);
+   // Public directory may expose prepare but not the newer result-store tool.
+   await page.evaluate(()=>{writeFailure={status:'error',code:'tool_unavailable',message:'MCP Resource not found'};messages=[];});
+   await share();
+   const directAttachment=await page.evaluate(()=>messages.find(m=>m.method==='ui/message').params.content[1].text);
+   assert(directAttachment.includes(count+'A')&&directAttachment.includes(count+'B'),
+    'unpublished tools preserve both final rows in the direct attachment');
+   assert.equal(await frame.locator('#share-recovery').isVisible(),false,'successful fallback does not open the large JSON panel');
+   assert.match(await frame.locator('#status').innerText(),/추가 결과 조회는 현재 사용할 수 없습니다/);
   }
   // Same-origin minimal control performs the handshake without catalog or engine calls.
   await page.route('**/gpt-probe-host',route=>{

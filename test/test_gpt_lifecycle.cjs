@@ -23,12 +23,13 @@ vm.createContext(scope);
 vm.runInContext(fs.readFileSync('lib/battle-cats-rolls/asset/gpt-share.js','utf8'), scope);
 const snapshot = {schema_version:1, input:{track:{seed:42,count:100}}, find:{status:'success'}, plan:{enabled:false}, banners:[]};
 let writes = [], messages = [], contexts = [], recoveries = [], hold, failMessage = false;
-let titlesSupported=false, contextSupported=true;
+let titlesSupported=false, contextSupported=true, missingTool=false;
 const attachments=[];
 const bridge = {isConnected:()=>true,supports:(name)=>name==='titledMessage'?titlesSupported:contextSupported||name!=='updateModelContext',
   async callTool(name,args) {
     if(name==='catsroll_share_result') {
       writes.push(args);
+      if(missingTool) throw Error('MCP Resource not found');
       if(hold) await new Promise(resolve=>{hold=resolve;});
       return {structuredContent:{result_id:'a'.repeat(64),expires_at:'fixture',summary:{}}};
     }
@@ -103,5 +104,24 @@ const share = scope.CatsrollShare({bridge,profile:'chatgpt',capture:()=>({snapsh
   await share.send();
   assert.equal(attachments.at(-1),null);
   assert.match(messages.at(-1),/"count":300/,'unsupported hosts retain the full visible fallback');
+  missingTool=true;
+  const missingStatuses=[], missingRecoveries=[];
+  const missing=scope.CatsrollShare({bridge,profile:'chatgpt',capture:()=>({snapshot:JSON.parse(JSON.stringify(snapshot)),serverShare:true}),
+    project:value=>JSON.stringify(value),inputRevision:app.inputRevision,planRevision:app.planRevision,resultError:()=>'',
+    onStatus:value=>missingStatuses.push(value),onRecovery:(...args)=>missingRecoveries.push(args)});
+  for(const delivery of ['visible','context','title']) {
+    titlesSupported=delivery==='title';contextSupported=delivery==='context';
+    await missing.send();
+    assert.equal(missing.current().phase,'delivered');
+    assert.equal(missing.current().publicationError.code,'tool_unavailable');
+    const deliveredText=delivery==='title'?attachments.at(-1).text:delivery==='context'?contexts.at(-1):messages.at(-1);
+    assert.match(deliveredText,/"count":300/,'unpublished tools still deliver the captured result');
+    assert.equal(missingRecoveries.length,0,'successful direct delivery does not open a large error export');
+    assert.match(missingStatuses.at(-1),/추가 결과 조회는 현재 사용할 수 없습니다/);
+  }
+  failMessage=true;
+  await missing.send();
+  assert.equal(missing.current().phase,'recoverable_error');
+  assert.match(missingRecoveries.at(-1)[1],/delivery denied/,'actual delivery failure still offers immutable recovery');
   console.log('application/share lifecycle: late run fencing, plan revisions, immutable retry, failed delivery recovery and explicit sharing passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});

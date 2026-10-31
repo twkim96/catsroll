@@ -412,6 +412,14 @@ Claude 전용 리소스의 `data-catsroll-ui-host="claude"` 표식이 있을 때
 확인·전송하는 메시지에서 결과를 읽으며, 숨은 문맥 갱신 실패 시에도 메시지를 시도한다.
 제목 첨부의 규격은 [OpenAI 메시지 확장](https://github.com/openai/mcp-extensions/blob/main/docs/spec.md#titles-1)을 따른다.
 실제 ChatGPT 데스크톱·iOS의 첨부 표시와 모델의 결과 읽기는 별도 수용 검사가 필요하다.
+공개 포털에서 `catsroll_share_result`·`catsroll_result`가 아직 미공개이면 앱의 저장 호출은
+`MCP Resource not found`로 실패할 수 있다. 이때도 같은 고정 스냅샷을 위 메시지/문맥 경로로
+직접 전달한다. 전달 성공 시에는 추가 조회 불가 상태만 표시하며 큰 오류 내보내기 창을
+자동으로 열지 않는다. 메시지 자체가 실패하면 원래 스냅샷의 복사/JSON 복구를 제공한다.
+서버의 도구 목록에 존재한다는 사실은 공개 플러그인에서 호출 가능하다는 뜻이 아니다.
+2026-11-01 포털에서 두 도구와 `catsroll_site_link`가 Not published이며, 수동 Rescan과
+Reconnect는 Scan unavailable로 비활성임을 확인했다. 공개 후속 조회는 이 상태가 해소된 뒤
+실제 ChatGPT에서 별도로 검증해야 한다.
 두 리소스의 구분, 미지원 GPT의 짧은 메시지 유지, Claude의 결과 포함·문맥 실패 후 공유는
 MCP 테스트와 로컬 브라우저 회귀에서 확인했다. 실제 GPT의 모델 답변 수용과는 구분한다.
 Claude가 앱 발신 메시지에 붙이는 프롬프트 주의 경고는 호스트 기능이며 앱에서 숨기거나 우회하지 않는다.
