@@ -77,10 +77,11 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   await frame.locator('#multi_tables table').first().waitFor();
   // Storage saturation falls back to bounded computed data, with a complete local export.
   await page.evaluate(()=>{rejectMessage=false;writeFailure={status:'error',code:'storage_full',retryable:true,message:'Storage full'};});
-  await share();
+  const contextWritesBeforeFailure=await page.evaluate(()=>messages.filter(m=>m.method==='ui/update-model-context').length);
+  const direct=await share();
   assert.match(await frame.locator('#share-recovery-status').innerText(),/storage_full/);
-  const direct=await page.evaluate(()=>messages.filter(m=>m.method==='ui/update-model-context').at(-1).params.content[0].text);
   assert.match(direct,/배너 배열:/);assert(direct.length<=60000);
+  assert.equal(await page.evaluate(()=>messages.filter(m=>m.method==='ui/update-model-context').length),contextWritesBeforeFailure);
   // Plan editing is separate from array input: freeze the old plan while a
   // publish is in flight, then share the edited plan without another engine run.
   await page.evaluate(()=>{writeFailure=null;holdShare=true;messages=[];});
@@ -272,6 +273,19 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
     'unpublished tools preserve both final rows in the direct attachment');
    assert.equal(await frame.locator('#share-recovery').isVisible(),false,'successful fallback does not open the large JSON panel');
    assert.match(await frame.locator('#status').innerText(),/추가 결과 조회는 현재 사용할 수 없습니다/);
+  }
+  // iOS-style host accepts hidden context but has no titled message extension.
+  // A missing store must put the actual data in the message, not only a question.
+  capabilities={serverTools:{},message:{text:{}},updateModelContext:{text:{}}};
+  for(const count of [100,300]) {
+   request.count=count;
+   await open();
+   await page.evaluate(()=>{writeFailure={status:'error',code:'tool_unavailable',message:'MCP Resource not found'};messages=[];});
+   const message=await share();
+   assert(message.includes(count+'A')&&message.includes(count+'B'),'direct message includes final computed A/B rows');
+   assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='ui/update-model-context')),false);
+   assert.equal(await frame.locator('#share-recovery').isVisible(),false);
+   assert.match(await frame.locator('#status').innerText(),/GPT에 전달했습니다/);
   }
   // Same-origin minimal control performs the handshake without catalog or engine calls.
   await page.route('**/gpt-probe-host',route=>{

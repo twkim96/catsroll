@@ -111,11 +111,13 @@ const share = scope.CatsrollShare({bridge,profile:'chatgpt',capture:()=>({snapsh
     onStatus:value=>missingStatuses.push(value),onRecovery:(...args)=>missingRecoveries.push(args)});
   for(const delivery of ['visible','context','title']) {
     titlesSupported=delivery==='title';contextSupported=delivery==='context';
+    const previousContexts=contexts.length;
     await missing.send();
     assert.equal(missing.current().phase,'delivered');
     assert.equal(missing.current().publicationError.code,'tool_unavailable');
-    const deliveredText=delivery==='title'?attachments.at(-1).text:delivery==='context'?contexts.at(-1):messages.at(-1);
+    const deliveredText=delivery==='title'?attachments.at(-1).text:messages.at(-1);
     assert.match(deliveredText,/"count":300/,'unpublished tools still deliver the captured result');
+    assert.equal(contexts.length,previousContexts,'missing result tools never rely on a hidden context acknowledgement');
     assert.equal(missingRecoveries.length,0,'successful direct delivery does not open a large error export');
     assert.match(missingStatuses.at(-1),/추가 결과 조회는 현재 사용할 수 없습니다/);
   }
