@@ -247,6 +247,24 @@ const request = {mode:'multi', seed:42, count:300, rows:[{lang:'kr',event:'2019-
   await page.evaluate(()=>{holdPrepare=false;releases.shift()();});
   assert.equal(await frame.locator('#calculate').isEnabled(),false);
   assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='tools/call'&&m.params.name==='catsroll_share_result')),false);
+  // OpenAI titled text preserves complete computed arrays with a short message,
+  // even when hidden model context is rejected (mobile-style fallback).
+  legacy=false;
+  capabilities={serverTools:{},message:{text:{}},experimental:{'openai/message':{}}};
+  for(const count of [100,300]) {
+   request.count=count;
+   await open();
+   await page.evaluate(()=>{rejectModelContext=true;});
+   assert.equal(await share(),'현재 Catsroll 앱의 계산 결과와 플랜을 설명해 주세요. 표시된 상태와 생략 범위를 그대로 밝혀 주세요.');
+   const delivered=await page.evaluate(()=>messages.find(m=>m.method==='ui/message').params.content);
+   assert.equal(delivered.length,2);
+   assert.equal(delivered[1]._meta['openai/title'],'Catsroll 계산 결과 · '+count+'행');
+   assert.match(delivered[1].text,/결과 조회: .*result_id/);
+   assert(delivered[1].text.includes(count+'A'),'last computed A row is still available to the model');
+   assert(delivered[1].text.includes(count+'B'),'last computed B row is still available to the model');
+   assert.equal(await page.evaluate(()=>messages.some(m=>m.method==='ui/update-model-context')),false);
+   assert.equal(await frame.locator('#share-recovery').isVisible(),false);
+  }
   // Same-origin minimal control performs the handshake without catalog or engine calls.
   await page.route('**/gpt-probe-host',route=>{
     let body=fs.readFileSync(path.join(__dirname,'fixtures/gpt-host.html'),'utf8');

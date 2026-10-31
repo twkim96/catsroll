@@ -400,13 +400,19 @@ ChatGPT의 blob Worker/WASM 보안 정책이 호환되는지는 실제 시험의
 
 앱은 시드·결과를 DB나 localStorage에 저장하지 않는다. MCP 입력은 HF 서버를 통과하고
 공유 요약은 ChatGPT에 전달된다. 호스팅·ChatGPT 자체의 보관 정책까지 없다고 주장하지 않는다.
-ChatGPT 공유는 계산 스냅샷을 `ui/update-model-context`로 전달한 뒤 기존의 짧은
+ChatGPT가 `hostCapabilities.experimental["openai/message"]`를 명시하면 짧은 질문과
+동일한 고정 계산 스냅샷을 제목 있는 텍스트 블록(`_meta["openai/title"]`)으로 묶어
+한 번의 `ui/message`로 전달한다. 제목은 `Catsroll 계산 결과 · N행`이며 실제 파일 업로드가 아니다.
+이 경로에서는 숨은 문맥에 같은 데이터를 중복 전달하지 않는다. 제목 표시 지원을
+광고하지 않은 호스트에는 기존처럼 스냅샷을 `ui/update-model-context`로 전달한 뒤 짧은
 `ui/message`를 보낸다. 문맥 갱신 실패 시 같은 고정 스냅샷을 보이는 메시지에 담아 전달하고
 복사/전체 JSON 내보내기를 제공한다. 실패 때문에 계산을 다시 실행하지 않는다.
 Claude 전용 리소스의 `data-catsroll-ui-host="claude"` 표식이 있을 때만 `ui/message`
 본문에도 같은 계산 스냅샷을 넣는다. Claude가 숨은 문맥을 반영하지 않아도 사용자가
 확인·전송하는 메시지에서 결과를 읽으며, 숨은 문맥 갱신 실패 시에도 메시지를 시도한다.
-두 리소스의 구분, GPT의 짧은 메시지 유지, Claude의 결과 포함·문맥 실패 후 공유는
+제목 첨부의 규격은 [OpenAI 메시지 확장](https://github.com/openai/mcp-extensions/blob/main/docs/spec.md#titles-1)을 따른다.
+실제 ChatGPT 데스크톱·iOS의 첨부 표시와 모델의 결과 읽기는 별도 수용 검사가 필요하다.
+두 리소스의 구분, 미지원 GPT의 짧은 메시지 유지, Claude의 결과 포함·문맥 실패 후 공유는
 MCP 테스트와 로컬 브라우저 회귀에서 확인했다. 실제 GPT의 모델 답변 수용과는 구분한다.
 Claude가 앱 발신 메시지에 붙이는 프롬프트 주의 경고는 호스트 기능이며 앱에서 숨기거나 우회하지 않는다.
 메시지에는 이전 prepared와 구분되는 계산 후 스냅샷, Find 상태, 배열/경로 생략 범위를 명시한다.

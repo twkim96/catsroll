@@ -128,6 +128,25 @@ function make(embedded=true,options={}){
  await assert.rejects(host.bridge.sendMessage('closed'),/Connection closed/);
  await assert.rejects(host.bridge.updateContext('closed'),/Connection closed/);
 
+ for (const capabilities of [undefined, {}, {message:{text:{}}}, {experimental:{'openai/message':null}}]) {
+  const legacy=make(true);legacy.bridge.connect();
+  legacy.reply({id:legacy.sent[0].m.id,result:capabilities?{hostCapabilities:capabilities}:{}});
+  assert.equal(legacy.bridge.supports('titledMessage'),false,'titles require an explicit valid extension capability');
+  await assert.rejects(legacy.bridge.sendMessage('prompt',{title:'result',text:'snapshot'}),/제목 있는/);
+  legacy.bridge.close();
+ }
+ const attachmentHost=make(true);attachmentHost.bridge.connect();
+ attachmentHost.reply({id:attachmentHost.sent[0].m.id,result:{hostCapabilities:{message:{text:{}},experimental:{'openai/message':{}}}}});
+ assert.equal(attachmentHost.bridge.supports('titledMessage'),true);
+ const attachmentText='full result\n'.repeat(5000);
+ const attached=attachmentHost.bridge.sendMessage('Explain the result',{title:'Catsroll 계산 결과 · 300행',text:attachmentText});
+ const attachmentRpc=attachmentHost.sent.at(-1).m;
+ assert.deepEqual(JSON.parse(JSON.stringify(attachmentRpc.params)),{role:'user',content:[
+  {type:'text',text:'Explain the result'},
+  {type:'text',text:attachmentText,_meta:{'openai/title':'Catsroll 계산 결과 · 300행'}}
+ ]},'message carries the full data in a titled block beside a short prompt');
+ attachmentHost.reply({id:attachmentRpc.id,result:{}});await attached;attachmentHost.bridge.close();
+
  const notifications=[],contexts=[],order=[];
  const contextHost=make(true,{onHostContext:context=>{contexts.push(context);order.push('context');},
   onReady:()=>order.push('ready'),onNotification:message=>notifications.push(message)});

@@ -23,7 +23,9 @@ vm.createContext(scope);
 vm.runInContext(fs.readFileSync('lib/battle-cats-rolls/asset/gpt-share.js','utf8'), scope);
 const snapshot = {schema_version:1, input:{track:{seed:42,count:100}}, find:{status:'success'}, plan:{enabled:false}, banners:[]};
 let writes = [], messages = [], contexts = [], recoveries = [], hold, failMessage = false;
-const bridge = {isConnected:()=>true,supports:()=>true,
+let titlesSupported=false, contextSupported=true;
+const attachments=[];
+const bridge = {isConnected:()=>true,supports:(name)=>name==='titledMessage'?titlesSupported:contextSupported||name!=='updateModelContext',
   async callTool(name,args) {
     if(name==='catsroll_share_result') {
       writes.push(args);
@@ -33,7 +35,7 @@ const bridge = {isConnected:()=>true,supports:()=>true,
     return {structuredContent:{status:'ok'}};
   },
   async updateContext(value) {contexts.push(value);return {};},
-  async sendMessage(value) {messages.push(value);if(failMessage) throw Error('delivery denied');return {};}
+  async sendMessage(value,attachment) {messages.push(value);attachments.push(attachment);if(failMessage) throw Error('delivery denied');return {};}
 };
 const share = scope.CatsrollShare({bridge,profile:'chatgpt',capture:()=>({snapshot:JSON.parse(JSON.stringify(snapshot)),serverShare:true}),
   project:value=>JSON.stringify(value),inputRevision:app.inputRevision,planRevision:app.planRevision,
@@ -71,5 +73,35 @@ const share = scope.CatsrollShare({bridge,profile:'chatgpt',capture:()=>({snapsh
   assert.notEqual(writes.at(-1).idempotency_key,writes[0].idempotency_key);
   assert.equal(JSON.parse(contexts.at(-1).split('\n')[0]).plan.name,'edited');
   assert.equal(original.capture.plan.enabled,false);
+  titlesSupported=true;
+  const contextCount=contexts.length,recoveryCount=recoveries.length;
+  await share.send();
+  const titled=attachments.at(-1);
+  assert.equal(titled.title,'Catsroll 계산 결과 · 100행');
+  assert.equal(titled.text,contexts.at(-1),'titled share preserves exactly the same snapshot and lookup guidance');
+  assert.equal(messages.at(-1),messages[0],'the prompt stays short');
+  assert.equal(contexts.length,contextCount,'atomic attachment avoids duplicating data in hidden context');
+  assert.equal(recoveries.length,recoveryCount,'successful attachment is not presented as context failure');
+  assert.equal(share.current().phase,'delivered');
+  snapshot.input.track.count=300;
+  await share.send();
+  assert.equal(attachments.at(-1).title,'Catsroll 계산 결과 · 300행');
+  assert.match(attachments.at(-1).text,/"count":300/);
+  failMessage=true;
+  const attempts=messages.length;
+  await share.send();
+  assert.equal(messages.length,attempts+1,'failed attachment never silently retries a potentially delivered message');
+  assert.equal(share.current().phase,'recoverable_error');
+  assert.match(share.current().fullText,/"count":300/,'full export survives attachment failure');
+  failMessage=false;
+  const claude=scope.CatsrollShare({bridge,profile:'claude',capture:()=>({snapshot:JSON.parse(JSON.stringify(snapshot)),serverShare:true}),
+    project:value=>JSON.stringify(value),inputRevision:app.inputRevision,planRevision:app.planRevision,resultError:()=>''});
+  await claude.send();
+  assert.equal(attachments.at(-1),null,'Claude ignores OpenAI-only attachment behavior');
+  assert(messages.at(-1).includes(contexts.at(-1)),'Claude retains visible snapshot delivery');
+  titlesSupported=false;contextSupported=false;
+  await share.send();
+  assert.equal(attachments.at(-1),null);
+  assert.match(messages.at(-1),/"count":300/,'unsupported hosts retain the full visible fallback');
   console.log('application/share lifecycle: late run fencing, plan revisions, immutable retry, failed delivery recovery and explicit sharing passed');
 })().catch(e=>{console.error(e);process.exitCode=1;});
