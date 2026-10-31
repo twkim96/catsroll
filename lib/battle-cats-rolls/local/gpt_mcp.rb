@@ -299,16 +299,31 @@ module BattleCatsRolls
     def events(args)
       lang = args.fetch('lang', 'kr')
       term = query(args).gsub(/\s+/, '')
+      original_term = term
+      guarantee_intent = term.match?(/확뽑|확정(?:뽑기|뽑|배너)?|guaranteed?/i)
+      if guarantee_intent
+        term = term.gsub(/확뽑|확정(?:뽑기|뽑|배너)?|guaranteed?/i, '').gsub(/배너|두개|보여줘/, '')
+      end
+      guaranteed = if args.key?('guaranteed')
+        boolean(args['guaranteed'], 'guaranteed')
+      elsif guarantee_intent
+        true
+      end
       exact_series_ids = EventSeriesNames.exact_shortcut_ids(term)
       ball = region(lang)
       cat_id = integer(args['cat_id'], 'cat_id', 1, 1_000_000) if args.key?('cat_id')
       raise InvalidInput, 'Unknown character; resolve with catsroll_cats first' if cat_id && !ball.cats.key?(cat_id)
-      entries = TrackApi.multi_events(ball).select do |item|
-        next false unless exact_series_ids.empty? || exact_series_ids.include?(item[:series_id])
-        names = [item[:event], item[:label], item[:series_name], *EventSeriesNames.shortcuts(item[:series_id])]
-        next false unless names.join(' ').downcase.gsub(/\s+/, '').include?(term)
-        !cat_id || GachaPool.new(ball, event_name: item[:event]).slots.values.any? { |ids| ids.include?(cat_id) }
-      end.map { |item| item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).merge(lang: lang) }
+      entries = TrackApi.multi_events(ball, initial_event: original_term).filter_map do |item|
+        next unless exact_series_ids.empty? || exact_series_ids.include?(item[:series_id])
+        names = [item[:event], item[:label], item[:series_name], item[:start_on], item[:end_on], *EventSeriesNames.shortcuts(item[:series_id])]
+        next unless names.join(' ').downcase.gsub(/\s+/, '').include?(term)
+        pool = GachaPool.new(ball, event_name: item[:event])
+        next if cat_id && !pool.slots.values.any? { |ids| ids.include?(cat_id) }
+        rolls = pool.guaranteed_rolls
+        next unless guaranteed.nil? || (rolls > 0) == guaranteed
+        item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).
+          merge(lang: lang, guaranteed: rolls > 0, guaranteed_rolls: rolls)
+      end
       page(entries, args, :events)
     end
 

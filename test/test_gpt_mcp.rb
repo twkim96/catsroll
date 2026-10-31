@@ -449,6 +449,31 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(prepared.dig('structuredContent', 'request', 'findEnabled')).eq false
   end
 
+  would 'search actual guaranteed banner periods without confusing ordinary periods' do
+    ids = %w[2026-11-02_1079 2026-11-09_1079 2026-11-02_1080 2026-11-09_1080]
+    events = ids.map do |id|
+      call_tool(client, 'catsroll_events', {lang: 'kr', query: id}).dig('structuredContent', 'events').first
+    end
+    expect(events.map { |event| event.fetch('event') }).eq ids
+    expect(events.map { |event| event.fetch('guaranteed_rolls') }).eq [0, 11, 0, 11]
+    expect(events.map { |event| event.fetch('guaranteed') }).eq [false, true, false, true]
+    ['쿠니오확뽑', '쿠니오확정뽑기', '쿠니오 확뽑배너 두 개 보여줘'].each do |term|
+      found = call_tool(client, 'catsroll_events', {query: term, limit: 50}).dig('structuredContent', 'events')
+      expect(found.any? { |event| event['event'] == ids[1] }).eq true
+      expect(found.all? { |event| event['guaranteed'] }).eq true
+      expect(found.any? { |event| event['event'] == ids[0] }).eq false
+    end
+    explicit = call_tool(client, 'catsroll_events', {query: '쿠니오', guaranteed: true, limit: 50}).dig('structuredContent', 'events')
+    expect(explicit.any? { |event| event['event'] == ids[1] }).eq true
+    expect(explicit.all? { |event| event['guaranteed'] }).eq true
+    ordinary = call_tool(client, 'catsroll_events', {query: '쿠니오', guaranteed: false, limit: 50}).dig('structuredContent', 'events')
+    expect(ordinary.any? { |event| event['event'] == ids[0] }).eq true
+    expect(ordinary.all? { |event| !event['guaranteed'] }).eq true
+    date = call_tool(client, 'catsroll_events', {query: '2026-11-16', guaranteed: true, limit: 50}).dig('structuredContent', 'events')
+    expect([ids[1], ids[3]].all? { |id| date.any? { |event| event['event'] == id } }).eq true
+    expect(call_tool(client, 'catsroll_events', {guaranteed: 'false'})['isError']).eq true
+  end
+
   would 'explain individual characters with current metadata and separate source conditions' do
     result = call_tool(client, 'catsroll_cats', {query: '107', details: true}).fetch('structuredContent')
     cat = result.fetch('cats').first

@@ -7,7 +7,7 @@ module BattleCatsRolls
   # bound anonymous budgets and retries; they do not identify an account.
   class GptToolRegistry
     CLAUDE_TOOL_HINTS = {
-      'catsroll_events' => '배너/뽑기 시리즈 검색용. 다마군, 다군, 다이너마이트 군단 같은 이름은 여기에 query로 넣는다. 공백과 기존 시리즈 별명을 지원한다.',
+      'catsroll_events' => '배너/뽑기 시리즈 검색용. 다마군, 다군, 다이너마이트 군단 같은 이름은 여기에 query로 넣는다. 공백과 기존 시리즈 별명을 지원한다. 확뽑은 실제 guaranteed와 guaranteed_rolls 및 기간을 확인하며 일반 기간과 구분한다.',
       'catsroll_cats' => '개별 고양이 검색 전용. 배너나 시리즈 이름을 캐릭터로 찾지 않는다. 정확한 event ID와 rarity(2..5)로 실제 배너 풀의 캐릭터를 필터링할 수 있고 결과는 모든 페이지를 조회한다. 배열표 조회에는 이 도구나 목표 캐릭터가 필수가 아니다.',
       'catsroll_prepare' => '배열표를 열 때 mode=multi와 seed, rows를 사용한다. targets는 선택이며 없어도 정상이다. 목표를 얻는 경로 요청에만 targets/Find를 사용한다. 시드가 없으면 mode=seek로 화면을 연다. 관측도 화면에서 입력 가능하다. 표시·탐색 범위 count 생략은 100행, 최대 300행. 실제 경로의 뽑기 수는 totalDraws로 확인한다. forceGuaranteed=0은 배너 기본값이다. 준비는 계산 결과가 아니다. 앱 공유 결과 또는 사용자가 제공한 계산표·스크린샷·경로 텍스트의 보이는 범위를 설명하고, 미확인 경로에만 새 기기 계산·공유를 요청한다. 알려진 배너의 울슈레 수집 목표는 targetSelection={type:banner_collection,lang,event,rarity:4,excludeOwnedIds:[명시적으로 보유한 ID],allowTicket:true}로 모든 대상을 구성한다. 사용자가 특수티켓 획득을 명시적으로 허용한 경우에만 allowTicket:true로 지정한다. allowTicket 생략은 false이며 티켓 예산만으로 허용하지 않는다. needs_input이면 제한·제외 정보를 설명하고 범위를 좁힌다.'
     }.freeze
@@ -23,7 +23,7 @@ module BattleCatsRolls
       lang = {type: 'string', enum: %w[kr jp]}
       paging = {lang: lang, query: {type: 'string', maxLength: 100},
         offset: int.call(0, 100_000), limit: int.call(1, 50)}
-      event_input = paging.merge(catalog: {type: 'boolean'}, cat_id: int.call(1, 1_000_000))
+      event_input = paging.merge(catalog: {type: 'boolean'}, cat_id: int.call(1, 1_000_000), guaranteed: {type: 'boolean'})
       row = schema({lang: lang, event: {type: 'string', maxLength: 100},
         previewFor: {type: 'string', enum: %w[kr jp], description: 'Reference simulation for this game region using the selected source pool. NOT a confirmed future schedule.'},
         ubers: int.call(0, 100), forceGuaranteed: {type: 'integer', enum: [0, 2, 7, 11, 15]}}, %w[lang event])
@@ -60,7 +60,7 @@ module BattleCatsRolls
             owned: {type: 'array', maxItems: 1000, items: int.call(1, 1_000_000)},
             max_form: int.call(0, 3), investment: {type: 'string', enum: %w[none talents ultra]},
             limit: int.call(1, 10)})],
-        ['catsroll_events', :event_reply, '배너 찾기', 'Find public KR/JP banners by name/date or exact cat_id membership. For a desired character, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
+        ['catsroll_events', :event_reply, '배너 찾기', 'Find public KR/JP banners by name/date or exact cat_id membership. For guaranteed requests use guaranteed=true and check each result’s guaranteed_rolls and dates; ordinary and guaranteed periods may be separate. Never use forceGuaranteed to claim an actual schedule. For a desired character, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.', schema(event_input)],
         ['catsroll_banner_preview', :banner_preview_reply, '미정 배너 참고 풀 찾기', 'Use for unscheduled collab/event preview requests such as 검심 배열. Resolve series using existing KR/JP names, aliases and character IDs; compare latest known KR/JP pools. Newer JP pools may be used only as a reference simulation, NOT a confirmed Korean schedule/pool. Return candidates and exact prepare rows with previewFor. Ask which variant if ambiguous. Names are joined by stable cat IDs; untranslated new units retain source names. Do not fabricate release dates or extra units. Does not calculate.',
           schema({query: {type: 'string', minLength: 1, maxLength: 100}, lang: lang,
             series_id: int.call(0, 100_000)}, ['query'])],
