@@ -690,11 +690,16 @@
   .multi-found-group {
     min-width: 0;
   }
-  .multi-found-group h3 {
+  .multi-found-group h3,
+  .multi-found-group h4 {
+    display: block;
     margin: 0 0 .25rem;
     color: var(--multi-muted);
     font-size: .76rem;
     font-weight: 700;
+  }
+  .multi-found-group ul + h4 {
+    margin-top: .5rem;
   }
   .multi-found-group ul {
     margin: 0 0 0 1.2rem;

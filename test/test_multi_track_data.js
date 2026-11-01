@@ -125,11 +125,12 @@ assert(!renderContext.TrackRender.renderFoundCats({foundCats: [sample[1]]},
   {find: 479, count: 100}).includes('Found cats:'));
 
 let draftTargets = [479];
+let activePool = foundPool;
 const outputContext = functions('  function buildOutputs()', '  function nextLabel(', {
   global: {TrackEngine: tracks, MultiFindApp: {getTargetIds: () => draftTargets},
     MultiFindEngine: {buildTrackAlternatives: () => []}},
   state: {rows: [{}], seed: fixture.seed, count: 100, last: fixture.last},
-  eventData: () => ({pool: foundPool}), poolWithFuture: pool => pool,
+  eventData: () => ({pool: activePool}), poolWithFuture: pool => pool,
   shortRowTitle: () => 'Banner', rowTitle: () => 'Banner', formIndex: 0
 });
 const outputs = outputContext.buildOutputs();
@@ -137,6 +138,28 @@ draftTargets.push(720);
 assert(outputs[0].foundGroups.found.some(item => item.cat.id === 479));
 assert(!outputs[0].foundGroups.found.some(item => item.cat.id === 720),
   'later target edits must not reclassify calculated results');
+
+// A guaranteed banner previously flooded Found with G positions. Multi searches
+// normal positions instead, including supplemental results, while keeping G rolls.
+activePool = fixture.rows[0].pool;
+draftTargets = [865];
+const normalOnly = outputContext.buildOutputs()[0];
+const ordinaryWithG = tracks.buildTracks(activePool, fixture.seed,
+  {count: 100, last: fixture.last, guaranteedRolls: 11, find: 865});
+assert(ordinaryWithG.foundCats.find(item => item.cat.id === 865).numbers.some(n => n.includes('G')));
+assert(normalOnly.out.foundCats.every(item => item.numbers.every(n => !n.includes('G'))),
+  'Multi automatic and explicit Found lists exclude G and RG positions');
+const targetNumbers = normalOnly.foundGroups.found[0].numbers;
+assert.strictEqual(targetNumbers.length, 1);
+assert(Number.parseInt(targetNumbers[0], 10) > 100 && /[AB]$/.test(targetNumbers[0]),
+  'a target found only through visible guarantees still gets its first later normal position');
+function tableResults(out) {
+  return out.cats.map(pair => pair.map(cat =>
+    [cat.id, cat.guaranteed && cat.guaranteed.id,
+      cat.rerolled && cat.rerolled.guaranteed && cat.rerolled.guaranteed.id]));
+}
+assert.deepStrictEqual(tableResults(normalOnly.out), tableResults(ordinaryWithG),
+  'excluding Found G positions must preserve regular and guaranteed table results');
 
 const panel = {innerHTML: ''};
 const renderer = functions('  function foundNumberHtml(', '  function updateVirtualSpacers()', {

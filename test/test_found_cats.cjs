@@ -62,10 +62,28 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
     await multi.locator('[data-multi-find-close]').click();
     await multi.locator('#multi_apply').click();
     await multi.waitForFunction(() => !document.querySelector('#multi-track-app').classList.contains('is-dirty'));
-    assert.deepEqual(await group.locator('p').allTextContents(), ['Found cats:', 'Exclusive and legend cats:']);
+    assert.deepEqual(await group.locator('h4').allTextContents(), ['Found cats:', 'Exclusive and legend cats:']);
     assert.equal(await group.locator('ul').first().locator('li').count(), 1);
     assert.equal((await group.locator('ul').first().innerText()).split(':').pop().trim(), originalPositions);
     assert.equal(await group.locator('ul').nth(1).locator(`a[data-last="${targetId}"]`).count(), 0);
+
+    // A guaranteed banner keeps its table branches, but lists only normal positions.
+    const guaranteed = await browser.newPage();
+    guaranteed.on('pageerror', error => errors.push(error.message));
+    await guaranteed.goto(`${base}/multi?seed=1278975749&last=447&lang=kr&event=2026-09-28_1081&count=100`);
+    await guaranteed.locator('#multi_tables table').first().waitFor();
+    await guaranteed.locator('#multi_rows select[data-field="forceGuaranteed"]').selectOption('11');
+    await guaranteed.locator('#multi_find_filter').click();
+    await guaranteed.locator('#multi_find_available button[data-cat-id="865"]').first().click();
+    await guaranteed.locator('[data-multi-find-close]').click();
+    await guaranteed.locator('#multi_apply').click();
+    await guaranteed.waitForFunction(() => !document.querySelector('#multi-track-app').classList.contains('is-dirty'));
+    await guaranteed.locator('#multi_found summary').click();
+    const guaranteedFound = guaranteed.locator('#multi_found_cats');
+    assert.match(await guaranteedFound.innerText(), /Found cats:/);
+    assert(!/\d+[AB][RG]*G/.test(await guaranteedFound.innerText()));
+    assert(await guaranteed.locator('#multi_tables [data-plan-pick-kind="guaranteed"]').count() > 0,
+      'G results stay available in the actual track table');
 
     // The GPT host uses the same Multi UI and calculation boundary.
     const host = await browser.newPage();
@@ -74,6 +92,10 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
       body: fs.readFileSync(path.join(__dirname, 'fixtures/gpt-host.html'), 'utf8')}));
     await host.goto(`${base}/gpt-test-host`);
     await host.waitForFunction(() => window.ready);
+    const prepared = JSON.parse(await host.locator('#arguments').inputValue());
+    prepared.count = 30;
+    prepared.rows[0].forceGuaranteed = 11;
+    await host.locator('#arguments').fill(JSON.stringify(prepared));
     await host.locator('#prepare').click();
     await host.waitForFunction(() => window.latestResult);
     await host.waitForFunction(() => document.querySelector('#widget').contentDocument
@@ -84,10 +106,12 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
     await frame.locator('#multi_tables table').first().waitFor();
     await frame.locator('#multi_found summary').click();
     const gptGroup = frame.locator('#multi_found_cats .multi-found-group').first();
-    assert.deepEqual(await gptGroup.locator('p').allTextContents(), ['Found cats:', 'Exclusive and legend cats:']);
+    assert.deepEqual(await gptGroup.locator('h4').allTextContents(), ['Found cats:', 'Exclusive and legend cats:']);
     assert.equal(await gptGroup.locator('ul').first().locator('li').count(), 1);
     assert.match(await gptGroup.locator('ul').first().innerText(), /칼리파/);
     assert(!(await gptGroup.locator('ul').nth(1).innerText()).includes('칼리파'));
+    assert(!/\d+[AB][RG]*G/.test(await frame.locator('#multi_found_cats').innerText()));
+    assert(await frame.locator('#multi_tables [data-plan-pick-kind="guaranteed"]').count() > 0);
     assert.deepEqual(errors, []);
     console.log('found cats: upstream server search, client mode transition, grouped positions and Multi/GPT target separation passed');
   } finally { await browser.close(); }
