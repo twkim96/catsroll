@@ -76,6 +76,8 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
     await host.waitForFunction(() => window.ready);
     await host.locator('#prepare').click();
     await host.waitForFunction(() => window.latestResult);
+    await host.waitForFunction(() => document.querySelector('#widget').contentDocument
+      .querySelector('#multi_find_targets')?.value.includes('칼리파'));
     const frame = host.frameLocator('#widget');
     assert.equal(await frame.locator('#multi_tables table').count(), 0);
     await frame.locator('#calculate').click();
