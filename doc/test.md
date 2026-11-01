@@ -43,7 +43,12 @@ and engines. It checks client submission/reload, Multi result advance and exact
 restoration of seed + Last, first results, R/G/RG branches, next positions and
 share inputs. Known Last 0 and different Last values for the same seed remain
 separate records. The v1 storage key/container, legacy arrays/pins and four-link
-limit remain supported. The list displays seed numbers only and keeps Last internally. Links preserve
+limit remain supported. The list displays seed numbers and keeps Last internally.
+A text-sized outline star sits to the left of each seed;
+long-pressing the seed or clicking the small star toggles the single yellow pinned star.
+Selecting another clears the previous pin. The star's hit area stays at the icon size;
+the surrounding seed link retains normal navigation. Pinning no longer darkens the row.
+Links preserve
 the current ordinary/Multi screen. Legacy seed-only links show “Last 미확인”
 in a tooltip and on the opened screen, with no inherited Last; calculation and sharing stay pending until the user
 confirms Last explicitly (0 only when there is no previous result) using the

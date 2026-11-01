@@ -8,6 +8,7 @@ const storageKey = 'battle-cats-rolls.recentSeeds.v1';
 const query = 'event=2026-10-16_1068&lang=kr&count=30';
 const history = page => page.evaluate(key => JSON.parse(localStorage.getItem(key)), storageKey);
 const recent = (page, seed, last) => page.locator('#recent-seeds a[data-seed="' + seed + '"][data-last="' + (last === '미확인' ? '' : last) + '"]');
+const star = (page, seed, last) => page.locator('#recent-seeds .recent-seeds-star[data-seed="' + seed + '"][data-last="' + last + '"]');
 const ready = page => page.locator('#multi_tables table').first().waitFor();
 const clientReady = page => page.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
 const snapshot = page => page.evaluate(() => ({
@@ -156,13 +157,56 @@ const snapshot = page => page.evaluate(() => ({
       await tab.close();
     }
 
+    await page.evaluate(key => localStorage.setItem(key, JSON.stringify({pinned:null,
+      seeds:[{seed:'42',last:0},{seed:'42',last:47},{seed:'99',last:0},{seed:'777',last:null}]})), storageKey);
     await page.goto(base + '/multi?seed=42&last=0&' + query);
     await ready(page);
+    const pinUrl = page.url();
+    const held = await recent(page,99,0).elementHandle();
+    const holdBox = await held.boundingBox();
+    await page.mouse.move(holdBox.x + holdBox.width / 2, holdBox.y + holdBox.height / 2);
+    await page.mouse.down();
+    await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).pinned?.seed === '99', storageKey);
+    // A browser contextmenu arriving after the hold must not toggle a second time.
+    await held.dispatchEvent('contextmenu');
+    await page.mouse.up();
+    assert.equal((await history(page)).pinned.seed,'99');
+    assert.equal(page.url(),pinUrl,'long press pins without following the seed link');
+    assert.equal(await star(page,99,0).getAttribute('aria-pressed'),'true');
+    await star(page,42,47).click();
+    assert.deepEqual((await history(page)).pinned,{seed:'42',last:47});
+    assert.equal(await star(page,99,0).getAttribute('aria-pressed'),'false');
+    assert.equal(await page.locator('#recent-seeds .recent-seeds-star[aria-pressed=true]').count(),1);
+    assert.equal(page.url(),pinUrl,'star click does not navigate');
+    await star(page,42,47).click();
+    assert.equal((await history(page)).pinned,null,'yellow star toggles off');
+
+    // A touch hold uses the same pin logic as a mouse hold.
+    const touchBox = await recent(page,42,0).boundingBox();
+    const touch = await context.newCDPSession(page);
+    await touch.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{
+      x:touchBox.x + touchBox.width / 2,y:touchBox.y + touchBox.height / 2}]});
+    await page.waitForFunction(key => JSON.parse(localStorage.getItem(key)).pinned?.last === 0, storageKey);
+    await touch.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+    await touch.detach();
+    assert.equal(page.url(),pinUrl);
+    assert.deepEqual((await history(page)).pinned,{seed:'42',last:0});
+
+    // A point just outside the tiny star belongs to the normal seed link.
+    const smallStar = await star(page,42,47).boundingBox();
+    await page.mouse.click(smallStar.x + smallStar.width + 1,smallStar.y + smallStar.height / 2);
+    await page.waitForURL(url => url.searchParams.get('last') === '47');
+    await ready(page);
+    assert.deepEqual((await history(page)).pinned,{seed:'42',last:0},'nearby seed tap must not change the pin');
+    await page.goto(base + '/multi?seed=42&last=0&' + query);
+    await ready(page);
+    await star(page,99,0).click();
     await recent(page,42,0).click({button:'right'});
     assert.equal((await history(page)).pinned.last,0,'pin known zero as a pair');
     await page.reload();
     await ready(page);
     assert.equal(await recent(page,42,0).getAttribute('class'),'pinned');
+    assert.equal(await star(page,42,0).getAttribute('aria-pressed'),'true');
     const personalHistory = await page.evaluate(key => localStorage.getItem(key),storageKey);
     const personalSettings = await page.evaluate(() => localStorage.getItem('battle-cats-rolls.multiTrack.v1'));
     const payload = codec.makePayload({seed:42,last:0,count:10,rows:[{lang:'kr',event:'2019-01-23_348'}]}, {targets:[]});
