@@ -94,4 +94,65 @@ assert.strictEqual(selected.filter(item=>item.cat.id===479).length,1);
 const scalar = tracks.buildTracks(foundPool, fixture.seed,{...foundOptions,find:720}).foundCats;
 assert.deepStrictEqual(selected.find(item=>item.cat.id===720).numbers,
   scalar.find(item=>item.cat.id===720).numbers,'ordinary single-target API remains compatible');
+
+// Exercise automatic discovery using a real pool and the engine's rolling path.
+const exclusivePool = JSON.parse(JSON.stringify(foundPool));
+for (const slot of Object.keys(exclusivePool.slots)) {
+  exclusivePool.slots[slot] = exclusivePool.slots[slot].map(id => id === 479 ? 874 : id);
+}
+exclusivePool.cats[874] = exclusivePool.cats[479];
+delete exclusivePool.cats[479];
+assert(tracks.buildTracks(exclusivePool, fixture.seed, foundOptions).foundCats
+  .some(item => item.cat.id === 874), '874 is discovered automatically');
+
+const chosen = selected.find(item => item.cat.id === 479);
+const automatic = selected.find(item => item.cat.id !== 479);
+const sample = [{cat: chosen.cat, numbers: ['1A', '2B']},
+  {cat: automatic.cat, numbers: ['3A']}];
+const grouped = tracks.partitionFoundCats(sample, [479, 479]);
+assert.strictEqual(grouped.found.length, 1);
+assert.strictEqual(grouped.automatic.length, 1);
+
+const renderContext = {TrackEngine: tracks, URLSearchParams};
+vm.runInNewContext(fs.readFileSync(require.resolve(
+  '../lib/battle-cats-rolls/asset/track-render.js'), 'utf8'), renderContext);
+const ordinary = renderContext.TrackRender.renderFoundCats({foundCats: sample},
+  {find: 479, count: 100});
+assert(ordinary.indexOf('Found cats:') < ordinary.indexOf('Exclusive and legend cats:'));
+assert(ordinary.includes('href="#N1A"') && ordinary.includes('href="#N2B"'));
+assert.strictEqual((ordinary.match(/<li>/g) || []).length, 2);
+assert(!renderContext.TrackRender.renderFoundCats({foundCats: [sample[1]]},
+  {find: 479, count: 100}).includes('Found cats:'));
+
+let draftTargets = [479];
+const outputContext = functions('  function buildOutputs()', '  function nextLabel(', {
+  global: {TrackEngine: tracks, MultiFindApp: {getTargetIds: () => draftTargets},
+    MultiFindEngine: {buildTrackAlternatives: () => []}},
+  state: {rows: [{}], seed: fixture.seed, count: 100, last: fixture.last},
+  eventData: () => ({pool: foundPool}), poolWithFuture: pool => pool,
+  shortRowTitle: () => 'Banner', rowTitle: () => 'Banner', formIndex: 0
+});
+const outputs = outputContext.buildOutputs();
+draftTargets.push(720);
+assert(outputs[0].foundGroups.found.some(item => item.cat.id === 479));
+assert(!outputs[0].foundGroups.found.some(item => item.cat.id === 720),
+  'later target edits must not reclassify calculated results');
+
+const panel = {innerHTML: ''};
+const renderer = functions('  function foundNumberHtml(', '  function updateVirtualSpacers()', {
+  els: {foundCats: panel}, state: {count: 100}, h: String,
+  catNameHtml: cat => String(cat.id)
+});
+renderer.renderFoundCats([{label: 'Banner', row: {}, out: {foundCats: sample},
+  foundGroups: grouped}]);
+assert(panel.innerHTML.includes('Found cats:') && panel.innerHTML.includes('Exclusive and legend cats:'));
+assert(panel.innerHTML.includes('href="#multi-N1A"') && panel.innerHTML.includes('href="#multi-N2B"'));
+assert.strictEqual((panel.innerHTML.match(/<li>/g) || []).length, 2);
+renderer.renderFoundCats([{error: 'Loading...'}]);
+assert(panel.innerHTML.includes('Loading...'));
+renderer.renderFoundCats([]);
+assert(panel.innerHTML.includes('No found cats.'));
+renderer.renderFoundCats([{label: 'Banner', row: {}, out: {foundCats: [sample[1]]},
+  foundGroups: tracks.partitionFoundCats([sample[1]], [479])}]);
+assert(!panel.innerHTML.includes('Found cats:'));
 console.log("multi-track-data: ok");

@@ -1,16 +1,11 @@
 <div class="found_cats">
-  <%= local_partial(:local_found_prompt) %>
-  <% if arg[:found_cats].any? %>
+  <% found, exclusive = found_and_exclusive_cats %>
+  <% if found %>
     <p>Found cats:</p>
+    <%= erb :found_cats_listing, cats: found %>
   <% end %>
-  <ul>
-    <% arg[:found_cats].each do |cat| %>
-      <li>
-        <span class="position <%= cat.score_rarity_label %>">
-          <%= link_to_roll(cat) %>
-        </span>:
-        <%= found_cat_numbers(cat) %>
-      </li>
-    <% end %>
-  </ul>
+  <% if exclusive.any? %>
+    <p>Exclusive and legend cats:</p>
+    <%= erb :found_cats_listing, cats: exclusive %>
+  <% end %>
 </div>

@@ -2,6 +2,11 @@
 
 ## 2026-11-01 Found cats와 Find 목표 연동
 
+검색/목록 개편의 계약은 [서버와 기기 계산의 경계](multi-track-local-plan.md#upstream-and-fork-boundaries)에
+유지한다. upstream `5a572157`·`1c3b3b3f`의 서버 검색과 목록 분리를 수용하고,
+공유 JS의 캐릭터별 한 줄 표시와 기존 검색 범위를 보존한다. 새 목록 구분에 대한
+엔진·렌더러 회귀와 로컬 브라우저 검증은 실제 ChatGPT/Claude 계정 수용과 구분한다.
+
 일반 Multi와 GPT 앱이 같은 TrackEngine에 Find 목표 ID들을 전달한다. 기존 특수 캐릭터·레레와
 합친 뒤 중복·배너 풀 밖 ID를 제외하며, 일반 배열의 단일 `find` 입력도 유지한다.
 실제 브라우저에서 GPT의 계산 전 보류, Find 경로 OFF에서 목표 위치 표시, 목표 해제 후

@@ -911,7 +911,7 @@ cats:
         minmax: [[2, 20]]
   53:
     name: [薩滿貓, 通靈貓, 魔舞通靈貓]
-    desc: ["薩滿可以接觸超自然現像\n某個網絡辭典上是這麼寫的\n偶爾會讓飄浮敵人瞬間動作停止", "被超自然現象反操控的\n可憐的角色\n偶爾會讓飄浮敵人瞬間動作停止", "與超自然的存在瘋狂共舞的角色\n俗話說的「一舞成知音」據說是來自他\n偶爾會使飄浮敵人動作停止"]
+    desc: ["薩滿可以接觸超自然現象\n某個網絡辭典上是這麼寫的\n偶爾會讓飄浮敵人瞬間動作停止", "被超自然現象反操控的\n可憐的角色\n偶爾會讓飄浮敵人瞬間動作停止", "與超自然的存在瘋狂共舞的角色\n俗話說的「一舞成知音」據說是來自他\n偶爾會使飄浮敵人動作停止"]
     stat: [{health: 316, knockbacks: 3, speed: 10, cost: 340, production_cooldown: 220, attack_cooldown: 16, range: 250, width: 320, damage_0: 45, attack_time_0: 23, against_float: 1, freeze_chance: 20, freeze_duration: 60, attack_duration: 44}, {health: 370, knockbacks: 3, speed: 10, cost: 340, production_cooldown: 220, attack_cooldown: 16, range: 250, width: 320, damage_0: 55, attack_time_0: 23, against_float: 1, freeze_chance: 20, freeze_duration: 60, attack_duration: 44}, {health: 370, knockbacks: 3, speed: 10, cost: 340, production_cooldown: 220, attack_cooldown: 16, range: 300, width: 320, damage_0: 75, attack_time_0: 23, against_float: 1, freeze_chance: 20, freeze_duration: 90, attack_duration: 44}]
     rarity: 2
     max_level: 130
@@ -1645,6 +1645,14 @@ cats:
         max_level: 10
         minmax: [[10, 100], [3, 3], [600, 600], [2800, 2800]]
         ultra: 1
+      increase_health_plus:
+        max_level: 5
+        minmax: [[10, 50]]
+        ultra: 1
+      strong:
+        ultra: 1
+      zombie_killer:
+        ultra: 1
   109:
     name: [貓咪三兄弟, 秘密要塞貓克羅斯]
     desc: ["裝在轉蛋殼裡的三隻兄弟(範圍攻擊)\n我們有練過\n好孩子千萬不要模仿唷！", "集合了貓咪三兄弟的智慧與能力\n打造出來的秘密要塞貓克羅斯(範圍攻擊)\n外面裝甲是紙箱所以容易受潮"]
@@ -1781,6 +1789,16 @@ cats:
       wave_mini:
         max_level: 10
         minmax: [[10, 100], [5, 5]]
+        ultra: 1
+      savage_blow:
+        max_level: 10
+        minmax: [[2, 20], [200, 200]]
+        ultra: 1
+      increase_health_plus:
+        max_level: 10
+        minmax: [[10, 100]]
+        ultra: 1
+      sage_slayer:
         ultra: 1
   126:
     name: [武田信玄, 武神・武田信玄, 猛牛武神・武田信玄]
@@ -3253,7 +3271,15 @@ cats:
         ultra: 1
       slow:
         max_level: 10
-        minmax: [[100, 100], [10, 30]]
+        minmax: [[100, 100], [24, 60]]
+        ultra: 1
+      alternate_production_cooldown:
+        max_level: 10
+        minmax: [[5, 50]]
+        ultra: 1
+      immune_explosion:
+        ultra: 1
+      zombie_killer:
         ultra: 1
   259:
     name: [守護神阿努比斯, 無瑕神阿努比斯, G無瑕神阿努比斯]
@@ -4865,9 +4891,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   402:
-    name: [雷精靈波特, 天雷精靈皮卡波特, 天雷精靈王基加波特]
-    desc: ["來自宇宙盡頭的雷精靈\n據説每個星球的第一道雷都是其帶來的\n有時候會讓異星戰士動作停止", "執掌著勢如劈月的迅雷\n其狂暴的閃電能破壞護盾\n對上異星戰士很耐打，必定能使其動作停止", "照亮宇宙盡頭持有強大力量的迅雷精靈王\n跨越宇宙的雷光擁有破壞護盾的力量\n對上異星戰士很耐打，必定能使其動作停止"]
-    stat: [{health: 1100, knockbacks: 3, speed: 15, cost: 750, production_cooldown: 375, attack_cooldown: 60, range: 320, width: 320, area_effect: 1, damage_0: 775, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, freeze_chance: 50, freeze_duration: 90, immune_warp: 1, attack_duration: 100}, {health: 2600, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 1475, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 90, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}, {health: 3200, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 110, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}]
+    name: [雷精靈波特, 天雷精靈皮卡波特, 天雷精靈王基加波特, 天雷大精靈泰拉波特]
+    desc: ["來自宇宙盡頭的雷精靈\n據説每個星球的第一道雷都是其帶來的\n有時候會讓異星戰士動作停止", "執掌著勢如劈月的迅雷\n其狂暴的閃電能破壞護盾\n對上異星戰士很耐打，必定能使其動作停止", "照亮宇宙盡頭持有強大力量的迅雷精靈王\n跨越宇宙的雷光擁有破壞護盾的力量\n對上異星戰士很耐打，必定能使其動作停止", "執掌雷電力量的大精靈。將以全宇宙的能量\n凝聚而成的雷光照耀整個宇宙。對上異星戰士\n很耐打，必定使其動作停止，還能破壞護盾"]
+    stat: [{health: 1100, knockbacks: 3, speed: 15, cost: 750, production_cooldown: 375, attack_cooldown: 60, range: 320, width: 320, area_effect: 1, damage_0: 775, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, freeze_chance: 50, freeze_duration: 90, immune_warp: 1, attack_duration: 100}, {health: 2600, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 1475, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 90, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}, {health: 3200, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 60, range: 370, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 60, trigger_effects_0: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 110, break_barrier_chance: 100, immune_warp: 1, attack_duration: 100}, {health: 3800, knockbacks: 3, speed: 20, cost: 2550, production_cooldown: 1375, attack_cooldown: 50, range: 370, width: 320, area_effect: 1, damage_0: 2000, long_range_0: 1, long_range_offset_0: 370, attack_time_0: 60, trigger_effects_0: 1, damage_1: 500, long_range_1: 270, long_range_offset_1: 250, attack_time_1: 79, trigger_effects_1: 1, against_alien: 1, resistant: 1, freeze_chance: 100, freeze_duration: 110, break_barrier_chance: 100, immune_warp: 1, immune_drain: 1, attack_duration: 110}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -7187,6 +7213,22 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      surge_mini:
+        max_level: 10
+        minmax: [[5, 50], [2, 2], [600, 600], [2800, 2800]]
+      resistant_slow:
+        max_level: 10
+        minmax: [[16, 70]]
+      survive:
+        max_level: 10
+        minmax: [[10, 100]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   670:
     name: [遠古的蛋：N003, 邪惡的蛋：N003, 仙人掌貓]
     desc: ["外形像蛋的謎樣物體\n經年累月附著了塵土且遭受風化\n上頭似乎刻有「N003」的小小字樣", "現出散發著邪惡氣息的外殼，如蛋一般的物體\n裡面似乎有微弱的生命跡象反應\n善於攻擊惡魔", "大賣場所販售的有刺貓咪\n常常會說出傷人的話\n善於攻擊惡魔，烈波傷害無效"]
@@ -7718,7 +7760,7 @@ cats:
   747:
     name: [緋村劍心, 緋村劍心CC]
     desc: ["從「神劍闖江湖」來參戰！看似溫和的\n劍客，用刀刃位置相反的「逆刃刀」來戰鬥\n可以給予無屬性敵人和惡魔超大傷害（範圍攻擊）", "從「神劍闖江湖」來參戰！\n使用神速的古派劍術「飛天御劍流」的流浪劍客\n可以給予無屬性敵人和惡魔超大傷害（範圍攻擊）"]
-    stat: [{health: 2000, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 1600, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}, {health: 2700, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 2150, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}]
+    stat: [{health: 2000, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 1600, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}, {health: 2700, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, attack_cooldown: 86, range: 435, width: 320, area_effect: 1, damage_0: 2150, attack_time_0: 27, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_surge: 1, attack_duration: 97}, {health: 2700, knockbacks: 3, speed: 9, cost: 2950, production_cooldown: 1800, range: 435, width: 320, area_effect: 1, damage_0: 2450, long_range_0: 200, long_range_offset_0: 600, attack_time_0: 15, trigger_effects_0: 1, against_aku: 1, against_white: 1, massive_damage: 1, immune_freeze: 1, immune_surge: 1, attack_duration: 249}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -7772,9 +7814,9 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   755:
-    name: [明智光秀, 武神・明智光秀]
-    desc: ["因遭傳說中的武器「貓咪來福槍」詛咒\n化身為冷酷無情指揮官的戰國武將。有召喚能力\n必定能打飛黑色敵人與天使敵人(遠距範圍攻擊)", "被傳說中的武器「貓咪來福槍」的詛咒所侵蝕的\n戰國武將，會消滅無情眼神所看到的一切。有召喚\n能力，能打飛黑敵與天使，有時候發射烈波(遠距範圍)"]
-    stat: [{health: 2500, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1000, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, attack_duration: 200}, {health: 3000, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1350, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, surge_chance: 50, surge_level: 1, surge_range: 1400, surge_range_offset: 1200, attack_duration: 200}]
+    name: [明智光秀, 武神・明智光秀, 智謀武神・明智光秀]
+    desc: ["因遭傳說中的武器「貓咪來福槍」詛咒\n化身為冷酷無情指揮官的戰國武將。有召喚能力\n必定能打飛黑色敵人與天使敵人（遠距範圍攻擊）", "被傳說中的武器「貓咪來福槍」的詛咒所侵蝕的\n戰國武將，會消滅無情眼神所看到的一切。有召喚\n能力，能打飛黑敵與天使，有時候發射烈波（遠距範圍）", "掌握了傳說中的武器「貓咪來福槍」的怨念的戰國武將\n背負著宿命與背叛，發射瘋狂的子彈。有召喚能力\n必定打飛黑敵與天使，會發射烈波（遠距範圍）"]
+    stat: [{health: 2500, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1000, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, attack_duration: 200}, {health: 3000, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1350, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 756, surge_chance: 50, surge_level: 1, surge_range: 1400, surge_range_offset: 1200, attack_duration: 200}, {health: 3500, knockbacks: 5, speed: 8, cost: 3000, production_cooldown: 2300, range: 550, width: 320, area_effect: 1, damage_0: 1350, long_range_0: 450, long_range_offset_0: 350, attack_time_0: 65, trigger_effects_0: 1, against_black: 1, against_angel: 1, knockback_chance: 100, conjure: 877, surge_chance: 100, surge_level: 1, surge_range: 1400, surge_range_offset: 1200, immune_wave: 1, attack_duration: 200}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -8500,12 +8542,33 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   866:
-    name: [真Assassin, 真AssassinCC]
+    name: [真Assassin, 真Assassin CC]
     desc: ["從Fate/stay night [HF]來參戰！\n間桐臟硯召喚出的暗殺者英靈。能讓飄浮敵人\n和異星戰士瞬間動作停止，使其攻擊力下降", "從Fate/stay night [HF]來參戰！\n為了實現己願，持續於暗地中策劃與行動。能讓\n飄浮敵人和異星戰士瞬間動作停止，使其攻擊力下降"]
     stat: [{health: 1360, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 480, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}, {health: 1700, knockbacks: 5, speed: 40, cost: 2500, production_cooldown: 1450, range: 500, width: 320, area_effect: 1, damage_0: 600, long_range_0: 350, long_range_offset_0: 350, attack_time_0: 34, trigger_effects_0: 1, against_float: 1, against_alien: 1, freeze_chance: 100, freeze_duration: 30, weaken_chance: 100, weaken_duration: 75, weaken_multiplier: 50, dodge_chance: 60, dodge_duration: 60, break_barrier_chance: 50, immune_toxic: 1, attack_duration: 93}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  867:
+    name: [PAC-MAN, PAC-MAN貓]
+    desc: ["從《PAC-MAN》來參戰！總是活力充沛又開朗\n最喜歡把各種東西通通吃光光！\n對上紅色敵人和不死生物很耐打", "總是活力充沛又開朗的圓滾滾黃色貓咪\n最喜歡一股腦地把貓罐頭吃個精光！\n對上紅色敵人和不死生物很耐打"]
+    stat: [{health: 2400, knockbacks: 2, speed: 28, cost: 820, production_cooldown: 300, range: 100, width: 320, damage_0: 28, attack_time_0: 5, trigger_effects_0: 1, against_red: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, attack_duration: 8}, {health: 2400, knockbacks: 2, speed: 28, cost: 820, production_cooldown: 300, range: 100, width: 320, damage_0: 28, attack_time_0: 5, trigger_effects_0: 1, against_red: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, attack_duration: 8}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  868:
+    name: [Blinky貓, Blinky貓CC]
+    desc: ["戴著Blinky造型的頭套、希望動作變敏捷的貓咪\n雖然外表變了，但移動速度還是一樣\n有時候使異星戰士的攻擊無效化", "嚮往Blinky的速度而努力鍛鍊肌肉的貓咪\n揮動手臂時移動速度感覺比之前更快了\n有時候使異星戰士的攻擊無效化"]
+    stat: [{health: 200, knockbacks: 3, speed: 10, cost: 70, production_cooldown: 110, attack_cooldown: 15, range: 130, width: 320, damage_0: 8, attack_time_0: 8, trigger_effects_0: 1, against_alien: 1, dodge_chance: 10, dodge_duration: 60, attack_duration: 17}, {health: 200, knockbacks: 3, speed: 10, cost: 70, production_cooldown: 110, attack_cooldown: 15, range: 130, width: 320, damage_0: 8, attack_time_0: 8, trigger_effects_0: 1, against_alien: 1, dodge_chance: 10, dodge_duration: 60, attack_duration: 15}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  869:
+    name: [Inky貓, Inky貓CC]
+    desc: ["戴著害羞的Inky造型頭套的坦克貓\n一旦有人靠近他就會鞠躬來避開視線\n爆波傷害無效", "嚮往行動難以預測的Inky的牆貓\n會隨心所欲地忽然站起來或倒下去\n爆波傷害無效"]
+    stat: [{health: 600, knockbacks: 1, speed: 8, cost: 150, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 4, attack_time_0: 8, trigger_effects_0: 1, immune_explosion: 1, attack_duration: 15}, {health: 600, knockbacks: 1, speed: 8, cost: 150, production_cooldown: 120, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 4, attack_time_0: 8, trigger_effects_0: 1, immune_explosion: 1, attack_duration: 15}]
+    rarity: 1
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
   870:
     name: [鐵腕女孩東雲寺茜, 打工女孩東雲寺茜]
     desc: ["偶然間與無人能駕馭的動力裝甲完美契合的女孩\n放學後也會協助守護街道和平（範圍攻擊）\n只能攻擊紅色和黑色敵人，但有時候可使其攻擊無效化", "在女僕咖啡廳打工時被捲入戰鬥的女孩\n使用強化後的動力裝甲強制讓壞蛋退場（範圍攻擊）\n只能攻擊紅色和黑色敵人，但有時候可使其攻擊無效化"]
@@ -8541,6 +8604,13 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  875:
+    name: [龍一, 龍一＆龍二]
+    desc: ["來自熱血硬派國夫君系列！\n從服部學園轉學過來的最強兄弟之一\n有時候能使有屬性敵人的攻擊力下降（範圍攻擊）", "來自熱血硬派國夫君系列！接受忍者教育長大的\n最強雙截龍兄弟（遠距範圍攻擊）。有時候能使\n有屬性敵人的攻擊力下降，施放渾身一擊"]
+    stat: [{health: 2000, knockbacks: 4, speed: 20, cost: 2000, production_cooldown: 1650, attack_cooldown: 40, range: 550, width: 320, area_effect: 1, damage_0: 770, attack_time_0: 21, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_metal: 1, weaken_chance: 30, weaken_duration: 120, weaken_multiplier: 50, attack_duration: 48}, {health: 6600, knockbacks: 3, speed: 20, cost: 2000, production_cooldown: 1400, attack_cooldown: 30, range: 250, width: 320, area_effect: 1, damage_0: 250, long_range_0: 1, long_range_offset_0: 250, attack_time_0: 9, trigger_effects_0: 1, damage_1: 250, long_range_1: 1, long_range_offset_1: 250, attack_time_1: 17, trigger_effects_1: 1, damage_2: 320, long_range_2: 1, long_range_offset_2: 550, attack_time_2: 36, trigger_effects_2: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_metal: 1, weaken_chance: 20, weaken_duration: 120, weaken_multiplier: 50, savage_blow_chance: 30, savage_blow_modifier: 200, attack_duration: 63}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   876:
     name: ['735_1']
     desc: [精靈：能讓敵人的動作變慢]
@@ -8548,6 +8618,20 @@ cats:
     rarity: 4
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
+  877:
+    name: [756-1]
+    desc: [精靈：能打飛敵人並使其動作瞬間變慢]
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, slow_chance: 100, slow_duration: 60, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
+    growth: [20, 20, 20, 20, 20, 20]
+  878:
+    name: [因幡的白兔, 巨鯊戰白兔]
+    desc: ["創立運用鯊魚發展交通基礎建設的事業\n打破聯邦政府壟斷的企業家貓咪\n善於攻擊天使敵人與異星戰士（範圍攻擊）", "遭有心人士散布鯊魚暴走劑「INA・B100」導致生意\n受到阻撓的貓咪。憑著不屈的商業精神改善業務\n善於攻擊天使敵人與異星戰士（範圍攻擊）"]
+    stat: [{health: 2200, knockbacks: 2, speed: 12, cost: 650, production_cooldown: 300, range: 250, width: 320, area_effect: 1, damage_0: 450, attack_time_0: 17, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 5, savage_blow_modifier: 200, alternate_production_cooldown_multiplier: 50, immune_weaken: 1, attack_duration: 71}, {health: 5500, knockbacks: 4, speed: 30, cost: 3100, production_cooldown: 1700, range: 380, width: 320, area_effect: 1, damage_0: 2200, attack_time_0: 21, trigger_effects_0: 1, against_angel: 1, against_alien: 1, strong: 1, savage_blow_chance: 15, savage_blow_modifier: 200, alternate_production_cooldown_multiplier: 75, immune_weaken: 1, attack_duration: 170}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
 gacha:
   0:
     cats: [154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31]
@@ -14272,20 +14356,60 @@ gacha:
   1079:
     cats: [497, 170, 831, 360, 44, 87, 526, 775, 272, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 57
-    name: 熱血角色大集合的「熱血!大運動會」轉蛋新登場！★點圖確認詳細吧!!
+    name: 熱血角色大集合的「熱血!大運動會」轉蛋陣容更新！★點圖確認詳細吧!!
     rate: no_legend
-    similarity: 76
   1080:
     cats: [73, 172, 106, 720, 764, 86, 693, 195, 273, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
     series_id: 75
-    name: 熱血角色大集合的「熱血!大運動會」轉蛋新登場！★點圖確認詳細吧!!
+    name: "「龍一」參戰！「熱血！大運動會」轉蛋登場！★點圖確認詳細吧!!"
     rate: no_legend
-    similarity: 80
   1081:
     cats: [865, 866, 363, 364, 365, 366, 367, 368, 369, 457, 461, 371, 372, 373, 459, 460, 523, 378, 308, 200, 154, 153, 152, 151, 62, 41, 40, 37, 36, 34, 33, 32, 31, 524, 496, 377, 326, 309, 199, 198, 150, 149, 148, 147, 146, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 39, 38]
     series_id: 34
     name: 全新超激稀有角色「衛宮士郎」、「真Assassin」參戰！★點圖確認詳細吧!!
     rate: no_legend
+  1082:
+    cats: [882, 881, 880, 879, 747, 748, 749, 750, 751, 751, 751, 752, 752, 752, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 63
+    name: 共有6位限定角色的「神劍闖江湖」轉蛋登場！★點圖確認詳細吧!!
+    rate: no_legend
+    similarity: 92
+  1083:
+    cats: [878, 770, 693, 634, 526, 452, 323, 204, 139, 138, 137, 136, 135, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 6
+    name: 進化後會有召喚能力的「開花爺爺」參戰！★點圖確認詳細吧!!
+    rate: regular
+    similarity: 99
+  1084:
+    cats: [878, 770, 693, 634, 526, 452, 323, 204, 139, 138, 137, 136, 135, 448, 447, 446, 445, 444, 201, 145, 132, 130, 238, 239, 240, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 6
+    name: 進化後會有召喚能力的「開花爺爺」參戰！★點圖確認詳細吧!!
+    rate: regular
+    similarity: 99
+  1085:
+    cats: [878, 870, 862, 851, 838, 831, 818, 812, 800, 782, 780, 775, 770, 764, 761, 755, 734, 732, 724, 720, 716, 713, 699, 693, 691, 675, 669, 661, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 595, 586, 570, 547, 535, 534, 530, 526, 524, 523, 496, 520, 506, 503, 497, 440, 437, 432, 428, 418, 402, 397, 381, 378, 377, 362, 361, 360, 356, 352, 339, 326, 323, 319, 317, 307, 306, 305, 308, 309, 273, 272, 270, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 19
+    name: "「幼騎士路諾」登場！包含多位強力限定角色的特別轉蛋登場！"
+    rate: uberfest_legend
+    similarity: 99
+  1086:
+    cats: [878, 870, 862, 860, 851, 831, 818, 812, 800, 788, 782, 775, 770, 764, 761, 755, 739, 734, 724, 720, 716, 713, 706, 699, 693, 675, 669, 661, 658, 656, 650, 648, 643, 635, 634, 633, 632, 626, 621, 620, 619, 618, 610, 595, 570, 547, 544, 535, 534, 526, 524, 523, 496, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 397, 379, 378, 377, 362, 361, 360, 356, 352, 339, 334, 326, 323, 317, 307, 306, 305, 308, 309, 273, 272, 35, 43, 44, 45, 58, 60, 72, 73, 74, 76, 77, 84, 85, 86, 87, 88, 106, 107, 108, 125, 126, 135, 136, 137, 138, 139, 144, 159, 160, 169, 170, 171, 172, 178, 195, 196, 197, 204, 213, 227, 262, 241, 258, 259, 260, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 27
+    name: "「孤月騎士路諾斯」登場！包含多位強力限定角色的特別轉蛋登場！"
+    rate: uberfest_legend
+    similarity: 99
+  1087:
+    cats: [878, 870, 862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 734, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 586, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 21
+    name: 必出超激稀有角色的白金轉蛋！快來獲得心儀的貓咪吧！
+    rate: platinum
+    similarity: 99
+  1088:
+    cats: [878, 870, 862, 860, 851, 838, 831, 818, 812, 800, 788, 782, 780, 775, 770, 764, 761, 755, 739, 734, 732, 724, 720, 716, 713, 706, 699, 693, 691, 687, 675, 669, 661, 658, 656, 650, 648, 643, 642, 635, 634, 633, 632, 626, 621, 620, 619, 618, 613, 610, 595, 587, 586, 494, 482, 479, 464, 462, 456, 452, 451, 450, 449, 570, 560, 547, 544, 535, 534, 530, 526, 520, 506, 503, 497, 442, 440, 437, 432, 428, 418, 402, 398, 397, 381, 379, 362, 361, 360, 356, 352, 339, 334, 323, 319, 317, 307, 306, 305, 287, 284, 270, 35, 169, 170, 171, 172, 241, 43, 44, 45, 58, 60, 144, 72, 73, 74, 125, 126, 159, 76, 77, 106, 107, 108, 160, 84, 85, 86, 87, 88, 178, 135, 136, 137, 138, 139, 204, 195, 196, 197, 213, 227, 262, 258, 259, 260, 272, 273]
+    series_id: 46
+    name: 必定可以獲得1隻超激稀有等級以上角色的「傳說轉蛋」！
+    rate: legend
+    similarity: 99
 banners:
   0:
     event: 2026-10-16_986
@@ -14304,7 +14428,7 @@ banners:
   7:
     event: 2026-10-20_947
   8:
-    event: 2026-10-30_926
+    event: 2026-11-09_926
   9:
     event: 2025-12-25_940
   10:
@@ -14394,7 +14518,7 @@ banners:
   56:
     event: 2026-09-25_772
   57:
-    event: 2024-12-13_848
+    event: 2026-11-09_1079
   58:
     event: 2024-12-13_924
   59:
@@ -14429,6 +14553,8 @@ banners:
     event: 2025-08-13_1003
   74:
     event: 2026-03-27_1050
+  75:
+    event: 2026-11-09_1080
 events:
   2018-08-03_310:
     start_on: 2018-08-03
@@ -35502,3 +35628,60 @@ events:
     rare: 7000
     supa: 2500
     uber: 500
+  2026-11-02_1079:
+    start_on: 2026-11-02
+    end_on: 2026-11-16
+    version: '150700'
+    name: 熱血角色大集合的「熱血!大運動會」轉蛋陣容更新！★點圖確認詳細吧!!
+    id: 1079
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-11-02_1080:
+    start_on: 2026-11-02
+    end_on: 2026-11-16
+    version: '150700'
+    name: "「龍一」參戰！「熱血！大運動會」轉蛋登場！★點圖確認詳細吧!!"
+    id: 1080
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-11-02_926:
+    start_on: 2026-11-02
+    end_on: 2026-11-16
+    version: '150700'
+    name: 萬聖節裝扮的限定角色們大集合！★點圖確認詳細吧!!
+    id: 926
+    rare: 7000
+    supa: 2500
+    uber: 500
+  2026-11-09_1079:
+    start_on: 2026-11-09
+    end_on: 2026-11-16
+    version: '150700'
+    name: 熱血角色大集合的「熱血!大運動會」轉蛋陣容更新！★點圖確認詳細吧!!
+    id: 1079
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-11-09_1080:
+    start_on: 2026-11-09
+    end_on: 2026-11-16
+    version: '150700'
+    name: "「龍一」參戰！「熱血！大運動會」轉蛋登場！★點圖確認詳細吧!!"
+    id: 1080
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-11-09_926:
+    start_on: 2026-11-09
+    end_on: 2026-11-16
+    version: '150700'
+    name: 萬聖節裝扮的限定角色們大集合！★點圖確認詳細吧!!
+    id: 926
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true

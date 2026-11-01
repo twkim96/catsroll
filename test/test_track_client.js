@@ -26,6 +26,7 @@ const context = {
   renderGeneration: 0,
   discardTracks() {},
   cancelPendingRegion() {},
+  needsLastConfirmation() { return false; },
   originalRoll(element) { originalElement = element; },
   handleRegionChange(element) { regionChange = element; },
   navigate(query) { navigated = query; },

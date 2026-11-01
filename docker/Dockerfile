@@ -1,5 +1,5 @@
 # https://github.com/docker-library/ruby/blob/4ea2e7e222ba458994a266920e8815140bc2c901/3.4/alpine3.24/Dockerfile
-FROM ruby:3.4-alpine
+FROM ruby:4.0-alpine
 
 WORKDIR /battle-cats-rolls
 RUN apk add --no-cache git
@@ -10,13 +10,13 @@ RUN --mount=type=bind,target=/host.git,readonly \
 
 RUN set -eux; \
   apk add --no-cache linux-headers build-base; \
-  bundle config set without 'cache:test'; \
+  bundle config set without 'server:cache:test'; \
   bundle install; \
-  gem install lru_redux; \
+  gem install puma lru_redux; \
   env CC=gcc Seeker/bin/build-VampireFlower.sh; \
   chown -R nobody:nobody .; \
   apk del linux-headers build-base
 
 USER nobody
 ENTRYPOINT ["docker/entrypoint.sh"]
-CMD ["bin/server"]
+CMD ["bin/server-puma"]

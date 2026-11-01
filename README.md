@@ -22,10 +22,18 @@ optional ones:
 If you would like to avoid installing unnecessary dependencies:
 
     gem install bundler
-    bundle config set without 'cache:test'
+    bundle config set without 'server:cache:test'
     bundle install
 
-And you should pick a caching strategy by choosing one:
+And you should pick a server by choosing one:
+
+* The battle tested one: `gem install yahns raindrops`
+  * To run with yahns, run `./bin/server-yahns`
+* If you're using Ruby 4+, only puma works: `gem install puma`
+  * To run with puma, run `./bin/server-puma`
+* For now `./bin/server` is a symbolic link to `./bin/server-yahns`
+
+Then pick a caching strategy by choosing one:
 
 - Set up memcached and run `gem install dalli`
 - Use LRU cache so run `gem install lru_redux`

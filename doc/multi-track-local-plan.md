@@ -1,5 +1,32 @@
 # Local Multi Track Page Plan
 
+## Upstream and fork boundaries
+
+일반 배열의 서버 계산은 upstream의 Ruby `FindCat`과 `found_cats.erb`,
+`found_cats_listing.erb`를 그대로 사용한다. 선택한 Find next 대상은 최대 5개 위치를
+검색하고, 나머지 특수·레전드는 캐릭터별 첫 위치를 표시한다. 서버 검색을 덮어쓰는
+포크 전용 Ruby 확장은 두지 않는다. 멀티 안내는 `LocalView#erb`에서 해당 결과 앞에
+추가하며, upstream의 검색 결과 템플릿 안에 끼워 넣지 않는다.
+
+일반 배열의 내 기기 연산과 Multi/GPT Multi는 같은 `asset/track-engine.js`를 사용한다.
+이 구간은 캐릭터별 화면 내 모든 위치를 한 줄로 표시하며, 화면에 없을 때만 이후의
+첫 위치를 찾는 기존 동작을 유지한다. 보조 검색 상한은 999이고, 일반 배열의
+계산 방식 전환은 결과 목록의 검색 범위도 바꾼다. 원래 배열·R/G/RG 계산 규칙을
+편의 기능 때문에 변경하거나 서버 계산으로 자동 전환하지 않는다.
+
+모든 화면은 명시한 검색 대상을 **Found cats**, 나머지 자동 검색 결과를
+**Exclusive and legend cats**로 나눈다. 선택 대상이 특수·레전드이기도 하면
+Found cats에만 표시하고, 빈 그룹은 생략한다. Multi는 계산에 사용한 목표로
+그룹을 확정하므로 적용 전 목표 편집이 이전 결과의 분류를 바꾸지 않는다.
+기기 계산의 위치 링크와 배너별 묶음은 유지한다. 추가 Found 위치는 실제 획득 경로나
+공유 배열 범위를 증명하지 않는다.
+
+upstream 변경은 가능한 한 원본에 유지하고 포크 편의 기능은 `local/`·전용 asset과
+작은 연동 훅에 둔다. 이번 분리는 검색/목록 경계에 한정하며 기존의 다른 원본 파일
+확장까지 모두 분리한 것은 아니다. 관련 검사는 upstream `test/test_find.rb`,
+`test/test_find_cat.rb`, `test/test_local_view.rb`, `test/test_multi_track_data.js`와
+`test/test_found_cats.cjs`를 사용한다.
+
 ## Regional display names
 
 JP event titles use the existing Korean match for the same gacha ID within the

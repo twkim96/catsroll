@@ -2,6 +2,7 @@
 require 'pork/auto'
 require 'battle-cats-rolls/server'
 require 'muack'
+require 'nokogiri'
 
 describe 'local view features' do
   include Muack::API
@@ -45,16 +46,14 @@ describe 'local view features' do
     expect(html).include?('data-expand-kind="guaranteed"')
   end
 
-  would 'link displayed positions and leave supplemental positions plain' do
-    cat = BattleCatsRolls::FindCat::Found.new(
-      cat: BattleCatsRolls::Cat.new(id: 1),
-      numbers: %w[3A 4BG 142B])
-    html = view.__send__(:found_cat_numbers, cat)
+  would 'add Multi navigation without changing upstream found results' do
+    html = BattleCatsRolls::View.new(route, found_cats: {}).__send__(:erb, :found_cats)
+    doc = Nokogiri::HTML.fragment(html)
 
-    expect(html).include?('<a href="#N3A">3A</a>')
-    expect(html).include?('<a href="#N4B">4BG</a>')
-    expect(html).include?('142B')
-    expect(html).not.include?('#N142B')
+    expect(doc.css('.multi_track_prompt a').size).eq 1
+    expect(doc.at_css('.multi_track_prompt a')['href']).include?('/multi')
+    expect(doc.at_css('.found_cats').text.strip).eq ''
+    expect(doc.css('.found_cats .multi_track_prompt')).empty?
   end
 
   def local_cat

@@ -1,0 +1,10 @@
+<ul>
+  <% arg[:cats].each do |cat| %>
+    <li>
+      <span class="position <%= cat.score_rarity_label %>">
+        <%= link_to_roll(cat) %>
+      </span>:
+      <%= cat.number %>
+    </li>
+  <% end %>
+</ul>

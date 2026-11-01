@@ -10,6 +10,8 @@ const event = '2019-01-23_348';
     async function notesFollowTable() {
       assert.equal(await page.locator('#content .table').count(), 1);
       assert.equal(await page.locator('#content .note').count(), 1);
+      assert.equal(await page.locator('#content .multi_track_prompt').count(), 1,
+        'switching from upstream results must replace the local Multi prompt exactly once');
       assert.equal(await page.locator('#content .table').evaluate(table =>
         !!(table.compareDocumentPosition(document.querySelector('#content .note')) &
           Node.DOCUMENT_POSITION_FOLLOWING)), true,

@@ -8,9 +8,12 @@ gem 'tilt'
 gem 'rack', ENV['RACK_VERSION']
 gem 'promise_pool'
 
-platforms :ruby do
+group :server do
+  # Pick one for server
   gem 'yahns'
   gem 'raindrops'
+
+  gem 'puma'
 end
 
 group :cache do
@@ -23,4 +26,5 @@ group :test do
   gem 'rake'
   gem 'pork'
   gem 'muack'
+  gem 'nokogiri'
 end

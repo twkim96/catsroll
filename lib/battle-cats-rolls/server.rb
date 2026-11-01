@@ -3,25 +3,16 @@
 require_relative 'root'
 require_relative 'web'
 require_relative 'local_features'
+require_relative 'server_status'
 
 require 'jellyfish'
 require 'rack'
-require 'raindrops'
 
 module BattleCatsRolls
-  class YahnsStatus < Raindrops::Middleware
-    def stats_response
-      result = super
-      headers = result[1]
-      headers[Rack::CONTENT_LENGTH] ||= headers.delete('Content-Length')
-      headers[Rack::CONTENT_TYPE] ||= headers.delete('Content-Type')
-      result
-    end
-  end
-
+  server_status = ServerStatus.middleware
   Server = Jellyfish::Builder.app do
     use Rack::Deflater
-    use YahnsStatus, path: '/yahns/status', listeners: [WebBind, SeekBind]
+    use *server_status if server_status
 
     use Rack::ContentLength
     use Rack::ContentType, 'text/html; charset=utf-8'

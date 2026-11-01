@@ -6,21 +6,10 @@ module BattleCatsRolls
   module LocalView
     private
 
-    def found_cat_numbers cat
-      numbers = cat.respond_to?(:numbers) ? cat.numbers : [cat.number]
-      numbers.map{ |number| found_cat_number_link(number) }.join(', ')
-    end
-
-    def found_cat_number_link number
-      anchor = number.to_s.gsub(/[RGX]/, '')
-      sequence = anchor.to_i
-      label = h(number.to_s)
-
-      if sequence.between?(1, route.count)
-        %Q{<a href="#N#{h(anchor)}">#{label}</a>}
-      else
-        label
-      end
+    # Keep fork navigation outside upstream's result templates and search API.
+    def erb name, nested_arg=nil, &block
+      html = super
+      name == :found_cats ? local_partial(:local_found_prompt) + html : html
     end
 
     def td cat, type, rowspan: 1, content: nil, rerolled: nil

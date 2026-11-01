@@ -1,6 +1,34 @@
 
 # Test the following edge cases:
 
+## Found cats and upstream integration
+
+검색/표시 소유권은 [Multi 문서](multi-track-local-plan.md#upstream-and-fork-boundaries)에 둔다.
+기존 Ruby 테스트는 `battle-cats-rolls/server`를 미리 불러 포크 확장이 적용된 상태에서 실행한다.
+임시 worktree에 로컬 `.ruby-version`이 없으면 원래 프로젝트와 같은 Ruby를 명시해 실행한다.
+`test_gpt_results.rb`는 `test_gpt_mcp.rb`와 별도 Ruby 프로세스로 실행한다.
+두 파일을 한 프로세스에 합치면 익명 공유 속도 제한 상태가 누적될 수 있다.
+
+`test_found_cats.cjs`는 같은 실제 풀에서 서버의 최대 5개 검색과 기기 계산의
+한 줄 표시·보조 검색, 모드 전환 시 멀티 안내 중복 방지, Multi 목표/자동 목록 분리를 확인한다.
+별도로 실행한 로컬 서버와 아래 Playwright 환경을 사용한다.
+
+    CATSROLL_TEST_URL=http://127.0.0.1:17867 node test/test_found_cats.cjs
+
+### 기존 검사에서 남은 차이
+
+아래 항목은 병합 전 `246c3f2f`에서도 재현된다. upstream 검색/목록 통합의 통과와
+구분하며, 기존 assertion과 계약 스냅샷을 그대로 유지한다.
+
+- `test_local_web.rb`: custom gacha의 시리즈 필터가 전체 목록을 반환하는 사례,
+  Multi Find 적용 UI의 이전 소스 문자열을 기대하는 사례.
+- `test_gpt_mcp_contract.rb`: 고정 스냅샷에 최근 티어·확정 배너 도구 설명/입력 및
+  캐릭터 형태 이름의 변경이 반영되지 않은 차이.
+- `test_gpt_browser.cjs`: 공유 메시지의 짧은 후속 문구를 기대하지만 전체 결과 문구가
+  전달되는 차이. 새 목록 분리는 `test_found_cats.cjs`에서 같은 모의 호스트로 별도 확인한다.
+- 서버 시작의 `/warmup`에서 `view/.erb`를 찾지 못하는 로그도 병합 전 코드에서
+  재현된다. 일반 화면·Multi·GPT 응답 확인과 warmup 성공은 구분한다.
+
 ## Event filters
 
 The fork keeps neutral button defaults in `view/local_styles.erb`, separate from

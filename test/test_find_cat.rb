@@ -34,30 +34,27 @@ describe BattleCatsRolls::FindCat do
     end
   end
 
-  would 'show all positions already present in displayed cats' do
-    found = BattleCatsRolls::FindCat.new(gacha(1), [1]).search(
+  would 'retain upstream five-occurrence search when local features are loaded' do
+    found = BattleCatsRolls::FindCat.search(gacha(1), 1,
       cats: [
-        [cat(1, '1A'), cat(2, '1B')],
-        [cat(2, '2A'), cat(1, '2B')],
-        [cat(1, '3A'), cat(2, '3B')]
+        [cat(1, '1A'), cat(1, '1B')],
+        [cat(1, '2A'), cat(1, '2B')],
+        [cat(1, '3A'), cat(1, '3B')]
       ],
       max: 3)
 
-    expect(found.size).eq 1
-    expect(found.first.id).eq 1
-    expect(found.first.number).eq '1A, 2B, 3A'
+    expect(found.keys).eq [1]
+    expect(found[1].map(&:number)).eq %w[1A 1B 2A 2B 3A]
   end
 
-  would 'keep supplemental search to the first position beyond displayed cats' do
+  would 'keep upstream exclusive results at their first occurrence' do
     rolls = {
-      3 => [cat(1, '3A'), cat(2, '3B')],
-      4 => [cat(1, '4A'), cat(2, '4B')]
+      3 => [cat(270, '3A'), cat(270, '3B')]
     }
-    found = BattleCatsRolls::FindCat.new(gacha(1, 2, rolls: rolls), [1, 2]).
-      search(cats: [[cat(1, '1A'), cat(0, '1B')]], max: 4)
+    found = BattleCatsRolls::FindCat.search(gacha(270, rolls: rolls), 0,
+      cats: [[cat(270, '1A'), cat(270, '1B')]], max: 4)
 
-    expect(found.map(&:id)).eq [1, 2]
-    expect(found[0].number).eq '1A'
-    expect(found[1].number).eq '3B'
+    expect(found.keys).eq [270]
+    expect(found[270].map(&:number)).eq ['1A']
   end
 end

@@ -1,38 +1,16 @@
 # frozen_string_literal: true
 
-require 'pork/auto'
-require 'battle-cats-rolls/web'
-require 'battle-cats-rolls/route'
+require 'battle-cats-rolls/test'
 
 describe BattleCatsRolls::Web do
+  include BattleCatsRolls::Test
+
   text_select_event = '(Select an event here)'
   text_selected_group = '<optgroup label="Selected:">'
   text_label_gacha_pool = 'Gacha pool:'
   text_label_event_details = 'Event details:'
   text_label_guaranteed_event_details = 'Guaranteed event details:'
   text_label_step_up_event_details = 'Step-up event details:'
-
-  web = BattleCatsRolls::Web.new
-  web.call('PATH_INFO' => '/warmup')
-
-  BattleCatsRolls::Route.reload_balls
-
-  define_method(:expect_request) do |path_or_uri, query='',
-    status: 200, &block|
-    if path_or_uri.kind_of?(URI)
-      query = path_or_uri.query
-      path = path_or_uri.path
-    else
-      path = path_or_uri
-    end
-
-    response_status, headers, body = web.call(
-      'PATH_INFO' => path, 'QUERY_STRING' => query)
-
-    expect(response_status).eq status
-
-    block&.call(body.first, headers)
-  end
 
   %w[/ /cats /help /logs].each do |path|
     would "respond 200 for #{path}" do
@@ -48,6 +26,7 @@ describe BattleCatsRolls::Web do
     expect_request('/cats/9999')
   end
 
+  BattleCatsRolls::Test.web
   BattleCatsRolls::Route.ball_jp.cats.each_key do |id|
     would "respond 200 for /cats/#{id}?lang=jp" do
       expect_request("/cats/#{id}", 'lang=jp')
