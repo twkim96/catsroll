@@ -73,7 +73,8 @@
       function roll(element) {
         element.form.submit();
       };
-      function pick(position) {
+      function pick(position, event) {
+        if(event.target.closest('a')) return;
         window.location = '<%= route.uri %>' + '&pick=' + position
           + '#N' + position.replace(/[RGX]/g, '');
       };

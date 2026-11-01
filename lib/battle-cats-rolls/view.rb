@@ -851,7 +851,7 @@ module BattleCatsRolls
           "#{cat.number}X"
         end
 
-      %Q{onclick="pick('#{number}')"}
+      %Q{onclick="pick('#{number}', event)"}
     end
 
     def uri_to_wiki cat
