@@ -248,7 +248,7 @@ input:focus, select:focus, button:focus-visible { border-color: var(--accent); o
 .gpt-shell .multi-track-table td,.gpt-shell .multi-track-table th {font-size:12px;padding:5px;}
 .gpt-shell .multi-track-table {min-width:0;}
 .gpt-share {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0;}
-.gpt-share button {padding:8px 12px;border:1px solid var(--line);border-radius:8px;margin:0;}
+#multi-actions, #seek-actions {justify-content:flex-start;flex-wrap:wrap;}
 .gpt-share span,.gpt-footer {color:var(--muted);font-size:11px;}
 .gpt-footer {margin:14px 0 0;}
 #seek-panel {margin-top:12px;border:1px solid var(--line);background:#fff;padding:12px;border-radius:8px;}
