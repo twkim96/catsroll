@@ -329,17 +329,17 @@ describe 'Catsroll tier recommendations adapter' do
       sourced = details.fetch('source_ratings')
       expect(sourced.size).eq 12
       expect(sourced.map { |item| item.fetch('tier') }).eq tiers
-      expect(sourced.all? { |item| item.fetch('source') == source }).eq true
+      expect(sourced.all? { |item| item.fetch('source') == source.reject { |key, _| key == 'url' } }).eq true
       expect(sourced.first.fetch('evaluated_form')).eq BALL.cats.fetch(107).fetch('name').fetch(1)
       expect(sourced.last.fetch('form_index')).eq 2
       expect(sourced.last.fetch('investment')).eq 'ultra'
       expect(sourced.last.fetch('requirements')).eq 'source condition 11'
       expect(sourced[6].fetch('tier_range')).eq 'SS/S'
       expect(sourced[6].fetch('tier_conservative_rank')).eq 'S'
-      expect(details.fetch('tier_source')).eq source
+      expect(details.fetch('tier_source')).eq source.reject { |key, _| key == 'url' }
       expect(details.fetch('pending_evaluations')).eq [{
         'cat_id' => 107, 'source_image' => 20, 'note' => 'transcription pending',
-        'kind' => 'pending_source_evaluation', 'status' => 'pending', 'source' => source
+        'kind' => 'pending_source_evaluation', 'status' => 'pending', 'source' => source.reject { |key, _| key == 'url' }
       }]
       expect(details.key?('tier')).eq false
     end
@@ -393,7 +393,7 @@ describe 'Catsroll tier recommendations adapter' do
       candidate = final.find { |item| item.fetch('cat_id') == id }
       expect(candidate.fetch('tier')).eq 'SS'
       expect(candidate.fetch('form_index')).eq 3
-      expect(candidate.fetch('source').fetch('url')).eq 'https://fronthefrost.github.io/Bestnyanko/souls/souls.html'
+      expect(candidate.fetch('source').key?('url')).eq false
       expect(candidate.fetch('previous_evaluations').empty?).eq false
       expect(candidate.fetch('evaluation_assumptions').fetch('source_tier_talent_conditions')).eq 'unspecified'
     end
@@ -411,5 +411,19 @@ describe 'Catsroll tier recommendations adapter' do
     expect(gift.fetch('acquisition_scope')).eq 'not_in_current_gacha_slots'
     expect(Recommendations.new.lookup('limit' => 10).fetch('recommendations').any? { |item| item.fetch('cat_id') == 625 }).eq false
     expect(Recommendations.new.lookup('limit' => 10).fetch('unavailable_cat_ids').include?(878)).eq true
+  end
+
+  would 'keep provenance links internal across recommendations and character details' do
+    knowledge = BattleCatsRolls::GptCharacterKnowledge.new
+    high = Recommendations.new.lookup('limit' => 3)
+    low = Recommendations.new.lookup('investment' => 'talents', 'limit' => 3)
+    payloads = [high, low, knowledge.details(BALL, 107), knowledge.details(BALL, 139), knowledge.notes(BALL, 107)]
+    payloads.each do |payload|
+      expect(JSON.generate(payload).match?(%r{https?://})).eq false
+    end
+    expect(high.fetch('citation_policy').include?('Do not display')).eq true
+    expect(high.fetch('recommendations').first.fetch('source').fetch('title').empty?).eq false
+    expect(knowledge.details(BALL, 107).fetch('source_notes').empty?).eq false
+    expect(JSON.parse(File.read(Recommendations::DEFAULT_PATH)).fetch('source').key?('url')).eq true
   end
 end

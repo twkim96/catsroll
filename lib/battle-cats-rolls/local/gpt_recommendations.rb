@@ -97,8 +97,9 @@ module BattleCatsRolls
         candidate['other_form_notes'] = knowledge.notes(ball, candidate.fetch('cat_id')) - candidate['source_notes']
       end
 
-      {
+      GptTierCatalog.without_links({
         'status' => 'ok',
+        'citation_policy' => GptTierCatalog::CITATION_POLICY,
         'source' => active_role == 'final_build' ? dataset.fetch('source') : dataset.fetch('sources').last,
         'sources' => dataset.fetch('sources', [dataset.fetch('source')]),
         'growth_mode' => high_growth ? 'high_growth' : 'low_growth',
@@ -122,7 +123,7 @@ module BattleCatsRolls
         'recommendations' => selected,
         'unavailable_cat_ids' => unavailable_ids.uniq.sort,
         'excluded_event_cat_ids' => excluded_event_ids.uniq.sort
-      }
+      })
     end
 
     private

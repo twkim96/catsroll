@@ -41,7 +41,7 @@ module BattleCatsRolls
         next if investment && index && INVESTMENT_RANK.fetch(note.fetch('investment')) > INVESTMENT_RANK.fetch(investment)
 
         result = {'kind' => 'source_opinion', 'summary' => note.fetch('summary'),
-          'source' => @data.fetch('sources').fetch(note.fetch('source_id'))}
+          'source' => GptTierCatalog.without_links(@data.fetch('sources').fetch(note.fetch('source_id')))}
         if index
           result['evaluation_context'] = {'form_index' => index,
             'form_name' => info.fetch('name').fetch(index), 'investment' => note.fetch('investment')}
@@ -59,7 +59,8 @@ module BattleCatsRolls
          'base_traits' => stat.abilities.grep(specialization).flat_map(&:list).map(&:downcase).uniq,
          'base_abilities' => stat.abilities.reject { |ability| ability.is_a?(specialization) }.map(&:name).uniq}
       end
-      {'forms' => forms, 'talents' => Talent.build(info).map { |talent| {'ability' => talent.name, 'ultra' => talent.ultra?} },
+      GptTierCatalog.without_links({'forms' => forms, 'talents' => Talent.build(info).map { |talent| {'ability' => talent.name, 'ultra' => talent.ultra?} },
+       'citation_policy' => GptTierCatalog::CITATION_POLICY,
        'metadata_scope' => 'Base form abilities; talent entries identify available upgrades, not unlocked account state. See recommendation evaluated form for applied talents.',
        'source_notes' => notes(ball, id),
        'tier_source' => tier_data['source'],
@@ -68,11 +69,11 @@ module BattleCatsRolls
        'tier_notice' => TIER_NOTICE,
        'tier_range_notice' => TIER_RANGE_NOTICE,
        'source_ratings' => source_ratings(ball, id, tier_data),
-       'pending_evaluations' => pending_evaluations(id, tier_data)}
+       'pending_evaluations' => pending_evaluations(id, tier_data)})
     end
 
     def ratings_for(ball, id)
-      source_ratings(ball, id, tier_data)
+      GptTierCatalog.without_links(source_ratings(ball, id, tier_data))
     end
 
     private
