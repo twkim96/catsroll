@@ -99,7 +99,6 @@ module BattleCatsRolls
 
       GptTierCatalog.without_links({
         'status' => 'ok',
-        'citation_policy' => GptTierCatalog::CITATION_POLICY,
         'source' => active_role == 'final_build' ? dataset.fetch('source') : dataset.fetch('sources').last,
         'sources' => dataset.fetch('sources', [dataset.fetch('source')]),
         'growth_mode' => high_growth ? 'high_growth' : 'low_growth',

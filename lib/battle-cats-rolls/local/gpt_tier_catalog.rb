@@ -7,8 +7,6 @@ module BattleCatsRolls
   class GptTierCatalog
     LEGACY_PATH = File.expand_path('../../../doc/gpt-knowledge/tier-picks.json', __dir__).freeze
     FINAL_PATH = File.expand_path('../../../doc/gpt-knowledge/final-tier-picks.json', __dir__).freeze
-    CITATION_POLICY = 'Do not display or invent external tier/evaluation source links. Source URLs are internal verification records; the owner will provide curated stable public references separately. Preserve evaluation conditions and source labels without hyperlinks.'.freeze
-
     def self.without_links(value)
       case value
       when Hash

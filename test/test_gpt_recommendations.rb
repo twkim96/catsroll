@@ -421,7 +421,6 @@ describe 'Catsroll tier recommendations adapter' do
     payloads.each do |payload|
       expect(JSON.generate(payload).match?(%r{https?://})).eq false
     end
-    expect(high.fetch('citation_policy').include?('Do not display')).eq true
     expect(high.fetch('recommendations').first.fetch('source').fetch('title').empty?).eq false
     expect(knowledge.details(BALL, 107).fetch('source_notes').empty?).eq false
     expect(JSON.parse(File.read(Recommendations::DEFAULT_PATH)).fetch('source').key?('url')).eq true

@@ -60,7 +60,6 @@ module BattleCatsRolls
          'base_abilities' => stat.abilities.reject { |ability| ability.is_a?(specialization) }.map(&:name).uniq}
       end
       GptTierCatalog.without_links({'forms' => forms, 'talents' => Talent.build(info).map { |talent| {'ability' => talent.name, 'ultra' => talent.ultra?} },
-       'citation_policy' => GptTierCatalog::CITATION_POLICY,
        'metadata_scope' => 'Base form abilities; talent entries identify available upgrades, not unlocked account state. See recommendation evaluated form for applied talents.',
        'source_notes' => notes(ball, id),
        'tier_source' => tier_data['source'],
