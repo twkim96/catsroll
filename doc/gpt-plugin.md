@@ -272,7 +272,7 @@ query가 가이드 표의 정의 용어나 정확한 절 이름이면 `status=co
 [FAQ 검토](gpt-knowledge-sources.md#2026-10-18-사용자-faq-초안-검토)에 유지한다.
 
 “뭐 뽑을까”·“빨적이 부족해”는 [추천 안내](gpt-knowledge/recommendations.md)에 따라
-`catsroll_recommend`로 후보를 고른다. 외부 티어 평가는 `tier-picks.json`에 ID/평가 형태/투자
+`catsroll_recommend`로 후보를 고른다. 저성장 평가는 기존 `tier-picks.json`, 고성장 평가는 Bestnyanko 매핑 `final-tier-picks.json`을 사용한다. 고성장은 새 평가로 대체하며 저성장 평가와 섞지 않는다. 외부 티어 자료에는 ID/평가 형태/투자
 조건만 저장하며, 이름·대상 속성·능력을 복제하지 않는다. 실제 `ball.cats`와 `Stat`/`Talent`에서
 평가 형태 정보를 읽어 연결한다. 전체 등급과 경계 범위를 저장하고 추천은 기본 5종·최대 10종으로 제한한다. 개별 `catsroll_cats(details=true)`의 `source_ratings`로 모든 평가 형태를 조회하며 미확정 매칭은 `pending_evaluations`로 구별한다. 자세한 선별·검증은 [티어 출처](gpt-tier-sources.md)에 있다.
 추가 6개 글은 `character-notes.json`의 ID별 용도/제약 의견으로 연결한다. 수집 우선순위와

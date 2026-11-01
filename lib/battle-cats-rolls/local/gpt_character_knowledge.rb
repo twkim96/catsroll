@@ -2,6 +2,7 @@
 
 require 'json'
 require_relative '../character_aliases'
+require_relative 'gpt_tier_catalog'
 
 module BattleCatsRolls
   # Source opinions stay separate from the live game's names and mechanics.
@@ -12,9 +13,10 @@ module BattleCatsRolls
     TIER_NOTICE = 'Source ratings are opinions within each series and are not globally equivalent.'.freeze
     TIER_RANGE_NOTICE = 'A tier range preserves an ambiguous source-chart boundary; its lower end is used only for recommendation sorting.'.freeze
 
-    def initialize(tier_path: TIER_PATH)
+    def initialize(tier_path: TIER_PATH, final_path: nil)
       @data = JSON.parse(File.read(PATH, encoding: 'UTF-8'))
       @tier_path = File.expand_path(tier_path)
+      @final_path = final_path
       @aliases = CharacterAliases.new
     end
 
@@ -61,10 +63,16 @@ module BattleCatsRolls
        'metadata_scope' => 'Base form abilities; talent entries identify available upgrades, not unlocked account state. See recommendation evaluated form for applied talents.',
        'source_notes' => notes(ball, id),
        'tier_source' => tier_data['source'],
+       'tier_sources' => tier_data['sources'],
+       'growth_policy' => 'Low growth uses earlier_evaluation with its form/investment gates; high growth uses final_build only. Earlier high-growth entries are historical comparisons, not the active final ranking. Do not fill a missing final rating from the earlier source.',
        'tier_notice' => TIER_NOTICE,
        'tier_range_notice' => TIER_RANGE_NOTICE,
        'source_ratings' => source_ratings(ball, id, tier_data),
        'pending_evaluations' => pending_evaluations(id, tier_data)}
+    end
+
+    def ratings_for(ball, id)
+      source_ratings(ball, id, tier_data)
     end
 
     private
@@ -74,18 +82,14 @@ module BattleCatsRolls
     end
 
     def tier_data
-      @tier_data ||= if File.file?(@tier_path)
-        JSON.parse(File.read(@tier_path, encoding: 'UTF-8'))
-      else
-        {}
-      end
+      @tier_data ||= GptTierCatalog.new(path: @tier_path, final_path: @final_path).data
     end
 
     def source_ratings(ball, id, data)
       info = ball.cats[id]
       return [] unless info
 
-      Array(data['ratings']).filter_map do |rating|
+      (Array(data['ratings']) + Array(data['reference_ratings'])).filter_map do |rating|
         next unless rating.is_a?(Hash) && rating['cat_id'] == id
 
         form_index = rating['form_index']
@@ -102,7 +106,10 @@ module BattleCatsRolls
           'evaluated_form' => form_name,
           'investment' => rating['investment'],
           'source_image_index' => rating['source_image'],
-          'source' => data['source'],
+          'source' => rating['source'] || data['source'],
+          'evaluation_role' => rating['evaluation_role'],
+          'evaluation_assumptions' => rating['evaluation_assumptions'],
+          'acquisition_scope' => rating['acquisition_scope'],
           'tier_notice' => TIER_NOTICE
         }
         if tier.is_a?(String) && tier.include?('/')
@@ -121,7 +128,7 @@ module BattleCatsRolls
           (entry['cat_id'] == id || Array(entry['cat_ids']).include?(id))
 
         entry.merge('kind' => 'pending_source_evaluation', 'status' => 'pending',
-          'source' => data['source'])
+          'source' => entry['source'] || data['source'])
       end
     end
   end

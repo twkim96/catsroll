@@ -14,7 +14,7 @@ describe 'Catsroll tier recommendations adapter' do
   Recommendations = BattleCatsRolls::GptRecommendations
   BALL = BattleCatsRolls::Route.load_ball('kr')
 
-  def adapter(ratings)
+  def adapter(ratings, final_ratings: nil)
     Dir.mktmpdir do |root|
       path = File.join(root, 'tier-picks.json')
       File.write(path, JSON.generate({
@@ -29,7 +29,16 @@ describe 'Catsroll tier recommendations adapter' do
         },
         'ratings' => ratings
       }), encoding: 'UTF-8')
-      yield Recommendations.new(path: path)
+      final_path = nil
+      if final_ratings
+        final_path = File.join(root, 'final-tier-picks.json')
+        final = JSON.parse(File.read(path))
+        final['source']['title'] = 'Final-build fixture'
+        final['source']['url'] = 'https://example.invalid/final'
+        final['ratings'] = final_ratings
+        File.write(final_path, JSON.generate(final), encoding: 'UTF-8')
+      end
+      yield Recommendations.new(path: path, final_path: final_path)
     end
   end
 
@@ -145,7 +154,7 @@ describe 'Catsroll tier recommendations adapter' do
       expect(defaults.fetch('returned_count')).eq 5
       expect(defaults.fetch('dataset_coverage')).eq({
         'source_claim' => 'fixture_subset', 'rating_entries' => 11,
-        'rated_characters' => 11, 'pending_evaluations' => 0
+        'rated_characters' => 11, 'pending_evaluations' => 0, 'reference_only_evaluations' => 0
       })
       expect(defaults.fetch('recommendations').first.fetch('tier')).eq 'SS'
     end
@@ -173,6 +182,47 @@ describe 'Catsroll tier recommendations adapter' do
         find { |item| item.fetch('cat_id') == 74 }
       expect(fourth_form.fetch('requirements')).eq 'form 4 gate'
       expect(fourth_form.fetch('form_names').size).eq 4
+    end
+  end
+
+  would 'prefer final-build source tiers while retaining earlier form and budget evaluations' do
+    earlier = [rating(74, series_id: 18, tier: 'SS', form_index: 2),
+      rating(196, series_id: 1, tier: 'B', form_index: 2, investment: 'talents')]
+    final = [rating(74, series_id: 18, tier: 'C', form_index: 3),
+      rating(196, series_id: 1, tier: 'SSS', form_index: 2, investment: 'ultra')]
+    adapter(earlier, final_ratings: final) do |recommendations|
+      result = recommendations.lookup({})
+      expect(result.fetch('investment_budget')).eq 'ultra'
+      expect(result.fetch('recommendations').map { |item| item.fetch('cat_id') }).eq [196, 74]
+      fourth = result.fetch('recommendations').last
+      expect(fourth.fetch('tier')).eq 'C'
+      expect(fourth.fetch('source').fetch('title')).eq 'Final-build fixture'
+      expect(fourth.fetch('evaluation_role')).eq 'final_build'
+      expect(fourth.fetch('previous_evaluations').first.fetch('tier')).eq 'SS'
+      expect(fourth.fetch('previous_evaluations').first.fetch('source').fetch('title')).eq 'Fixture tier guide'
+      expect(result.fetch('sources').size).eq 2
+      lower_budget = recommendations.lookup('investment' => 'talents').fetch('recommendations')
+      expect(lower_budget.map { |item| item.fetch('tier') }).eq %w[SS B]
+      expect(lower_budget.first.fetch('form_index')).eq 2
+      expect(lower_budget.first.fetch('final_evaluation').fetch('tier')).eq 'C'
+      expect(recommendations.lookup('max_form' => 2).fetch('recommendations').any? { |item| item.fetch('cat_id') == 74 }).eq false
+      before_fourth = recommendations.lookup('max_form' => 2, 'investment' => 'talents').fetch('recommendations').find { |item| item.fetch('cat_id') == 74 }
+      expect(before_fourth.fetch('tier')).eq 'SS'
+      no_talents = recommendations.lookup('investment' => 'none').fetch('recommendations')
+      expect(no_talents.map { |item| item.fetch('cat_id') }).eq [74]
+    end
+  end
+
+  would 'keep a final-source low-form rating out of low-growth recommendations' do
+    adapter([rating(3, series_id: 0, tier: 'S', form_index: 1), rating(1, series_id: 0, tier: 'SS', form_index: 0)],
+      final_ratings: [rating(3, series_id: 0, tier: 'D', form_index: 1)]) do |recommendations|
+      low = recommendations.lookup('investment' => 'none')
+      expect(low.fetch('growth_mode')).eq 'low_growth'
+      expect(low.fetch('recommendations').find { |item| item.fetch('cat_id') == 3 }.fetch('tier')).eq 'S'
+      high = recommendations.lookup({})
+      expect(high.fetch('growth_mode')).eq 'high_growth'
+      expect(high.fetch('recommendations').first.fetch('tier')).eq 'D'
+      expect(high.fetch('recommendations').map { |item| item.fetch('cat_id') }).eq [3]
     end
   end
 
@@ -322,5 +372,44 @@ describe 'Catsroll tier recommendations adapter' do
       end
     end
     expect(invalid_notes).eq []
+  end
+
+  would 'resolve final-source forms and expose fourth-form potential without rewriting earlier tiers' do
+    data = JSON.parse(File.read(BattleCatsRolls::GptTierCatalog::FINAL_PATH))
+    balls = [BALL, BattleCatsRolls::Route.load_ball('jp')]
+    invalid = data.fetch('ratings').reject do |rating|
+      balls.any? do |ball|
+        info = ball.cats[rating.fetch('cat_id')]
+        info && info.fetch('name')[rating.fetch('form_index')] && info.fetch('stat')[rating.fetch('form_index')] &&
+          ball.gacha.values.any? { |gacha| gacha['series_id'] == rating.fetch('series_id') &&
+            Array(gacha['cats']).flatten.include?(rating.fetch('cat_id')) }
+      end
+    end
+    expect(invalid).eq []
+    event = BattleCatsRolls::TrackApi.multi_events(BALL).find { |item| item[:series_id] == 6 }.fetch(:event)
+    recommendations = Recommendations.new
+    final = recommendations.lookup('event' => event, 'limit' => 10).fetch('recommendations')
+    [138, 139].each do |id|
+      candidate = final.find { |item| item.fetch('cat_id') == id }
+      expect(candidate.fetch('tier')).eq 'SS'
+      expect(candidate.fetch('form_index')).eq 3
+      expect(candidate.fetch('source').fetch('url')).eq 'https://fronthefrost.github.io/Bestnyanko/souls/souls.html'
+      expect(candidate.fetch('previous_evaluations').empty?).eq false
+      expect(candidate.fetch('evaluation_assumptions').fetch('source_tier_talent_conditions')).eq 'unspecified'
+    end
+    earlier = recommendations.lookup('event' => event, 'max_form' => 2, 'investment' => 'talents', 'limit' => 10).
+      fetch('recommendations').find { |item| item.fetch('cat_id') == 138 }
+    expect(earlier.fetch('evaluation_role')).eq 'earlier_evaluation'
+    expect(earlier.fetch('source').fetch('title')).eq '울슐랭 가이드'
+    expect(earlier.fetch('final_evaluation').fetch('form_index')).eq 3
+    details = BattleCatsRolls::GptCharacterKnowledge.new.details(BALL, 139)
+    expect(details.fetch('source_ratings').any? { |rating| rating['evaluation_role'] == 'final_build' }).eq true
+    expect(details.fetch('source_ratings').any? { |rating| rating['evaluation_role'] == 'earlier_evaluation' }).eq true
+    gift = BattleCatsRolls::GptCharacterKnowledge.new.details(BALL, 625).fetch('source_ratings').
+      find { |rating| rating['evaluation_role'] == 'final_build' }
+    expect(gift.fetch('tier')).eq 'SSS'
+    expect(gift.fetch('acquisition_scope')).eq 'not_in_current_gacha_slots'
+    expect(Recommendations.new.lookup('limit' => 10).fetch('recommendations').any? { |item| item.fetch('cat_id') == 625 }).eq false
+    expect(Recommendations.new.lookup('limit' => 10).fetch('unavailable_cat_ids').include?(878)).eq true
   end
 end

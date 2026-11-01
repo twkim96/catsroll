@@ -5,6 +5,7 @@ require_relative '../route'
 require_relative '../track_api'
 require_relative '../event_series_names'
 require_relative 'gpt_character_knowledge'
+require_relative 'gpt_tier_catalog'
 
 module BattleCatsRolls
   # Resolves curated, within-series ratings against the current Catsroll data.
@@ -15,7 +16,7 @@ module BattleCatsRolls
     INPUT_KEYS = %w[
       lang traits match event owned max_form investment limit
     ].freeze
-    TIER_LEVELS = %w[SS S A B C D].freeze
+    TIER_LEVELS = %w[SSS SS S A B C D].freeze
     TIERS = (TIER_LEVELS + TIER_LEVELS.each_cons(2).map { |upper, lower| "#{upper}/#{lower}" }).freeze
     TIER_RANK = TIER_LEVELS.each_with_index.to_h { |tier, index| [tier, TIER_LEVELS.size - index] }.freeze
     INVESTMENT_RANK = {'none' => 0, 'talents' => 1, 'ultra' => 2}.freeze
@@ -43,8 +44,9 @@ module BattleCatsRolls
     class InvalidInput < ArgumentError; end
     class InvalidDataset < StandardError; end
 
-    def initialize(path: DEFAULT_PATH)
+    def initialize(path: DEFAULT_PATH, final_path: nil)
       @path = File.expand_path(path)
+      @final_path = final_path
     end
 
     def lookup(args)
@@ -58,10 +60,17 @@ module BattleCatsRolls
       return unavailable_result(options, event_pool) unless dataset
 
       ratings = validate_dataset(dataset)
+      high_growth = options.fetch('investment') == 'ultra'
+      has_final_source = ratings.any? { |rating| rating['evaluation_role'] == 'final_build' }
+      if high_growth && (@path == DEFAULT_PATH || @final_path) && !has_final_source
+        return unavailable_result(options, event_pool)
+      end
+      active_role = high_growth && has_final_source ? 'final_build' : 'earlier_evaluation'
+      active_ratings = ratings.select { |rating| rating['evaluation_role'] == active_role }
       unavailable_ids = []
       excluded_event_ids = []
 
-      candidates = ratings.filter_map do |rating|
+      candidates = active_ratings.filter_map do |rating|
         candidate = candidate_for(rating, ball, options, event_pool)
         if candidate == :unavailable
           unavailable_ids << rating.fetch('cat_id')
@@ -78,15 +87,22 @@ module BattleCatsRolls
       ranked = rank(candidates, options.fetch('traits'))
       best_per_cat = ranked.uniq { |candidate| candidate.fetch('cat_id') }
       selected = best_per_cat.first(options.fetch('limit'))
-      knowledge = GptCharacterKnowledge.new
+      knowledge = GptCharacterKnowledge.new(tier_path: @path, final_path: @final_path)
       selected.each do |candidate|
         candidate['source_notes'] = knowledge.notes(ball, candidate.fetch('cat_id'),
           form_index: candidate.fetch('form_index'), investment: candidate.fetch('investment'))
+        evaluations = knowledge.ratings_for(ball, candidate.fetch('cat_id'))
+        candidate['previous_evaluations'] = evaluations.reject { |rating| rating['evaluation_role'] == 'final_build' }
+        candidate['final_evaluation'] = evaluations.find { |rating| rating['evaluation_role'] == 'final_build' }
+        candidate['other_form_notes'] = knowledge.notes(ball, candidate.fetch('cat_id')) - candidate['source_notes']
       end
 
       {
         'status' => 'ok',
-        'source' => dataset.fetch('source'),
+        'source' => active_role == 'final_build' ? dataset.fetch('source') : dataset.fetch('sources').last,
+        'sources' => dataset.fetch('sources', [dataset.fetch('source')]),
+        'growth_mode' => high_growth ? 'high_growth' : 'low_growth',
+        'evaluation_policy' => 'Low growth (none/talents) uses the existing source unchanged; high growth (ultra, default) uses Bestnyanko only when available. Never mix earlier high-growth ratings into the new high-growth ranking or apply new ratings to low growth. Missing/excluded ratings mean unassessed, not weak. Default high growth is a development assumption, not the user account state.',
         'scope' => 'recommendation_candidates_not_predictions',
         'notice' => NOTICE,
         'tier_range_notice' => TIER_RANGE_NOTICE,
@@ -146,7 +162,7 @@ module BattleCatsRolls
       end
 
       max_form = integer_arg(args, 'max_form', 3, 0..3)
-      investment = args.fetch('investment', 'talents')
+      investment = args.fetch('investment', 'ultra')
       unless INVESTMENT_RANK.key?(investment)
         raise InvalidInput, 'investment must be none, talents, or ultra'
       end
@@ -179,7 +195,7 @@ module BattleCatsRolls
     def load_dataset
       return unless File.file?(@path)
 
-      JSON.parse(File.read(@path, encoding: 'UTF-8'))
+      GptTierCatalog.new(path: @path, final_path: @final_path).data
     rescue JSON::ParserError => error
       raise InvalidDataset, "Invalid recommendations dataset: #{error.message}"
     end
@@ -214,6 +230,7 @@ module BattleCatsRolls
         'source_claim' => dataset.fetch('source')['coverage'],
         'rating_entries' => ratings.size,
         'rated_characters' => ratings.map { |rating| rating.fetch('cat_id') }.uniq.size,
+        'reference_only_evaluations' => Array(dataset['reference_ratings']).size,
         'pending_evaluations' => Array(dataset['unresolved_evaluations']).size
       }
     end
@@ -307,6 +324,9 @@ module BattleCatsRolls
         'series_name' => series_name(ball, rating.fetch('series_id')),
         'rarity' => info['rarity'],
         'investment' => requirement,
+        'source' => rating['source'],
+        'evaluation_role' => rating['evaluation_role'],
+        'evaluation_assumptions' => rating['evaluation_assumptions'],
         'requirements' => requirements(rating, form_index),
         'sourceImageIndex' => rating.fetch('source_image'),
         'availability' => event_pool ? event_pool.fetch(:status) : 'not_checked'
