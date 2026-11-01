@@ -76,4 +76,22 @@ for (const amount of [0, 3]) {
     find.buildTrackAlternatives([expected], fixture.seed, options));
 }
 assert.strictEqual(JSON.stringify(original), before, "calculations must not mutate shared metadata");
+
+// Multi's selected Find targets extend the existing automatic Found list.
+// Legend/exclusive targets and duplicate selections must remain single entries.
+const foundPool = fixture.rows[1].pool;
+const foundOptions = {count:100,last:fixture.last,guaranteedRolls:11};
+const defaults = tracks.buildTracks(foundPool, fixture.seed, foundOptions).foundCats;
+const selected = tracks.buildTracks(foundPool, fixture.seed,
+  {...foundOptions,find:[479,479,720,720,402,999999]}).foundCats;
+assert(selected.some(item=>item.cat.id===720));
+assert(selected.some(item=>item.cat.id===402));
+assert(!selected.some(item=>item.cat.id===999999),'targets outside this banner are ignored');
+assert.deepStrictEqual(selected.filter(item=>item.cat.id===479).map(item=>item.numbers),
+  defaults.filter(item=>item.cat.id===479).map(item=>item.numbers),'existing automatic targets retain their occurrences');
+assert.strictEqual(selected.filter(item=>item.cat.id===720).length,1);
+assert.strictEqual(selected.filter(item=>item.cat.id===479).length,1);
+const scalar = tracks.buildTracks(foundPool, fixture.seed,{...foundOptions,find:720}).foundCats;
+assert.deepStrictEqual(selected.find(item=>item.cat.id===720).numbers,
+  scalar.find(item=>item.cat.id===720).numbers,'ordinary single-target API remains compatible');
 console.log("multi-track-data: ok");
