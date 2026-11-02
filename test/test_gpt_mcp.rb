@@ -803,6 +803,14 @@ describe 'Catsroll MCP device-computation adapter' do
     movement_pool = BattleCatsRolls::TrackApi.compact_find_pool_data(BattleCatsRolls::Route.ball_kr, movement_id)
     expect(movement_pool.fetch(:guaranteed_rolls)).eq 11
     expect(movement_pool.fetch(:slots).values.flatten.include?(160)).eq false
+    ordinary_target = movement_pool.fetch(:slots).fetch(2).first
+    default_request = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
+      rows: [{lang: 'kr', event: movement_id}], targets: [{cat_id: ordinary_target}],
+      findEnabled: true}).dig('structuredContent', 'request')
+    expect(default_request.fetch('rows').map { |row| row.fetch('event') }).eq [movement_id]
+    expect(default_request.fetch('maxPlatinum')).eq 0
+    expect(default_request.fetch('maxLegendTicket')).eq 0
+    expect(default_request.fetch('targets').first.fetch('allow_ticket')).eq false
     ticket_cases = [
       [['플티', '플레티넘', '플레티넘 티켓', '플래티넘 티켓'], 'platinum', :maxPlatinum],
       [['블티', '블랙 티켓', '레전드 티켓'], 'legend', :maxLegendTicket]

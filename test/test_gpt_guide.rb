@@ -152,6 +152,21 @@ describe 'Catsroll curated GPT guide retrieval' do
     expect(terms.include?('레전드 티켓을 뜻한다고 밝혔으면')).eq true
   end
 
+  would 'explain track defense without implying ticket consent or free extra pulls' do
+    guide = BattleCatsRolls::GptGuide.new
+    ['열방어가 뭐야?', 'R 방어는 어떻게 해?', '플티로 열 방어 가능해?'].each do |query|
+      result = guide.lookup('query' => query)
+      answer = result.fetch('documents').find { |document| document.fetch('id') == 'tracks' }
+      expect(!!answer).eq true
+      expect(answer.fetch('content').include?('열방어(R 방어)')).eq true
+      expect(answer.fetch('content').include?('일반 결과까지 함께 얻는 것은 아니다')).eq true
+      expect(answer.fetch('content').include?('개념 질문이며 티켓 사용 허용이 아니다')).eq true
+      expect(answer.fetch('content').include?('avoidedR')).eq true
+      expect(result.fetch('truncated')).eq false
+      expect(result.fetch('unansweredSections')).eq []
+    end
+  end
+
   would 'recognize only registered short domain terms and their Korean particles' do
     guide = BattleCatsRolls::GptGuide.new
     {'A/B' => 'tracks', 'A / B 설명' => 'tracks', 'A열' => 'tracks', 'B열은?' => 'tracks',
