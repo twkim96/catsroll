@@ -215,7 +215,7 @@ describe 'local web features' do
     today = Date.today
     candidates = ball.events.select{ |_, info| info['platinum'] == 'platinum' }
     active = candidates.select do |_, info|
-      info['start_on'] <= today && today <= info['end_on']
+      info['start_on'] <= today && today < info['end_on']
     end
     started = candidates.select{ |_, info| info['start_on'] <= today }
     expected_ticket = active.max_by{ |_, info| info['start_on'] } ||
@@ -230,7 +230,7 @@ describe 'local web features' do
     expect(legend_ticket.dig('pool', 'rates', 'legend')).eq 500
     legend_candidates = ball.events.select{ |_, info| info['platinum'] == 'legend' }
     legend_active = legend_candidates.select do |_, info|
-      info['start_on'] <= today && today <= info['end_on']
+      info['start_on'] <= today && today < info['end_on']
     end
     legend_started = legend_candidates.select do |_, info|
       info['start_on'] <= today

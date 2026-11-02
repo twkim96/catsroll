@@ -38,6 +38,24 @@ module BattleCatsRolls
       topic = args['topic']
       limit = args.fetch('limit', DEFAULT_LIMIT)
 
+      task = task_sections(query)
+      if task.any? && (!topic || task.any? { |id, _heading| id == topic })
+        task += comparison_sections(query) if !topic && query.match?(/차이|비교|다르/)
+        task += independent_clause_sections(query) unless topic
+        task.uniq!
+        task.select! { |id, _heading| id == topic } if topic
+        required = task.filter_map do |id, heading|
+          document = @documents[id]
+          next unless document && @corpus.fetch(id)[:sections].key?(heading)
+
+          {document: document, heading: heading}
+        end
+        unless required.empty?
+          selected = required.map { |section| section[:document] }.uniq.first(limit)
+          return result(args['query'], selected, true, topic ? 'topic' : 'matched', required, focused: true)
+        end
+      end
+
       if topic
         document = @documents.fetch(topic)
         required = section_matches(document, query).select { |section| !section[:hits].empty? }.map { |section| section.merge(document: document) }
@@ -165,7 +183,7 @@ module BattleCatsRolls
       end
     end
 
-    def result(query, selected, matched, status, required = [])
+    def result(query, selected, matched, status, required = [], focused: false)
       remaining = MAX_CONTENT_LENGTH
       truncated = false
       documents = []
@@ -176,7 +194,7 @@ module BattleCatsRolls
         end
 
         wanted = required.select { |section| section[:document] == document }.map { |section| section[:heading] }
-        content, sections, omitted, mode = focused_content(document, query, wanted)
+        content, sections, omitted, mode = focused_content(document, query, wanted, focused: focused)
         clipped = content.length > remaining
         content = content[0, remaining] if clipped
         remaining -= content.length
@@ -267,14 +285,14 @@ module BattleCatsRolls
       end.select { |section| section[:score] >= 4 }.sort_by { |section| -section[:score] }
     end
 
-    def focused_content(document, query, required)
+    def focused_content(document, query, required, focused: false)
       entry = @corpus.fetch(document.fetch('id'))
       content, sections = entry.values_at(:content, :sections)
       return [content, sections.keys, [], 'full'] if query.to_s.strip.empty? || entry[:records].empty? || document.fetch('id') == 'index'
 
       ranked = section_matches(document, query)
       best = ranked.first&.fetch(:score) || 0
-      chosen = ranked.select { |section| section[:score] >= best * 0.5 }.first(MAX_SECTIONS).map { |section| section[:heading] }
+      chosen = focused ? [] : ranked.select { |section| section[:score] >= best * 0.5 }.first(MAX_SECTIONS).map { |section| section[:heading] }
       headings = (chosen + required).uniq
       headings += entry[:records].select { |section| headings.include?(section['heading']) }.flat_map { |section| section.fetch('include', []) }
       chosen = sections.keys.select { |heading| headings.include?(heading) }
@@ -324,11 +342,86 @@ module BattleCatsRolls
       if text.match?(/시드|seed|관측|후보/) && text.match?(/후보(?:은|는|이|가)?\s*(?:없|0\s*개)|안\s*(?:맞|돼|되|나오|나와)|틀리|틀려|실패|못\s*찾/)
         additions << '검색실패'
       end
-      negative = /(?:없이|제외|빼고|(?:사용|투자|포함|소모)\s*하지\s*(?:않|말)|쓰지\s*(?:않|말)|안\s*(?:쓰|사용|넣))/
+      negative = /(?:없이|제외|빼고|금지|못\s*(?:쓰|써|사용)|(?:사용|투자|포함|소모)\s*하지\s*(?:않|말)|쓰지\s*(?:않|말)|안\s*(?:쓰|사용|넣))/
       {'티켓' => '티켓 없이', '본능' => '본능 없이'}.each do |noun, canonical|
         additions << canonical if text.match?(/#{noun}(?:은|는|을|를|도)?\s*#{negative}/)
       end
+      additions << '티켓 없이' if text.match?(/(?:플티|블티)(?:\s*\/\s*(?:플티|블티))?(?:은|는|을|를|도)?\s*(?:이제\s*)?#{negative}/)
       ([text] + additions.reject { |addition| text.include?(addition) }).join(' ')
+    end
+
+    # Route only recognizable task/constraint combinations. Ordinary terms and
+    # comparisons still use the authored facet ranking above.
+    def task_sections(query)
+      text = query.to_s
+      return [] if @corpus.values.any? { |entry| entry[:sections].key?(text.strip) }
+
+      tasks = []
+      find = 'find'
+      details = [find, '결과 상세 조회와 페이지 커서']
+      fields = [find, '결과 필드·총 뽑기 수·생략 범위']
+      recovery = ['troubleshooting', '계산·보관·전달·추가 조회 실패']
+      constraint = [find, '입력으로 강제하는 조건과 결과에서 확인할 조건']
+      if text.match?(/(?:필터|깔때기)/) && text.match?(/(?:배너|시리즈)/) && text.match?(/목표/) && text.match?(/차이|다르|비교/)
+        tasks.concat([['website', '배너 추가·삭제·시리즈 필터·Custom name'], ['website', '목표 선택 깔때기·선택한 캐릭터']])
+      end
+      if text.match?(/(?:평가|티어|등급|추천)/) && text.match?(/(?:출처|링크|나머지|나머진|미평가|d급|전체|전부|5\s*(?:종|마리))/i)
+        tasks.concat([['recommendations', '티어와 투자 조건'], ['recommendations', '실제 배너에서 획득']])
+      end
+      if text.match?(/(?:울슈레|울레)/) && text.match?(/(?:고유|서로\s*다른|종류|중복.*싫)/)
+        tasks.concat([[find, '기존 배열에서 울슈레 수확 비교'], constraint])
+      end
+      if text.match?(/(?:추가\s*단뽑|단뽑.*(?:금지|없이|안\s*돼|못))/) ||
+          (text.match?(/(?:못\s*(?:쓰|써|사용)|금지|철회)/) && text.match?(/(?:티켓|플티|블티|확뽑)/))
+        tasks.concat([constraint, [find, '초심자에게 물을 것']])
+      end
+      if text.match?(/(?:만료|저장.*(?:성공|됐|되었)|공유.*성공|전달.*실패|메시지.*실패|result.*(?:없|불가|미공개)|mcp.*(?:없|불가))/i)
+        tasks.concat([recovery, details])
+      end
+      if text.match?(/(?:partial|탐색\s*한도)/i) && text.match?(/(?:목표|최적|결과|완료)/)
+        tasks << [find, '결과의 한계']
+      end
+      if text.match?(/(?:조건부|분기|conditional)/i) && text.match?(/(?:생략|누락|전부|확인)/)
+        tasks.concat([fields, details])
+      end
+      screenshot_id_question = text.match?(/(?:스크린샷|스샷|화면).*(?:결과\s*(?:id|아이디)).*(?:필요|있어야)/i)
+      if !screenshot_id_question && text.match?(/(?:공유|기존|이전|아까|같은|현재).{0,20}(?:결과|배열)|결과\s*(?:id|아이디)/i) &&
+          text.match?(/(?:보|조회|찾|골라|어디|줄|행|캐릭터|고양이|말고|만|추가|비교)/)
+        tasks << details
+        if text.match?(/(?:이번|새|변경|추가)/) && text.match?(/(?:추가|바꿔|변경|늘려)/) && text.match?(/(?:플티|블티|티켓|배너|예산)/) && !text.match?(/(?:추가\s*단뽑\s*(?:금지|없이))/)
+          tasks << [find, '준비와 설명']
+        end
+      end
+      tasks.uniq
+    end
+
+    def comparison_sections(query)
+      terms = query_terms(query)
+      compact = compact_query(query)
+      document_scores = @documents.transform_values { |document| score(document, terms, compact, query) }
+      sections = @documents.values.flat_map do |document|
+        section_matches(document, query).map { |section| section.merge(document: document) }
+      end
+      ambiguous = /\A(?:배너|링크|중복|전부|공유|시드|seed|목표|추가|티켓|플티|블티|확뽑|생략|조건부|추천|평가)\z/i
+      hits = sections.flat_map { |section| section[:hits] }.uniq.reject do |start_pos, end_pos|
+        query[start_pos...end_pos].delete(' ').match?(ambiguous)
+      end
+      hits = hits.reject { |hit| hits.any? { |other| other != hit && other[0] <= hit[0] && other[1] >= hit[1] } }
+      hits.filter_map do |hit|
+        owner = sections.select { |section| section[:hits].include?(hit) }.
+          max_by { |section| [section[:definitions].include?(hit) ? 1 : 0, section[:score] + 2 * document_scores.fetch(section[:document]['id']), section[:score]] }
+        [owner[:document]['id'], owner[:heading]] if owner
+      end.uniq
+    end
+
+    # A separate question may name an independent facet without saying
+    # "compare". Do not re-score nouns belonging to the recognized task.
+    def independent_clause_sections(query)
+      clauses = query.split(/[.!?;\n]+|(?<=[가-힣])고\s+(?=[가-힣a-z])/i).map(&:strip).reject(&:empty?)
+      return [] if clauses.size < 2
+
+      clauses.select { |clause| task_sections(clause).empty? }.
+        flat_map { |clause| comparison_sections(clause) }.uniq
     end
 
     def query_terms(query)

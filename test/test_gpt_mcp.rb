@@ -40,12 +40,12 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(body.dig('result', 'instructions').include?('does NOT compute')).eq true
     expect(body.dig('result', 'instructions').include?('For a shared result, use information already present in context first')).eq true
     expect(body.dig('result', 'instructions').include?('call catsroll_result only for missing or omitted details')).eq true
-    expect(body.dig('result', 'instructions').include?('Do not search banners unless the user requests a new banner')).eq true
+    expect(body.dig('result', 'instructions').include?('For explanation/comparison of the same snapshot, do not search new banners')).eq true
     claude = rpc(Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: :claude)),
       'initialize', {}, path: '/mcp/claude').last.dig('result', 'instructions')
     expect(claude.include?('For a shared result, use information already present in context first')).eq true
     expect(claude.include?('call catsroll_result only for missing or omitted details')).eq true
-    expect(claude.include?('Do not search banners unless the user requests a new banner')).eq true
+    expect(claude.include?('For explanation/comparison of the same snapshot, do not search new banners')).eq true
     _, body = rpc(client, 'ping', {}, {'HTTP_MCP_PROTOCOL_VERSION' => 'bad'})
     expect(body['error']).eq 'Unsupported MCP protocol version'
     previous = ENV['CATSROLL_GPT_ENABLED']
@@ -457,7 +457,7 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(events.map { |event| event.fetch('event') }).eq ids
     expect(events.map { |event| event.fetch('guaranteed_rolls') }).eq [0, 11, 0, 11]
     expect(events.map { |event| event.fetch('guaranteed') }).eq [false, true, false, true]
-    ['쿠니오확뽑', '쿠니오확정뽑기', '쿠니오 확뽑배너 두 개 보여줘'].each do |term|
+    ['쿠니오확뽑', '쿠니오확정뽑기', '쿠니오 확뽑배너 두 개 보여줘', '쿠니오군 확뽑 하나 열어줘', '쿠니오군 확뽑 배너 한 개 보여주세요', '쿠니오군 확뽑 배너 하나'].each do |term|
       found = call_tool(client, 'catsroll_events', {query: term, limit: 50}).dig('structuredContent', 'events')
       expect(found.any? { |event| event['event'] == ids[1] }).eq true
       expect(found.all? { |event| event['guaranteed'] }).eq true
@@ -472,6 +472,27 @@ describe 'Catsroll MCP device-computation adapter' do
     date = call_tool(client, 'catsroll_events', {query: '2026-11-16', guaranteed: true, limit: 50}).dig('structuredContent', 'events')
     expect([ids[1], ids[3]].all? { |id| date.any? { |event| event['event'] == id } }).eq true
     expect(call_tool(client, 'catsroll_events', {guaranteed: 'false'})['isError']).eq true
+    # A current ordinary period must not acquire a real guarantee merely by
+    # naming it. The response keeps the factual/simulated distinction explicit.
+    plain = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
+      rows: [{lang: 'kr', event: ids[0]}]}).fetch('structuredContent')
+    actual = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
+      rows: [{lang: 'kr', event: ids[1]}]}).fetch('structuredContent')
+    simulated = call_tool(client, 'catsroll_prepare', {mode: 'multi', seed: 42,
+      rows: [{lang: 'kr', event: ids[0], forceGuaranteed: 11}]}).fetch('structuredContent')
+    expect([plain, actual, simulated].map { |data| data.fetch('events').first.fetch('guaranteedRolls') }).eq [0, 11, 11]
+    expect([plain, actual, simulated].map { |data| data.fetch('events').first.fetch('simulatedGuarantee') }).eq [false, false, true]
+    # Links must retain every encoded condition, regardless of display label.
+    [:chatgpt, :claude].each do |host|
+      adapter = Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: host))
+      args = {mode: 'multi', seed: 42, last: 38, count: 100, rows: [{lang: 'kr', event: ids[1]}]}
+      prepared = call_tool(adapter, 'catsroll_prepare', args).fetch('structuredContent')
+      linked = call_tool(adapter, 'catsroll_site_link', args).fetch('structuredContent')
+      expect(linked.fetch('websiteLinks')).eq prepared.fetch('websiteLinks')
+      expect(linked.fetch('siteUrl')).eq prepared.fetch('siteUrl')
+      expect(linked.fetch('linkDeliveryPolicy')).eq prepared.fetch('linkDeliveryPolicy')
+      expect(linked.fetch('linkDeliveryPolicy').include?('verbatim')).eq true
+    end
   end
 
   would 'explain individual characters with current metadata and separate source conditions' do

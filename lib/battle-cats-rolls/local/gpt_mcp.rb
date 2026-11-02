@@ -40,11 +40,14 @@ module BattleCatsRolls
       지난 뽑기로 시드를 찾을 때는 실제 뽑은 배너/기간을 확인한다. forceGuaranteed=0은 배너 기본값이며 확정 없음/비활성이라는 뜻이 아니다.
     TEXT
     SHARED_ROUTING = <<~TEXT.freeze
+      Classify the current task: concept, new preparation, reading an existing result, a changed strategy, or recovery. Use conversation evidence first; a known result ID plus requested array/character/route/plan detail can go directly to catsroll_result. For a changed strategy, copy prior inputs and change only the requested conditions; necessary acquisition/movement/defense pools may be queried without changing the old snapshot. Include confirmed antecedents and the latest constraints in guide queries; negated actions are not new tasks. Ticket withdrawal overrides earlier consent. Result expiry affects extra reads, not evidence already in chat. Recover only the failed compute/store/deliver/read stage.
+      For every actual guaranteed-draw request, first filter catsroll_events with guaranteed=true using the resolved series/date, then select current/upcoming/past within those results. This takes precedence over current ordinary banners, including named-series requests. Before reporting prepared success, compare events.guaranteedRolls and simulatedGuarantee to the request. Do not replace actual availability with forceGuaranteed. Report a future-only or absent guarantee explicitly.
+      Copy every returned URL verbatim as the link target; only its label may change. Never regenerate, shorten, or edit Base64/query/fragment. Changed inputs require another link-tool call.
       Without an explicit ticket request or existing permission, do not add platinum/legend rows or raise their budgets (default zero). A conceptual track-defense question is not ticket consent. Read catsroll_guide for 열방어/R 방어; ordinary banner changes may also avoid rerolls.
       플티·플래티넘·플레티넘 티켓은 platinum, 블티·블랙티켓·레전드 티켓은 legend 풀과 해당 사용 한도로 준비한다. 레티는 보통 일반 레어 티켓이지만 사용자가 레전드 티켓으로 정의한 문맥을 따르며, 불분명할 때만 확인한다. 티켓 용어를 캐릭터 이름으로 검색하지 않는다.
       For guaranteed track movement followed by platinum/legend ticket acquisition, distinguish the movement banner from the acquisition pool. Read catsroll_guide(topic="find", query=the user request). Select an actual guaranteed period without filtering that movement banner by the final target cat_id; verify membership in the dated ticket pool. Include both requested pools in prepare rows, set the explicitly permitted target allow_ticket and resource budgets, and do not rely on later user edits. Platinum B-track inspection alone may use only the ticket row. Check event dates and the computed action order/landing position before confirming the proposed sequence. Resource maxima do not enforce a fixed action order.
       If the embedded UI fails or the user wants the ordinary website, use catsroll_site_link with the known prepare inputs to return text-only links without opening an iframe. Banner/cat catalogs still work when only the UI fails. Prefer websiteLinks.multi for multiple banners/Find, websiteLinks.tracks for one ordinary array, and websiteLinks.app for full input preservation or seed search. Explain each link's scope/omissions; never silently drop unsupported preview/future-uber settings or imply a link is a computed result. If MCP itself is unavailable, offer the website and manual instructions without inventing event IDs. For website controls or screenshot/track-switch questions, use catsroll_guide(topic="website", query=the concrete user question). Retrieve tracks or guaranteed with query only when their rules are needed; omit query only for an explicitly requested full procedure. Read visible next-position arrows, the actual action and supplied previous result; when these establish the next position, explain it directly and ask only absent conditions. Do not infer the unseen route from cell color. Rebased 1A after navigation is relative to the new seed, not proof no track switch occurred.
-      For follow-ups about a result already shared, first use the arrays, rarities, Find results and plan already present in conversation context. Call catsroll_result only for missing or omitted details, and follow pagination for additional pages. Do not search banners unless the user requests a new banner.
+      For follow-ups about a result already shared, first use the arrays, rarities, Find results and plan already present in conversation context. Call catsroll_result only for missing or omitted details, and follow pagination for additional pages. For explanation/comparison of the same snapshot, do not search new banners. A user-requested change of resource, movement method or range is a new strategy and may require minimal pool lookup.
       To maximize ubers from an existing array, inspect its array pages and rare locations, then use only the user's supplied seed, banners, count and resource budgets to propose an auditable candidate. Explain the supporting positions and resource use; do not invent a globally optimal engine result or raise a budget without permission.
       For known-banner uber collection requests, use catsroll_prepare targetSelection={type:"banner_collection",lang,event:exact_ID,rarity:4,excludeOwnedIds:[explicitly owned IDs]}. It selects every distinct ID from actual banner rarity slots without catalog pagination; never ask the user to assemble the roster. The event/lang must match a selected row. Preserve the supplied seed, banners, last, count and budgets. Exclude only IDs explicitly reported owned. Do not combine targetSelection with targets. If needs_input reports target_limit_exceeded or no_remaining_targets, explain the full selection metadata and ask the user to narrow or revise; never silently truncate or claim computation/preparation succeeded. Search catsroll_events only when the requested event is unidentified. Other rarities still use catsroll_cats and direct targets. Distinguish duplicate copies from distinct IDs and ubers (rarity 4) from legend rares (rarity 5).
     TEXT
@@ -273,6 +276,7 @@ module BattleCatsRolls
 
       tool_reply(data.slice(:request, :events, :siteUrl, :websiteLinks, :targetSelection).merge(
         status: 'links_ready', execution: 'client', computed: false,
+        linkDeliveryPolicy: 'Copy returned URLs verbatim; change labels only. Do not edit Base64, query or fragment. Re-run the tool for changed inputs.',
         guide: {tool: 'catsroll_guide', topics: %w[website tracks guaranteed]},
         warnings: ['링크는 입력 조건만 전달합니다. 일반 배열/Multi는 열면 기기에서 계산하며, 채팅으로 결과가 자동 공유되지 않습니다. 링크별 생략 조건을 확인하세요.'] + data.fetch(:warnings).drop(1)))
     end
@@ -305,7 +309,11 @@ module BattleCatsRolls
       original_term = term
       guarantee_intent = term.match?(/확뽑|확정(?:뽑기|뽑|배너)?|guaranteed?/i)
       if guarantee_intent
-        term = term.gsub(/확뽑|확정(?:뽑기|뽑|배너)?|guaranteed?/i, '').gsub(/배너|두개|보여줘/, '')
+        term = term.gsub(/확뽑|확정(?:뽑기|뽑|배너)?|guaranteed?/i, '')
+        # Strip request suffixes, not substrings inside series names. Pool/date
+        # filtering remains separate from the user's requested number of rows.
+        term = term.sub(/(?:배너)?(?:하나|한개|두개|[1-8]개)?(?:보여주세요|보여줘|열어주세요|열어줘|띄워줘)\z/, '')
+        term = term.sub(/(?:배너)?(?:하나|한개|두개|[1-8]개)\z/, '').sub(/배너\z/, '')
       end
       guaranteed = if args.key?('guaranteed')
         boolean(args['guaranteed'], 'guaranteed')
@@ -578,6 +586,7 @@ module BattleCatsRolls
         warnings << '확뽑 한도는 자원 예산입니다. 선택한 배너에는 확정 조건이 없어 이 설정으로는 확뽑을 사용하지 않습니다. 강제 확정은 실제 일정과 다른 가정임을 명시해야 합니다.'
       end
       summary = {status: 'prepared', execution: 'client', request: request, dataVersion: version,
+        linkDeliveryPolicy: 'Copy returned URLs verbatim; change labels only. Do not edit Base64, query or fragment. Re-run the tool for changed inputs.',
         engineVersion: navigation_only ? nil : self.class.widget[:digest],
         guide: {tool: 'catsroll_guide', topics: mode == 'seek' ? %w[seed troubleshooting] :
           (request[:findEnabled] ? %w[find tracks guaranteed] : %w[tracks guaranteed colors])},

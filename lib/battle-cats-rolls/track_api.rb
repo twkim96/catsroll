@@ -397,7 +397,7 @@ module BattleCatsRolls
         info['platinum'] == kind
       end
       active = candidates.select do |_, info|
-        info['start_on'] <= today && today <= info['end_on']
+        info['start_on'] <= today && today < info['end_on']
       end
       started = candidates.select do |_, info|
         info['start_on'] <= today
@@ -553,9 +553,9 @@ module BattleCatsRolls
       today = Date.today
 
       grouped = ball.events.group_by do |_, event|
-        if today <= event['start_on']
+        if today < event['start_on']
           :upcoming
-        elsif today <= event['end_on']
+        elsif today < event['end_on']
           :ongoing
         else
           :past
@@ -584,8 +584,8 @@ module BattleCatsRolls
 
         {
           event: event_name,
-          group: today <= info['end_on'] ? 'upcoming' : 'past',
-          preload: today <= info['end_on'] || event_name == initial_event,
+          group: today < info['end_on'] ? 'upcoming' : 'past',
+          preload: today < info['end_on'] || event_name == initial_event,
           platinum: info['platinum'],
           series_id: series_id,
           series_name: series_name,

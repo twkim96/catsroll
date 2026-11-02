@@ -22,10 +22,11 @@
 
 - `test_local_web.rb`: custom gacha의 시리즈 필터가 전체 목록을 반환하는 사례,
   Multi Find 적용 UI의 이전 소스 문자열을 기대하는 사례.
-- `test_gpt_mcp_contract.rb`: 고정 스냅샷에 최근 티어·확정 배너 도구 설명/입력 및
-  캐릭터 형태 이름의 변경이 반영되지 않은 차이.
 - `test_gpt_browser.cjs`: 공유 메시지의 짧은 후속 문구를 기대하지만 전체 결과 문구가
   전달되는 차이. 새 목록 분리는 `test_found_cats.cjs`에서 같은 모의 호스트로 별도 확인한다.
+- `test_gpt_recommendations.rb`: 캐릭터 669에 일반 본능이 없고 878이 한국 데이터에 없다고
+  가정하는 두 기대값이 현재 데이터와 다르다. `be4ec21d` 전체 임시 복원에서도 2개 실패를
+  재현했으며, 이번 문서·검색 수정의 회귀와 구분한다.
 - 서버 시작의 `/warmup`에서 `view/.erb`를 찾지 못하는 로그도 병합 전 코드에서
   재현된다. 일반 화면·Multi·GPT 응답 확인과 warmup 성공은 구분한다.
 

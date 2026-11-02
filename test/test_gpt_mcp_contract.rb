@@ -98,6 +98,27 @@ describe 'Frozen 870cc54d MCP contracts' do
         baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
       end
     end
+    # Task-aware routing and verbatim-link delivery: explicit textual guidance
+    # and additive response policy, no engine/input-schema changes.
+    task_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/task_routing_delta_v1.json')))
+    task_delta.each do |host, changes|
+      cases = baseline.fetch(host)
+      cases.fetch('initialize')['instructions'] = changes.fetch('instructions')
+      changes.fetch('descriptions').each do |name, description|
+        cases.fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
+      end
+      %w[multi find_optional_name seek].each do |name|
+        reply = cases.fetch(name)
+        reply.fetch('structuredContent')['linkDeliveryPolicy'] = changes.fetch('linkDeliveryPolicy')
+        reply.fetch('content').each do |item|
+          data = JSON.parse(item.fetch('text'))
+          data = data.to_a.flat_map { |key, value|
+            key == 'engineVersion' ? [['linkDeliveryPolicy', changes.fetch('linkDeliveryPolicy')], [key, value]] : [[key, value]]
+          }.to_h
+          item['text'] = JSON.generate(data)
+        end
+      end
+    end
     expect(GptMcpContractSupport.capture).eq baseline
   end
 end

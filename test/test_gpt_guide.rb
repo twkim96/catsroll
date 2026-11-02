@@ -5,6 +5,89 @@ require 'fileutils'
 require 'battle-cats-rolls/local/gpt_guide'
 
 describe 'Catsroll curated GPT guide retrieval' do
+  would 'route result, recovery, evaluation and constraint tasks by their actual purpose' do
+    guide = BattleCatsRolls::GptGuide.new
+    cases = [
+      ['새 배너 찾지 말고 아까 공유한 배열에서만 골라줘', ['view="array"', '시드·배너·허용 예산을 유지'], ['공유 / PNG 저장·복사', '배너와 캐릭터 찾기']],
+      ['공유 결과에서 200번째 줄을 더 보고 싶어', ['view="array"', 'nextOffset'], ['공유 / PNG 저장·복사']],
+      ['같은 결과에서 그 고양이가 어디 있는지 조회해줘', ['view="character"', 'view="array"'], ['공유 / PNG 저장·복사']],
+      ['아까 결과에 이번엔 플티 한 장 추가해서 비교해줘', ['변경된 조건만 반영한 새 전략', '이전 스냅샷을 수정한 것은 아니다'], ['공유 / PNG 저장·복사']],
+      ['결과 ID가 만료됐어. 아까 시드로 복원해줘', ['없는 상세만', '원 스냅샷'], ['시드와 A/B 위치']],
+      ['MCP 도구가 없다고 나오는데 공유는 성공이래', ['추가 조회만 불가', '이미 받은 요약'], ['공유 / PNG 저장·복사']],
+      ['저장은 성공했는데 메시지 전달이 실패했어', ['같은 고정 캡처', '재계산하거나 새 입력과 섞지 않는다'], ['플랜명 / 저장']],
+      ['조건부 분기 900개가 생략됐대. 전부 확인한 거야?', ['conditionalOmitted', 'nextConditionalQuery'], ['배너 올컬 목표 자동 선택']],
+      ['조건부 결과 일부 누락됐는데 확인해줘', ['conditionalOmitted', 'nextConditionalQuery'], ['배너 올컬 목표 자동 선택']],
+      ['partial이지만 목표는 다 먹었대. 최적이라고 해도 돼?', ['partial', '최적성이 확인된 완성 답처럼'], ['배너 올컬 목표 자동 선택']],
+      ['평가 출처 링크 달아줘', ['source', 'total_candidates'], ['사이트로 이어주기']],
+      ['이 배너 추천에 5마리만 나오네. 나머지는 D급이야?', ['평가 미등록', '기본 D'], ['배너 올컬 목표 자동 선택']],
+      ['중복은 싫고 서로 다른 울슈레 종류 최대한', ['서로 다른 종류 수', '무목표 엔진 최적해가 아니다'], ['R은 무엇인가요?']],
+      ['배너 필터랑 목표 필터 차이', ['Event 목록을 시리즈로', '캐릭터를 Find 목표로'], ['배너 올컬 목표 자동 선택']],
+      ['확뽑 직후 B열 플티 한 장, 추가 단뽑 금지', ['고정 순서', '강제할 수 없다'], ['미래 울슈레 가정']],
+      ['아까 허용했지만 플티와 블티는 이제 못 써', ['한도를 0', '허용받지 않은 티켓'], ['미래 울슈레 가정']]
+    ]
+    cases.each do |question, needed, excluded|
+      answer = guide.lookup('query' => question)
+      content = answer.fetch('documents').map { |document| document.fetch('content') }.join
+      needed.each { |text| expect(content.include?(text)).eq true }
+      excluded.each { |text| expect(content.include?("## #{text}")).eq false }
+      expect(answer.fetch('unansweredSections')).eq []
+    end
+  end
+
+  would 'retain explicit comparison facets and report task sections omitted by the document limit' do
+    guide = BattleCatsRolls::GptGuide.new
+    result = guide.lookup('query' => '새 배너 말고 공유 결과만 보고 S/G와 F/U 차이도 알려줘', 'limit' => 1)
+    expect(result.fetch('documents').first.fetch('content').include?('view="array"')).eq true
+    pending = result.fetch('unansweredSections')
+    expect(pending.any? { |item| item['query'] == 'S/G' }).eq true
+    expect(pending.any? { |item| item['query'] == 'F/U' }).eq true
+    pending.each do |item|
+      followup = guide.lookup(item).fetch('documents').first
+      expect(followup.fetch('sections').include?(item.fetch('query'))).eq true
+    end
+  end
+
+  would 'retain independent recovery, status, result and changed-strategy facets together' do
+    guide = BattleCatsRolls::GptGuide.new
+    result = guide.lookup('query' => '결과 ID 만료됐는데 partial이면 최적인가', 'limit' => 1)
+    expect(result.fetch('documents').first.fetch('content').include?('ID 만료')).eq true
+    expect(result.fetch('unansweredSections').any? { |item| item['query'] == '결과의 한계' }).eq true
+    followup = guide.lookup('query' => '아까 결과 200행을 봐줘. 이번엔 플티 1장 추가해')
+    content = followup.fetch('documents').map { |doc| doc.fetch('content') }.join
+    expect(content.include?('view="array"')).eq true
+    expect(content.include?('변경된 조건만 반영한 새 전략')).eq true
+    expect(content.include?('catsroll_prepare(mode="multi", findEnabled=true)')).eq true
+    expect(followup.fetch('unansweredSections')).eq []
+    negative = guide.lookup('query' => '블티/플티 이제 못써. 전에 허용했지만 철회할게')
+    text = negative.fetch('documents').map { |doc| doc.fetch('content') }.join
+    expect(text.include?('한도를 0')).eq true
+    screenshot = guide.lookup('query' => '스크린샷에 다음 화살표가 보이는데 결과 ID도 꼭 필요해?')
+    expect(screenshot.fetch('documents').first.fetch('content').include?('스크린샷으로 “열 넘어가?”')).eq true
+    mixed = guide.lookup('query' => 'R/G/ RG 차이와 최근 시드, 만료된 공유 결과까지')
+    pending = mixed.fetch('unansweredSections').map { |item| item['query'] }
+    expect(pending.include?('R은 무엇인가요?')).eq true
+    expect(pending.include?('최근 seed와 Last roll 구분')).eq true
+  end
+
+  would 'retain a distinct facet in a separate non-comparison clause' do
+    guide = BattleCatsRolls::GptGuide.new
+    ['공유 결과에서 200행 더 보고 싶어. 달력은 뭐야?',
+      '공유 결과에서 200행 더 보고 싶고 달력은 뭐야?'].each do |query|
+      result = guide.lookup('query' => query, 'limit' => 1)
+      expect(result.fetch('documents').first.fetch('content').include?('view="array"')).eq true
+      pending = result.fetch('unansweredSections')
+      delivered = result.fetch('documents').flat_map { |doc| doc.fetch('sections') }
+      expect((delivered + pending.map { |item| item['query'] }).any? { |heading| heading.include?('달력') }).eq true
+      expect(result.fetch('documents').none? { |doc| doc.fetch('sections').include?('공유 / PNG 저장·복사') }).eq true
+      pending.each do |item|
+        followup = guide.lookup(item).fetch('documents').first
+        expect(followup.fetch('sections').include?(item.fetch('query'))).eq true
+      end
+    end
+    limited = guide.lookup('query' => '공유 결과에서 200행 더 봐줘. F/U는 뭐야?', 'limit' => 1)
+    expect(limited.fetch('unansweredSections').any? { |item| item['query'] == 'F/U' }).eq true
+  end
+
   def guide_with(root, body_size: 80)
     docs = [
       {id: 'index', title: '처음 안내', summary: '가이드 목차', keywords: ['도움말'], related: ['seed', 'tracks', 'find', 'guaranteed'], file: 'index.md'},
