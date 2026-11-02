@@ -83,7 +83,7 @@ GitLab 업데이트 후에는 해당 변경에 영향을 받는 기존 테스트
 | `catsroll_site_link` | 준비와 같은 입력 검증 후 iframe 없이 일반 배열·Multi·독립 앱 링크 반환. 계산·결과 저장 없음 |
 | `catsroll_recommend` | 속성/육성/보유/배너 풀로 상위 티어 후보 조회. 이름·형태·능력은 기존 게임 데이터에서 읽음 |
 | `catsroll_banner_preview` | 일정 미정 콜라보/이벤트의 시리즈를 KR·JP 이름/별명/캐릭터 ID로 연결하고 지역별 최신 참고 풀과 `prepare_rows` 반환. 예측·미래 일정 아님 |
-| `catsroll_events` | KR/JP 배너 이름·날짜/ID 검색, `cat_id`로 실제 풀에 포함된 배너 역검색, 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달하며 `cat_id`와 함께 쓰지 않음 |
+| `catsroll_events` | 기본 목록은 진행·예정만, 이름·날짜/ID·`cat_id` 검색은 과거 포함. `period`로 기간 범위를 지정하고 이벤트별 `status`와 응답 `asOf`를 반환. 페이지 최대 50개. `catalog=true`는 앱용 전체 선택 목록을 `_meta`에만 전달하며 `cat_id`와 함께 쓰지 않음 |
 | `catsroll_cats` | 모든 형태 이름·검토한 별명 또는 ID로 캐릭터 검색, 페이지 최대 50개. `event`·`rarity`로 실제 배너 풀의 희귀도별 명단 조회. `details=true`는 최대 5종의 현재 형태별 기본 정보와 조건/출처가 붙은 의견 추가 |
 | `catsroll_prepare` | `multi`, `seek`와 Find 옵션·플랜 초기 설정을 검증. 기존 `find`는 같은 Multi 화면의 호환 입력 |
 | `catsroll_share_result` | 앱 전용 쓰기. 사용자가 공유한 기기 계산 스냅샷을 서버 메모리에 임시 저장하고 최대 1시간 조회를 허용하며 비밀 결과 ID·만료·요약 반환 |

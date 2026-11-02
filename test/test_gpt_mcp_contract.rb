@@ -119,6 +119,14 @@ describe 'Frozen 870cc54d MCP contracts' do
         end
       end
     end
+    # Schedule browsing now defaults to available; explicit searches keep history.
+    # Only the event descriptor gains the period filter and matching guidance.
+    schedule_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/event_period_delta_v1.json')))
+    schedule_delta.each do |host, changes|
+      event_tool = baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == 'catsroll_events' }
+      event_tool['description'] = changes.fetch('description')
+      event_tool.fetch('inputSchema').fetch('properties')['period'] = changes.fetch('period')
+    end
     expect(GptMcpContractSupport.capture).eq baseline
   end
 end

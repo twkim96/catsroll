@@ -1,0 +1,30 @@
+{
+  "chatgpt": {
+    "description": "Find public KR/JP banners by name/date or exact cat_id membership. Unqualified browsing defaults to period=available (ongoing+upcoming, no past); nonempty query or cat_id searches default to all periods, with an explicit period filter available. Read response period/asOf and each event status. Results are paginated, not a complete list when nextOffset exists; do not present a partial list as the only available choices. For every actual guaranteed request, including a named series, resolve the series/date and use guaranteed=true FIRST, then select current/upcoming/past within the filtered results and check guaranteed_rolls; never prefer a current ordinary period over a future guaranteed period; ordinary and guaranteed periods may be separate. Never use forceGuaranteed to claim an actual schedule. For target acquisition, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. A movement or R-defense pool need not contain the target; do not apply the acquisition cat_id filter to it. For guaranteed track movement followed by a special ticket, apply target membership to the acquisition ticket pool, NOT the movement banner; search the latter with guaranteed=true. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.",
+    "period": {
+      "type": "string",
+      "enum": [
+        "available",
+        "ongoing",
+        "upcoming",
+        "past",
+        "all"
+      ],
+      "description": "Schedule filter: available=ongoing+upcoming. Default available for unqualified browsing; a nonempty query or cat_id defaults to all for historical lookup. Explicit period overrides this. Not used by catalog=true app dropdowns."
+    }
+  },
+  "claude": {
+    "description": "배너/뽑기 시리즈 검색용. 다마군, 다군, 다이너마이트 군단 같은 이름은 여기에 query로 넣는다. 공백과 기존 시리즈 별명을 지원한다. 모든 실제 확뽑 요청은 시리즈/날짜를 식별해 guaranteed=true부터 적용하고, 그 안에서 현재/예정 기간을 고른다. 일반 기간을 현재라는 이유로 대신 선택하지 않는다. 준비 결과의 guaranteedRolls와 simulatedGuarantee도 대조한다. 확뽑 이동 후 특수티켓 획득 요청은 이동용 배너에 목표 cat_id 필터를 걸지 않고, 획득용 티켓 풀에서 목표 포함을 확인한다. 플티/플레티넘 티켓은 플래티넘, 블티/블랙티켓은 레전드 풀을 찾는다. Find public KR/JP banners by name/date or exact cat_id membership. Unqualified browsing defaults to period=available (ongoing+upcoming, no past); nonempty query or cat_id searches default to all periods, with an explicit period filter available. Read response period/asOf and each event status. Results are paginated, not a complete list when nextOffset exists; do not present a partial list as the only available choices. For every actual guaranteed request, including a named series, resolve the series/date and use guaranteed=true FIRST, then select current/upcoming/past within the filtered results and check guaranteed_rolls; never prefer a current ordinary period over a future guaranteed period; ordinary and guaranteed periods may be separate. Never use forceGuaranteed to claim an actual schedule. For target acquisition, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. A movement or R-defense pool need not contain the target; do not apply the acquisition cat_id filter to it. For guaranteed track movement followed by a special ticket, apply target membership to the acquisition ticket pool, NOT the movement banner; search the latter with guaranteed=true. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.",
+    "period": {
+      "type": "string",
+      "enum": [
+        "available",
+        "ongoing",
+        "upcoming",
+        "past",
+        "all"
+      ],
+      "description": "Schedule filter: available=ongoing+upcoming. Default available for unqualified browsing; a nonempty query or cat_id defaults to all for historical lookup. Explicit period overrides this. Not used by catalog=true app dropdowns."
+    }
+  }
+}

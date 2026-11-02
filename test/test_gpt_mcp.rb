@@ -82,6 +82,65 @@ describe 'Catsroll MCP device-computation adapter' do
     expect(call_tool(client, 'catsroll_events', {lang: 'kr', catalog: 'true'})['isError']).eq true
   end
 
+  would 'browse available schedules first with explicit states and pagination for both hosts' do
+    original_today = Date.method(:today)
+    Date.define_singleton_method(:today) { Date.new(2026, 11, 2) }
+    begin
+      [:chatgpt, :claude].each do |host|
+        adapter = Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: host))
+        data = call_tool(adapter, 'catsroll_events', {lang: 'kr'}).fetch('structuredContent')
+        expect(data.fetch('period')).eq 'available'
+        expect(data.fetch('asOf')).eq '2026-11-02'
+        expect(data.fetch('events').map { |event| event.fetch('status') }.uniq).eq %w[ongoing upcoming]
+        current = data.fetch('events').select { |event| event['status'] == 'ongoing' && !event['platinum'] }
+        expect(current.map { |event| event.fetch('event') }).eq %w[2026-11-02_1079 2026-11-02_1080 2026-11-02_926]
+        all = call_tool(adapter, 'catsroll_events', {lang: 'kr', period: 'all', limit: 50}).fetch('structuredContent')
+        expected = all.fetch('events').reject { |event| event['status'] == 'past' }
+        expect(data.fetch('events')).eq expected
+        first = call_tool(adapter, 'catsroll_events', {limit: 4}).fetch('structuredContent')
+        second = call_tool(adapter, 'catsroll_events', {limit: 4, offset: first.fetch('nextOffset')}).fetch('structuredContent')
+        expect(first.fetch('total')).eq data.fetch('total')
+        expect(first.fetch('nextOffset')).eq 4
+        expect(first.fetch('events') + second.fetch('events')).eq data.fetch('events')
+        expect(second.fetch('nextOffset')).eq nil
+        %w[ongoing upcoming past].each do |period|
+          filtered = call_tool(adapter, 'catsroll_events', {period: period}).fetch('structuredContent')
+          expect(filtered.fetch('period')).eq period
+          expect(filtered.fetch('events').any?).eq true
+          expect(filtered.fetch('events').all? { |event| event['status'] == period }).eq true
+        end
+        expect(call_tool(adapter, 'catsroll_events', {period: 'invalid'})['isError']).eq true
+      end
+    ensure
+      Date.define_singleton_method(:today, original_today)
+    end
+  end
+
+  would 'retain historical searches and the full app dropdown independently of the browse default' do
+    original_today = Date.method(:today)
+    Date.define_singleton_method(:today) { Date.new(2026, 11, 2) }
+    begin
+      [:chatgpt, :claude].each do |host|
+        adapter = Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: host))
+        historical = {lang: 'kr', query: '2019-01-23_348'}
+        result = call_tool(adapter, 'catsroll_events', historical).fetch('structuredContent')
+        expect(result.fetch('period')).eq 'all'
+        expect(result.fetch('events').first.fetch('status')).eq 'past'
+        expect(result.fetch('events').first.fetch('event')).eq historical[:query]
+        expect(call_tool(adapter, 'catsroll_events', historical.merge(period: 'available')).dig('structuredContent', 'total')).eq 0
+        expect(call_tool(adapter, 'catsroll_events', {cat_id: 870}).dig('structuredContent', 'period')).eq 'all'
+        guaranteed = call_tool(adapter, 'catsroll_events', {guaranteed: true, period: 'upcoming'}).fetch('structuredContent')
+        expect(guaranteed.fetch('events').any?).eq true
+        expect(guaranteed.fetch('events').all? { |event| event['status'] == 'upcoming' && event['guaranteed'] }).eq true
+        catalog = call_tool(adapter, 'catsroll_events', {catalog: true})
+        expect(catalog.fetch('_meta').fetch('catsroll/events').any? { |event| event['event'] == historical[:query] }).eq true
+        expect(catalog.fetch('structuredContent').key?('events')).eq false
+      end
+    ensure
+      Date.define_singleton_method(:today, original_today)
+    end
+  end
+
   would 'filter cats by actual event pool IDs and paginate every rarity match' do
     cat_tool = rpc(client, 'tools/list').last.dig('result', 'tools').find { |tool| tool['name'] == 'catsroll_cats' }
     properties = cat_tool.dig('inputSchema', 'properties')

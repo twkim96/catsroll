@@ -324,7 +324,21 @@ module BattleCatsRolls
       ball = region(lang)
       cat_id = integer(args['cat_id'], 'cat_id', 1, 1_000_000) if args.key?('cat_id')
       raise InvalidInput, 'Unknown character; resolve with catsroll_cats first' if cat_id && !ball.cats.key?(cat_id)
+      # Unqualified browsing starts with available schedules. Explicit catalog
+      # searches retain historical lookup, including IDs cached by older hosts.
+      period = args.fetch('period', original_term.empty? && !cat_id ? 'available' : 'all')
+      raise InvalidInput, 'period must be available, ongoing, upcoming, past or all' unless
+        %w[available ongoing upcoming past all].include?(period)
+      today = Date.today
       entries = TrackApi.multi_events(ball, initial_event: original_term).filter_map do |item|
+        status = if today.to_s < item[:start_on]
+          'upcoming'
+        elsif today.to_s < item[:end_on]
+          'ongoing'
+        else
+          'past'
+        end
+        next unless period == 'all' || (period == 'available' ? status != 'past' : status == period)
         next unless exact_series_ids.empty? || exact_series_ids.include?(item[:series_id])
         names = [item[:event], item[:label], item[:series_name], item[:start_on], item[:end_on], *EventSeriesNames.shortcuts(item[:series_id])]
         next unless names.join(' ').downcase.gsub(/\s+/, '').include?(term)
@@ -333,9 +347,9 @@ module BattleCatsRolls
         rolls = pool.guaranteed_rolls
         next unless guaranteed.nil? || (rolls > 0) == guaranteed
         item.slice(:event, :label, :series_id, :series_name, :start_on, :end_on, :platinum).
-          merge(lang: lang, guaranteed: rolls > 0, guaranteed_rolls: rolls)
+          merge(lang: lang, status: status, guaranteed: rolls > 0, guaranteed_rolls: rolls)
       end
-      page(entries, args, :events)
+      page(entries, args, :events).merge(period: period, asOf: today.to_s)
     end
 
     def event_reply(args)
