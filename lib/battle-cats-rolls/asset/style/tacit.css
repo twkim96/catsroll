@@ -243,6 +243,9 @@ body {
 ul, ol, dl, hr, pre, table, fieldset, figure, address {
   margin-bottom: 29.7px
 }
+ul:has(+ p), ol:has(+ p), dl:has(+ p) {
+  margin-bottom: 0
+}
 section {
   margin-left: auto;
   margin-right: auto;
