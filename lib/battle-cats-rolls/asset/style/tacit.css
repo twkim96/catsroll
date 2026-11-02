@@ -7,11 +7,7 @@ th {
   font-weight: 600
 }
 td, th {
-  border-bottom: 1.08px solid #595959;
   overflow: auto;
-  padding: 14.85px 18px;
-  text-align: left;
-  vertical-align: top
 }
 thead th {
   border-bottom-width: 2.16px;
@@ -97,9 +93,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="url
 }
 input[type="checkbox"], input[type="radio"] {
   flex-grow: 0;
-  height: 29.7px;
   margin-left: 0;
-  margin-right: 9px;
   vertical-align: middle
 }
 input[type="checkbox"]+label, input[type="radio"]+label {
@@ -148,23 +142,19 @@ h1 {
   font-size: 36px;
   font-weight: 500;
   line-height: 41.4px;
-  margin-top: 72px
 }
 h2 {
   font-size: 25.2px;
   font-weight: 400;
   line-height: 30.6px;
-  margin-top: 54px
 }
 h3 {
   font-size: 21.6px;
   line-height: 27px;
-  margin-top: 36px
 }
 h4 {
   font-size: 18px;
   line-height: 23.4px;
-  margin-top: 18px
 }
 h5 {
   font-size: 14.4px;
