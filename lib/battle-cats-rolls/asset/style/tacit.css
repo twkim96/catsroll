@@ -1,6 +1,5 @@
 /*
-Downloaded from https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.3.3.min.css
-Cleaned up from https://www.10bestdesign.com/dirtymarkup/css/
+Based on https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.3.3.min.css
 */
 
 th {
@@ -15,7 +14,8 @@ thead th {
 }
 table {
   display: table;
-  overflow-x: auto
+  overflow-x: auto;
+  border-collapse: collapse;
 }
 input, textarea, select, button, option, html, body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -229,6 +229,12 @@ html {
 body {
   background: #f5f5f5;
   color: #1a1919;
+  padding: 20px;
+}
+@media (max-width: 767px) {
+  body {
+    padding: 1px
+  }
 }
 ul, ol, dl, hr, pre, table, fieldset, figure, address {
   margin-bottom: 29.7px
@@ -332,14 +338,6 @@ figure img {
 
 /* Customization below */
 
-body {
-  padding: 20px;
-}
-@media (max-width: 767px) {
-  body {
-    padding: 1px
-  }
-}
 .form, label, input, input[type="submit"], button, select, p {
   margin-bottom: 5px;
 }
@@ -351,9 +349,6 @@ label, input, select {
 input[type="checkbox"], input[type="radio"] {
   margin-right: 0;
   height: auto;
-}
-table {
-  border-collapse: collapse;
 }
 table, th, td {
   padding: 1px;
