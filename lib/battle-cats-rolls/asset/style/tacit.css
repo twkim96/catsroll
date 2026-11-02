@@ -1,23 +1,49 @@
 /*
 Based on https://cdn.rawgit.com/yegor256/tacit/gh-pages/tacit-css-1.3.3.min.css
 */
-
-td, th { overflow: auto; }
-thead th {
-  border-bottom-width: 2.16px;
-  padding-bottom: 6.3px;
+* {
+  border: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  box-sizing: border-box;
+  margin: 0;
+  max-width: 100%;
+  outline: 0;
+  padding: 0;
+  vertical-align: baseline;
 }
-table {
-  overflow-x: auto;
-  border-collapse: collapse;
+html, body { width: 100%; }
+html { height: 100%; }
+body {
+  background: #f5f5f5;
+  color: #1a1919;
+  padding: 20px;
 }
-input, textarea, select, button, option, html, body {
+@media (max-width: 767px) {
+  body { padding: 1px; }
+}
+html, body, input, textarea, select, button, option {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 18px;
   font-stretch: normal;
   font-style: normal;
   font-weight: 400;
   line-height: 29.7px;
+}
+table {
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+th, td { overflow: auto; }
+thead th {
+  border-bottom-width: 2.16px;
+  padding-bottom: 6.3px;
+}
+table, th, td {
+  padding: 1px;
+  border: 1px solid black;
+  vertical-align: middle;
+  text-align: center;
 }
 fieldset {
   display: flex;
@@ -32,8 +58,9 @@ input, textarea, select, button {
 input+label, input+input[type="checkbox"], input+input[type="radio"], textarea+label, textarea+input[type="checkbox"], textarea+input[type="radio"], select+label, select+input[type="checkbox"], select+input[type="radio"], button+label, button+input[type="checkbox"], button+input[type="radio"] {
   page-break-before: always;
 }
-input, select, label {
+input, label, select {
   margin-right: 3.6px;
+  line-height: 1.2em;
 }
 textarea {
   min-height: 90px;
@@ -50,7 +77,10 @@ input[type="submit"], input[type="reset"], button {
   padding: 6.525px 23.4px;
   text-align: center;
 }
-button { background: #4a3f9f; }
+button {
+  line-height: 1.2em;
+  background: #4a3f9f;
+}
 button:hover {
   background: #2b255d;
   color: #bfbfbf;
@@ -72,6 +102,7 @@ input[type="text"], input[type="password"], input[type="email"], input[type="url
   border: 1px solid #595959;
   padding: 5.4px 6.3px;
 }
+select { padding: 0; }
 input[type="checkbox"], input[type="radio"] {
   flex-grow: 0;
   margin-left: 0;
@@ -169,27 +200,6 @@ sub, sup {
 }
 sup { top: -.5em; }
 sub { bottom: -.25em; }
-* {
-  border: 0;
-  border-collapse: separate;
-  border-spacing: 0;
-  box-sizing: border-box;
-  margin: 0;
-  max-width: 100%;
-  outline: 0;
-  padding: 0;
-  vertical-align: baseline;
-}
-html, body { width: 100%; }
-html { height: 100%; }
-body {
-  background: #f5f5f5;
-  color: #1a1919;
-  padding: 20px;
-}
-@media (max-width: 767px) {
-  body { padding: 1px; }
-}
 ul, ol, dl, hr, pre, table, fieldset, figure, address {
   margin-bottom: 29.7px;
 }
@@ -257,20 +267,6 @@ figure img { display: block; }
     flex-grow: 1;
     page-break-before: auto;
   }
-}
-
-/* Customization below */
-
-.form, label, input, input[type="submit"], button, select, p {
-  margin-bottom: 5px;
-}
-button, label, input, select { line-height: 1.2em; }
-select { padding: 0; }
-table, th, td {
-  padding: 1px;
-  border: 1px solid black;
-  vertical-align: middle;
-  text-align: center;
 }
 
 .position {
@@ -369,6 +365,9 @@ table, th, td {
   bottom: 0;
 }
 .table { margin-top: 29.7px; }
+.form, label, input, input[type="submit"], button, select, p {
+  margin-bottom: 5px;
+}
 .section { margin-bottom: 15px; }
 .cat_avatar { height: 85px; overflow: hidden; }
 .cat_avatar img { position: relative; top: -25%; }
