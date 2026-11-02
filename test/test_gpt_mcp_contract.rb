@@ -75,6 +75,29 @@ describe 'Frozen 870cc54d MCP contracts' do
         baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
       end
     end
+    # Existing c1df2f17 metadata drift: actual guarantee search, tier wording,
+    # and two appended game forms. Keep exact values; do not normalize them away.
+    catalog_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/catalog_metadata_delta_v1.json')))
+    catalog_delta.each do |host, changes|
+      tools = baseline.fetch(host).fetch('tools').fetch('tools')
+      changes.fetch('descriptions').each do |name, description|
+        tools.find { |tool| tool['name'] == name }['description'] = description
+      end
+      tools.find { |tool| tool['name'] == 'catsroll_events' }.fetch('inputSchema').fetch('properties')['guaranteed'] = changes.fetch('eventsGuaranteed')
+      baseline.fetch(host).fetch('find_optional_name').fetch('_meta').fetch('catsroll/data').fetch('tickets').each do |ticket|
+        changes.fetch('ticketNames').each do |id, names|
+          ticket.fetch('pool').fetch('cats').fetch(id)['name'] = names
+        end
+      end
+    end
+    # Mixed movement/ticket guidance changes instructions/descriptions only.
+    routing_delta = JSON.parse(File.read(File.join(__dir__, 'fixtures/gpt_mcp/mixed_ticket_routing_delta_v1.json')))
+    routing_delta.each do |host, changes|
+      baseline.fetch(host).fetch('initialize')['instructions'] = changes.fetch('instructions')
+      changes.fetch('descriptions').each do |name, description|
+        baseline.fetch(host).fetch('tools').fetch('tools').find { |tool| tool['name'] == name }['description'] = description
+      end
+    end
     expect(GptMcpContractSupport.capture).eq baseline
   end
 end

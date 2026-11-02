@@ -1,0 +1,46 @@
+{
+  "chatgpt": {
+    "descriptions": {
+      "catsroll_events": "Find public KR/JP banners by name/date or exact cat_id membership. For guaranteed requests use guaranteed=true and check each result’s guaranteed_rolls and dates; ordinary and guaranteed periods may be separate. Never use forceGuaranteed to claim an actual schedule. For a desired character, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.",
+      "catsroll_recommend": "Use for vague good-cat/what-to-pull questions and trait gaps such as 빨적 부족. Returns a bounded ranked selection from reviewed SSS/SS/S/A/B/C/D and adjacent-range source ratings, joined by cat ID to current Catsroll names, per-form targets and abilities. total_candidates and returned_count describe this filtered selection, not the full banner roster. Preserve range labels; their lower end is only a sorting rule. No traits: best eligible candidates; explain low-tier caveats. Multiple traits: match=all unless user accepts any. Default compares final development including fourth forms/ultra; this is an assumption, not account ownership. High growth (ultra) uses Bestnyanko only; low growth (none/talents) uses existing tiers unchanged. Do not mix the two or fill missing high-growth grades with earlier ones. Preserve each source and condition. Source upgrade requirements may be unspecified; never claim they are explicit. State requirements and subjective within-series tier limits. Attached source_notes are dated opinions for the evaluated form/investment, not game facts or a global rank. For collection priority, distinguish collab scarcity from combat strength; never invent rerun schedules. Use catsroll_cats(details=true) for every sourced tier variant and individual role notes, including low tiers; do not infer missing characters are weak. event filters actual pool membership, NOT current sale or seed reachability. No seed needed for performance candidates; use catalogs and Find for actual pulls."
+    },
+    "eventsGuaranteed": {
+      "type": "boolean"
+    },
+    "ticketNames": {
+      "402": [
+        "번개의 정령 볼트",
+        "벼락의 정령 피카볼트",
+        "벼락의 정령왕 기가볼트",
+        "벼락의 대정령 테라볼타"
+      ],
+      "755": [
+        "알리칸토",
+        "분노의 알리칸토",
+        "지략의 알리칸토"
+      ]
+    }
+  },
+  "claude": {
+    "descriptions": {
+      "catsroll_events": "배너/뽑기 시리즈 검색용. 다마군, 다군, 다이너마이트 군단 같은 이름은 여기에 query로 넣는다. 공백과 기존 시리즈 별명을 지원한다. 확뽑은 실제 guaranteed와 guaranteed_rolls 및 기간을 확인하며 일반 기간과 구분한다. Find public KR/JP banners by name/date or exact cat_id membership. For guaranteed requests use guaranteed=true and check each result’s guaranteed_rolls and dates; ordinary and guaranteed periods may be separate. Never use forceGuaranteed to claim an actual schedule. For a desired character, resolve its ID with catsroll_cats then pass cat_id here WITHOUT using the cat name as the banner query. Only banners whose actual pool contains that cat are returned; source dates are not future availability. Returns IDs and pagination; does not calculate. catalog=true prepares the full dropdown catalog privately for the app, not model search results.",
+      "catsroll_recommend": "Use for vague good-cat/what-to-pull questions and trait gaps such as 빨적 부족. Returns a bounded ranked selection from reviewed SSS/SS/S/A/B/C/D and adjacent-range source ratings, joined by cat ID to current Catsroll names, per-form targets and abilities. total_candidates and returned_count describe this filtered selection, not the full banner roster. Preserve range labels; their lower end is only a sorting rule. No traits: best eligible candidates; explain low-tier caveats. Multiple traits: match=all unless user accepts any. Default compares final development including fourth forms/ultra; this is an assumption, not account ownership. High growth (ultra) uses Bestnyanko only; low growth (none/talents) uses existing tiers unchanged. Do not mix the two or fill missing high-growth grades with earlier ones. Preserve each source and condition. Source upgrade requirements may be unspecified; never claim they are explicit. State requirements and subjective within-series tier limits. Attached source_notes are dated opinions for the evaluated form/investment, not game facts or a global rank. For collection priority, distinguish collab scarcity from combat strength; never invent rerun schedules. Use catsroll_cats(details=true) for every sourced tier variant and individual role notes, including low tiers; do not infer missing characters are weak. event filters actual pool membership, NOT current sale or seed reachability. No seed needed for performance candidates; use catalogs and Find for actual pulls."
+    },
+    "eventsGuaranteed": {
+      "type": "boolean"
+    },
+    "ticketNames": {
+      "402": [
+        "번개의 정령 볼트",
+        "벼락의 정령 피카볼트",
+        "벼락의 정령왕 기가볼트",
+        "벼락의 대정령 테라볼타"
+      ],
+      "755": [
+        "알리칸토",
+        "분노의 알리칸토",
+        "지략의 알리칸토"
+      ]
+    }
+  }
+}

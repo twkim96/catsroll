@@ -128,6 +128,30 @@ describe 'Catsroll curated GPT guide retrieval' do
     expect(guide.lookup('topic' => 'glossary').fetch('documents').first.fetch('id')).eq 'glossary'
   end
 
+  would 'retrieve mixed movement and ticket setup instead of only track-switch concepts' do
+    guide = BattleCatsRolls::GptGuide.new
+    ['확뽑으로 B열 이동 후 플티로 목표를 뽑을 수 있어?',
+      '확뽑 후 플레티넘으로 얻고 싶어', '확뽑 후 블티로 목표를 얻고 싶어',
+      '확뽑 후 블랙티켓으로 얻고 싶어', '확뽑 후 레전드 티켓으로 얻고 싶어'].each do |query|
+      result = guide.lookup('query' => query)
+      answer = result.fetch('documents').find { |document| document.fetch('id') == 'find' }
+      expect(!!answer).eq true
+      expect(answer.fetch('sections').include?('확뽑 이동 후 특수 티켓')).eq true
+      expect(answer.fetch('content').include?('이동용 확뽑 배너에 목표가 없어도 된다')).eq true
+      expect(answer.fetch('content').include?('maxLegendTicket')).eq true
+      expect(result.fetch('truncated')).eq false
+      expect(result.fetch('unansweredSections')).eq []
+    end
+    ['플레티넘 티켓', '블랙티켓', '레티'].each do |query|
+      definition = guide.definition(query)
+      expect(!!definition).eq true
+      expect(definition.to_json.include?(query)).eq true
+    end
+    terms = guide.lookup('topic' => 'glossary', 'query' => '레티').fetch('documents').first.fetch('content')
+    expect(terms.include?('보통 레어 티켓')).eq true
+    expect(terms.include?('레전드 티켓을 뜻한다고 밝혔으면')).eq true
+  end
+
   would 'recognize only registered short domain terms and their Korean particles' do
     guide = BattleCatsRolls::GptGuide.new
     {'A/B' => 'tracks', 'A / B 설명' => 'tracks', 'A열' => 'tracks', 'B열은?' => 'tracks',

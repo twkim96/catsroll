@@ -798,6 +798,51 @@ describe 'Catsroll MCP device-computation adapter' do
       targets: [{cat_id: 160, cat_name: '명계의 칼리파', allow_ticket: false}]))['isError']).eq true
   end
 
+  would 'resolve ticket aliases to their own pools and prepare movement separately from acquisition' do
+    movement_id = '2026-11-09_1079'
+    movement_pool = BattleCatsRolls::TrackApi.compact_find_pool_data(BattleCatsRolls::Route.ball_kr, movement_id)
+    expect(movement_pool.fetch(:guaranteed_rolls)).eq 11
+    expect(movement_pool.fetch(:slots).values.flatten.include?(160)).eq false
+    ticket_cases = [
+      [['플티', '플레티넘', '플레티넘 티켓', '플래티넘 티켓'], 'platinum', :maxPlatinum],
+      [['블티', '블랙 티켓', '레전드 티켓'], 'legend', :maxLegendTicket]
+    ]
+    ticket_cases.each do |aliases, pool_type, budget|
+      lists = aliases.map { |term| call_tool(client, 'catsroll_events', {lang: 'kr', query: term, limit: 50}).fetch('structuredContent') }
+      expect(lists.all? { |list| list.fetch('total') > 0 }).eq true
+      lists.each { |list| expect(list.fetch('events').all? { |event| event.fetch('platinum') == pool_type }).eq true }
+      expect(lists.map { |list| list.fetch('events').map { |event| event.fetch('event') } }.uniq.size).eq 1
+      ticket_id = lists.first.fetch('events').first.fetch('event')
+      ticket_pool = BattleCatsRolls::TrackApi.compact_find_pool_data(BattleCatsRolls::Route.ball_kr, ticket_id)
+      expect(ticket_pool.fetch(:slots).values.flatten.include?(160)).eq true
+      rows = [{lang: 'kr', event: movement_id}, {lang: 'kr', event: ticket_id}]
+      args = {mode: 'multi', seed: 42, rows: rows, findEnabled: true, scheduleAware: true,
+        maxGuaranteed: 1, maxPlatinum: 0, maxLegendTicket: 0,
+        targets: [{cat_id: 160, cat_name: '명계의 칼리파', allow_ticket: true}]}.merge(budget => 1)
+      [:chatgpt, :claude].each do |host|
+        host_client = Rack::MockRequest.new(BattleCatsRolls::GptMcp.new(ui_host: host))
+        prepared = call_tool(host_client, 'catsroll_prepare', args)
+        expect(prepared.dig('structuredContent', 'status')).eq 'prepared'
+        request = prepared.dig('structuredContent', 'request')
+        expect(request.fetch('rows').map { |row| row.fetch('event') }).eq [movement_id, ticket_id]
+        expect(request.fetch('rows').all? { |row| row.fetch('forceGuaranteed') == 0 }).eq true
+        expect(request.fetch('targets').first.fetch('allow_ticket')).eq true
+        expect(request.fetch(budget.to_s)).eq 1
+        expect(request.fetch('maxGuaranteed')).eq 1
+        expect(request.fetch('scheduleAware')).eq true
+        expect(call_tool(host_client, 'catsroll_prepare', args.merge(budget => 0)).fetch('isError')).eq true
+        expect(call_tool(host_client, 'catsroll_prepare', args.merge(
+          targets: [{cat_id: 160, cat_name: '명계의 칼리파', allow_ticket: false}])).fetch('isError')).eq true
+        # Inspecting only ticket A/B positions needs no Find permission or budget.
+        inspection = call_tool(host_client, 'catsroll_prepare', {mode: 'multi', seed: 42, rows: [rows.last]})
+        expect(inspection.dig('structuredContent', 'status')).eq 'prepared'
+        expect(inspection.dig('structuredContent', 'request', 'findEnabled')).eq false
+      end
+    end
+    # Ambiguous 레티 must not become a global legend-banner alias.
+    expect(BattleCatsRolls::EventSeriesNames.exact_shortcut_ids('레티')).eq []
+  end
+
   would 'prepare unscheduled regional references without altering the source draw pool' do
     lookup = call_tool(client, 'catsroll_banner_preview', {query: '검심', lang: 'kr'}).
       fetch('structuredContent')
