@@ -615,6 +615,10 @@ module BattleCatsRolls
       @rarity ||= Array(request.params['rarity'])
     end
 
+    def form
+      @form ||= Array(request.params['form'])
+    end
+
     def dps
       @dps ||= request.params_coercion_with_nil('dps', :to_s) || default_dps
     end
@@ -856,9 +860,9 @@ module BattleCatsRolls
           :for_combat, :combat,
           :for_other, :other)
 
-        if advanced_filters
+        if advanced_filters || query[:advanced_filters]
           keys.push(
-            :rarity, :dps, :damage, :health, :knockbacks,
+            :rarity, :form, :dps, :damage, :health, :knockbacks,
             :stand, :reach, :speed, :cost, :production,
             :for_aspect, :aspect)
         end

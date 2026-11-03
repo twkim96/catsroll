@@ -271,6 +271,26 @@
       </tr>
       <tr class="attack">
         <td class="for">
+          <label for="for_form_any">
+            <input type="radio" id="for_form_any" name="for_form"
+              value="any" checked="checked">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Form</strong></div>
+          <% BattleCatsRolls::Filter::Form.each_key do |form| %>
+          <label for="form_<%= form %>">
+            <input type="checkbox" name="form" id="form_<%= form %>"
+            value="<%= form %>" onchange="roll(this)"
+            <%= checked_form(form) %>>
+            <%= display_filter(form) %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
           <label for="dps_any">
             <input type="radio" id="dps_any" name="dps"
               value="any" <%= checked_dps('any') %>

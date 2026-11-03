@@ -1,6 +1,5 @@
 ## Stats
 
-* Add an advanced filter for forms. Useful to find all cats having ultra form
 * Add an advanced filter for having talents, and/or ultra talents
 * Add a separate filter for banners/families based on series id
 * Show surge duration

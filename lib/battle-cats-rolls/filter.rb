@@ -5,6 +5,10 @@ require_relative 'talent'
 
 module BattleCatsRolls
   module Filter
+    def self.filter values, &block
+      Hash[values.zip(Array.new(values.size, block))].freeze
+    end
+
     class Chain < Struct.new(:cats, :level,
       :exclude_talents, :sum_no_wave, :dps_no_critical,
       keyword_init: true)
@@ -489,10 +493,14 @@ module BattleCatsRolls
     }.freeze
 
     Rarities = %w[normal special rare super uber legend].freeze
-    RarityFilter = lambda do |rarity, id, info, index|
+    Rarity = filter(Rarities) do |rarity, id, info, index|
       info['rarity'] == Rarities.index(rarity)
     end
-    Rarity = Hash[Rarities.zip(Array.new(Rarities.size, RarityFilter))].freeze
+
+    Forms = %w[base evolved true ultra].freeze
+    Form = filter(Forms) do |form, id, info, index|
+      index == Forms.index(form)
+    end
 
     DPS = {
       'high' => HighDPS,

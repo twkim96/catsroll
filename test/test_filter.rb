@@ -117,11 +117,40 @@ describe BattleCatsRolls::Filter do
   end
 
   would 'filter rarity' do
-    chain.filter!(['white'], 'all', BattleCatsRolls::Filter::Specialization)
-    chain.filter!(['normal'], 'all', BattleCatsRolls::Filter::Rarity)
+    chain.filter!(['white'], 'any', BattleCatsRolls::Filter::Specialization)
+    chain.filter!(['normal'], 'any', BattleCatsRolls::Filter::Rarity)
     ids = chain.cats.keys
 
     expect(ids).include?(9) # Titan Cat
+  end
+
+  describe 'filter form' do
+    would 'filter base form only' do
+      chain.filter!(['float'], 'any', BattleCatsRolls::Filter::Specialization)
+      chain.filter!(['base'], 'any', BattleCatsRolls::Filter::Form)
+      ids = chain.cats.keys
+
+      expect(ids).include?(197) # Catman
+      expect(ids).not.include?(483) # Benevolent Souma
+    end
+
+    would 'filter true form only' do
+      chain.filter!(['float'], 'any', BattleCatsRolls::Filter::Specialization)
+      chain.filter!(['true'], 'any', BattleCatsRolls::Filter::Form)
+      ids = chain.cats.keys
+
+      expect(ids).not.include?(197) # Catman
+      expect(ids).include?(483) # Benevolent Souma
+    end
+
+    would 'filter base or evolved form only' do
+      chain.filter!(['relic'], 'any', BattleCatsRolls::Filter::Specialization)
+      chain.filter!(%w[base evolved], 'any', BattleCatsRolls::Filter::Form)
+      ids = chain.cats.keys
+
+      expect(ids).not.include?(197) # Catman
+      expect(ids).include?(522) # Medusa Cat
+    end
   end
 
   would 'filter high DPS' do
