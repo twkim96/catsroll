@@ -10,7 +10,7 @@ require 'rack'
 module BattleCatsRolls
   server_status = ServerStatus.middleware
   Server = Jellyfish::Builder.app do
-    use Rack::Deflater
+    use Rack::Deflater if ENV['RACK_DEFLATER'] != 'false'
     use *server_status if server_status
 
     use Rack::ContentLength
