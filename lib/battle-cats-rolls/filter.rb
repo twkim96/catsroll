@@ -502,6 +502,18 @@ module BattleCatsRolls
       index == Forms.index(form)
     end
 
+    HaveTalent = {
+      'none' => lambda do |form, id, info, index|
+        info['talent'].nil?
+      end,
+      'regular' => lambda do |form, id, info, index|
+        info['talent']
+      end,
+      'ultra' => lambda do |form, id, info, index|
+        info['talent']&.find{ |name, data| data['ultra'] }
+      end
+    }.freeze
+
     DPS = {
       'high' => HighDPS,
       'high_effectively' => HighEffectiveDPS,

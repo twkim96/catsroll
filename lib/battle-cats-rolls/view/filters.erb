@@ -291,6 +291,27 @@
       </tr>
       <tr class="attack">
         <td class="for">
+          <label for="talent_any">
+            <input type="radio" id="talent_any" name="talent"
+              value="any" <%= checked_talent('any') %>
+              onchange="roll(this)">
+            Any
+          </label>
+        </td>
+        <td class="filter" colspan="3">
+          <div><strong>Talent</strong></div>
+          <% BattleCatsRolls::Filter::HaveTalent.each_key do |filter| %>
+          <label for="talent_<%= filter %>">
+            <input type="radio" name="talent" id="talent_<%= filter %>"
+              value="<%= filter %>" <%= checked_talent(filter) %>
+              onchange="roll(this)">
+            <%= display_filter(filter) %>
+          </label>
+          <% end %>
+        </td>
+      </tr>
+      <tr class="attack">
+        <td class="for">
           <label for="dps_any">
             <input type="radio" id="dps_any" name="dps"
               value="any" <%= checked_dps('any') %>

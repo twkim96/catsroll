@@ -656,6 +656,10 @@ module BattleCatsRolls
       'checked="checked"' if route.form.member?(value)
     end
 
+    def checked_talent value
+      'checked="checked"' if route.talent == value
+    end
+
     def checked_dps value
       'checked="checked"' if route.dps == value
     end

@@ -153,6 +153,29 @@ describe BattleCatsRolls::Filter do
     end
   end
 
+  describe 'filter talent' do
+    would 'filter none' do
+      ids = chain.filter!(['none'], 'all',
+        BattleCatsRolls::Filter::HaveTalent).keys
+
+      expect(ids).include?(1) # Cat
+    end
+
+    would 'filter regular' do
+      ids = chain.filter!(['regular'], 'all',
+        BattleCatsRolls::Filter::HaveTalent).keys
+
+      expect(ids).include?(38) # Pogo Cat
+    end
+
+    would 'filter ultra' do
+      ids = chain.filter!(['ultra'], 'all',
+        BattleCatsRolls::Filter::HaveTalent).keys
+
+      expect(ids).include?(35) # Nekoluga
+    end
+  end
+
   would 'filter high DPS' do
     ids = chain.filter!(['high'], 'all',
       BattleCatsRolls::Filter::DPS).keys

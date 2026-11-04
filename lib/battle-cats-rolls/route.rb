@@ -619,6 +619,15 @@ module BattleCatsRolls
       @form ||= Array(request.params['form'])
     end
 
+    def talent
+      @talent ||= request.params_coercion_with_nil('talent', :to_s) ||
+        default_talent
+    end
+
+    def default_talent
+      'any'
+    end
+
     def dps
       @dps ||= request.params_coercion_with_nil('dps', :to_s) || default_dps
     end
@@ -862,7 +871,7 @@ module BattleCatsRolls
 
         if advanced_filters || query[:advanced_filters]
           keys.push(
-            :rarity, :form, :dps, :damage, :health, :knockbacks,
+            :rarity, :form, :talent, :dps, :damage, :health, :knockbacks,
             :stand, :reach, :speed, :cost, :production,
             :for_aspect, :aspect)
         end

@@ -12,6 +12,14 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-11-05") %>
+<ul>
+  <li>
+    Add a talent filter in advanced filters. Example:
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, talent: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra talent</a>
+  </li>
+</ul>
+
 <%= header(2, "2026-11-04") %>
 <ul>
   <li>
