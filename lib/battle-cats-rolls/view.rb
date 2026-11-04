@@ -85,6 +85,10 @@ module BattleCatsRolls
       erb(:layout){ erb(name) }
     end
 
+    def h str
+      CGI.escape_html(str)
+    end
+
     def stat_time frames
       case frames
       when Numeric
@@ -332,7 +336,7 @@ module BattleCatsRolls
 
       <<~HTML
         <td rowspan="#{rowspan}" id="N#{cat.number}">
-          <a href="#{uri_for_number_td(cat)}">#{cat.number}</a>
+          <a href="#{h uri_for_number_td(cat)}">#{cat.number}</a>
         </td>
       HTML
     end
@@ -359,7 +363,7 @@ module BattleCatsRolls
       [1, 5, 15].map do |steps|
         seed = route.gacha.backtrack_seed(seed, 2 * (steps - prev))
         prev = steps
-        uri = route.uri(query: {seed: seed, last: 0, pos: '1A'})
+        uri = h route.uri(query: {seed: seed, last: 0, pos: '1A'})
         %Q{<a href="#{uri}">#{steps}x</a>}
       end.join(' / ')
     end
@@ -804,10 +808,6 @@ module BattleCatsRolls
       end.map do |(start, last, rate)|
         "lv#{start}~#{last}: #{rate}%"
       end.join(', ')
-    end
-
-    def h str
-      CGI.escape_html(str)
     end
 
     def duped_last_cat result
