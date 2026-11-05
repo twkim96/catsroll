@@ -127,11 +127,11 @@ module BattleCatsRolls
     def read_event row, event_fields
       result = read_row(row, event_fields)
 
-      pool_data = extract_pool(row).map do |pool_row|
+      pool_data = extract_pool(row).filter_map do |pool_row|
         if pool_row.size == PoolFields
           read_row(pool_row, self.class.pool_fields)
         end
-      end.compact
+      end
 
       result['pool'] = ['pool', pool_data]
       result
