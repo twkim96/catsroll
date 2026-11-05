@@ -1,6 +1,7 @@
 ## Stats
 
 * Add a separate filter for banners/families based on series id
+* Add a time unit option to select between seconds or frames
 * Show surge duration
 * Show knockback distance
 * Show slow speed (7.5 r/s or 0.5 p/f)
