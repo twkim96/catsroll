@@ -16,7 +16,17 @@
 <ul>
   <li>
     Add a talent filter in advanced filters. Example:
-    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, talent: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra talent</a>
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, talent: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra talent</a>.
+  </li>
+  <li>
+    Add a banner filter. Example:
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {banner_filter: 6}, include_filters: true) %>#legend-rare-cat">filter cats with Ultra Souls banner</a>.
+    The banner list is curated to show only regular and seasonal banners.
+    You can still filter with collaboration banners by changing the
+    <code>banner_filter</code> query in the URL with the banner id
+    if you want. You can find the banner id in the banner events filter.
+    This is intended to make it easier to find banners which are used
+    much more often.
   </li>
 </ul>
 
@@ -24,7 +34,7 @@
 <ul>
   <li>
     Add a form filter in advanced filters. Example:
-    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, form: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra form</a>
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, form: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra form</a>.
   </li>
   <li>
     The video in the help page is removed because it's old and it contains

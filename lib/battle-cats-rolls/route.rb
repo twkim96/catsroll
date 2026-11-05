@@ -28,6 +28,7 @@ module BattleCatsRolls
     ].freeze
 
     QueryFilter = [*QueryMemorized,
+      :banner_filter,
       :for_against, :against,
       :buff,
       :for_resistant, :resistant,
@@ -44,6 +45,37 @@ module BattleCatsRolls
       :stand, :reach, :speed, :cost, :production,
       :for_aspect, :aspect
     ].freeze # rubocop:disable Layout/MultilineArrayBraceLayout
+
+    CuratedBanners = Set.new([
+      0, # Tales of the Nekoluga
+      1, # The Dynamites
+      2, # Sengoku Wargods Vajiras
+      3, # Galaxy Gals
+      4, # Dragon Emperors
+      5, # Red Busters
+      6, # Ultra Souls
+      7, # Dark Heroes
+      8, # Halloween
+      9, # Xmas Gals
+      18, # Almighties
+      19, # Uberfest
+      22, # Air Busters
+      24, # Iron Legion
+      26, # Easter Carnival
+      27, # Epicfest
+      28, # Girls & Monsters
+      32, # Metal Busters
+      33, # Elemental Pixies
+      45, # Wave Busters
+      47, # DynastyFest
+      48, # Valentine's Gals
+      50, # Royalfest
+      52, # White Day
+      53, # June Bride
+      56, # Colossus Busters
+      64, # Gals of Summer Sunshine
+      65, # Gals of Summer Blue Ocean
+    ]).freeze
 
     def self.load_ball lang
       CrystalBall.load("#{Root}/build", lang)
@@ -115,8 +147,8 @@ module BattleCatsRolls
       CrystalBall::EventsPerPage * event_page < events_filtered.size
     end
 
-    def banner_not_in_menu?
-      banner && !ball.banners.member?(banner)
+    def banner_not_in_menu? banner_id=banner, banners=ball.banners
+      banner_id && !banners.member?(banner_id)
     end
 
     def prepare_tracks
@@ -362,6 +394,18 @@ module BattleCatsRolls
       return @banner if instance_variable_defined?(:@banner)
 
       @banner ||= request.params_coercion_int_or_nil('banner')
+    end
+
+    def banner_filter
+      return @banner_filter if instance_variable_defined?(:@banner_filter)
+
+      @banner_filter ||= request.params_coercion_int_or_nil('banner_filter')
+    end
+
+    def curated_banners
+      @curated_banners ||= ball.banners.select do |id, data|
+        CuratedBanners.member?(id)
+      end
     end
 
     def count

@@ -163,6 +163,11 @@ module BattleCatsRolls
           sum_no_wave: route.sum_no_wave,
           dps_no_critical: route.dps_no_critical)
 
+        if route.banner_filter
+          filter = Filter::Banner.build(route.ball, route.banner_filter)
+          chain.filter!([route.banner_filter], 'any', filter)
+        end
+
         from_resistant =
           if route.for_resistant == 'or'
             route.resistant

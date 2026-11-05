@@ -15,6 +15,23 @@ describe BattleCatsRolls::Filter do
       cats: ball.cats.dup, exclude_talents: exclude_talents)
   end
 
+  describe 'banner filter' do
+    would 'filter Mola King' do
+      ids = chain.filter!([14], 'any',
+        BattleCatsRolls::Filter::Banner.build(ball, 14)).keys
+
+      expect(ids).include?(175) # Mola King
+      expect(ids).not.include?(35) # Nekoluga
+    end
+
+    would 'filter unknown banner' do
+      ids = chain.filter!([9999], 'any',
+        BattleCatsRolls::Filter::Banner.build(ball, 9999)).keys
+
+      expect(ids).empty?
+    end
+  end
+
   would 'not give Metal Cat when filtering against metal specialization' do
     ids = chain.filter!(['metal'], 'all',
       BattleCatsRolls::Filter::Specialization).keys

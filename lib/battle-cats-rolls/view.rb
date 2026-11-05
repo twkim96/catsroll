@@ -532,6 +532,10 @@ module BattleCatsRolls
       'selected="selected"' if route.banner == banner_id
     end
 
+    def selected_current_banner_filter banner_id
+      'selected="selected"' if route.banner_filter == banner_id
+    end
+
     def selected_find cat
       'selected="selected"' if route.find == cat.id
     end

@@ -1,5 +1,28 @@
 <div class="cats">
   <div class="cats_filters">
+    <div class="banners">
+      <label for="banner_select" title="Gacha banner to filter cats">Banner:</label>
+      <select id="banner_select" name="banner_filter" onchange="roll(this)">
+        <% if route.banner_not_in_menu?(route.banner_filter, route.curated_banners) %>
+        <option value="<%= route.banner_filter %>" selected="selected">
+          <% if route.banner_not_in_menu?(route.banner_filter) %>
+          (<%= route.banner_filter %>) Unknown
+          <% else %>
+          <%= show_banner(route.banner_filter, route.ball.banners[route.banner_filter]) %>
+          <% end %>
+        </option>
+        <% end %>
+        <option value="" <%= selected_current_banner_filter('') %>>
+          (Any cats. Select a banner to filter cats)
+        </option>
+        <% route.curated_banners.each do |id, data| %>
+        <option value="<%= id %>" <%= selected_current_banner_filter(id) %>>
+          <%= show_banner(id, data) %>
+        </option>
+        <% end %>
+      </select>
+    </div>
+
     <%= erb :stats_options %>
 
     <table><tbody>
