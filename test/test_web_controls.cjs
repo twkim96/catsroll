@@ -62,6 +62,14 @@ async function readable(locator, minimum = 4.5) {
     assert.deepEqual(after.route, before.route);
     await page.locator('#multi_plan_mode').check();
     assert.deepEqual(await page.evaluate(() => MultiPlanApp.getState().marks), before.marks);
+    await page.goto(base + '/cats?lang=en&advanced_filters=true');
+    await page.locator('#form_base').check();
+    await page.waitForURL(url => url.searchParams.getAll('form').includes('base'));
+    await page.locator('#talent_ultra').check();
+    await page.waitForURL(url => url.searchParams.get('talent') === 'ultra');
+    assert.equal(await page.locator('#form_base').isChecked(), true,
+      'upstream form filter survives selecting the talent filter');
+    assert.equal(await page.locator('#talent_ultra').isChecked(), true);
     console.log('web controls: single/Multi filter contrast, selected/unselected targets and silent reversible plan toggle passed');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

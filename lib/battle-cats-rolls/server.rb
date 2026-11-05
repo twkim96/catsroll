@@ -11,10 +11,10 @@ require 'rack'
 module BattleCatsRolls
   server_status = ServerStatus.middleware
   Server = Jellyfish::Builder.app do
-    use Rack::Deflater
+    use Rack::Deflater if ENV['RACK_DEFLATER'] != 'false'
     use *server_status if server_status
 
-    use Rack::ContentLength
+    use Rack::ContentLength if ENV['RACK_CONTENT_LENGTH'] != 'false'
     use Rack::ContentType, 'text/html; charset=utf-8'
     use LocalServerMiddleware
 

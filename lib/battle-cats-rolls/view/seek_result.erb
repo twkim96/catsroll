@@ -15,7 +15,7 @@
             <li>There's a bug. Unlikely because there is no known one.</li>
           </ul>
         </li>
-        <li>Do you want to <a href="<%= route.seek_uri %>">try again</a>?</li>
+        <li>Do you want to <a href="<%= h route.seek_uri %>">try again</a>?</li>
       </ul>
     <% else %>
       <ul>
@@ -23,7 +23,7 @@
           Your starting seed is:
           <ul>
             <li>
-              <a href="<%= route.uri(query: {seed: result.starting_seed, last: duped_last_cat(result)}) %>"><%= result.starting_seed %></a>
+              <a href="<%= h route.uri(query: {seed: result.starting_seed, last: duped_last_cat(result)}) %>"><%= result.starting_seed %></a>
             </li>
           </ul>
         </li>
@@ -31,7 +31,7 @@
           After rolling the cats you entered, your last seed is:
           <ul>
             <li>
-              <a href="<%= route.uri(query: {seed: result.current_seed}) %>"><%= result.current_seed %></a>
+              <a href="<%= h route.uri(query: {seed: result.current_seed}) %>"><%= result.current_seed %></a>
             </li>
           </ul>
         </li>
@@ -43,7 +43,7 @@
             then your seed should be:
             <ul>
               <li>
-                <a href="<%= route.uri(query: {seed: result.offset_seed}) %>"><%= result.offset_seed %></a> (1A here is the same as 1B in the above link)
+                <a href="<%= h route.uri(query: {seed: result.offset_seed}) %>"><%= result.offset_seed %></a> (1A here is the same as 1B in the above link)
               </li>
             </ul>
           </li>
@@ -55,7 +55,7 @@
             and seek again with your new rolls if it's not the right one.
           </li>
         <% end %>
-        <li>Note that <strong>you only need to find the seed once</strong>. Save the URL. Following up, you can <a href="<%= route.help_uri %>#advance-the-tracks">advance the tracks</a> from there.</li>
+        <li>Note that <strong>you only need to find the seed once</strong>. Save the URL. Following up, you can <a href="<%= h route.help_uri %>#advance-the-tracks">advance the tracks</a> from there.</li>
       </ul>
     <% end %>
   <% elsif arg[:seek] %>
@@ -68,6 +68,6 @@
       window.setTimeout(function(){ window.location.reload(true) }, 5000);
     </script>
   <% else %>
-    <ul><li>Are you <a href="<%= route.seek_uri %>">seeking</a> the seed?</li></ul>
+    <ul><li>Are you <a href="<%= h route.seek_uri %>">seeking</a> the seed?</li></ul>
   <% end %>
 </div>

@@ -7,6 +7,33 @@ const event = '2019-01-23_348';
   const browser = await chromium.launch({headless: true, channel: process.env.GPT_BROWSER_CHANNEL || 'chrome'});
   try {
     const page = await browser.newPage();
+    // Upstream's link guard must also pass through the client renderer/handler.
+    for (const mode of ['server', 'client']) {
+      const context = await browser.newContext();
+      const pickPage = await context.newPage();
+      const errors = [];
+      pickPage.on('pageerror', error => errors.push(error.message));
+      async function loadTrack() {
+        await pickPage.goto(`${base}/?seed=42&event=${event}&lang=kr&count=10&compute=${mode}`);
+        if (mode === 'client') await pickPage.waitForFunction(() =>
+          document.querySelector('#client-compute-status')?.textContent === '✓');
+        await pickPage.locator('td.cat[onclick]').first().waitFor();
+      }
+      await loadTrack();
+      const rollLink = pickPage.locator('td.cat[onclick] a[href*="seed="]').first();
+      const nextSeed = new URL(await rollLink.getAttribute('href'), base).searchParams.get('seed');
+      await rollLink.click();
+      await pickPage.waitForURL(url => url.searchParams.get('seed') === nextSeed);
+      assert.equal(new URL(pickPage.url()).searchParams.has('pick'), false,
+        `${mode}: following a roll link must not highlight the containing cell`);
+      await loadTrack();
+      await pickPage.locator('td.cat[onclick]').first().click({position: {x: 2, y: 2}});
+      await pickPage.waitForURL(url => url.searchParams.has('pick'));
+      assert.equal(new URL(pickPage.url()).searchParams.get('pick'), '1A',
+        `${mode}: clicking the cell itself still highlights its route`);
+      assert.deepEqual(errors, []);
+      await context.close();
+    }
     async function notesFollowTable() {
       assert.equal(await page.locator('#content .table').count(), 1);
       assert.equal(await page.locator('#content .note').count(), 1);

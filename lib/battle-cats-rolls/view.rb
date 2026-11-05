@@ -85,6 +85,10 @@ module BattleCatsRolls
       erb(:layout){ erb(name) }
     end
 
+    def h str
+      CGI.escape_html(str)
+    end
+
     def stat_time frames
       case frames
       when Numeric
@@ -332,7 +336,7 @@ module BattleCatsRolls
 
       <<~HTML
         <td rowspan="#{rowspan}" id="N#{cat.number}">
-          <a href="#{uri_for_number_td(cat)}">#{cat.number}</a>
+          <a href="#{h uri_for_number_td(cat)}">#{cat.number}</a>
         </td>
       HTML
     end
@@ -359,7 +363,7 @@ module BattleCatsRolls
       [1, 5, 15].map do |steps|
         seed = route.gacha.backtrack_seed(seed, 2 * (steps - prev))
         prev = steps
-        uri = route.uri(query: {seed: seed, last: 0, pos: '1A'})
+        uri = h route.uri(query: {seed: seed, last: 0, pos: '1A'})
         %Q{<a href="#{uri}">#{steps}x</a>}
       end.join(' / ')
     end
@@ -648,6 +652,14 @@ module BattleCatsRolls
       'checked="checked"' if route.rarity.member?(value)
     end
 
+    def checked_form value
+      'checked="checked"' if route.form.member?(value)
+    end
+
+    def checked_talent value
+      'checked="checked"' if route.talent == value
+    end
+
     def checked_dps value
       'checked="checked"' if route.dps == value
     end
@@ -802,10 +814,6 @@ module BattleCatsRolls
       end.join(', ')
     end
 
-    def h str
-      CGI.escape_html(str)
-    end
-
     def duped_last_cat result
       if result.run_type == 0
         0
@@ -851,7 +859,7 @@ module BattleCatsRolls
           "#{cat.number}X"
         end
 
-      %Q{onclick="pick('#{number}')"}
+      %Q{onclick="pick('#{number}', event)"}
     end
 
     def uri_to_wiki cat

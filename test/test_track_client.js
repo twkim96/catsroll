@@ -6,7 +6,7 @@ const vm = require("vm");
 const source = fs.readFileSync(require.resolve(
   "../lib/battle-cats-rolls/asset/track-client.js"), "utf8");
 const start = source.indexOf("    global.roll = function (element) {");
-const end = source.indexOf("    global.pick = function (position)", start);
+const end = source.indexOf("    global.pick = function (", start);
 assert(start >= 0 && end > start);
 
 let clientEnabled = true;

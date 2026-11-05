@@ -76,6 +76,10 @@ cancels that selection and restores the matching prior region/menu. BFCache
 retains unsubmitted form edits without displaying an old result as current.
 Run with `CATSROLL_TEST_URL` pointing at the local web server and the same
 Playwright environment as the other browser checks.
+It also checks actual roll-link clicks and blank-cell clicks in server/client modes:
+links navigate without selecting the containing track cell; clicking the cell still selects it.
+`test_web_controls.cjs` covers the upstream advanced form/talent filters and retains
+the existing single/Multi control contrast checks after upstream stylesheet updates.
 
 * With Banner at its default, the local series filter shows all dated events
   from any selected series, without pagination.

@@ -193,6 +193,8 @@ module BattleCatsRolls
         chain.filter!(route.combat, route.for_combat, Filter::Combat)
         chain.filter!(route.other, route.for_other, Filter::Other)
         chain.filter!(route.rarity, 'any', Filter::Rarity)
+        chain.filter!(route.form, 'any', Filter::Form)
+        chain.filter!([route.talent], 'any', Filter::HaveTalent) if route.talent != 'any'
         chain.filter!([route.dps], 'any', Filter::DPS) if route.dps != 'any'
         chain.filter!([route.damage], 'any', Filter::Damage) if route.damage != 'any'
         chain.filter!([route.health], 'any', Filter::Health) if route.health != 'any'

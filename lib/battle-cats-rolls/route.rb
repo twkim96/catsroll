@@ -16,6 +16,35 @@ require 'set'
 
 module BattleCatsRolls
   class Route < Struct.new(:request)
+    QueryMemorized = %i[
+      seed pos last
+      event event_page custom rate c_rare c_supa c_uber banner
+      level speed_unit lang ui
+      seeker name display highlighting theme text_bg count find
+      no_guaranteed force_guaranteed ubers details
+      advanced_filters exclude_talents sum_no_wave dps_no_critical
+      hide_wave
+      o
+    ].freeze
+
+    QueryFilter = [*QueryMemorized,
+      :for_against, :against,
+      :buff,
+      :for_resistant, :resistant,
+      :range, :area,
+      :for_control, :control,
+      :for_immunity, :immunity,
+      :for_counter, :counter,
+      :for_combat, :combat,
+      :for_other, :other
+    ].freeze # rubocop:disable Layout/MultilineArrayBraceLayout
+
+    QueryFilterAdvanced = [*QueryFilter,
+      :rarity, :form, :talent, :dps, :damage, :health, :knockbacks,
+      :stand, :reach, :speed, :cost, :production,
+      :for_aspect, :aspect
+    ].freeze # rubocop:disable Layout/MultilineArrayBraceLayout
+
     def self.load_ball lang
       CrystalBall.load("#{Root}/build", lang)
     end
@@ -615,6 +644,19 @@ module BattleCatsRolls
       @rarity ||= Array(request.params['rarity'])
     end
 
+    def form
+      @form ||= Array(request.params['form'])
+    end
+
+    def talent
+      @talent ||= request.params_coercion_with_nil('talent', :to_s) ||
+        default_talent
+    end
+
+    def default_talent
+      'any'
+    end
+
     def dps
       @dps ||= request.params_coercion_with_nil('dps', :to_s) || default_dps
     end
@@ -833,36 +875,16 @@ module BattleCatsRolls
     end
 
     def default_query query={}, include_filters: false
-      keys = %i[
-        seed pos last
-        event event_page custom rate c_rare c_supa c_uber banner
-        level speed_unit lang ui
-        seeker name display highlighting theme text_bg count find
-        no_guaranteed force_guaranteed ubers details
-        advanced_filters exclude_talents sum_no_wave dps_no_critical
-        hide_wave
-        o
-      ]
-
-      if include_filters
-        keys.push(
-          :for_against, :against,
-          :buff,
-          :for_resistant, :resistant,
-          :range, :area,
-          :for_control, :control,
-          :for_immunity, :immunity,
-          :for_counter, :counter,
-          :for_combat, :combat,
-          :for_other, :other)
-
-        if advanced_filters
-          keys.push(
-            :rarity, :dps, :damage, :health, :knockbacks,
-            :stand, :reach, :speed, :cost, :production,
-            :for_aspect, :aspect)
+      keys =
+        if include_filters
+          if advanced_filters || query[:advanced_filters]
+            QueryFilterAdvanced
+          else
+            QueryFilter
+          end
+        else
+          QueryMemorized
         end
-      end
 
       ret = keys.inject({}) do |result, key|
         result[key] = query[key] || __send__(key)

@@ -747,7 +747,7 @@ module BattleCatsRolls
 
       def display(view:, **)
         if cat_info
-          href = view.route.uri_to_cat(Cat.new(id: cat_id))
+          href = view.h view.route.uri_to_cat(Cat.new(id: cat_id))
           %Q{<a href="#{href}">#{cat_info.dig('desc', 0)}</a>}
         else
           'Unknown spirit'

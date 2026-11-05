@@ -384,6 +384,10 @@ SDK 대조도 정상 앱의 브리지·계산·공유를 대체하지 않는다.
 
 ## 배포 환경과 운영
 
+- upstream의 `RACK_DEFLATER=false`와 `RACK_CONTENT_LENGTH=false`는 각각 Rack 압축과
+  Content-Length 미들웨어를 끈다. nginx에서 압축하는 systemd 예제에 적용하며, 포크의
+  `EXPAND_COMPARE=0`도 함께 유지한다. HF는 루트 Dockerfile의 Yahns 실행 경로를 사용하고
+  이 서비스 파일을 읽지 않으므로 두 Rack 옵션을 설정하지 않은 기본 미들웨어를 유지한다.
 - `CATSROLL_GPT_ENABLED=1`: `/mcp`와 `/gpt` 활성화. 앱 기본은 비활성(404)이며
   HF 배포용 루트 Dockerfile에서는 활성화한다. HF 설정에서 `0`으로 덮어쓰면 비활성화된다.
 - `CATSROLL_PUBLIC_ORIGIN`: 공개 서비스 HTTPS origin. 기본은 현재 HF Space 주소.

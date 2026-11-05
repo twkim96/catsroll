@@ -12,6 +12,26 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-11-05") %>
+<ul>
+  <li>
+    Add a talent filter in advanced filters. Example:
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, talent: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra talent</a>
+  </li>
+</ul>
+
+<%= header(2, "2026-11-04") %>
+<ul>
+  <li>
+    Add a form filter in advanced filters. Example:
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, form: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra form</a>
+  </li>
+  <li>
+    The video in the help page is removed because it's old and it contains
+    some tracking.
+  </li>
+</ul>
+
 <%= header(2, "2026-10-27") %>
 <ul>
   <li>
@@ -512,7 +532,7 @@
     </p>
     <p>
       Here's an example: Seed
-      <a href="/?seed=2118321982&last=150&event=2026-01-26_986">2118321982</a>
+      <a href="/?seed=2118321982&amp;last=150&amp;event=2026-01-26_986">2118321982</a>
       2A has a score of 9070, which is now an uber at uberfest and epicfest,
       but it was coded as just a regular super rare before. After the fix,
       this is correctly coded as a fest uber.
@@ -523,7 +543,7 @@
       now. This applies to scores between 9471 to 9499. Note that this also
       means those slots while will be shown as a uber now, can be just a super
       rare in banners which don't have legends. Here's an example: Seed
-      <a href="/?seed=1928358907&last=150&event=2025-12-25_940">1928358907</a>
+      <a href="/?seed=1928358907&amp;last=150&amp;event=2025-12-25_940">1928358907</a>
       2A has a score of 9498 for a Brainwashed Lizard Cat. Before the fix, this
       was shown as a fest uber, but in fact it's an uber slot. It is an uber
       in banners with legends. After the fix, this is shown as an uber, but
@@ -1193,7 +1213,7 @@
     </ul>
   </li>
   <li>
-    Fixed tracking/highlighting path when it rerolled 3 times. Both tracks were wrong. Here's an <a href="/?seed=1773704064&event=2020-12-11_563&lang=jp&pick=6BR">example</a>:
+    Fixed tracking/highlighting path when it rerolled 3 times. Both tracks were wrong. Here's an <a href="/?seed=1773704064&amp;event=2020-12-11_563&amp;lang=jp&amp;pick=6BR">example</a>:
     <ul>
       <li>3A -&gt; 6B was wrong. It should be 3A -&gt; 5B.</li>
       <li>6B -&gt; 10A was wrong. It should be 6B -&gt; 9A.</li>
@@ -1213,8 +1233,8 @@
     Fixed some other edge cases for highlighting with a last rolled cat.
     Some examples showing such edge cases:
     <ul>
-      <li><a href="/?seed=650315141&last=50&event=2020-09-11_433&pick=2BGX#N2B">Guaranteed from 1AR to 2BG</a></li>
-      <li><a href="/?seed=3626964723&last=49&event=2020-09-11_433&pick=2BGX#N2B">Guaranteed from 1AR to 2BRG</a></li>
+      <li><a href="/?seed=650315141&amp;last=50&amp;event=2020-09-11_433&amp;pick=2BGX#N2B">Guaranteed from 1AR to 2BG</a></li>
+      <li><a href="/?seed=3626964723&amp;last=49&amp;event=2020-09-11_433&amp;pick=2BGX#N2B">Guaranteed from 1AR to 2BRG</a></li>
     </ul>
   </li>
 </ul>
@@ -1315,7 +1335,7 @@
   <li>
     Added a way to customize an event with any gacha id and probabilities.
     For example, it's possible to peek
-    <a href="https://bc.godfat.org/?seed=1&event=custom&custom=503&c_rare=6500&c_supa=2500&c_uber=1000">Superfest</a>
+    <a href="https://bc.godfat.org/?seed=1&amp;event=custom&amp;custom=503&amp;c_rare=6500&amp;c_supa=2500&amp;&c_uber=1000">Superfest</a>
     even when there's no event data yet.
   </li>
 </ul>
@@ -1339,7 +1359,7 @@
 
 <%= header(2, "2019-12-31") %>
 <ul>
-  <li>Added a new feature so that you can pick which cats you owned from the <a href="<%= route.cats_uri %>">cats list</a>.</li>
+  <li>Added a new feature so that you can pick which cats you owned from the <a href="<%= h route.cats_uri %>">cats list</a>.</li>
   <li>When you pick the cats, it'll save the list in URL with <code>owned</code> query string, which can be very long if you have a lot of cats.</li>
   <li>Cats which you owned will be low-lighted with <span class="owned">azure color</span>, making it less obvious even if it's an uber cat.</li>
   <li>
@@ -1407,7 +1427,7 @@
       <li>It might give you the wrong destination, not just wrong cat.</li>
     </ol>
   </li>
-  <li>You can check seed <a href="/?seed=1815690119&event=2019-07-18_391">1815690119</a> to observe this. On 6A, the re-rolled cat should move you to 8A, rather than 7B. On 10A, now it's giving you a Tin cat rather than Mari cat, but move you to the same destination.</li>
+  <li>You can check seed <a href="/?seed=1815690119&amp;event=2019-07-18_391">1815690119</a> to observe this. On 6A, the re-rolled cat should move you to 8A, rather than 7B. On 10A, now it's giving you a Tin cat rather than Mari cat, but move you to the same destination.</li>
 </ul>
 
 <%= header(2, "2019-06-22") %>
