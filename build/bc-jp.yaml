@@ -36349,3 +36349,56 @@ events:
     supa: 2500
     uber: 500
     legend: 30
+  2026-11-08_1084:
+    start_on: 2026-11-08
+    end_on: 2026-11-12
+    version: '150700'
+    name: 2つの属性にめっぽう強い「いなばの白うさぎ」参戦！★詳細はバナーをタップ!!
+    id: 1084
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
+  2026-11-08_1087:
+    start_on: 2026-11-08
+    end_on: 2030-01-01
+    version: '150700'
+    name: 超激レアのキャラクターが必ず１体手に入る「プラチナガチャ」！
+    id: 1087
+    rare: 0
+    supa: 0
+    uber: 10000
+    platinum: platinum
+  2026-11-08_1088:
+    start_on: 2026-11-08
+    end_on: 2030-01-01
+    version: '150700'
+    name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
+    id: 1088
+    rare: 0
+    supa: 0
+    uber: 9500
+    legend: 500
+    platinum: legend
+  2026-11-08_922:
+    start_on: 2026-11-08
+    end_on: 2026-11-12
+    version: '150700'
+    name: 一部ハロウィン限定キャラクターに本能追加！★詳細はバナーをタップ!!
+    id: 922
+    rare: 7000
+    supa: 2500
+    uber: 500
+    guaranteed: true
+  2026-11-10_1004:
+    start_on: 2026-11-10
+    end_on: 2026-11-12
+    version: '150700'
+    name: 進化後に召喚能力を持つ「樹の精霊コモリ」登場！★詳細はバナーをタップ!!
+    id: 1004
+    rare: 6970
+    supa: 2500
+    uber: 500
+    guaranteed: true
+    legend: 30
