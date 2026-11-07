@@ -5,12 +5,12 @@ require 'date'
 require_relative 'gacha_pool'
 
 module BattleCatsRolls
-  class TsvReader < Struct.new(:tsv)
+  class TsvReader < Struct.new(:tsv, :lang_under_en)
     PoolOffset = 9
     PoolFields = 15
 
-    def self.read path
-      new(File.read(path))
+    def self.read path, lang_under_en=nil
+      new(File.read(path), lang_under_en)
     end
 
     def self.event_fields
@@ -62,6 +62,10 @@ module BattleCatsRolls
             end
 
             data.delete('legend') if data['legend'] == 0
+
+            if lang_under_en && (index = row.index(lang_under_en))
+              data['name'] = row[index + 1].strip
+            end
 
             result["#{data['start_on']}_#{data['id']}"] = data
           end

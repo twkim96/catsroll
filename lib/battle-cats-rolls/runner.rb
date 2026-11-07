@@ -8,7 +8,7 @@ require_relative 'nyanko_auth'
 require_relative 'aws_cf'
 
 module BattleCatsRolls
-  class Runner < Struct.new(:lang, :version, :apk_id)
+  class Runner < Struct.new(:lang, :version, :apk_id, :lang_under_en)
     VersionNotFound = Class.new(RuntimeError)
     DateNotFound = Class.new(RuntimeError)
     EventsBuildingErrors = [Date::Error, DateNotFound].freeze
@@ -50,7 +50,11 @@ module BattleCatsRolls
     end
 
     def self.locale lang
-      public_send(lang || 'en')
+      if LangUnderEN.member?(lang)
+        [*public_send('en'), lang]
+      else
+        public_send(lang || 'en')
+      end
     end
 
     def self.build lang=nil
@@ -186,12 +190,12 @@ module BattleCatsRolls
       require_relative 'crystal_ball'
 
       if provider
-        events = EventsReader.read(event_path)
+        events = EventsReader.read(event_path, lang_under_en)
         ball = CrystalBall.from_cats_builder_and_events(cats_builder, events)
 
         puts 'Writing data...'
 
-        ball.dump("#{Root}/build", lang)
+        ball.dump("#{Root}/build", lang_output)
       end
     end
 
@@ -246,7 +250,7 @@ module BattleCatsRolls
 
       require_relative 'pack_provider'
 
-      PackProvider.new(lang, app_data_path)
+      PackProvider.new(lang, lang_under_en, app_data_path)
     end
 
     def load_pack_from_apk
@@ -260,11 +264,12 @@ module BattleCatsRolls
     end
 
     def download_server_pack
-      Dir["#{app_data_path}/download_*.tsv"].each do |tsv|
+      Dir["#{app_data_path}/download#{lang_under_en}_*.tsv"].each do |tsv|
         packs = File.read(tsv).
           scan(/
             \b\w*
-            (?:ImageDataServer|UnitServer)(?:_\d+_\d+_\w+)?
+            (?:ImageDataServer|UnitServer)
+            (?:(?:_\d+_\d+)?_#{lang_under_en || lang})?
             (?=\.pack\b)
           /x).uniq
 
@@ -288,7 +293,7 @@ module BattleCatsRolls
       offset = tsv[/\d+(?=\.tsv$)/]
       packs.filter_map do |pack|
         identifier = if version = pack[/\d+_\d+/]
-          version.sub(/_(\d+)$/, "_#{offset}_00")
+          version.sub(/_(\d+)$/, "_#{sprintf('%02d', offset)}_00")
         elsif version = preserved_server_file_version[offset.to_i]
           if version.include?('.')
             digits = version.split('.')
@@ -302,7 +307,11 @@ module BattleCatsRolls
           next # We don't know the version, skip
         end
 
-        filename = "#{bucket}_#{identifier}.zip"
+        filename = if lang_under_en
+          "#{bucket}_#{identifier}_#{lang_under_en}.zip"
+        else
+          "#{bucket}_#{identifier}.zip"
+        end
         url = "https://nyanko-assets.ponosgames.com/iphone/#{bucket}/download/#{filename}"
 
         wget(AwsCf.new(url).generate, "#{app_data_path}/#{filename}")
@@ -354,9 +363,15 @@ module BattleCatsRolls
     end
 
     def write_pack
+      lang_suffix = if lang_under_en
+        ['', *LangUnderEN.map{ "_#{_1}" }]
+      else
+        ['']
+      end
+
       paths =
         %w[DataLocal resLocal ImageLocal ImageDataLocal UnitLocal].product(
-          ['.list', '.pack']).map(&:join).map do |name|
+          lang_suffix, ['.list', '.pack']).map(&:join).map do |name|
           "assets/#{name}"
         end
 
@@ -401,7 +416,7 @@ module BattleCatsRolls
     end
 
     def download_tsv_paths
-      IO.popen(['zipinfo', '-1', apk_path, 'assets/download_*.tsv']).
+      IO.popen(['zipinfo', '-1', apk_path, 'assets/download*_*.tsv']).
         readlines(chomp: true)
     end
 
@@ -417,6 +432,10 @@ module BattleCatsRolls
 
     def unzip zip_path, paths
       system('unzip', '-n', '-j', zip_path, *paths, '-d', app_data_path)
+    end
+
+    def lang_output
+      lang_under_en || lang
     end
 
     def data_path dir

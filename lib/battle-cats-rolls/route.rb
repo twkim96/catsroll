@@ -82,14 +82,16 @@ module BattleCatsRolls
     end
 
     def self.reload_balls force=false # rubocop:disable Style/OptionalBooleanParameter
-      %w[en tw jp kr].each do |lang|
+      LangAll.each do |lang|
         if public_send("ball_#{lang}").nil? || force
           public_send("ball_#{lang}=", load_ball(lang))
         end
       end
     end
 
-    singleton_class.attr_accessor :ball_en, :ball_tw, :ball_jp, :ball_kr
+    singleton_class.attr_accessor(*LangAll.map do |lang|
+      :"ball_#{lang}"
+    end)
 
     extend Forwardable
 
@@ -231,7 +233,7 @@ module BattleCatsRolls
     def lang
       @lang ||=
         case value = request.params_coercion_with_nil('lang', :to_s)
-        when 'tw', 'jp', 'kr'
+        when *LangAll
           value
         else
           'en'
@@ -241,7 +243,7 @@ module BattleCatsRolls
     def ui
       @ui ||=
         case value = request.params_coercion_with_nil('ui', :to_s)
-        when 'en', 'tw', 'jp', 'kr'
+        when *LangAll
           value
         else
           '' # Default to whatever lang is
