@@ -264,12 +264,13 @@ module BattleCatsRolls
     end
 
     def download_server_pack
-      Dir["#{app_data_path}/download#{lang_under_en}_*.tsv"].each do |tsv|
+      # We download only once for all languages
+      Dir["#{app_data_path}/download*_*.tsv"].each do |tsv|
         packs = File.read(tsv).
           scan(/
             \b\w*
             (?:ImageDataServer|UnitServer)
-            (?:(?:_\d+_\d+)?_#{lang_under_en || lang})?
+            (?:(?:_\d+_\d+)?_\w+)?
             (?=\.pack\b)
           /x).uniq
 
@@ -291,15 +292,16 @@ module BattleCatsRolls
     def wget_server_zip tsv, packs
       bucket = apk_id[/\w+$/]
       offset = tsv[/\d+(?=\.tsv$)/]
+      suffix = tsv[/(?<=download)(\w\w)(?=_)/]
       packs.filter_map do |pack|
         identifier = if version = pack[/\d+_\d+/]
           version.sub(/_(\d+)$/, "_#{sprintf('%02d', offset)}_00")
         elsif version = preserved_server_file_version[offset.to_i]
           if version.include?('.')
             digits = version.split('.')
-            suffix = digits[3] || '0'
+            patch = digits[3] || '0'
             version_id = digits.first(3).map{ |int| sprintf('%02d', int) }.join
-            sprintf('%s_%02d_%02d', version_id, offset, suffix)
+            sprintf('%s_%02d_%02d', version_id, offset, patch)
           else
             version
           end
@@ -307,8 +309,8 @@ module BattleCatsRolls
           next # We don't know the version, skip
         end
 
-        filename = if lang_under_en
-          "#{bucket}_#{identifier}_#{lang_under_en}.zip"
+        filename = if suffix
+          "#{bucket}_#{identifier}_#{suffix}.zip"
         else
           "#{bucket}_#{identifier}.zip"
         end
@@ -363,7 +365,7 @@ module BattleCatsRolls
     end
 
     def write_pack
-      lang_suffix = if lang_under_en
+      lang_suffix = if lang == 'en' # We unzip apk only once for all languages
         ['', *LangUnderEN.map{ "_#{_1}" }]
       else
         ['']
@@ -467,7 +469,7 @@ module BattleCatsRolls
     end
 
     def extract_asset_path
-      @extract_asset_path ||= "#{Root}/extract/asset/#{lang}"
+      @extract_asset_path ||= "#{Root}/extract/asset/#{lang_under_en || lang}"
     end
 
     def version_id
