@@ -225,12 +225,7 @@ module BattleCatsRolls
 
     def provider
       @provider ||=
-        if File.exist?(extract_path)
-          # Note that this does not load ImageDataServer_*.pack files
-          load_extract
-        elsif File.exist?(app_data_path)
-          load_pack
-        elsif File.exist?(apk_path) || download_apk
+        if File.exist?(apk_path) || download_apk
           load_pack_from_apk
         else
           puts "! Cannot find '#{version}' for #{lang}"
@@ -265,14 +260,14 @@ module BattleCatsRolls
 
     def download_server_pack
       # We download only once for all languages
-      Dir["#{app_data_path}/download*_*.tsv"].each do |tsv|
+      Dir["#{app_data_path}/download#{lang_under_en}_*.tsv"].each do |tsv|
         packs = File.read(tsv).
           scan(/
             \b\w*
             (?:ImageDataServer|UnitServer)
-            (?:(?:_\d+_\d+)?_\w+)?
+            (?:(?:_\d+_\d+)?_#{lang_under_en || lang})?
             (?=\.pack\b)
-          /x).uniq
+          /x).uniq.reject{ File.exist?("#{app_data_path}/#{_1}.pack") }
 
         next if packs.empty?
 
@@ -365,15 +360,16 @@ module BattleCatsRolls
     end
 
     def write_pack
-      lang_suffix = if lang == 'en' # We unzip apk only once for all languages
-        ['', *LangUnderEN.map{ "_#{_1}" }]
+      lang_suffix = if lang_under_en
+        ['', "_#{lang_under_en}"]
       else
         ['']
       end
 
       paths =
         %w[DataLocal resLocal ImageLocal ImageDataLocal UnitLocal].product(
-          lang_suffix, ['.list', '.pack']).map(&:join).map do |name|
+          lang_suffix, ['.list', '.pack']
+        ).map(&:join).map do |name|
           "assets/#{name}"
         end
 
@@ -418,8 +414,10 @@ module BattleCatsRolls
     end
 
     def download_tsv_paths
-      IO.popen(['zipinfo', '-1', apk_path, 'assets/download*_*.tsv']).
-        readlines(chomp: true)
+      IO.popen([
+        'zipinfo', '-1', apk_path,
+        "assets/download#{lang_under_en}_*.tsv"
+      ]).readlines(chomp: true)
     end
 
     def wget url, path
