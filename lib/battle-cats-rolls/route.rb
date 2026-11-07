@@ -230,6 +230,18 @@ module BattleCatsRolls
       600
     end
 
+    def region
+      @region ||=
+        case lang
+        when *Region
+          lang
+        when *LangUnderEN
+          'en'
+        else
+          raise "Unknown language: #{lang}"
+        end
+    end
+
     def lang
       @lang ||=
         case value = request.params_coercion_with_nil('lang', :to_s)
@@ -812,12 +824,7 @@ module BattleCatsRolls
     def event_url file: 'gatya.tsv',
       base_uri: "#{request.scheme}://#{seek_host}/seek",
       kind: ''
-      case lang
-      when 'en', 'tw', 'jp', 'kr'
-        "#{base_uri}/#{lang}#{kind}/#{file}"
-      else
-        raise "Unknown language: #{lang}"
-      end
+      "#{base_uri}/#{region}#{kind}/#{file}"
     end
 
     def platinum?

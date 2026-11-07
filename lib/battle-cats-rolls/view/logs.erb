@@ -1,6 +1,6 @@
 <%= erb :form %>
 
-<%= header(1, "Event data links for BC#{route.lang.upcase}") %>
+<%= header(1, "Event data links for BC#{route.region.upcase}#{" for #{route.lang.upcase}" if BattleCatsRolls::LangUnderEN.member?(route.lang)}") %>
 <ul>
   <% %w[gatya.tsv item.tsv sale.tsv].each do |file| %>
     <li>
@@ -11,6 +11,20 @@
 </ul>
 
 <%= header(1, "What's changed?") %><p></p>
+
+<%= header(2, "2026-11-08") %>
+<ul>
+  <li>
+    We now support 5 other languages under BCEN:
+    <ul>
+      <li>DE (German)</li>
+      <li>ES (Spanish)</li>
+      <li>FR (French)</li>
+      <li>IT (Italian)</li>
+      <li>TH (Thai)</li>
+    </ul>
+  </li>
+</ul>
 
 <%= header(2, "2026-11-05") %>
 <ul>
