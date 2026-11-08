@@ -322,7 +322,7 @@ module BattleCatsRolls
 
     def damage_raw n=0
       value = stat["damage_#{n}"]
-      value * treasure_multiplier * level_multiplier if value
+      (value * level_multiplier).round * treasure_multiplier if value
     end
 
     def long_range n=0

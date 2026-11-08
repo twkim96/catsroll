@@ -24,6 +24,14 @@
       <li>TH (Thai)</li>
     </ul>
   </li>
+  <li>
+    Cat's damage now uses <code>round</code> to match with the game.
+    This makes some small difference when the Cat's damage is very low.
+    <ul>
+      <li>Current formula: <code>floor(round(base * level) * treasure)</code></li>
+      <li>Previous formula: <code>floor(base * level * treasure)</code></li>
+    </ul>
+  </li>
 </ul>
 
 <%= header(2, "2026-11-05") %>
