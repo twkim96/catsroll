@@ -1,37 +1,9 @@
 <% if arg && route.path_info == '/' %>
 <div class="find">
-  <label for="find_select" title="Highlight the cat in the tracks selected here">Find next:</label>
-  <select id="find_select" name="find" onchange="roll(this)">
-    <option></option>
-
-    <optgroup label="Legendary:">
-      <% gacha.legend_cats.uniq(&:id).each do |cat| %>
-        <option value="<%= cat.id %>"
-          <%= selected_find(cat) %>><%= cat_name(cat) %></option>
-      <% end %>
-    </optgroup>
-
-    <optgroup label="Uber:">
-      <% gacha.uber_cats.uniq(&:id).each do |cat| %>
-        <option value="<%= cat.id %>"
-          <%= selected_find(cat) %>><%= cat_name(cat) %></option>
-      <% end %>
-    </optgroup>
-
-    <optgroup label="Super:">
-      <% gacha.supa_cats.uniq(&:id).each do |cat| %>
-        <option value="<%= cat.id %>"
-          <%= selected_find(cat) %>><%= cat_name(cat) %></option>
-      <% end %>
-    </optgroup>
-
-    <optgroup label="Rare:">
-      <% gacha.rare_cats.uniq(&:id).each do |cat| %>
-        <option value="<%= cat.id %>"
-          <%= selected_find(cat) %>><%= cat_name(cat) %></option>
-      <% end %>
-    </optgroup>
-  </select>
+  <% route.find.each do |id| %>
+  <%= erb :find_cat_dropdown, id: id %>
+  <% end %>
+  <%= erb :find_cat_dropdown if route.find.size < BattleCatsRolls::Route::MaxFind %>
 
   <% if route.guaranteed_rolls > 0 %>
     <label for="no_guaranteed_input" title="Do not show guaranteed. This can be useful when you're trying to find next uber without using guaranteed">Exclude guaranteed:
@@ -60,5 +32,6 @@
   </select>
 </div>
 <% else %>
-<%= hidden_inputs('find', 'no_guaranteed', 'force_guaranteed', 'ubers') %>
+<%= hidden_inputs_array('find') %>
+<%= hidden_inputs('no_guaranteed', 'force_guaranteed', 'ubers') %>
 <% end %>

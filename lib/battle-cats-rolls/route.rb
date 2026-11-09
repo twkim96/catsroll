@@ -16,6 +16,8 @@ require 'set'
 
 module BattleCatsRolls
   class Route < Struct.new(:request)
+    MaxFind = 5
+
     QueryMemorized = %i[
       seed pos last
       event event_page custom rate c_rare c_supa c_uber banner
@@ -434,7 +436,10 @@ module BattleCatsRolls
     end
 
     def find
-      @find ||= request.params_coercion('find', :to_i)
+      @find ||= Array(request.params['find']).
+        first(MaxFind).map(&:to_i).uniq.select do |id|
+          id.nonzero? && pool.gacha.member?(id)
+        end
     end
 
     def last
@@ -986,7 +991,7 @@ module BattleCatsRolls
            (key == :highlighting && value == default_highlighting) ||
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
-           (key == :find && value == 0) ||
+           (key == :find && value == []) ||
            (key == :force_guaranteed && value == 0) ||
            (key == :ubers && value == 0) ||
            (key == :o && value == '') ||

@@ -31,7 +31,6 @@
 
 ## Features and utilities
 
-* Multi-select for finding cats
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Add a dark theme. How this interacts with the mkweb theme is unclear
 * What if we add /tracks and make /help the landing page?
