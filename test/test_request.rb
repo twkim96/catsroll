@@ -92,7 +92,7 @@ describe BattleCatsRolls::Request do
 
   describe '#params_coercion_with_nil' do
     def env
-      @env ||= super.merge('QUERY_STRING' => 'query=0&string=1&string=a')
+      @env ||= super.merge('QUERY_STRING' => 'query=0&string=a&string=b')
     end
 
     would 'coerce the value with the coercion method' do
@@ -103,7 +103,7 @@ describe BattleCatsRolls::Request do
       expect(request.params_coercion_with_nil('none', :to_i)).eq nil
     end
 
-    would 'give the last value of the same query' do
+    would 'give the first value of the same query' do
       expect(request.params_coercion_with_nil('string', :upcase)).eq 'A'
     end
   end
