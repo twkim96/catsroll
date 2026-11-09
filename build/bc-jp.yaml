@@ -2355,9 +2355,9 @@ cats:
         max_level: 10
         minmax: [[2, 20]]
   160:
-    name: [冥界のカリファ, 冥界のＸカリファ, 冥界のＸＸカリファ]
-    desc: ["入学式に学校を壊滅寸前に追い込んだ伝説の少女\n生まれたときからの相棒「ニャクスカリバー」で\n天使に超ダメージを与える(範囲攻撃)\nメイカイノカリファ", "１学期終了時に校長を冥界へ封じ込めた伝説の少女\n本当の自分をわかってくれる友達を探している\n天使に超ダメージを与える(範囲攻撃)\nメイカイノエクスカリファ", "卒業式の後、告白に来た男の子たちを一人残らず\nこの世からも卒業させてしまった伝説の少女\n天使に超ダメージを与える(範囲攻撃)\nメイカイノダブルエクスカリファ"]
-    stat: [{health: 1520, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 325, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 40, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 325, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 40, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 355, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 40, against_angel: 1, massive_damage: 1, attack_duration: 150}]
+    name: [冥界のカリファ, 冥界のＸカリファ, 冥界のＸＸカリファ, アルティメットＸＸカリファ]
+    desc: ["入学式に学校を壊滅寸前に追い込んだ伝説の少女\n生まれたときからの相棒「ニャクスカリバー」で\n天使に超ダメージを与える(範囲攻撃)\nメイカイノカリファ", "１学期終了時に校長を冥界へ封じ込めた伝説の少女\n本当の自分をわかってくれる友達を探している\n天使に超ダメージを与える(範囲攻撃)\nメイカイノエクスカリファ", "卒業式の後、告白に来た男の子たちを一人残らず\nこの世からも卒業させてしまった伝説の少女\n天使に超ダメージを与える(範囲攻撃)\nメイカイノダブルエクスカリファ", "卒業後も何食わぬ顔で登校を続ける伝説の少女\n注意してくる教職員に冥界の永住権をプレゼント\n天使に超ダメージを与え、たまに爆波を放つ(範囲攻撃)\nアルティメットダブルエクスカリファ"]
+    stat: [{health: 1520, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 325, width: 320, area_effect: 1, damage_0: 1100, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 325, width: 320, area_effect: 1, damage_0: 1800, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 2540, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 355, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, massive_damage: 1, attack_duration: 150}, {health: 3300, knockbacks: 5, speed: 27, cost: 2750, production_cooldown: 1100, range: 405, width: 320, area_effect: 1, damage_0: 2500, attack_time_0: 40, trigger_effects_0: 1, against_angel: 1, massive_damage: 1, explosion_chance: 20, explosion_range: 1620, immune_weaken: 1, immune_wave: 1, attack_duration: 150}]
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
@@ -3308,6 +3308,20 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      freeze:
+        max_level: 10
+        minmax: [[100, 100], [24, 60]]
+      immune_warp: {}
+      break_barrier:
+        max_level: 10
+        minmax: [[19, 100]]
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   243:
     name: [サンタのメリークウ, サンタのメリークウγ]
     desc: ["クリスマス限定スタイルの熱血ギャル\n遠距離からのX'masツリーアタックは超破壊力を誇る\nエイリアンと天使にめっぽう強い(範囲攻撃)", "クリスマスの甘いムードなんて大嫌いな熱血ギャル\nでもヤドリギの下でついドキドキしてしまう\nエイリアンと天使にめっぽう強い(範囲攻撃)\nサンタノメリークウガンマ"]
@@ -4768,6 +4782,17 @@ cats:
       increase_damage:
         max_level: 10
         minmax: [[2, 20]]
+      combo:
+        minmax: [[392, 0]]
+        ultra: 1
+      surge:
+        max_level: 10
+        minmax: [[5, 50], [1, 1], [1380, 1380], [1400, 1400]]
+        ultra: 1
+      increase_health_plus:
+        max_level: 5
+        minmax: [[10, 50]]
+        ultra: 1
   360:
     name: [火の精霊メララ, 火炎の精霊メラバーン, 火炎の精霊王メラバーニング, 火炎の大精霊メラフェニックス]
     desc: ["宇宙の果てからやって来た火の精霊\n降り立った星に炎の源を宿すと言われている\nエイリアンに超ダメージを与える\nヒノセイレイメララ", "太陽を焼き尽くすほどの炎を操る精霊\n爆発的なパワーはバリアをも貫く力を持つ\nエイリアンに打たれ強く、超ダメージを与える\nカエンノセイレイメラバーン", "銀河をも灰にする強大な炎の力を手にした猛火の精霊\nビッグバンを超えるパワーはバリアを貫く力を持ち\nエイリアンに打たれ強く、超ダメージを与える\nカエンノセイレイオウメラバーニング", "炎の力を司る大精霊。銀河中の死を待つ星々に復活の\n熱エネルギーを注ぐ。バリアを貫く力を持ちエイリアンに\n打たれ強く、超ダメージを与えて必ず攻撃力を下げる\nカエンノダイセイレイメラフェニックス"]
@@ -7606,6 +7631,18 @@ cats:
     rarity: 4
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+    talent:
+      immune_wave: {}
+      survive:
+        max_level: 10
+        minmax: [[10, 100]]
+      immune_weaken: {}
+      increase_health:
+        max_level: 10
+        minmax: [[2, 20]]
+      increase_damage:
+        max_level: 10
+        minmax: [[2, 20]]
   662:
     name: [祝福神クロノス, ウェディングクロノス]
     desc: ["ジューンブライド限定スタイルの時を支配する女神\n神器「祝福の時計盤」とともに永遠の愛を見守る\nたまに属性を持つ敵へ妨害効果を与え、小波動を放つ\nシュクフクシンクロノス", "運命の相手と巡り会い花嫁となった時の女神\n誓約の神器「祝福の時計盤」が二人の時間を刻み始める\nたまに属性を持つ敵へ妨害効果を与え、小波動を放つ"]
@@ -8403,7 +8440,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   771:
-    name: [771-1]
+    name: ['771_1']
     desc: [精霊：敵の攻撃力をダウンさせてふっとばします]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, weaken_chance: 100, weaken_duration: 150, weaken_multiplier: 50, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8438,7 +8475,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   776:
-    name: [776-1]
+    name: ['776_1']
     desc: [精霊：メタルキラー能力を持ちます]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, metal_killer: 40, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8487,7 +8524,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   783:
-    name: [783-1]
+    name: ['783_1']
     desc: [精霊：攻撃力をダウンさせます]
     stat: [{health: 100, knockbacks: 1, range: 1300, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8613,7 +8650,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   801:
-    name: [801-1]
+    name: ['801_1']
     desc: [精霊：ゾンビキラーと魂攻撃の能力を持ちます]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, zombie_killer: 1, soul_strike: 1, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8627,7 +8664,7 @@ cats:
     max_level: 50
     growth: [20, 20, 20, 20, 20]
   803:
-    name: [802-1]
+    name: ['803_1']
     desc: [精霊：敵をふっとばします]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, kamikaze: 2, attack_duration: 85}]
     rarity: 1
@@ -8697,7 +8734,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   813:
-    name: [812-1]
+    name: ['813_1']
     desc: [精霊：敵の動きを止めます]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, freeze_chance: 100, freeze_duration: 100, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8725,7 +8762,7 @@ cats:
     max_level: 59
     growth: [20, 20, 20, 20, 20, 20]
   817:
-    name: [817-1]
+    name: ['817_1']
     desc: [精霊：敵の攻撃力をダウンさせて遅くします]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 130, weaken_chance: 100, weaken_duration: 150, weaken_multiplier: 50, kamikaze: 2, attack_duration: 85}]
     rarity: 5
@@ -8739,7 +8776,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   819:
-    name: [819-1]
+    name: ['819_1']
     desc: [精霊：攻撃力をダウンさせます]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8788,7 +8825,7 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   826:
-    name: [826-1]
+    name: ['826_1']
     desc: [精霊：攻撃力をダウンさせます]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, weaken_chance: 100, weaken_duration: 200, weaken_multiplier: 50, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -8879,14 +8916,14 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   839:
-    name: [839-1]
+    name: ['839_1']
     desc: [精霊：敵をふっとばして小烈波を放ちます]
     stat: [{health: 100, knockbacks: 1, range: 600, width: 320, area_effect: 1, damage_0: 900, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, surge_level: 3, surge_mini: 100, surge_range: 1200, surge_range_offset: 1200, kamikaze: 2, attack_duration: 85}]
     rarity: 4
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   840:
-    name: [840-1]
+    name: ['840_1']
     desc: [精霊：敵をふっとばして小烈波を放ちます]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, surge_level: 5, surge_mini: 100, surge_range: 1600, surge_range_offset: 1200, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -9138,14 +9175,14 @@ cats:
     max_level: 130
     growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
   876:
-    name: ['735_1']
+    name: ['876_1']
     desc: [精霊：敵の動きを遅くします]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 250, kamikaze: 2, attack_duration: 85}]
     rarity: 4
     max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
   877:
-    name: [756-1]
+    name: ['877_1']
     desc: [精霊：敵をふっとばして一瞬動きを遅くします]
     stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, knockback_chance: 100, slow_chance: 100, slow_duration: 60, kamikaze: 2, attack_duration: 85}]
     rarity: 4
@@ -9185,6 +9222,48 @@ cats:
     stat: [{health: 5000, knockbacks: 3, speed: 12, cost: 3100, production_cooldown: 2200, attack_cooldown: 79, range: 460, width: 320, area_effect: 1, damage_0: 2000, attack_time_0: 56, trigger_effects_0: 1, against_float: 1, against_alien: 1, insane_damage: 1, freeze_chance: 100, freeze_duration: 60, break_barrier_chance: 100, immune_slow: 1, immune_weaken: 1, attack_duration: 126}, {health: 5600, knockbacks: 3, speed: 12, cost: 3100, production_cooldown: 2200, attack_cooldown: 79, range: 460, width: 320, area_effect: 1, damage_0: 2450, attack_time_0: 56, trigger_effects_0: 1, against_float: 1, against_alien: 1, insane_damage: 1, freeze_chance: 100, freeze_duration: 60, break_barrier_chance: 100, immune_slow: 1, immune_weaken: 1, attack_duration: 126}]
     rarity: 5
     max_level: 59
+    growth: [20, 20, 20, 20, 20, 20]
+  883:
+    name: [監獄ネコ, 脱獄ネコ]
+    desc: ["指名手配犯に顔が似ているという理由で投獄されたネコ\n脱獄する方法を看守に相談している\n赤い敵にめっぽう強く、たまにふっとばす\nカンゴクネコ", "脱獄のために身体を鍛え上げたネコ\n袖がはち切れたため冬場は肌寒い\n赤い敵にめっぽう強く、たまにふっとばす\nダツゴクネコ"]
+    stat: [{health: 500, knockbacks: 2, speed: 20, cost: 300, production_cooldown: 300, range: 140, width: 320, area_effect: 1, damage_0: 200, attack_time_0: 3, trigger_effects_0: 1, against_red: 1, strong: 1, knockback_chance: 50, attack_duration: 75}, {health: 550, knockbacks: 2, speed: 20, cost: 300, production_cooldown: 300, range: 140, width: 320, area_effect: 1, damage_0: 260, attack_time_0: 3, trigger_effects_0: 1, against_red: 1, strong: 1, knockback_chance: 50, attack_duration: 75}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  884:
+    name: [監獄ネコガール, 脱獄ネコガール]
+    desc: ["監獄で一番かわいいと評判のネコ\nとびきりの愛嬌で怖い看守さえも魅了する\nたまに浮いてる敵の攻撃力を下げ、小波動を放つ\nカンゴクネコガール", "最新の美容医療を受けるため脱獄を決意したネコ\n計画や準備などは仲間のネコにおまかせ\nたまに浮いてる敵の攻撃力を下げ、小波動を放つ\nダツゴクネコガール"]
+    stat: [{health: 400, knockbacks: 3, speed: 12, cost: 300, production_cooldown: 300, attack_cooldown: 30, range: 320, width: 320, area_effect: 1, damage_0: 80, attack_time_0: 54, trigger_effects_0: 1, against_float: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, wave_level: 3, wave_mini: 100, attack_duration: 128}, {health: 450, knockbacks: 3, speed: 12, cost: 300, production_cooldown: 300, attack_cooldown: 30, range: 320, width: 320, area_effect: 1, damage_0: 100, attack_time_0: 54, trigger_effects_0: 1, against_float: 1, weaken_chance: 50, weaken_duration: 120, weaken_multiplier: 50, wave_level: 3, wave_mini: 100, attack_duration: 128}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  885:
+    name: [監獄タンクネコ, 脱獄ネコカベ]
+    desc: ["監獄の近くで白黒しま模様の服を着ていたため\n脱獄犯と間違われて投獄されたネコ\nゾンビに打たれ強い\nカンゴクタンクネコ", "ホームシックになり脱獄を決意したネコ\n帰宅後にやりたい事は衣替え\nゾンビに打たれ強い\nダツゴクネコカベ"]
+    stat: [{health: 220, knockbacks: 1, speed: 8, cost: 100, production_cooldown: 130, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 6, attack_time_0: 8, trigger_effects_0: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, immune_slow: 1, attack_duration: 27}, {health: 270, knockbacks: 1, speed: 8, cost: 100, production_cooldown: 130, attack_cooldown: 30, range: 110, width: 320, area_effect: 1, damage_0: 6, attack_time_0: 8, trigger_effects_0: 1, against_zombie: 1, resistant: 1, zombie_killer: 1, immune_slow: 1, attack_duration: 27}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  886:
+    name: [監獄ちびネコ, 脱獄ちびネコアーマー]
+    desc: ["監獄で生まれ育った小さなネコ\n巧みに看守の目をかいくぐりながら生活している\n独学で習得した機械工作が得意\nカンゴクチビネコ", "外の世界を見てみたくて脱獄を決意した小さなネコ\n監獄の廃材を集めて作ったメカで仲間をサポートする\n天使とゾンビに打たれ強く、ごくたまにクリティカル\nダツゴクチビネコアーマー"]
+    stat: [{health: 500, knockbacks: 3, speed: 10, cost: 300, production_cooldown: 400, attack_cooldown: 30, range: 140, width: 320, damage_0: 50, attack_time_0: 28, trigger_effects_0: 1, attack_duration: 45}, {health: 3450, knockbacks: 2, speed: 22, cost: 1100, production_cooldown: 400, attack_cooldown: 30, range: 230, width: 320, area_effect: 1, damage_0: 300, long_range_0: 280, long_range_offset_0: -600, attack_time_0: 32, trigger_effects_0: 1, against_angel: 1, against_zombie: 1, resistant: 1, critical_chance: 5, zombie_killer: 1, immune_wave: 1, attack_duration: 64}]
+    rarity: 1
+    max_level: 50
+    growth: [20, 20, 20, 20, 20]
+  887:
+    name: [悠久の冒険者エターニス, 真理の探究者エターニス]
+    desc: ["この世の理を探求するために旅に出たエルフ\nこれから冒険する世界の広さに心躍らせている\n召喚能力を持ち、浮きと悪魔をふっとばして動きを止める\nユウキュウノボウケンシャエターニス", "この世の果てまで冒険し真理を修めたエルフ\n世界の在り方を記憶に刻み巡る時代を歩み続ける\n召喚能力を持ち、浮きと悪魔をふっとばして動きを止める\nシンリノタンキュウシャエターニス"]
+    stat: [{health: 2500, knockbacks: 3, speed: 12, cost: 3000, production_cooldown: 1500, attack_cooldown: 100, range: 400, width: 320, area_effect: 1, damage_0: 1000, long_range_0: 1, long_range_offset_0: 400, attack_time_0: 50, damage_1: 3000, long_range_1: 100, long_range_offset_1: 900, attack_time_1: 312, trigger_effects_1: 1, against_float: 1, against_aku: 1, knockback_chance: 100, freeze_chance: 100, freeze_duration: 240, dodge_chance: 50, dodge_duration: 30, break_shield_chance: 100, sage_slayer: 1, conjure: 888, immune_knockback: 1, immune_curse: 1, immune_surge: 1, immune_toxic: 1, attack_duration: 380}, {health: 3000, knockbacks: 3, speed: 12, cost: 3000, production_cooldown: 1500, attack_cooldown: 100, range: 400, width: 320, area_effect: 1, damage_0: 1500, long_range_0: 1, long_range_offset_0: 400, attack_time_0: 50, damage_1: 4500, long_range_1: 100, long_range_offset_1: 900, attack_time_1: 312, trigger_effects_1: 1, against_float: 1, against_aku: 1, knockback_chance: 100, freeze_chance: 100, freeze_duration: 240, dodge_chance: 50, dodge_duration: 30, break_shield_chance: 100, sage_slayer: 1, conjure: 888, immune_knockback: 1, immune_curse: 1, immune_surge: 1, immune_toxic: 1, attack_duration: 380}]
+    rarity: 4
+    max_level: 130
+    growth: [20, 20, 20, 20, 20, 20, 10, 10, 5, 5, 5, 5, 5]
+  888:
+    name: ['888_1']
+    desc: [精霊：敵の動きを遅くして悪魔シールドを貫きます]
+    stat: [{health: 100, knockbacks: 1, range: 800, width: 320, area_effect: 1, damage_0: 2700, attack_time_0: 41, trigger_effects_0: 1, against_red: 1, against_float: 1, against_black: 1, against_angel: 1, against_alien: 1, against_zombie: 1, against_aku: 1, against_relic: 1, against_white: 1, against_metal: 1, slow_chance: 100, slow_duration: 130, break_shield_chance: 100, kamikaze: 2, attack_duration: 85}]
+    rarity: 4
+    max_level: 60
     growth: [20, 20, 20, 20, 20, 20]
 gacha:
   0:
@@ -15027,6 +15106,36 @@ gacha:
     series_id: 46
     name: 超激レア以上のキャラクターが必ず１体手に入る「レジェンドガチャ」！
     rate: legend
+  1089:
+    cats: [755, 171, 77, 570, 520, 85, 770, 699, 643, 675, 825, 887, 436, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 35
+    name: "「謎の傭兵トリクシー」参戦！12周年記念の特別ガチャ！★詳細はバナーをタップ!!"
+    rate: no_legend
+    similarity: 75
+  1090:
+    cats: [619, 713, 160, 361, 764, 862, 139, 197, 258, 418, 359, 544, 485, 521, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 39
+    name: 黒ちびネコヴァルキリー参戦！7周年記念の特別ガチャ！★詳細はバナーをタップ!!
+    rate: no_legend
+    similarity: 69
+  1091:
+    cats: [545, 482, 452, 462, 831, 337, 618, 761, 630, 637, 663, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 66
+    name: 13周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 80
+  1092:
+    cats: [464, 451, 450, 456, 138, 159, 812, 716, 655, 689, 695, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 67
+    name: 13と1/2周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 80
+  1093:
+    cats: [479, 449, 494, 107, 432, 851, 497, 646, 668, 685, 524, 523, 496, 378, 377, 326, 308, 309, 200, 199, 198, 154, 153, 152, 151, 150, 149, 148, 147, 146, 62, 59, 57, 56, 53, 52, 51, 50, 49, 48, 47, 42, 41, 40, 39, 38, 37, 36, 34, 33, 32, 31]
+    series_id: 68
+    name: 13周年記念！感謝の気持ちを込めた特別なガチャ！★詳細はバナーをタップ!!
+    rate: regular
+    similarity: 76
 banners:
   0:
     event: 2026-10-26_986

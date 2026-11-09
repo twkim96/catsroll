@@ -784,6 +784,18 @@ module BattleCatsRolls
       set_constants(%w[wave surge toxic])
     end
 
+    class Combo < Talent
+      include AbilityUtility
+
+      def name
+        'Combo'
+      end
+
+      def display(**)
+        "Enable combo #{strong(min)}"
+      end
+    end
+
     def self.build info
       return [] unless info['talent']
 
