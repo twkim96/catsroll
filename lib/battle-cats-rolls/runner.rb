@@ -265,7 +265,7 @@ module BattleCatsRolls
           scan(/
             \b\w*
             (?:ImageDataServer|UnitServer)
-            (?:(?:_\d+_\d+)?_#{lang_under_en || lang})?
+            (?:_\d+_\d+_#{lang_under_en || lang})?
             (?=\.pack\b)
           /x).uniq.reject{ File.exist?("#{app_data_path}/#{_1}.pack") }
 
