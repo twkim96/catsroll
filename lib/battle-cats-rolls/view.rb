@@ -293,7 +293,7 @@ module BattleCatsRolls
     # Minor priority:
     #   If major is Score, then Rarity, otherwise Score
     def highlight_advanced cat
-      special = if cat.id == route.find
+      special = if route.find.member?(cat.id)
         :found
       elsif route.owned_set.member?(cat.id)
         :owned
@@ -323,7 +323,7 @@ module BattleCatsRolls
     # Minor priority:
     #   Score
     def highlight_consistent cat
-      major = if cat.id == route.find
+      major = if route.find.member?(cat.id)
         :found
       elsif route.owned_set.member?(cat.id)
         :owned
