@@ -11,6 +11,7 @@ module BattleCatsRolls
   class Runner < Struct.new(:lang, :version, :apk_id, :lang_under_en)
     VersionNotFound = Class.new(RuntimeError)
     DateNotFound = Class.new(RuntimeError)
+    PackNotFound = Class.new(RuntimeError)
     EventsBuildingErrors = [Date::Error, DateNotFound].freeze
     EventsNetworkErrors = [
       Errno::EACCES, Errno::ECONNRESET,
@@ -301,7 +302,8 @@ module BattleCatsRolls
             version
           end
         else
-          next # We don't know the version, skip
+          raise PackNotFound.new(
+            "Don't know how to download #{pack} from #{tsv}")
         end
 
         filename = if suffix
