@@ -85,7 +85,7 @@ module BattleCatsRolls
 
       next if Task.shutting_down
 
-      %w[en tw jp kr].each do |lang|
+      LangAll.each do |lang|
         break if Task.shutting_down
 
         Runner.build(lang)

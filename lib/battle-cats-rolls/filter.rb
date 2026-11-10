@@ -71,6 +71,23 @@ module BattleCatsRolls
       end
     end
 
+    class Banner < Struct.new(:cats)
+      def self.build ball, banner_id
+        if (event_id = ball.banners.dig(banner_id, 'event')) &&
+            (gacha_id = ball.events.dig(event_id, 'id'))
+          new(ball.gacha.dig(gacha_id, 'cats'))
+        else
+          new([])
+        end
+      end
+
+      def [] _
+        @filter ||= lambda do |banner_id, id, info, index|
+          cats.member?(id)
+        end
+      end
+    end
+
     module LongRange
       def self.match? abilities, stat=nil
         abilities['long_range_0'] && !OmniStrike.match?(abilities, stat)

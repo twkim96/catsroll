@@ -1,0 +1,20 @@
+<label for="find_select<%= arg[:id] %>" title="Highlight the cat in the tracks selected here">Find next:</label>
+<select id="find_select<%= arg[:id] %>" name="find" onchange="roll(this)">
+  <option></option>
+
+  <optgroup label="Legendary:">
+    <%= find_cat_options(gacha.legend_cats, arg[:id]) %>
+  </optgroup>
+
+  <optgroup label="Uber:">
+    <%= find_cat_options(gacha.uber_cats, arg[:id]) %>
+  </optgroup>
+
+  <optgroup label="Super:">
+    <%= find_cat_options(gacha.supa_cats, arg[:id]) %>
+  </optgroup>
+
+  <optgroup label="Rare:">
+    <%= find_cat_options(gacha.rare_cats, arg[:id]) %>
+  </optgroup>
+</select>

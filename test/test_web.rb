@@ -6,6 +6,8 @@ describe BattleCatsRolls::Web do
   include BattleCatsRolls::Test
 
   text_select_event = '(Select an event here)'
+  text_select_banner_filter_unknown = '(9999) Unknown'
+  text_select_banner_filter_mola = '(14) '
   text_selected_group = '<optgroup label="Selected:">'
   text_label_gacha_pool = 'Gacha pool:'
   text_label_event_details = 'Event details:'
@@ -70,6 +72,35 @@ describe BattleCatsRolls::Web do
         location = header['location']
         expect(location).not.include? 'event='
         expect(location).include? 'banner=9999'
+      end
+    end
+  end
+
+  describe 'banner cats filter' do
+    would 'drop the banner if empty or invalid' do
+      expect_request('/cats', 'banner_filter=',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner_filter='
+      end
+
+      expect_request('/cats', 'banner_filter=invalid',
+        status: 302) do |body, header|
+        expect(header['location']).not.include? 'banner_filter='
+      end
+    end
+
+    would 'show no cats with a non-existing banner' do
+      expect_request('/cats', 'banner_filter=9999') do |body|
+        expect(body).include? text_select_banner_filter_unknown
+        expect(body).not.include? 'Rare Cat'
+      end
+    end
+
+    would 'show cats with a banner existing but not in menu' do
+      expect_request('/cats', 'banner_filter=14') do |body|
+        expect(body).include? text_select_banner_filter_mola
+        expect(body).include? 'Mola King'
+        expect(body).not.include? 'Legend Rare Cat'
       end
     end
   end

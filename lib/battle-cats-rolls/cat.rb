@@ -27,7 +27,7 @@ module BattleCatsRolls
     end
 
     def inspect
-      %Q{#<BattleCatsRolls::Cat number="#{number}" name="#{name}">}
+      %Q{#<BattleCatsRolls::Cat number="#{number}" id="#{id}" name="#{name}">}
     end
 
     alias_method :to_s, :inspect

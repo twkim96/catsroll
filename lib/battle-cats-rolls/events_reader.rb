@@ -4,9 +4,9 @@ require_relative 'tsv_reader'
 
 module BattleCatsRolls
   class EventsReader
-    def self.read dir
+    def self.read dir, lang_under_en=nil
       Dir["#{dir}/**/*.tsv"].inject(new) do |result, tsv|
-        result << TsvReader.read(tsv)
+        result << TsvReader.read(tsv, lang_under_en)
       end.sort!
     end
 

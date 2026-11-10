@@ -1,6 +1,6 @@
 <div class="found_cats">
   <% found, exclusive = found_and_exclusive_cats %>
-  <% if found %>
+  <% if found.any? %>
     <p>Found cats:</p>
     <%= erb :found_cats_listing, cats: found %>
   <% end %>

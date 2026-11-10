@@ -84,7 +84,6 @@
 
 ## Stats
 
-* Add a separate filter for banners/families based on series id
 * Add a time unit option to select between seconds or frames
 * Show surge duration
 * Show knockback distance
@@ -99,7 +98,6 @@
 
 * Changing the banner should go back to the first page because the whole set
   is changed so there's no reason to preserve the same page.
-* Don't show next page if next page is empty
 * If there's a non-existing cat in a gacha, for now we show nothing because
   tracking can't be done due to missing rarity data. However, it'll be useful
   to show the gacha data so we know it's not just an empty gacha but a gacha
@@ -117,17 +115,16 @@
 
 ## Features and utilities
 
-* What if we add /tracks and make /help the landing page?
-* Add a dark theme. How this interacts with the mkweb theme is unclear
 * Localize default customized rate. superfest -> 超極ネコ祭
-* Multi-select for finding cats
+* Add a dark theme. How this interacts with the mkweb theme is unclear
+* What if we add /tracks and make /help the landing page?
+* Don't use the hard coded version. Check on the disk and see if there's
+  a newer version apk and use that instead.
+* Normal gacha banners and tracks. Possibly with a new menu item
 * Show multiple banners of tracks horizontally so we can look at
   different events at the same time.
   Reference: https://ampuri.github.io/bc-normal-seed-tracking/
   and https://ampuri.github.io/godfat-multi/
-* Don't use the hard coded version. Check on the disk and see if there's
-  a newer version apk and use that instead.
-* Normal gacha banners and tracks. Possibly with a new menu item
 
 ## Help pages
 

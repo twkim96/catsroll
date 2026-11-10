@@ -2,10 +2,10 @@
 require_relative '../lib/battle-cats-rolls/runner'
 
 if ARGV.empty?
-  %w[en tw jp kr].each do |lang|
-    puts "Building data for #{lang}..."
-    BattleCatsRolls::Runner.build(lang)
-  end
+  BattleCatsRolls::LangAll
 else
-  BattleCatsRolls::Runner.build(*ARGV)
+  ARGV
+end.each do |lang|
+  puts "Building data for #{lang}..."
+  BattleCatsRolls::Runner.build(lang)
 end

@@ -43,7 +43,7 @@ module BattleCatsRolls
     def params_coercion_with_nil key, coercion
       case value = params[key]
       when Array
-        value.last
+        value.first
       else
         value
       end&.public_send(coercion)

@@ -47,8 +47,8 @@ module BattleCatsRolls
     end
 
     def self.search gacha, find, **args
-      ids_in_gacha = filter(gacha, [find, *exclusives])
-      ids_in_gacha.concat([find] * (Count - 1)) if ids_in_gacha.member?(find)
+      ids_in_gacha = filter(gacha, exclusives + find)
+      ids_in_gacha.concat((find & ids_in_gacha) * (Count - 1))
 
       new(gacha, ids_in_gacha).search!(**args)
     end

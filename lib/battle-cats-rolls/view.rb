@@ -235,9 +235,21 @@ module BattleCatsRolls
       end
     end
 
+    def find_cat_options cats, id
+      cats.uniq(&:id).map do |cat|
+        if cat.id == id
+          selected = ' selected="selected"'
+        elsif route.find.member?(cat.id)
+          next
+        end
+
+        %Q{<option value="#{cat.id}"#{selected}>#{cat_name(cat)}</option>}
+      end.join("\n")
+    end
+
     def found_and_exclusive_cats
       found_cats = arg[:found_cats]
-      found = found_cats.delete(route.find)
+      found = route.find.flat_map{ found_cats.delete(_1) || [] }
       [found, found_cats.values.flatten]
     end
 
@@ -249,7 +261,7 @@ module BattleCatsRolls
     def highlight_basic cat
       special = if route.owned_set.member?(cat.id)
         :owned
-      elsif cat.id == route.find
+      elsif route.find.member?(cat.id)
         :found
       elsif FindCat.exclusives.member?(cat.id)
         :exclusive
@@ -258,7 +270,7 @@ module BattleCatsRolls
       score = cat.score_rarity_label
       major = special || score
       minor = if special == :owned
-        if cat.id == route.find
+        if route.find.member?(cat.id)
           :found
         elsif FindCat.exclusives.member?(cat.id)
           :exclusive
@@ -281,7 +293,7 @@ module BattleCatsRolls
     # Minor priority:
     #   If major is Score, then Rarity, otherwise Score
     def highlight_advanced cat
-      special = if cat.id == route.find
+      special = if route.find.member?(cat.id)
         :found
       elsif route.owned_set.member?(cat.id)
         :owned
@@ -311,7 +323,7 @@ module BattleCatsRolls
     # Minor priority:
     #   Score
     def highlight_consistent cat
-      major = if cat.id == route.find
+      major = if route.find.member?(cat.id)
         :found
       elsif route.owned_set.member?(cat.id)
         :owned
@@ -532,8 +544,8 @@ module BattleCatsRolls
       'selected="selected"' if route.banner == banner_id
     end
 
-    def selected_find cat
-      'selected="selected"' if route.find == cat.id
+    def selected_current_banner_filter banner_id
+      'selected="selected"' if route.banner_filter == banner_id
     end
 
     def selected_last cat
@@ -730,6 +742,14 @@ module BattleCatsRolls
       input_names.map do |name|
         <<~HTML
           <input type="hidden" name="#{name}" value="#{route.public_send(name)}">
+        HTML
+      end.join("\n")
+    end
+
+    def hidden_inputs_array input_name
+      route.public_send(input_name).map do |value|
+        <<~HTML
+          <input type="hidden" name="#{input_name}" value="#{value}">
         HTML
       end.join("\n")
     end

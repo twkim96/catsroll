@@ -2,6 +2,9 @@
 
 module BattleCatsRolls
   Root = File.expand_path("#{__dir__}/../..").freeze
+  Region = %w[en tw jp kr].freeze
+  LangUnderEN = %w[de es fr it th].freeze
+  LangAll = [*Region, *LangUnderEN].freeze
   WebHost = ENV['WEB_HOST'].freeze
   WebBind = ENV['WEB_BIND'].freeze || '8080'
   WebThreads = Integer(ENV['WEB_THREADS'] || 5)

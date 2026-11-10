@@ -16,6 +16,8 @@ require 'set'
 
 module BattleCatsRolls
   class Route < Struct.new(:request)
+    MaxFind = 5
+
     QueryMemorized = %i[
       seed pos last
       event event_page custom rate c_rare c_supa c_uber banner
@@ -28,6 +30,7 @@ module BattleCatsRolls
     ].freeze
 
     QueryFilter = [*QueryMemorized,
+      :banner_filter,
       :for_against, :against,
       :buff,
       :for_resistant, :resistant,
@@ -45,19 +48,52 @@ module BattleCatsRolls
       :for_aspect, :aspect
     ].freeze # rubocop:disable Layout/MultilineArrayBraceLayout
 
+    CuratedBanners = Set.new([
+      0, # Tales of the Nekoluga
+      1, # The Dynamites
+      2, # Sengoku Wargods Vajiras
+      3, # Galaxy Gals
+      4, # Dragon Emperors
+      5, # Red Busters
+      6, # Ultra Souls
+      7, # Dark Heroes
+      8, # Halloween
+      9, # Xmas Gals
+      18, # Almighties
+      19, # Uberfest
+      22, # Air Busters
+      24, # Iron Legion
+      26, # Easter Carnival
+      27, # Epicfest
+      28, # Girls & Monsters
+      32, # Metal Busters
+      33, # Elemental Pixies
+      45, # Wave Busters
+      47, # DynastyFest
+      48, # Valentine's Gals
+      50, # Royalfest
+      52, # White Day
+      53, # June Bride
+      56, # Colossus Busters
+      64, # Gals of Summer Sunshine
+      65, # Gals of Summer Blue Ocean
+    ]).freeze
+
     def self.load_ball lang
       CrystalBall.load("#{Root}/build", lang)
     end
 
     def self.reload_balls force=false # rubocop:disable Style/OptionalBooleanParameter
-      %w[en tw jp kr].each do |lang|
+      LangAll.each do |lang|
         if public_send("ball_#{lang}").nil? || force
           public_send("ball_#{lang}=", load_ball(lang))
         end
       end
     end
 
-    singleton_class.attr_accessor :ball_en, :ball_tw, :ball_jp, :ball_kr
+    singleton_class.attr_accessor(*LangAll.map do |lang|
+      :"ball_#{lang}"
+    end)
 
     extend Forwardable
 
@@ -115,8 +151,8 @@ module BattleCatsRolls
       CrystalBall::EventsPerPage * event_page < events_filtered.size
     end
 
-    def banner_not_in_menu?
-      banner && !ball.banners.member?(banner)
+    def banner_not_in_menu? banner_id=banner, banners=ball.banners
+      banner_id && !banners.member?(banner_id)
     end
 
     def prepare_tracks
@@ -196,10 +232,22 @@ module BattleCatsRolls
       600
     end
 
+    def region
+      @region ||=
+        case lang
+        when *Region
+          lang
+        when *LangUnderEN
+          'en'
+        else
+          raise "Unknown language: #{lang}"
+        end
+    end
+
     def lang
       @lang ||=
         case value = request.params_coercion_with_nil('lang', :to_s)
-        when 'tw', 'jp', 'kr'
+        when *LangAll
           value
         else
           'en'
@@ -209,7 +257,7 @@ module BattleCatsRolls
     def ui
       @ui ||=
         case value = request.params_coercion_with_nil('ui', :to_s)
-        when 'en', 'tw', 'jp', 'kr'
+        when *LangAll
           value
         else
           '' # Default to whatever lang is
@@ -364,6 +412,18 @@ module BattleCatsRolls
       @banner ||= request.params_coercion_int_or_nil('banner')
     end
 
+    def banner_filter
+      return @banner_filter if instance_variable_defined?(:@banner_filter)
+
+      @banner_filter ||= request.params_coercion_int_or_nil('banner_filter')
+    end
+
+    def curated_banners
+      @curated_banners ||= ball.banners.select do |id, data|
+        CuratedBanners.member?(id)
+      end
+    end
+
     def count
       @count ||=
         [
@@ -376,7 +436,10 @@ module BattleCatsRolls
     end
 
     def find
-      @find ||= request.params_coercion('find', :to_i)
+      @find ||= Array(request.params['find']).
+        first(MaxFind).map(&:to_i).uniq.select do |id|
+          id.nonzero? && pool.gacha.member?(id)
+        end
     end
 
     def last
@@ -766,12 +829,7 @@ module BattleCatsRolls
     def event_url file: 'gatya.tsv',
       base_uri: "#{request.scheme}://#{seek_host}/seek",
       kind: ''
-      case lang
-      when 'en', 'tw', 'jp', 'kr'
-        "#{base_uri}/#{lang}#{kind}/#{file}"
-      else
-        raise "Unknown language: #{lang}"
-      end
+      "#{base_uri}/#{region}#{kind}/#{file}"
     end
 
     def platinum?
@@ -933,7 +991,7 @@ module BattleCatsRolls
            (key == :highlighting && value == default_highlighting) ||
            (key == :theme && value == '') ||
            (key == :count && value == 100) ||
-           (key == :find && value == 0) ||
+           (key == :find && value == []) ||
            (key == :force_guaranteed && value == 0) ||
            (key == :ubers && value == 0) ||
            (key == :o && value == '') ||

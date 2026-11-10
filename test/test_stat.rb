@@ -115,6 +115,50 @@ describe BattleCatsRolls::Stat do
     end
   end
 
+  describe 'correct damage by correct level multiplier' do
+    copy do
+      would 'be correct' do
+        expect(stat.attacks.first.damage).eq expected_damage
+      end
+    end
+
+    describe 'Cat' do
+      def id = 1
+      def expected_damage = 135
+      paste
+    end
+
+    describe 'Tank Cat' do
+      def id = 2
+      def expected_damage = 35
+      paste
+
+      describe 'True form' do
+        def index = 2
+        def expected_damage = 67
+        paste
+      end
+
+      describe 'level 3' do
+        def level = 3
+        def expected_damage = 7
+        paste
+
+        describe 'True form' do
+          def index = 2
+          def expected_damage = 15
+          paste
+        end
+      end
+
+      describe 'Metal Cat' do
+        def id = 201
+        def expected_damage = 95
+        paste
+      end
+    end
+  end
+
   describe 'DPS accounts critical strike and savage blow' do
     describe 'Kyosaka Nanaho' do
       def id = 545

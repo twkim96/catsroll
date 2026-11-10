@@ -8,17 +8,19 @@ module BattleCatsRolls
     :data_reader, :res_reader,
     :animation_readers, :unit_image_readers)
 
-    def initialize lang, dir
-      # We sort by lowest priority to highest priority. Local is highest.
-      # We also reverse traverse and skip when it's already written.
-      local_readers = %w[DataLocal.list resLocal.list].
+    def initialize lang, lang_under_en, dir
+      suffix = "_#{lang_under_en}" if lang_under_en
+
+      # DataLocal{suffix}.list is empty for lang_under_en anyway
+      # However resLocal#{suffix}.list contains the lang_under_en text
+      local_readers = %W[DataLocal.list resLocal#{suffix}.list].
         map do |list|
           PackReader.new(lang, "#{dir}/#{list}")
         end
 
       super(*local_readers,
-        new_readers(lang, dir, 'ImageData'),
-        new_readers(lang, dir, 'Unit'))
+        new_readers(lang, lang_under_en, dir, 'ImageData'),
+        new_readers(lang, lang_under_en, dir, 'Unit'))
     end
 
     def gacha
@@ -126,15 +128,24 @@ module BattleCatsRolls
         end
     end
 
-    def new_readers lang, dir, name
-      paths = Dir["#{dir}/*#{name}Server*.list"].sort_by do |path|
-        # Sort the followings:
+    def new_readers lang, lang_under_en, dir, name
+      lang_under_en ||= 'en' if lang == 'en'
+      glob = "#{dir}/*#{name}{Server,Local}{,*_#{lang_under_en}}.list"
+      paths = Dir[glob].sort_by do |path|
+        # We sort by lowest priority to highest priority. Local is highest.
+        # We reverse traverse and skip when it's already written.
+        # Sort as the followings:
         # * VUnitServer.list
-        # * UnitServer_100600_00_en.list
-        # We prioritize [version, prefix] put it in the last in the list
-        File.basename(path).match(/([A-Z]?)#{name}Server((?:_.+)?)/)[1..].
-          reverse
-      end << "#{dir}/#{name}Local.list" # Lastly the local one
+        # * UnitServer_100600_00_fr.list
+        # * UnitLocal.list
+        # * UnitLocal_fr.list
+        prefix, side, version = File.basename(path).match(
+          /([A-Z]?)#{name}(Server|Local)((?:_#{lang_under_en})?)/
+        )[1..]
+
+        # Server = 0, Local = 1
+        [(side <=> 'Server') * -1, version, prefix]
+      end
 
       paths.map{ |list| PackReader.new(lang, list) }
     end

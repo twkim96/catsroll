@@ -1,6 +1,6 @@
 <%= erb :form %>
 
-<%= header(1, "Event data links for BC#{route.lang.upcase}") %>
+<%= header(1, "Event data links for BC#{route.region.upcase}#{" for #{route.lang.upcase}" if BattleCatsRolls::LangUnderEN.member?(route.lang)}") %>
 <ul>
   <% %w[gatya.tsv item.tsv sale.tsv].each do |file| %>
     <li>
@@ -12,11 +12,63 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-11-10") %>
+<ul>
+  <li>
+    You can now find multiple cats, up to 5 at once.
+    It'll show another dropdown menu once you pick the first one.
+  </li>
+</ul>
+
+<%= header(2, "2026-11-09") %>
+<ul>
+  <li>
+    Fix tracks showing images for BCJP, BCTW, and BCKR. They're broken since:
+    <ul>
+      <li>BCJP: 15.4.0</li>
+      <li>BCTW: 15.6.0</li>
+      <li>BCKR: 15.6.0</li>
+    </ul>
+  </li>
+</ul>
+
+<%= header(2, "2026-11-08") %>
+<ul>
+  <li>
+    We now support 5 other languages under BCEN:
+    <ul>
+      <li>DE (German)</li>
+      <li>ES (Spanish)</li>
+      <li>FR (French)</li>
+      <li>IT (Italian)</li>
+      <li>TH (Thai)</li>
+    </ul>
+  </li>
+  <li>
+    Cat's damage now uses <code>round</code> to match with the game.
+    This makes some small difference when the Cat's damage is very low.
+    <ul>
+      <li>Current formula: <code>floor(round(base * level) * treasure)</code></li>
+      <li>Previous formula: <code>floor(base * level * treasure)</code></li>
+    </ul>
+  </li>
+</ul>
+
 <%= header(2, "2026-11-05") %>
 <ul>
   <li>
     Add a talent filter in advanced filters. Example:
-    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, talent: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra talent</a>
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, talent: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra talent</a>.
+  </li>
+  <li>
+    Add a banner filter. Example:
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {banner_filter: 6}, include_filters: true) %>#legend-rare-cat">filter cats with Ultra Souls banner</a>.
+    The banner list is curated to show only regular and seasonal banners.
+    You can still filter with collaboration banners by changing the
+    <code>banner_filter</code> query in the URL with the banner id
+    if you want. You can find the banner id in the banner events filter.
+    This is intended to make it easier to find banners which are used
+    much more often.
   </li>
 </ul>
 
@@ -24,7 +76,7 @@
 <ul>
   <li>
     Add a form filter in advanced filters. Example:
-    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, form: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra form</a>
+    <a href="<%= h route.uri(path: "//#{route.web_host}/cats", query: {advanced_filters: true, form: 'ultra'}, include_filters: true) %>#uber-rare-cat">filter cats with ultra form</a>.
   </li>
   <li>
     The video in the help page is removed because it's old and it contains
