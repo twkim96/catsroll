@@ -438,7 +438,7 @@ module BattleCatsRolls
     def find
       @find ||= Array(request.params['find']).
         first(MaxFind).map(&:to_i).uniq.select do |id|
-          id.nonzero? && pool.gacha.member?(id)
+          id.nonzero? && pool.gacha&.member?(id)
         end
     end
 
