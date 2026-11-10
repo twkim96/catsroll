@@ -123,6 +123,16 @@ assert(ordinary.includes('href="#N1A"') && ordinary.includes('href="#N2B"'));
 assert.strictEqual((ordinary.match(/<li>/g) || []).length, 2);
 assert(!renderContext.TrackRender.renderFoundCats({foundCats: [sample[1]]},
   {find: 479, count: 100}).includes('Found cats:'));
+const multiple = new renderContext.TrackRender.TrackRender({find: [chosen.cat.id, automatic.cat.id]});
+for (const mode of ['basic', 'advanced', 'consistent']) {
+  multiple.ctx.highlighting = mode;
+  assert(multiple.rarityLabels(chosen.cat).includes('major_found'));
+  assert(multiple.rarityLabels(automatic.cat).includes('major_found'),
+    'all selected targets are highlighted in ' + mode);
+}
+const multipleHtml = multiple.renderFoundCats({foundCats: sample});
+assert.strictEqual((multipleHtml.match(/<li>/g) || []).length, 2);
+assert(!multipleHtml.includes('Exclusive and legend cats:'));
 
 let draftTargets = [479];
 let activePool = foundPool;

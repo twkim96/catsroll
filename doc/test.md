@@ -11,6 +11,8 @@
 
 `test_found_cats.cjs`는 같은 실제 풀에서 서버의 최대 5개 검색과 기기 계산의
 한 줄 표시·보조 검색, 모드 전환 시 멀티 안내 중복 방지, Multi 목표/자동 목록 분리를 확인한다.
+선택 대상 없는 기기 연산 URL의 최초 로딩·새로고침과 Find next의 추가/제거·5종 유지도
+검사한다. 회귀 입력은 합성 시드를 쓰며 사용자 시드 기록을 저장하지 않는다.
 별도로 실행한 로컬 서버와 아래 Playwright 환경을 사용한다.
 
     CATSROLL_TEST_URL=http://127.0.0.1:17867 node test/test_found_cats.cjs

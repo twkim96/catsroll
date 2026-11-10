@@ -20,6 +20,10 @@
 
 ## 2026-11-01 Found cats와 Find 목표 연동
 
+일반 배열의 최대 5종 선택은 upstream `e3f7ce19`의 `Route#find`와 선택 UI에 대조한다.
+기기 연산 초기 화면의 빈 선택칸 인자, 반복 `find` 입력 유지와 전체 대상 강조는 합성
+입력으로 Ruby·브라우저 회귀에서 확인한다. 기존 기기 검색 범위와 Multi 경로 계산은 유지한다.
+
 검색/목록 개편의 계약은 [서버와 기기 계산의 경계](multi-track-local-plan.md#upstream-and-fork-boundaries)에
 유지한다. upstream `5a572157`·`1c3b3b3f`의 서버 검색과 목록 분리를 수용하고,
 공유 JS의 캐릭터별 한 줄 표시와 기존 검색 범위를 보존한다. 새 목록 구분에 대한

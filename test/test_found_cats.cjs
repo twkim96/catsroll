@@ -10,6 +10,49 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
   const browser = await chromium.launch({headless: true,
     channel: process.env.GPT_BROWSER_CHANNEL || 'chrome'});
   try {
+    // Direct client rendering has no server-computed result argument. The spare
+    // Find dropdown must still load before JS computes, including on reload.
+    const direct = await browser.newPage();
+    const directErrors = [];
+    direct.on('pageerror', error => directErrors.push(error.message));
+    const directResponse = await direct.goto(`${base}/?seed=42&last=47&lang=kr&compute=client`);
+    assert.equal(directResponse.status(), 200);
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    assert.equal(await direct.locator('select[name="find"]').count(), 1);
+    assert.equal((await direct.reload()).status(), 200);
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+
+    // The upstream five-target form is server-owned, while the arrays are still
+    // computed on device. Adding/removing a target must rebuild the spare field.
+    await direct.goto(`${base}/?${query}&count=100&compute=client`);
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    let selectedFinds = () => direct.locator('select[name="find"]').evaluateAll(nodes => nodes.map(n => n.value).filter(Boolean));
+    assert.deepEqual(await selectedFinds(), ['732']);
+    await direct.locator('select[name="find"]').last().selectOption('270');
+    await direct.waitForURL(url => url.searchParams.getAll('find').includes('270'));
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    assert.deepEqual(await selectedFinds(), ['732', '270']);
+    assert.equal(await direct.locator('select[name="find"]').count(), 3);
+    assert.equal(await direct.locator('.found_cats ul').first().locator('li').count(), 2);
+    await direct.locator('select[name="find"]').first().selectOption('');
+    await direct.waitForURL(url => !url.searchParams.getAll('find').includes('732'));
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    assert.deepEqual(await selectedFinds(), ['270']);
+    const maximumFinds = ['732', '270', '319', '544', '691'];
+    await direct.goto(`${base}/?seed=42&event=2026-10-16_1072&lang=en&compute=client&` +
+      new URLSearchParams(maximumFinds.map(id => ['find', id])));
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    assert.deepEqual(await selectedFinds(), maximumFinds);
+    assert.equal(await direct.locator('select[name="find"]').count(), 5);
+    assert.equal(await direct.locator('.found_cats ul').first().locator('li').count(), 5);
+    // A later Roll must preserve every dropdown selection, not only the first.
+    await direct.locator('#content form input[type=submit]').click();
+    await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    assert.deepEqual(new URL(direct.url()).searchParams.getAll('find'), maximumFinds);
+    assert.deepEqual(await selectedFinds(), maximumFinds);
+    assert.deepEqual(directErrors, []);
+    await direct.close();
+
     const page = await browser.newPage({viewport: {width: 1440, height: 1000}});
     const errors = [];
     page.on('pageerror', error => errors.push(error.message));
