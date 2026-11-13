@@ -67,8 +67,15 @@
   <select id="speed_unit_select" name="speed_unit" onchange="roll(this)">
     <option value="rs" <%= selected_speed_unit('rs') %>>range/second</option>
     <option value="pf" <%= selected_speed_unit('pf') %>>speed/frame</option>
+    <option value="rf" <%= selected_speed_unit('rf') %>>range/frame</option>
+  </select>
+
+  <label for="time_unit_select">Time unit:</label>
+  <select id="time_unit_select" name="time_unit" onchange="roll(this)">
+    <option value="s" <%= selected_time_unit('s') %>>second</option>
+    <option value="f" <%= selected_time_unit('f') %>>frame</option>
   </select>
   <% else %>
-  <%= hidden_inputs('level', 'speed_unit') %>
+  <%= hidden_inputs('level', 'speed_unit', 'time_unit') %>
   <% end %>
 </div>

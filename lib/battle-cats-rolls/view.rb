@@ -92,9 +92,16 @@ module BattleCatsRolls
     def stat_time frames
       case frames
       when Numeric
-        title = "#{frames} frames"
         seconds = (frames.to_f / Stat::FPS).round(2)
-        %Q{<span title="#{title}">#{seconds}s</span>}
+        case route.time_unit
+        when 'f'
+          value = "#{frames}f"
+          title = "#{seconds} seconds"
+        else # s
+          value = "#{seconds}s"
+          title = "#{frames} frames"
+        end
+        %Q{<span title="#{title}">#{value}</span>}
       else
         frames || '-'
       end
@@ -114,6 +121,9 @@ module BattleCatsRolls
         case route.speed_unit
         when 'pf'
           "#{speed}p/f"
+        when 'rf'
+          value = speed / 2.0
+          "#{sprintf('%.1f', value).chomp('.0')}r/f"
         else # rs
           "#{speed * 15}r/s"
         end
@@ -566,6 +576,10 @@ module BattleCatsRolls
 
     def selected_speed_unit unit
       'selected="selected"' if route.speed_unit == unit
+    end
+
+    def selected_time_unit unit
+      'selected="selected"' if route.time_unit == unit
     end
 
     def checked_details

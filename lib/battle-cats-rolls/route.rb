@@ -21,7 +21,7 @@ module BattleCatsRolls
     QueryMemorized = %i[
       seed pos last
       event event_page custom rate c_rare c_supa c_uber banner
-      level speed_unit lang ui
+      level speed_unit time_unit lang ui
       seeker name display highlighting theme text_bg count find
       no_guaranteed force_guaranteed ubers details
       advanced_filters exclude_talents sum_no_wave dps_no_critical
@@ -518,7 +518,7 @@ module BattleCatsRolls
     def speed_unit
       @speed_unit ||=
         case value = request.params_coercion_with_nil('speed_unit', :to_s)
-        when 'pf'
+        when 'rs', 'pf', 'rf'
           value
         else
           default_speed_unit
@@ -527,6 +527,20 @@ module BattleCatsRolls
 
     def default_speed_unit
       'rs'
+    end
+
+    def time_unit
+      @time_unit ||=
+        case value = request.params_coercion_with_nil('time_unit', :to_s)
+        when 's', 'f'
+          value
+        else
+          default_time_unit
+        end
+    end
+
+    def default_time_unit
+      's'
     end
 
     def hide_wave
@@ -983,6 +997,7 @@ module BattleCatsRolls
            (key == :last && value == 0) ||
            (key == :level && value == default_level) ||
            (key == :speed_unit && value == default_speed_unit) ||
+           (key == :time_unit && value == default_time_unit) ||
            (key == :lang && value == 'en') ||
            (key == :ui && value == '') ||
            (key == :seeker && value == default_seeker) ||
