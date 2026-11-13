@@ -1,6 +1,2 @@
 User-agent: meta-externalagent
 Disallow: /
-Allow: /cats
-Allow: /help
-Allow: /logs
-Allow: /seek
