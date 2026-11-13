@@ -1,9 +1,8 @@
 ## Stats
 
-* Add a time unit option to select between seconds or frames
 * Show surge duration
 * Show knockback distance
-* Show slow speed (7.5 r/s or 0.5 p/f)
+* Show slow speed (7.5 r/s, or 0.5 p/f, or 0.25 r/f)
 
 ## Owned cats
 
