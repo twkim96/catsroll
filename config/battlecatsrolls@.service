@@ -45,6 +45,7 @@ Environment = SEEK_THREADS=25
 Environment = TRACK_MAX_COUNT=300
 Environment = RACK_DEFLATER=false
 Environment = RACK_CONTENT_LENGTH=false
+Environment = AUTO_UPDATE_EVENT_DATA=true
 KillSignal = SIGQUIT
 User = bcat
 Group = bcat

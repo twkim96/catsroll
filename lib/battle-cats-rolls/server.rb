@@ -8,12 +8,26 @@ require 'jellyfish'
 require 'rack'
 
 module BattleCatsRolls
+  def self.env_to_bool name, default
+    case value = ENV[name]
+    when nil
+      default
+    when 'true'
+      true
+    when 'false'
+      false
+    else
+      raise "Unknown value: #{value}"
+    end
+  end
+
   server_status = ServerStatus.middleware
   Server = Jellyfish::Builder.app do
-    use Rack::Deflater if ENV['RACK_DEFLATER'] != 'false'
+    use Rack::Deflater if BattleCatsRolls.env_to_bool('RACK_DEFLATER', true)
     use *server_status if server_status
 
-    use Rack::ContentLength if ENV['RACK_CONTENT_LENGTH'] != 'false'
+    use Rack::ContentLength if BattleCatsRolls.
+      env_to_bool('RACK_CONTENT_LENGTH', true)
     use Rack::ContentType, 'text/html; charset=utf-8'
 
     # This part can be completely replaced by Nginx
@@ -42,7 +56,7 @@ module BattleCatsRolls
 
     @shutdown = false
 
-    auto_update_event_data if ENV['AUTO_UPDATE_EVENT_DATA']
+    auto_update_event_data if env_to_bool('AUTO_UPDATE_EVENT_DATA', false)
 
     Kernel.at_exit(&Task.method(:shutdown))
     Kernel.at_exit(&SeekSeed::Pool.method(:shutdown))
