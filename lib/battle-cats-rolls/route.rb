@@ -135,6 +135,30 @@ module BattleCatsRolls
         "seeker=#{seeker}&name=#{name}"
     end
 
+    def show_options?
+      path_info.match?(%r{\A/(?:cats(?:/\d+)?|logs|seek)?\z})
+    end
+
+    def show_name_option?
+      path_info != '/logs'
+    end
+
+    def show_stats_options?
+      path_info.start_with?('/cats/')
+    end
+
+    def show_filters?
+      path_info == '/cats'
+    end
+
+    def show_events?
+      path_info.match?(%r{\A/(?:seek)?\z})
+    end
+
+    def show_tracks_control?
+      path_info == '/'
+    end
+
     def show_tracks?
       seed.nonzero? && gacha.pool.exist?
     end

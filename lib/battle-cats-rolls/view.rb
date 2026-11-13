@@ -883,7 +883,7 @@ module BattleCatsRolls
     end
 
     def onclick_pick cat, type
-      return unless cat && route.path_info == '/'
+      return unless cat && route.show_tracks_control?
 
       number =
         case type

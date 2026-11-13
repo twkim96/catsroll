@@ -1,6 +1,6 @@
 <%= hidden_inputs('pos') %>
 
-<% if route.path_info == '/' %>
+<% if route.show_tracks_control? %>
 <div class="control">
   <label for="seed_input" title="Seed to determine the tracks">Seed:</label>
   <input

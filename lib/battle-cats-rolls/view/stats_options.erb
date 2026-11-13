@@ -1,5 +1,5 @@
 <div class="stat_options">
-  <% if route.path_info == '/cats' %>
+  <% if route.show_filters? %>
   <label for="advanced_filters_input">
     <input type="checkbox" id="advanced_filters_input" name="advanced_filters"
       <%= checked_advanced_filters %>

@@ -1,4 +1,4 @@
-<% if route.path_info.match?(%r{\A/(?:cats(?:/\d+)?|logs|seek)?\z}) %>
+<% if route.show_options? %>
 <div class="options">
   <label for="lang_select" title="The Battle Cats app region and language">Region:</label>
   <select id="lang_select" name="lang" onchange="roll(this)">
@@ -30,7 +30,7 @@
     </option>
   </select>
 
-  <% if route.path_info == '/' %>
+  <% if route.show_tracks_control? %>
   <label for="display_select" title="How to show predicted cats in the track table">Display:</label>
   <select id="display_select" name="display" onchange="roll(this)">
     <option value="text" <%= selected_display('text') %>>Text</option>
@@ -41,7 +41,7 @@
   <%= hidden_inputs('display') %>
   <% end %>
 
-  <% if route.path_info != '/logs' %>
+  <% if route.show_name_option? %>
   <label for="name_select" title="Evolution form used for cat names and images">Form:</label>
   <select id="name_select" name="name" onchange="roll(this)">
     <option value="0" <%= selected_name(0) %>>Base</option>
@@ -53,7 +53,7 @@
   <%= hidden_inputs('name') %>
   <% end %>
 
-  <% if route.path_info == '/' %>
+  <% if route.show_tracks_control? %>
   <label for="highlighting_select" title="How we highlight the cells">Highlighting:</label>
   <select id="highlighting_select" name="highlighting" onchange="roll(this)">
     <option value="basic" <%= selected_highlighting('basic') %>>Basic</option>
@@ -77,9 +77,9 @@
   <%= hidden_inputs('highlighting', 'theme', 'text_bg') %>
   <% end %>
 
-  <% if route.path_info.start_with?('/cats/') && arg[:cat] %>
+  <% if route.show_stats_options? && arg[:cat] %>
     <%= erb :stats_options %>
-  <% elsif route.path_info == '/cats' %>
+  <% elsif route.show_filters? %>
     <%= erb :filters %>
   <% else %>
     <%= hidden_inputs('advanced_filters', 'hide_wave', 'exclude_talents',

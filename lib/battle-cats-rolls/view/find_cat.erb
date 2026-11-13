@@ -1,4 +1,4 @@
-<% if arg && route.path_info == '/' %>
+<% if arg && route.show_tracks_control? %>
 <div class="find">
   <% route.find.each do |id| %>
   <%= erb :find_cat_dropdown, id: id %>
