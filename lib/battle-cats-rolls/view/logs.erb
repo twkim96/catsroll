@@ -12,6 +12,21 @@
 
 <%= header(1, "What's changed?") %><p></p>
 
+<%= header(2, "2026-11-19") %>
+<ul>
+  <li>
+    We no longer use the root path <code>/</code> to show tracks, and will
+    redirect to <code>/tracks</code> when a seed is specified.
+  </li>
+  <li>
+    This is done to free <code>/</code> to show something else, and allow it
+    to be indexed by search engines. We also no longer allow search engines
+    to index <code>/tracks</code> because it does not contain any useful
+    information for any other people besides the seed owner. Any other pages
+    can still be indexed.
+  </li>
+</ul>
+
 <%= header(2, "2026-11-13") %>
 <ul>
   <li>Add a new speed unit: r/f (range/frame), which is half of p/f.</li>

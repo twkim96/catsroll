@@ -166,11 +166,13 @@ module BattleCatsRolls
     private
 
     def html_title
-      if picked_stat
+      title = if picked_stat
         h picked_stat.name
       else
-        route.path_info[/\w+/]&.capitalize || 'Tracks'
+        route.path_info[/\w+/]&.capitalize
       end
+
+      " - #{title}" if title
     end
 
     def meta_description

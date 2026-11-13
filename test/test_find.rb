@@ -7,7 +7,8 @@ describe BattleCatsRolls::FindCat do
   include BattleCatsRolls::Test
 
   would 'find 4 Izanagi in found and zero from exclusive' do
-    expect_request('/', 'seed=1&event=2026-10-16_1072&find=732') do |body|
+    expect_request('/tracks',
+      'seed=1&event=2026-10-16_1072&find=732') do |body|
       doc = Nokogiri::HTML.parse(body)
       found, exclusive = doc.css('.found_cats ul')
       expect(cleanup_text(found.css('li').text)).eq cleanup_text(<<~TEXT)
@@ -25,7 +26,7 @@ describe BattleCatsRolls::FindCat do
   end
 
   would 'find 5 Pogo Cat and 5 Wheel Cat' do
-    expect_request('/',
+    expect_request('/tracks',
       'seed=1&event=2026-11-09_926&find=38&find=39') do |body|
       doc = Nokogiri::HTML.parse(body)
       found, exclusive = doc.css('.found_cats ul')
@@ -46,14 +47,14 @@ describe BattleCatsRolls::FindCat do
   end
 
   would 'drop find if the cat is not in the event' do
-    expect_request('/', 'seed=1&event=2026-11-09_926&find=1',
+    expect_request('/tracks', 'seed=1&event=2026-11-09_926&find=1',
       status: 302) do |body, header|
       expect(header['location']).not.include? 'find='
     end
   end
 
   would 'give nothing if there is nothing' do
-    expect_request('/', 'seed=1&event=2026-10-26_926') do |body|
+    expect_request('/tracks', 'seed=1&event=2026-10-26_926') do |body|
       doc = Nokogiri::HTML.parse(body)
 
       expect(cleanup_text(doc.css('.found_cats').text)).empty?

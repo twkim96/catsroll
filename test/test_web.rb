@@ -14,7 +14,7 @@ describe BattleCatsRolls::Web do
   text_label_guaranteed_event_details = 'Guaranteed event details:'
   text_label_step_up_event_details = 'Step-up event details:'
 
-  %w[/ /cats /help /logs].each do |path|
+  %w[/ /tracks /cats /help /logs].each do |path|
     would "respond 200 for #{path}" do
       expect_request(path)
     end
@@ -37,7 +37,7 @@ describe BattleCatsRolls::Web do
 
   describe 'custom event' do
     would 'show a custom gacha selection' do
-      expect_request('/', 'event=custom',
+      expect_request('/tracks', 'event=custom',
         status: 302) do |_, header|
         expect_request(URI.parse(header['location'])) do |body|
           expect(body).include? text_label_gacha_pool
@@ -48,26 +48,26 @@ describe BattleCatsRolls::Web do
 
   describe 'banner events filter' do
     would 'drop the banner if empty or invalid' do
-      expect_request('/', 'banner=',
+      expect_request('/tracks', 'banner=',
         status: 302) do |body, header|
         expect(header['location']).not.include? 'banner='
       end
 
-      expect_request('/', 'banner=invalid',
+      expect_request('/tracks', 'banner=invalid',
         status: 302) do |body, header|
         expect(header['location']).not.include? 'banner='
       end
     end
 
     would 'show no events with a non-existing banner' do
-      expect_request('/', 'banner=9999') do |body|
+      expect_request('/tracks', 'banner=9999') do |body|
         expect(body).include? text_select_event
         expect(body).not.include? ' ~ ' # Only used for showing an event
       end
     end
 
     would 'drop the event when the banner does not have it' do
-      expect_request('/', 'event=2018-06-06_245&banner=9999',
+      expect_request('/tracks', 'event=2018-06-06_245&banner=9999',
         status: 302) do |body, header|
         location = header['location']
         expect(location).not.include? 'event='
@@ -107,21 +107,21 @@ describe BattleCatsRolls::Web do
 
   describe 'event pagination' do
     would 'have a next_page link but no prev_page link on page 1' do
-      expect_request('/') do |body|
+      expect_request('/tracks') do |body|
         expect(body).include? '<option value="next_page">'
         expect(body).not.include? '<option value="prev_page">'
       end
     end
 
     would 'have a prev_page link on page 2' do
-      expect_request('/', 'event_page=2') do |body|
+      expect_request('/tracks', 'event_page=2') do |body|
         expect(body).include? '<option value="next_page">'
         expect(body).include? '<option value="prev_page">'
       end
     end
 
     would 'redirect to next page if event=next_page' do
-      expect_request('/', 'event=next_page',
+      expect_request('/tracks', 'event=next_page',
         status: 302) do |body, header|
         location = header['location']
         expect(location).include? 'event_page=2'
@@ -130,7 +130,7 @@ describe BattleCatsRolls::Web do
     end
 
     would 'redirect to previous page if event=prev_page' do
-      expect_request('/', 'event=prev_page&event_page=3',
+      expect_request('/tracks', 'event=prev_page&event_page=3',
         status: 302) do |body, header|
         location = header['location']
         expect(location).include? 'event_page=2'
@@ -139,7 +139,7 @@ describe BattleCatsRolls::Web do
     end
 
     would 'not go lower than event_page=1' do
-      expect_request('/', 'event=prev_page',
+      expect_request('/tracks', 'event=prev_page',
         status: 302) do |body, header|
         location = header['location']
         expect(location).not.include? 'event_page='
@@ -148,7 +148,7 @@ describe BattleCatsRolls::Web do
     end
 
     would 'show the selected event even when it is not in the current page' do
-      expect_request('/', 'event=2018-06-06_245') do |body|
+      expect_request('/tracks', 'event=2018-06-06_245') do |body|
         expect(body).include? text_selected_group
         expect(body).not.include? text_select_event
 
@@ -158,7 +158,7 @@ describe BattleCatsRolls::Web do
     end
 
     would 'use a default event when not specified' do
-      expect_request('/') do |body|
+      expect_request('/tracks') do |body|
         expect(body).not.include? text_selected_group
         expect(body).not.include? text_select_event
 
@@ -168,14 +168,14 @@ describe BattleCatsRolls::Web do
     end
 
     would 'use a default event if the selected one is invalid' do
-      expect_request('/', 'event=non-existing',
+      expect_request('/tracks', 'event=non-existing',
         status: 302) do |body, header|
         expect(header['location']).not.include? 'event='
       end
     end
 
     would 'not use a default event when not specified on page 2' do
-      expect_request('/', 'event_page=2') do |body|
+      expect_request('/tracks', 'event_page=2') do |body|
         expect(body).not.include? text_selected_group
         expect(body).include? text_select_event
       end
@@ -186,14 +186,14 @@ describe BattleCatsRolls::Web do
         BattleCatsRolls::CrystalBall::EventsPerPage).ceil
       last_event = /<option\s+value="2018-06-06_245"\s*>/
 
-      expect_request('/', "event_page=#{last_page}") do |body|
+      expect_request('/tracks', "event_page=#{last_page}") do |body|
         expect(body).not.include? text_selected_group
         expect(body).include? text_select_event
 
         expect(body).match? last_event
       end
 
-      expect_request('/', "event_page=#{last_page + 1}") do |body|
+      expect_request('/tracks', "event_page=#{last_page + 1}") do |body|
         expect(body).not.include? text_selected_group
         expect(body).include? text_select_event
 
@@ -204,15 +204,15 @@ describe BattleCatsRolls::Web do
 
   describe 'showing event details' do
     would 'show when details is on even without a seed' do
-      expect_request('/', 'event=2018-06-06_245&details=true') do |body|
+      expect_request('/tracks', 'event=2018-06-06_245&details=true') do |body|
         expect(body).include? text_label_step_up_event_details
       end
 
-      expect_request('/', 'event=2018-06-08_289&details=true') do |body|
+      expect_request('/tracks', 'event=2018-06-08_289&details=true') do |body|
         expect(body).include? text_label_guaranteed_event_details
       end
 
-      expect_request('/', 'event=2018-06-11_266&details=true') do |body|
+      expect_request('/tracks', 'event=2018-06-11_266&details=true') do |body|
         expect(body).include? text_label_event_details
       end
     end

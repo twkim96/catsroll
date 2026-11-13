@@ -2,14 +2,15 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <%- if picked_stat -%>
+    <% if route.noindex? %><meta name="robots" content="noindex"><% end %>
+    <% if picked_stat %>
     <meta name="description" content="<%= meta_description %>">
     <meta name="og:image" content="<%= og_image %>">
-    <%- end -%>
+    <% end %>
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css?<%= self.class.css_digest %>" rel="stylesheet" type="text/css">
-    <title>Battle Cats Rolls - <%= html_title %></title>
+    <title>Battle Cats Rolls<%= html_title %></title>
     <style>
       <% case route.theme; when 'mkweb' %>
       /* https://mk.bcgsc.ca/colorblind/img/colorblindness.palettes.v11_4.png */
