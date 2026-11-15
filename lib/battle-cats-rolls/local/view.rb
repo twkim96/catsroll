@@ -8,8 +8,9 @@ module BattleCatsRolls
 
     # Keep fork navigation outside upstream's result templates and search API.
     def erb name, nested_arg=nil, &block
-      # Client pages have no result arg yet; upstream's empty dropdown reads arg[:id].
-      nested_arg ||= {id: nil} if name == :find_cat_dropdown
+      # Give only the Find partial a context before client results exist. Keep
+      # upstream's arg/show_tracks_control? gate and its nested dropdowns intact.
+      nested_arg ||= {} if name == :find_cat && route.compute_client? && gacha.pool.exist?
       html = super
       name == :found_cats ? local_partial(:local_found_prompt) + html : html
     end

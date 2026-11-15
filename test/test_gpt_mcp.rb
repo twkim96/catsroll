@@ -98,11 +98,20 @@ describe 'Catsroll MCP device-computation adapter' do
         expected = all.fetch('events').reject { |event| event['status'] == 'past' }
         expect(data.fetch('events')).eq expected
         first = call_tool(adapter, 'catsroll_events', {limit: 4}).fetch('structuredContent')
-        second = call_tool(adapter, 'catsroll_events', {limit: 4, offset: first.fetch('nextOffset')}).fetch('structuredContent')
         expect(first.fetch('total')).eq data.fetch('total')
         expect(first.fetch('nextOffset')).eq 4
-        expect(first.fetch('events') + second.fetch('events')).eq data.fetch('events')
-        expect(second.fetch('nextOffset')).eq nil
+        # Live event updates can add more than two pages of future schedules.
+        paged = first.fetch('events').dup
+        offset = first.fetch('nextOffset')
+        while offset
+          following = call_tool(adapter, 'catsroll_events', {limit: 4, offset: offset}).fetch('structuredContent')
+          expect(following.fetch('total')).eq first.fetch('total')
+          paged.concat(following.fetch('events'))
+          offset = following.fetch('nextOffset')
+          expect(offset).eq paged.size if offset
+        end
+        expect(paged).eq data.fetch('events')
+        expect(paged.size).eq first.fetch('total')
         %w[ongoing upcoming past].each do |period|
           filtered = call_tool(adapter, 'catsroll_events', {period: period}).fetch('structuredContent')
           expect(filtered.fetch('period')).eq period

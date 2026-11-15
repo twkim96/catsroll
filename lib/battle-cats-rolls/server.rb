@@ -9,12 +9,26 @@ require 'jellyfish'
 require 'rack'
 
 module BattleCatsRolls
+  def self.env_to_bool name, default
+    case value = ENV[name]
+    when nil
+      default
+    when 'true'
+      true
+    when 'false'
+      false
+    else
+      raise "Unknown value: #{value}"
+    end
+  end
+
   server_status = ServerStatus.middleware
   Server = Jellyfish::Builder.app do
-    use Rack::Deflater if ENV['RACK_DEFLATER'] != 'false'
+    use Rack::Deflater if BattleCatsRolls.env_to_bool('RACK_DEFLATER', true)
     use *server_status if server_status
 
-    use Rack::ContentLength if ENV['RACK_CONTENT_LENGTH'] != 'false'
+    use Rack::ContentLength if BattleCatsRolls.
+      env_to_bool('RACK_CONTENT_LENGTH', true)
     use Rack::ContentType, 'text/html; charset=utf-8'
     use LocalServerMiddleware
 
@@ -44,8 +58,7 @@ module BattleCatsRolls
 
     @shutdown = false
 
-    auto_update_event_data if ENV['AUTO_UPDATE_EVENT_DATA']
-    monitor_memory if ENV['MONITOR_MEMORY']
+    auto_update_event_data if env_to_bool('AUTO_UPDATE_EVENT_DATA', false)
 
     Kernel.at_exit(&Task.method(:shutdown))
     Kernel.at_exit(&SeekSeed::Pool.method(:shutdown))
@@ -107,35 +120,5 @@ module BattleCatsRolls
         Route.reload_balls(true)
       end
     end
-  end
-
-  def self.monitor_memory
-    Task.create(__method__) do
-      # rubocop:disable Style/FormatStringToken
-      printf \
-        "Memory total: %.2fM, current: %.2fM, CPU: %.2f%%,%s\n",
-        *ps, `uptime`[/(?<=users,).+/]
-      # rubocop:enable Style/FormatStringToken
-
-      sleep(10)
-    end
-  end
-
-  def self.ps
-    cpid = Process.pid
-
-    `ps -Ao pid,rss,pcpu`.scan(/(\d+)\s+(\d+)\s+(\d+\.\d+)/).
-      inject([0, 0, 0]) do |result, (pid, rss, pcpu)|
-        mem = rss.to_f / 1024
-        cpu = pcpu.to_f
-        result[0] += mem
-
-        if pid.to_i == cpid
-          result[1] = mem
-          result[2] = cpu
-        end
-
-        result
-      end
   end
 end

@@ -70,6 +70,18 @@ async function readable(locator, minimum = 4.5) {
     assert.equal(await page.locator('#form_base').isChecked(), true,
       'upstream form filter survives selecting the talent filter');
     assert.equal(await page.locator('#talent_ultra').isChecked(), true);
+    await page.goto(base + '/cats/1?lang=en');
+    await page.locator('#time_unit_select').selectOption('f');
+    await page.waitForURL(url => url.searchParams.get('time_unit') === 'f');
+    assert.match(await page.locator('span[title$=" seconds"]').first().innerText(), /\d+f$/);
+    await page.locator('#speed_unit_select').selectOption('rf');
+    await page.waitForURL(url => url.searchParams.get('speed_unit') === 'rf');
+    assert.equal(await page.locator('#time_unit_select').inputValue(), 'f',
+      'time units survive changing speed units');
+    assert.match(await page.locator('#content').innerText(), /\d+(?:\.\d+)?r\/f/);
+    await page.locator('#time_unit_select').selectOption('s');
+    await page.waitForURL(url => !url.searchParams.has('time_unit'));
+    assert.match(await page.locator('span[title$=" frames"]').first().innerText(), /\d+(?:\.\d+)?s$/);
     console.log('web controls: single/Multi filter contrast, selected/unselected targets and silent reversible plan toggle passed');
   } finally { await browser.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

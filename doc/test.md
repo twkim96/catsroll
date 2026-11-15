@@ -82,6 +82,10 @@ It also checks actual roll-link clicks and blank-cell clicks in server/client mo
 links navigate without selecting the containing track cell; clicking the cell still selects it.
 `test_web_controls.cjs` covers the upstream advanced form/talent filters and retains
 the existing single/Multi control contrast checks after upstream stylesheet updates.
+It also switches the cat information page between seconds/frames and range/frame,
+checking rendered units and preservation of the other unit selection.
+The MCP schedule pagination check follows `nextOffset` to the end instead of
+assuming the current event data fits exactly two pages.
 
 * With Banner at its default, the local series filter shows all dated events
   from any selected series, without pagination.
