@@ -29,7 +29,7 @@ describe BattleCatsRolls::FindCat do
     expect_request('/tracks',
       'seed=1&event=2026-11-09_926&find=38&find=39') do |body|
       doc = Nokogiri::HTML.parse(body)
-      found, exclusive = doc.css('.found_cats ul')
+      found, _exclusive = doc.css('.found_cats ul')
       expect(cleanup_text(found.css('li').text)).eq cleanup_text(<<~TEXT)
         Pogo Cat 🐾 : 29A
         Pogo Cat 🐾 : 78A

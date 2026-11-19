@@ -9,7 +9,7 @@ require_relative 'find_cat'
 require_relative 'cat'
 require_relative 'stat'
 
-require 'cgi'
+require 'cgi/escape'
 require 'date'
 require 'forwardable'
 require 'set'

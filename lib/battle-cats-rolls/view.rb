@@ -8,7 +8,7 @@ require_relative 'l10n'
 
 require 'tilt'
 
-require 'cgi'
+require 'cgi/escape'
 require 'erb'
 require 'digest/md5'
 require 'forwardable'
