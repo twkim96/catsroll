@@ -23,7 +23,7 @@
           Your starting seed is:
           <ul>
             <li>
-              <a href="<%= h route.uri(query: {seed: result.starting_seed, last: duped_last_cat(result)}) %>"><%= result.starting_seed %></a>
+              <a href="<%= h route.tracks_uri(query: {seed: result.starting_seed, last: duped_last_cat(result)}) %>"><%= result.starting_seed %></a>
             </li>
           </ul>
         </li>
@@ -31,7 +31,7 @@
           After rolling the cats you entered, your last seed is:
           <ul>
             <li>
-              <a href="<%= h route.uri(query: {seed: result.current_seed}) %>"><%= result.current_seed %></a>
+              <a href="<%= h route.tracks_uri(query: {seed: result.current_seed}) %>"><%= result.current_seed %></a>
             </li>
           </ul>
         </li>
@@ -43,7 +43,7 @@
             then your seed should be:
             <ul>
               <li>
-                <a href="<%= h route.uri(query: {seed: result.offset_seed}) %>"><%= result.offset_seed %></a> (1A here is the same as 1B in the above link)
+                <a href="<%= h route.tracks_uri(query: {seed: result.offset_seed}) %>"><%= result.offset_seed %></a> (1A here is the same as 1B in the above link)
               </li>
             </ul>
           </li>

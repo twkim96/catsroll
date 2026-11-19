@@ -210,8 +210,12 @@ module BattleCatsRolls
       [cats, found_cats]
     end
 
-    def cats_uri **args
-      uri(path: "//#{web_host}/cats", **args)
+    def tracks_uri(...)
+      uri(...)
+    end
+
+    def cats_uri(**)
+      uri(path: "//#{web_host}/cats", **)
     end
 
     def help_uri
@@ -857,7 +861,7 @@ module BattleCatsRolls
     end
 
     def uri_to_roll cat
-      uri(query: {seed: cat.slot_seed, last: cat.id, pos: '1A'})
+      tracks_uri(query: {seed: cat.slot_seed, last: cat.id, pos: '1A'})
     end
 
     def uri_to_cat cat
