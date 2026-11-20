@@ -22,11 +22,5 @@
     "position": {
       "index": 1
     }
-  },
-  {
-    "action": "block",
-    "description": "Block bots accessing /",
-    "enabled": false,
-    "expression": "(cf.client.bot and http.request.uri.path eq \"/\" and http.request.uri.query contains \"seed=\")"
   }
 ]
