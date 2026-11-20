@@ -33,7 +33,8 @@ for(const reply of replies.slice(0,2)) { assert.equal(reply.isError,undefined);a
  const find=share.findSettings(payload);assert.equal(find.optimization,'balance');assert.equal(find.scheduleAware,true);assert.equal(find.maxGuaranteed,2);assert.equal(find.maxPlatinum,1);assert.equal(find.maxLegendTicket,2);assert.deepEqual(find.targets,[{cat_id:305,allow_ticket:false}]);
  assert.equal(share.planState(payload),null);assert.ok(links.multi.omitted.includes('plan_marks'));
  assert.equal(links.tracks.length,2);
- const p=new URL(links.tracks[0].url).searchParams;
+ const trackUrl=new URL(links.tracks[0].url);assert.equal(trackUrl.pathname,'/tracks');
+ const p=trackUrl.searchParams;
  for(const [k,v] of Object.entries({seed:42,last:38,count:300,lang:'kr',event,ubers:2,force_guaranteed:11,compute:'client'}))assert.equal(p.get(k),String(v));
 }
 const off=replies[2].structuredContent;

@@ -8,7 +8,7 @@ require_relative 'l10n'
 
 require 'tilt'
 
-require 'cgi'
+require 'cgi/escape'
 require 'erb'
 require 'digest/md5'
 require 'forwardable'
@@ -166,11 +166,13 @@ module BattleCatsRolls
     private
 
     def html_title
-      if picked_stat
+      title = if picked_stat
         h picked_stat.name
       else
-        route.path_info[/\w+/]&.capitalize || 'Tracks'
+        route.path_info[/\w+/]&.capitalize
       end
+
+      " - #{title}" if title
     end
 
     def meta_description
@@ -375,7 +377,7 @@ module BattleCatsRolls
       # For 1A we want to keep the last cat
       last = 0 if cat.number != '1A'
 
-      "#{route.uri(query: {pos: pos, last: last})}#N#{cat.number}"
+      "#{route.tracks_uri(query: {pos: pos, last: last})}#N#{cat.number}"
     end
 
     def backtrack_links
@@ -385,7 +387,7 @@ module BattleCatsRolls
       [1, 5, 15].map do |steps|
         seed = route.gacha.backtrack_seed(seed, 2 * (steps - prev))
         prev = steps
-        uri = h route.uri(query: {seed: seed, last: 0, pos: '1A'})
+        uri = h route.tracks_uri(query: {seed: seed, last: 0, pos: '1A'})
         %Q{<a href="#{uri}">#{steps}x</a>}
       end.join(' / ')
     end

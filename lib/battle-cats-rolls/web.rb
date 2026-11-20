@@ -105,16 +105,29 @@ module BattleCatsRolls
     controller_include NormalizedPath, Imp
 
     get '/' do
-      canonical_uri = route.uri(path: '/')
+      if route.seed.nonzero?
+        pick = request.params['pick']
+        pick_query = "&pick=#{pick}" if pick
+        found "#{route.uri(path: '/tracks')}#{pick_query}"
+      else
+        with_canonical_uri('/') do
+          render :tracks
+        end
+      end
+    end
+
+    get '/tracks' do
+      headers_merge('x-robots-tag' => 'noindex')
+      canonical_uri = route.uri(path: '/tracks')
 
       if request.fullpath.sub(/&pick=[^&]+\z/, '') != canonical_uri
         found canonical_uri
       elsif route.show_tracks?
         cats, found_cats = route.prepare_tracks
 
-        render :index, cats: cats, found_cats: found_cats, details: true
+        render :tracks, cats: cats, found_cats: found_cats, details: true
       else
-        render :index
+        render :tracks
       end
     end
 

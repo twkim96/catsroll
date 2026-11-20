@@ -195,7 +195,7 @@ module BattleCatsRolls
       {
         'data-rates' => route.seek_rates.join(' '),
         'data-slots' => route.seek_slots.join(' '),
-        'data-track-base' => route.uri
+        'data-track-base' => route.tracks_uri
       }.map{ |key, value| %Q{#{key}="#{h(value.to_s)}"} }.join(' ')
     end
   end

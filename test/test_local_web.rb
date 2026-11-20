@@ -51,7 +51,7 @@ describe 'local web features' do
       expect(data.dig(:initial, :count)).eq 999
       expect(data.dig(:limits, :count)).eq 999
     end
-    response = Rack::MockRequest.new(web).get('/?lang=kr&seed=12345&count=1000')
+    response = Rack::MockRequest.new(web).get('/tracks?lang=kr&seed=12345&count=1000')
     expect(response.status).eq 302
     params = Rack::Utils.parse_query(URI(response['location']).query)
     expect(params['count']).eq '999'
@@ -518,7 +518,7 @@ describe 'local web features' do
     %w[kr jp].each do |lang|
       ['', '&compute=client'].each do |compute|
         response = request.get(
-          "/?seed=2762818371&event_series=99999&banner=99999&lang=#{lang}#{compute}")
+          "/tracks?seed=2762818371&event_series=99999&banner=99999&lang=#{lang}#{compute}")
         rendered = response.body.scan(/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"/).
           flatten
 
@@ -531,7 +531,7 @@ describe 'local web features' do
     end
 
     response = request.get(
-      '/?seed=2762818371&event_series=3&banner=3&lang=kr&compute=client')
+      '/tracks?seed=2762818371&event_series=3&banner=3&lang=kr&compute=client')
     expect(response.status).eq 200
     expect(response.body.include?('id="find_select"')).eq true
     expect(response.body.include?('/asset/track-client.js')).eq true
@@ -582,7 +582,7 @@ describe 'local web features' do
         ball.gacha.dig(info['id'], 'series_id') == series_id
       end.first
       response = request.get(
-        "/?seed=2762818371&event=#{event}&event_series=3&banner=1&lang=kr&compute=client")
+        "/tracks?seed=2762818371&event=#{event}&event_series=3&banner=1&lang=kr&compute=client")
       response = request.get(response['location']) if response.redirect?
       expect(response.status).eq 200
       selected = response.body[/<option\s+value="(\d{4}-\d{2}-\d{2}_\d+)"\s+selected=/, 1]

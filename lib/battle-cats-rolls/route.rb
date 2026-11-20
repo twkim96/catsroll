@@ -9,7 +9,7 @@ require_relative 'find_cat'
 require_relative 'cat'
 require_relative 'stat'
 
-require 'cgi'
+require 'cgi/escape'
 require 'date'
 require 'forwardable'
 require 'set'
@@ -135,8 +135,12 @@ module BattleCatsRolls
         "seeker=#{seeker}&name=#{name}"
     end
 
+    def noindex?
+      path_info == '/tracks'
+    end
+
     def show_options?
-      path_info.match?(%r{\A/(?:cats(?:/\d+)?|logs|seek)?\z})
+      path_info.match?(%r{\A/(?:tracks|cats(?:/\d+)?|logs|seek)?\z})
     end
 
     def show_name_option?
@@ -152,11 +156,11 @@ module BattleCatsRolls
     end
 
     def show_events?
-      path_info.match?(%r{\A/(?:seek)?\z})
+      path_info.match?(%r{\A/(?:tracks|seek)?\z})
     end
 
     def show_tracks_control?
-      path_info == '/'
+      path_info.match?(%r{\A/(?:tracks)?\z})
     end
 
     def show_tracks?
@@ -210,8 +214,12 @@ module BattleCatsRolls
       [cats, found_cats]
     end
 
-    def cats_uri **args
-      uri(path: "//#{web_host}/cats", **args)
+    def tracks_uri(**)
+      uri(path: "//#{web_host}/tracks", **)
+    end
+
+    def cats_uri(**)
+      uri(path: "//#{web_host}/cats", **)
     end
 
     def help_uri
@@ -857,7 +865,7 @@ module BattleCatsRolls
     end
 
     def uri_to_roll cat
-      uri(query: {seed: cat.slot_seed, last: cat.id, pos: '1A'})
+      tracks_uri(query: {seed: cat.slot_seed, last: cat.id, pos: '1A'})
     end
 
     def uri_to_cat cat

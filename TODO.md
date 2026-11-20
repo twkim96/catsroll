@@ -116,7 +116,6 @@
 
 * Localize default customized rate. superfest -> 超極ネコ祭
 * Add a dark theme. How this interacts with the mkweb theme is unclear
-* What if we add /tracks and make /help the landing page?
 * Don't use the hard coded version. Check on the disk and see if there's
   a newer version apk and use that instead.
 * Normal gacha banners and tracks. Possibly with a new menu item

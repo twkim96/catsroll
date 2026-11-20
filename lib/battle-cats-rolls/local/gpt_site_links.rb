@@ -50,7 +50,7 @@ module BattleCatsRolls
           last: request[:last], count: request[:count], ubers: row[:ubers],
           force_guaranteed: row[:forceGuaranteed], compute: 'client'}
         links[:tracks] << {banner: index, lang: row[:lang], event: row[:event],
-          url: "#{origin}/?#{URI.encode_www_form(query)}", execution: 'client', autoCompute: true,
+          url: "#{origin}/tracks?#{URI.encode_www_form(query)}", execution: 'client', autoCompute: true,
           scope: 'one_banner_array_only', omitted: %w[other_banners find_targets resource_budgets scheduleAware plan],
           note: 'An array view, not the prepared Find route. Check current seed/last and follow the computed next position. Website results are not automatically shared to chat.'}
       end

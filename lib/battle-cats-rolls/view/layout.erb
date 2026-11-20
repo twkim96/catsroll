@@ -2,15 +2,16 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <%- if picked_stat -%>
+    <% if route.noindex? %><meta name="robots" content="noindex"><% end %>
+    <% if picked_stat %>
     <meta name="description" content="<%= meta_description %>">
     <meta name="og:image" content="<%= og_image %>">
-    <%- end -%>
+    <% end %>
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css?<%= self.class.css_digest %>" rel="stylesheet" type="text/css">
     <%= local_partial(:local_head) %>
-    <title>Battle Cats Rolls - <%= html_title %></title>
+    <title>Battle Cats Rolls<%= html_title %></title>
     <style>
       <% case route.theme; when 'mkweb' %>
       /* https://mk.bcgsc.ca/colorblind/img/colorblindness.palettes.v11_4.png */
@@ -78,7 +79,7 @@
       };
       function pick(position, event) {
         if(event.target.closest('a')) return;
-        window.location = '<%= route.uri %>' + '&pick=' + position
+        window.location = '<%= route.tracks_uri %>' + '&pick=' + position
           + '#N' + position.replace(/[RGX]/g, '');
       };
       function tickAll() { setChecked(true); }
@@ -93,7 +94,7 @@
   <body>
     <%= local_partial(:local_body) %>
     <div class="menu">
-      <a href="<%= h route.uri %>" title="Tracks / Permalink">
+      <a href="<%= h route.tracks_uri %>" title="Tracks / Permalink">
         <img src="/asset/image/treasure.png" alt="Tracks">
         <span>Tracks</span>
       </a>

@@ -20,9 +20,9 @@ describe 'local view features' do
 
   would 'render a direct client page without result arguments or selected Find targets' do
     direct = BattleCatsRolls::Route.new(BattleCatsRolls::Request.new(
-      'PATH_INFO' => '/',
+      'PATH_INFO' => '/tracks',
       'QUERY_STRING' => 'seed=42&last=47&lang=kr&compute=client'))
-    html = BattleCatsRolls::View.new(direct).render(:index)
+    html = BattleCatsRolls::View.new(direct).render(:tracks)
     doc = Nokogiri::HTML.parse(html)
 
     expect(doc.css('select[name="find"]').size).eq 1
@@ -32,9 +32,9 @@ describe 'local view features' do
 
   would 'render selected and spare Find dropdowns before client computation' do
     direct = BattleCatsRolls::Route.new(BattleCatsRolls::Request.new(
-      'PATH_INFO' => '/',
+      'PATH_INFO' => '/tracks',
       'QUERY_STRING' => 'seed=42&lang=en&event=2026-10-16_1072&compute=client&find=732&find=270'))
-    doc = Nokogiri::HTML.parse(BattleCatsRolls::View.new(direct).render(:index))
+    doc = Nokogiri::HTML.parse(BattleCatsRolls::View.new(direct).render(:tracks))
     selects = doc.css('select[name="find"]')
     expect(selects.size).eq 3
     expect(selects.filter_map { |select| select.at_css('option[selected]')&.[]('value') }).eq %w[732 270]

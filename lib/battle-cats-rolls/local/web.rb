@@ -40,7 +40,7 @@ module BattleCatsRolls
       seed_views_today = kwargs.delete(:seed_views_today)
       arg ||= kwargs unless kwargs.empty?
       seed_views_today ||=
-        if name == :index && arg.is_a?(Hash) && arg[:details]
+        if name == :tracks && arg.is_a?(Hash) && arg[:details]
           SeedViewCounter.increment(
             cache, lang: route.lang, event: route.event)
         else
