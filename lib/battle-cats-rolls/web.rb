@@ -108,7 +108,7 @@ module BattleCatsRolls
       if route.seed.nonzero?
         pick = request.params['pick']
         pick_query = "&pick=#{pick}" if pick
-        found "#{route.uri(path: '/tracks')}#{pick_query}"
+        moved "#{route.uri(path: '/tracks')}#{pick_query}"
       else
         with_canonical_uri('/') do
           render :tracks

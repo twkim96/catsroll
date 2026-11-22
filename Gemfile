@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 gem 'base64' # stdlib
 
-gem 'jellyfish'
+gem 'jellyfish', '>=1.5.0'
 gem 'tilt'
 gem 'rack', ENV['RACK_VERSION']
 gem 'promise_pool'
