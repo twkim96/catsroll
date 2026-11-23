@@ -24,9 +24,9 @@ variables:
   script:
     - ruby -vr bundler/setup -S rake test
 
-.with-specific-rack:
+.with-older-rack:
   variables:
-    RACK_VERSION: 3.1.16
+    RACK_VERSION: 3.1.24
 
 rubocop:
   extends: .base
@@ -46,12 +46,12 @@ ruby:4.0:
   variables:
     RUBY_VERSION: '4.0'
 
-ruby:3.4-with-specific-rack:
+ruby:3.4-with-older-rack:
   extends:
     - ruby:3.4
-    - .with-specific-rack
+    - .with-older-rack
 
-ruby:4.0-with-specific-rack:
+ruby:4.0-with-older-rack:
   extends:
     - ruby:4.0
-    - .with-specific-rack
+    - .with-older-rack
