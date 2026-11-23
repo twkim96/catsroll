@@ -1,7 +1,7 @@
 <%= self.class.table_of_contents __FILE__ %>
 
 <%= header(1, 'What is this?') %>
-<%= erb :description %>
+<p class="section"><%= self.class.descriptions['/'] %></p>
 
 <ol>
   <li>Every game save has a <strong>seed</strong> number used to calculate the rolling result.</li>

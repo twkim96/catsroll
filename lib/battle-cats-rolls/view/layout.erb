@@ -3,10 +3,12 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <% if route.noindex? %><meta name="robots" content="noindex"><% end %>
-    <% if picked_stat %>
-    <meta name="description" content="<%= meta_description %>">
-    <meta name="og:image" content="<%= og_image %>">
-    <% end %>
+    <%- if desc = meta_description -%>
+    <meta name="description" content="<%= desc %>">
+    <%- end -%>
+    <%- if image = og_image -%>
+    <meta name="og:image" content="<%= image %>">
+    <%- end -%>
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css?<%= self.class.css_digest %>" rel="stylesheet" type="text/css">
