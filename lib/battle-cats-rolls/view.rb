@@ -172,7 +172,7 @@ module BattleCatsRolls
         route.path_info[/\w+/]&.capitalize
       end
 
-      " - #{title}" if title
+      "#{title} - " if title
     end
 
     def meta_description
