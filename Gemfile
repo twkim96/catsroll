@@ -3,7 +3,7 @@ source 'https://rubygems.org'
 
 gem 'base64' # stdlib
 
-gem 'jellyfish'
+gem 'jellyfish', '>=1.5.0'
 gem 'tilt'
 gem 'rack', ENV['RACK_VERSION']
 gem 'promise_pool'
@@ -24,7 +24,7 @@ end
 
 group :test do
   gem 'rake'
-  gem 'pork'
+  gem 'pork', '>=2.1.1'
   gem 'muack'
   gem 'nokogiri'
 end

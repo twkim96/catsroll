@@ -3,15 +3,17 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <% if route.noindex? %><meta name="robots" content="noindex"><% end %>
-    <% if picked_stat %>
-    <meta name="description" content="<%= meta_description %>">
-    <meta name="og:image" content="<%= og_image %>">
-    <% end %>
+    <%- if desc = meta_description -%>
+    <meta name="description" content="<%= desc %>">
+    <%- end -%>
+    <%- if image = og_image -%>
+    <meta name="og:image" content="<%= image %>">
+    <%- end -%>
     <meta name="viewport" content="width=device-width">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css?<%= self.class.css_digest %>" rel="stylesheet" type="text/css">
     <%= local_partial(:local_head) %>
-    <title>Battle Cats Rolls<%= html_title %></title>
+    <title><%= html_title %>Battle Cats Rolls</title>
     <style>
       <% case route.theme; when 'mkweb' %>
       /* https://mk.bcgsc.ca/colorblind/img/colorblindness.palettes.v11_4.png */
@@ -129,6 +131,8 @@
       <a href="//<%= route.web_host %>/help">Help</a>
       /
       <a href="https://gitlab.com/godfat/battle-cats-rolls">Source</a>
+      /
+      <a href="https://godfat.org/support-me.html">Support me</a>
       &copy;
       2018-2026 Lin Jen-Shin (godfat)
     </div>

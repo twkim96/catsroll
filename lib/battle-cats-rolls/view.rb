@@ -19,6 +19,25 @@ module BattleCatsRolls
 
     def_delegator :route, :gacha
 
+    def self.descriptions
+      @descriptions ||= {
+        '/' => <<~TEXT,
+          This is a simulator rolling the rare gacha (rare cat capsule) for
+          Battle Cats. With the simulator, you can look into the future to
+          predict and track your future rolling results.
+        TEXT
+        '/cats' => 'Show me all cats.',
+        '/help' => <<~TEXT,
+          Learn more about what it is, how to use it, how this works,
+          and everything else.
+        TEXT
+        '/logs' => "What's changed?",
+        '/seek' => 'Seek your seed.'
+      }.transform_values do |desc|
+        desc.gsub(/\s+/, ' ').strip
+      end.freeze
+    end
+
     def self.table_of_contents path
       (@table_of_contents ||= {})[path] ||= begin
         contents = File.read(path)
@@ -172,17 +191,35 @@ module BattleCatsRolls
         route.path_info[/\w+/]&.capitalize
       end
 
-      " - #{title}" if title
+      "#{title} - " if title
     end
 
     def meta_description
-      if picked_stat # rubocop:disable Style/IfUnlessModifier
-        h picked_stat.desc.tr("\n", ' ').squeeze(' ')
+      desc = if picked_stat
+        picked_stat.desc.gsub(/\s+/, ' ')
+      else
+        self.class.descriptions[route.path_info]
       end
+
+      h desc if desc
     end
 
     def og_image
-      "//#{route.web_host}#{picked_stat.img_src(route.lang)}"
+      path = if picked_stat
+        picked_stat.img_src(route.lang)
+      else
+        file =
+          case path_info = route.path_info
+          when '/cats', '/help', '/logs', '/seek'
+            path_info
+          when '/'
+            '/treasure'
+          end
+
+        "/asset/image#{file}.png" if file
+      end
+
+      "//#{route.web_host}#{path}" if path
     end
 
     def picked_stat

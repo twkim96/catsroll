@@ -4,6 +4,8 @@ require 'pork/auto'
 require 'battle-cats-rolls/web'
 require 'battle-cats-rolls/route'
 
+Pork.I_am_feeling_lucky!
+
 module BattleCatsRolls
   module Test
     singleton_class.module_eval do

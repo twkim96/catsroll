@@ -1,2 +1,4 @@
+Sitemap: https://bc.godfat.org/sitemap.xml
+
 User-agent: meta-externalagent
 Disallow: /
