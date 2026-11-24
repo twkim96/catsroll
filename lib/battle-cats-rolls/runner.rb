@@ -65,7 +65,30 @@ module BattleCatsRolls
 
       runner.write_events
       runner.write_data
-      # runner.write_item_and_sale
+    end
+
+    def self.build_sitemap balls
+      File.open("#{Root}/extract/asset/sitemap.xml", 'w') do |xml|
+        xml.write(<<~XML)
+          <?xml version="1.0" encoding="UTF-8"?>
+          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url><loc>https://bc.godfat.org/help</loc></url>
+            <url><loc>https://bc.godfat.org/logs</loc></url>
+        XML
+
+        cat_uri = 'https://bc.godfat.org/cats'
+        balls.each do |ball|
+          lang = "?lang=#{ball.lang}" if ball.lang != 'en'
+
+          xml.printf("  <url><loc>#{cat_uri}#{lang}</loc></url>\n")
+          ball.cats.each_key do |id|
+            xml.printf(
+              "  <url><loc>#{cat_uri}/%{id}#{lang}</loc></url>\n", id: id)
+          end
+        end
+
+        xml.puts('</urlset>')
+      end
     end
 
     def self.extract lang=nil, dir=nil
@@ -161,14 +184,6 @@ module BattleCatsRolls
       end
     end
 
-    def write_item_and_sale
-      %w[item.tsv sale.tsv].each do |tsv|
-        write_tsv(tsv) do |reader|
-          last_date(reader.item_or_sale)
-        end
-      end
-    end
-
     def write_tsv file, dir=File.basename(file, '.*')
       puts "Downloading #{file}..."
 
@@ -193,10 +208,12 @@ module BattleCatsRolls
       if provider
         events = EventsReader.read(event_path, lang_under_en)
         ball = CrystalBall.from_cats_builder_and_events(cats_builder, events)
+        ball.lang = lang_output
 
         puts 'Writing data...'
 
         ball.dump("#{Root}/build", lang_output)
+        ball
       end
     end
 

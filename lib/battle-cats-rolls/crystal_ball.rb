@@ -3,7 +3,7 @@
 require_relative 'cat'
 
 module BattleCatsRolls
-  class CrystalBall < Struct.new(:data)
+  class CrystalBall < Struct.new(:data, :lang)
     EventsPerPage = 100
 
     def self.from_cats_builder_and_events cats_builder, events
@@ -23,7 +23,8 @@ module BattleCatsRolls
 
       new(
         YAML.safe_load_file(
-          "#{dir}/bc-#{lang}.yaml", permitted_classes: [Date])
+          "#{dir}/bc-#{lang}.yaml", permitted_classes: [Date]),
+        lang
       ).noramlize_end_date_by_series_id!
     end
 
