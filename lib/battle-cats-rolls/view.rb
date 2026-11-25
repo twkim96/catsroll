@@ -219,7 +219,7 @@ module BattleCatsRolls
         "/asset/image#{file}.png" if file
       end
 
-      "//#{route.web_host}#{path}" if path
+      "#{route.request.scheme}://#{route.web_host}#{path}" if path
     end
 
     def picked_stat
