@@ -241,7 +241,7 @@ module BattleCatsRolls
       "(?) #{hint}"
     end
 
-    def dump dir, lang
+    def dump dir
       require 'fileutils'
       require 'yaml'
 

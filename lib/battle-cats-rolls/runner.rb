@@ -212,7 +212,7 @@ module BattleCatsRolls
 
         puts 'Writing data...'
 
-        ball.dump("#{Root}/build", lang_output)
+        ball.dump("#{Root}/build")
         ball
       end
     end
