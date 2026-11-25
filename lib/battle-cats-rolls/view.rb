@@ -935,6 +935,22 @@ module BattleCatsRolls
       %Q{onclick="pick('#{number}', event)"}
     end
 
+    def uri_for_search_engine_canonical
+      uri =
+        if route.show_tracks_control?
+          "#{CanonicalWeb}/"
+        elsif route.path_info.start_with?('/cats')
+          lang = "?lang=#{route.lang}" if route.lang != 'en'
+          "#{CanonicalWeb}#{route.path_info}#{lang}"
+        elsif route.path_info.start_with?('/seek')
+          "#{CanonicalSeek}/seek"
+        else
+          "#{CanonicalWeb}#{route.path_info}"
+        end
+
+      "https://#{uri}"
+    end
+
     def uri_to_wiki cat
       return unless info = Route.ball_en.cats[cat.id]
 

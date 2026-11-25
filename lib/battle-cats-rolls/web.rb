@@ -117,7 +117,6 @@ module BattleCatsRolls
     end
 
     get '/tracks' do
-      headers_merge('x-robots-tag' => 'noindex')
       canonical_uri = route.uri(path: '/tracks')
 
       if request.fullpath.sub(/&pick=[^&]+\z/, '') != canonical_uri

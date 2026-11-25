@@ -135,10 +135,6 @@ module BattleCatsRolls
         "seeker=#{seeker}&name=#{name}"
     end
 
-    def noindex?
-      path_info == '/tracks'
-    end
-
     def show_options?
       path_info.match?(%r{\A/(?:tracks|cats(?:/\d+)?|logs|seek)?\z})
     end

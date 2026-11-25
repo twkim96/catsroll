@@ -72,11 +72,11 @@ module BattleCatsRolls
         xml.write(<<~XML)
           <?xml version="1.0" encoding="UTF-8"?>
           <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-            <url><loc>https://bc.godfat.org/help</loc></url>
-            <url><loc>https://bc.godfat.org/logs</loc></url>
+            <url><loc>https://#{CanonicalWeb}/help</loc></url>
+            <url><loc>https://#{CanonicalWeb}/logs</loc></url>
         XML
 
-        cat_uri = 'https://bc.godfat.org/cats'
+        cat_uri = "https://#{CanonicalWeb}/cats"
         balls.each do |ball|
           lang = "?lang=#{ball.lang}" if ball.lang != 'en'
 
@@ -190,7 +190,7 @@ module BattleCatsRolls
       require_relative 'tsv_reader'
 
       tsv = NyankoAuth.request(
-        "https://bc-seek.godfat.org/seek/#{lang}/#{file}")
+        "https://#{CanonicalSeek}/seek/#{lang}/#{file}")
         # "http://localhost:8080/seek/#{lang}/#{file}") # rubocop:disable Layout/CommentIndentation
       reader = TsvReader.new(tsv)
 
