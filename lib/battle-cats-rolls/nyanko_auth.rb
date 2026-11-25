@@ -29,11 +29,15 @@ module BattleCatsRolls
       # Workaround for weird server cache bug?
       get.delete('Accept-Encoding')
 
+      request_with(uri, get)
+    end
+
+    def self.request_with uri, request
       http = Net::HTTP.new(uri.hostname, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
       http.response_body_encoding = 'UTF-8'
       # http.set_debug_output($stdout)
-      http.request(get).body
+      http.request(request).body
     end
 
     def generate_inquiry_code
@@ -100,12 +104,7 @@ module BattleCatsRolls
     private
 
     def perform_request uri, request
-      response =
-        Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-          http.request(request)
-        end
-
-      JSON.parse(response.body.force_encoding('UTF-8'))
+      JSON.parse(self.class.request_with(uri, request))
     end
 
     def generate_signature payload
