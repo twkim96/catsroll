@@ -24,12 +24,7 @@ module BattleCatsRolls
 
     def self.get url
       uri = URI.parse(url)
-      request = Net::HTTP::Get.new(uri)
-
-      # Workaround for weird server cache bug?
-      request.delete('Accept-Encoding')
-
-      request_with(uri, request)
+      request_with(uri, Net::HTTP::Get.new(uri))
     end
 
     def self.request_with uri, request
