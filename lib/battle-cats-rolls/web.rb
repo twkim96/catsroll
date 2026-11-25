@@ -50,7 +50,7 @@ module BattleCatsRolls
       def request_tsv lang, file
         runner = Runner.new(*Runner.locale(lang))
 
-        NyankoAuth.request(
+        NyankoAuth.get(
           NyankoAuth.event_url(lang, file: file, jwt: jwt(runner)))
       end
 

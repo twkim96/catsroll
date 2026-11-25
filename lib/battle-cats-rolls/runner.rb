@@ -189,7 +189,7 @@ module BattleCatsRolls
 
       require_relative 'tsv_reader'
 
-      tsv = NyankoAuth.request(
+      tsv = NyankoAuth.get(
         "https://#{CanonicalSeek}/seek/#{lang}/#{file}")
         # "http://localhost:8080/seek/#{lang}/#{file}") # rubocop:disable Layout/CommentIndentation
       reader = TsvReader.new(tsv)

@@ -22,14 +22,14 @@ module BattleCatsRolls
       end
     end
 
-    def self.request url
+    def self.get url
       uri = URI.parse(url)
-      get = Net::HTTP::Get.new(uri)
+      request = Net::HTTP::Get.new(uri)
 
       # Workaround for weird server cache bug?
-      get.delete('Accept-Encoding')
+      request.delete('Accept-Encoding')
 
-      request_with(uri, get)
+      request_with(uri, request)
     end
 
     def self.request_with uri, request
@@ -44,7 +44,7 @@ module BattleCatsRolls
       uri = URI.parse('https://nyanko-backups.ponosgames.com/?action=createAccount&referenceId=')
       request = Net::HTTP::Get.new(uri)
 
-      perform_request(uri, request).dig('accountId') # rubocop:disable Style/SingleArgumentDig
+      request_json(uri, request).dig('accountId') # rubocop:disable Style/SingleArgumentDig
     end
 
     def generate_password
@@ -73,7 +73,7 @@ module BattleCatsRolls
       request.body = payload
       request.content_type = 'application/json'
 
-      perform_request(uri, request)
+      request_json(uri, request)
     end
 
     def inquiry_code
@@ -103,7 +103,7 @@ module BattleCatsRolls
 
     private
 
-    def perform_request uri, request
+    def request_json uri, request
       JSON.parse(self.class.request_with(uri, request))
     end
 
