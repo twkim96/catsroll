@@ -80,10 +80,10 @@ module BattleCatsRolls
         balls.each do |ball|
           lang = "?lang=#{ball.lang}" if ball.lang != 'en'
 
-          xml.printf("  <url><loc>#{cat_uri}#{lang}</loc></url>\n")
+          xml.puts("  <url><loc>#{cat_uri}#{lang}</loc></url>")
           ball.cats.each_key do |id|
-            xml.printf(
-              "  <url><loc>#{cat_uri}/%{id}#{lang}</loc></url>\n", id: id)
+            xml.puts(
+              "  <url><loc>#{cat_uri}/#{id}#{lang}</loc></url>")
           end
         end
 
