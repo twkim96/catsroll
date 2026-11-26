@@ -1,7 +1,7 @@
 <%= self.class.table_of_contents __FILE__ %>
 
 <%= header(1, 'What is this?') %>
-<%= self.class.descriptions['/'] %>
+<%= erb :description %>
 
 <%= header(1, 'Frequently asked questions') %>
 <ol>
