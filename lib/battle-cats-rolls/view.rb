@@ -808,7 +808,17 @@ module BattleCatsRolls
     end
 
     def show_event info
-      h "#{info['start_on']} ~ #{info['end_on']}: #{info['name']}"
+      tag = if info['guaranteed']
+        '[G] '
+      elsif info['step_up']
+        '[S] '
+      elsif info['platinum'] == 'platinum'
+        '[P] '
+      elsif info['platinum'] == 'legend'
+        '[L] '
+      end
+
+      h "#{info['start_on']} ~ #{info['end_on']}: #{tag}#{info['name']}"
     end
 
     def show_banner id, data
