@@ -21,11 +21,20 @@ module BattleCatsRolls
 
     def self.descriptions
       @descriptions ||= {
-        '/' => <<~TEXT,
-          This is a simulator rolling the rare gacha (rare cat capsule) for
-          Battle Cats. With the simulator, you can look into the future to
-          predict and track your future rolling results.
-        TEXT
+        '/' => <<~HTML,
+<p class="section">
+  This is a simulator rolling the rare gacha (rare cat capsule) for
+  Battle Cats. With the simulator, you can look into the future to
+  predict and track your future rolling results.
+</p>
+
+<ol>
+  <li>Every game save has a <strong>seed</strong> number used to calculate the rolling result.</li>
+  <li>The seed number will only change if you roll the rare gacha.</li>
+  <li>We can observe the rolling results and figure out your seed for your game save.</li>
+  <li>The simulator is able to use the seed to calculate all the future rolling results.</li>
+</ol>
+        HTML
         '/cats' => 'Show me all cats.',
         '/help' => <<~TEXT,
           Learn more about what it is, how to use it, how this works,
