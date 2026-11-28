@@ -69,29 +69,26 @@ module BattleCatsRolls
 
     def self.build_sitemap balls
       File.open("#{Root}/extract/asset/sitemap.xml", 'w') do |xml|
-        write_sitemap(xml, balls)
-      end
-    end
+        xml.write(<<~XML)
+          <?xml version="1.0" encoding="UTF-8"?>
+          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url><loc>https://#{CanonicalWeb}/help</loc></url>
+            <url><loc>https://#{CanonicalWeb}/logs</loc></url>
+        XML
 
-    def self.write_sitemap xml, balls, origin: "https://#{CanonicalWeb}"
-      xml.write(<<~XML)
-        <?xml version="1.0" encoding="UTF-8"?>
-        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-          <url><loc>#{origin}/help</loc></url>
-          <url><loc>#{origin}/logs</loc></url>
-      XML
+        cat_uri = "https://#{CanonicalWeb}/cats"
+        balls.each do |ball|
+          lang = "?lang=#{ball.lang}" if ball.lang != 'en'
 
-      cat_uri = "#{origin}/cats"
-      balls.each do |ball|
-        lang = "?lang=#{ball.lang}" if ball.lang != 'en'
-
-        xml.puts("  <url><loc>#{cat_uri}#{lang}</loc></url>")
-        ball.cats.each_key do |id|
-          xml.puts("  <url><loc>#{cat_uri}/#{id}#{lang}</loc></url>")
+          xml.puts("  <url><loc>#{cat_uri}#{lang}</loc></url>")
+          ball.cats.each_key do |id|
+            xml.puts(
+              "  <url><loc>#{cat_uri}/#{id}#{lang}</loc></url>")
+          end
         end
-      end
 
-      xml.puts('</urlset>')
+        xml.puts('</urlset>')
+      end
     end
 
     def self.extract lang=nil, dir=nil

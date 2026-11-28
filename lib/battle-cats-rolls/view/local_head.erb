@@ -1,3 +1,18 @@
+<style>
+  <%= local_partial(:local_styles) %>
+  <%= local_partial(:local_utility_styles) %>
+</style>
+<%- if route.show_tracks_control? -%>
+<script>
+  function pick(position, event) {
+    if (event.target.closest('a')) return;
+    const url = new URL(<%= json_script(route.tracks_uri) %>, window.location.href);
+    url.searchParams.set('pick', position);
+    url.hash = 'N' + position.replace(/[RGX]/g, '');
+    window.location.assign(url);
+  }
+</script>
+<%- end -%>
 <%- if route.show_tracks_control? || route.path_info == '/multi' -%>
 <script src="/asset/table-share.js?<%= self.class.table_share_digest %>"
   data-html2canvas="/asset/html2canvas.min.js?1.4.1" defer></script>

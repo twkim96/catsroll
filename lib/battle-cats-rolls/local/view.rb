@@ -10,13 +10,26 @@ module BattleCatsRolls
       super.sub(%r{\Ahttps://[^/]+}) { GptMcp.public_origin }
     end
 
-    # Keep fork navigation outside upstream's result templates and search API.
     def erb name, nested_arg=nil, &block
       # Give only the Find partial a context before client results exist. Keep
       # upstream's arg/show_tracks_control? gate and its nested dropdowns intact.
       nested_arg ||= {} if name == :find_cat && route.compute_client? && gacha.pool.exist?
       html = super
-      name == :found_cats ? local_partial(:local_found_prompt) + html : html
+      case name
+      when :layout
+        add_local_layout(html)
+      when :tracks
+        html + local_partial(:local_index_assets)
+      when :found_cats
+        local_partial(:local_found_prompt) + html
+      else
+        html
+      end
+    end
+
+    def add_local_layout html
+      html.sub('</head>'){ "#{local_partial(:local_head)}</head>" }.
+        sub(/<body\b[^>]*>/i){ |tag| "#{tag}\n#{local_partial(:local_body)}" }
     end
 
     def td cat, type, rowspan: 1, content: nil, rerolled: nil

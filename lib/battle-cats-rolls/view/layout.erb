@@ -12,7 +12,6 @@
     <link rel="canonical" href="<%= uri_for_search_engine_canonical %>">
     <link rel="icon" type="image/png" href="/asset/image/treasure.png">
     <link href="/asset/style/tacit.css?<%= self.class.css_digest %>" rel="stylesheet" type="text/css">
-    <%= local_partial(:local_head) %>
     <title><%= html_title %>Battle Cats Rolls</title>
     <style>
       <% case route.theme; when 'mkweb' %>
@@ -68,12 +67,10 @@
       .major_legend_fest a, .major_legend a { color: #d8a56f; }
       <% end %>
 
-      <%= local_partial(:local_styles) %>
       <% unless show_details %>
         .score, .cat { border-bottom-style: none; }
         .cat { border-top-style: none; }
       <% end %>
-      <%= local_partial(:local_utility_styles) %>
     </style>
     <script>
       function roll(element) {
@@ -81,7 +78,7 @@
       };
       function pick(position, event) {
         if(event.target.closest('a')) return;
-        window.location = '<%= route.tracks_uri %>' + '&pick=' + position
+        window.location = '<%= route.uri %>' + '&pick=' + position
           + '#N' + position.replace(/[RGX]/g, '');
       };
       function tickAll() { setChecked(true); }
@@ -94,7 +91,6 @@
     </script>
   </head>
   <body>
-    <%= local_partial(:local_body) %>
     <div class="menu">
       <a href="<%= h route.tracks_uri %>" title="Tracks / Permalink">
         <img src="/asset/image/treasure.png" alt="Tracks">

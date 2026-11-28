@@ -38,6 +38,8 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
     assert.equal(await direct.locator('select[name="find"]').count(), 1);
     assert.equal((await direct.reload()).status(), 200);
     await direct.waitForFunction(() => document.querySelector('#client-compute-status')?.textContent === '✓');
+    await direct.locator('#content td.position.cat[onclick]').first().evaluate(cell => cell.click());
+    await direct.waitForURL(url => url.pathname === '/tracks' && url.searchParams.has('pick'));
 
     // The upstream five-target form is server-owned, while the arrays are still
     // computed on device. Adding/removing a target must rebuild the spare field.
@@ -76,6 +78,12 @@ const query = 'seed=1&lang=en&event=2026-10-16_1072&find=732';
 
     // Server mode uses upstream's repeated rows and supplemental search.
     await page.goto(`${base}/?${query}&count=100`);
+    const [pickRequest] = await Promise.all([
+      page.waitForRequest(request => request.isNavigationRequest() && new URL(request.url()).searchParams.has('pick')),
+      page.locator('#content td.position.cat[onclick]').first().evaluate(cell => cell.click())
+    ]);
+    assert.equal(new URL(pickRequest.url()).pathname, '/tracks');
+    await page.waitForURL(url => url.searchParams.has('pick') && url.hash.startsWith('#N'));
     assert.equal(await page.locator('.found_cats ul').count(), 2);
     const serverTargets = await page.locator('.found_cats ul').first().locator('li').allTextContents();
     assert.equal(serverTargets.length, 4);

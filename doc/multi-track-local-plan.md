@@ -4,6 +4,8 @@
 
 일반 배열의 주소는 `/tracks`다. 기존 루트 시드 링크는 입력을 유지한 채 이 주소로 이동한다.
 기기 계산, 최근 seed, 시드 찾기 결과, 표 공유, MCP 일반 배열 링크도 이 경로를 사용한다.
+공통 화면과 배열의 포크 전용 자산·안내는 `LocalView#erb`가 별도 부분 템플릿으로
+연결한다. upstream의 `layout.erb`와 `tracks.erb`는 그대로 사용한다.
 
 일반 배열의 서버 계산은 upstream의 Ruby `FindCat`과 `found_cats.erb`,
 `found_cats_listing.erb`를 그대로 사용한다. 선택한 Find next 대상은 최대 5개 위치를
