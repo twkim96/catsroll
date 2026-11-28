@@ -394,7 +394,8 @@ SDK 대조도 정상 앱의 브리지·계산·공유를 대체하지 않는다.
 - `CATSROLL_GPT_ENABLED=1`: `/mcp`와 `/gpt` 활성화. 앱 기본은 비활성(404)이며
   HF 배포용 루트 Dockerfile에서는 활성화한다. HF 설정에서 `0`으로 덮어쓰면 비활성화된다.
 - `CATSROLL_PUBLIC_ORIGIN`: 공개 서비스 HTTPS origin. 기본은 현재 HF Space 주소.
-  MCP가 반환하는 링크와 `/robots.txt`, `/sitemap.xml`의 공개 URL에 이 주소를 사용한다.
+  MCP 링크, 검색 엔진용 대표 URL, `/robots.txt`와 `/sitemap.xml`에 이 주소를 사용한다.
+  `/sitemap.xml`은 첫 요청에 배포에 포함된 캐릭터 데이터로 생성한다.
 - `CATSROLL_GPT_UI_ORIGIN`: 공개 UI 심사용 전용 origin이 정해진 경우 지정한다.
   미지정 시 공개 MCP origin을 사용한다. 도메인 소유권과 ChatGPT 호스트의 실제 origin/CSP를 확인해야 한다.
   Claude 전용 연결에는 적용하지 않는다.

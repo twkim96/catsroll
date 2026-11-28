@@ -17,6 +17,7 @@ describe BattleCatsRolls::Server do
     expect(sitemap['content-type']).include? 'application/xml'
     locations = sitemap.body.scan(%r{<loc>(.*?)</loc>}).flatten
     expect(locations).include? "#{origin}/cats?lang=kr"
+    expect(locations).include? "#{origin}/cats/1?lang=kr"
     expect(locations.all?{ |url| url.start_with?("#{origin}/") }).eq true
     expect(request.head('/sitemap.xml').body).eq ''
   end

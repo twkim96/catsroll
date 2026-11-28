@@ -6,6 +6,10 @@ module BattleCatsRolls
   module LocalView
     private
 
+    def uri_for_search_engine_canonical
+      super.sub(%r{\Ahttps://[^/]+}) { GptMcp.public_origin }
+    end
+
     # Keep fork navigation outside upstream's result templates and search API.
     def erb name, nested_arg=nil, &block
       # Give only the Find partial a context before client results exist. Keep

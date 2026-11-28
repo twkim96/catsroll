@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rack'
+require 'stringio'
 require_relative 'gpt_probe'
 
 module BattleCatsRolls
@@ -12,11 +13,6 @@ module BattleCatsRolls
       @app = app
       @track_api = TrackApi.new
       @assets = Rack::Files.new(File.expand_path('../asset', __dir__))
-      public_origin = GptMcp.public_origin
-      @search_assets = SearchAssets.keys.to_h do |path|
-        source = File.read(File.expand_path("../asset#{path}", __dir__))
-        [path, source.gsub('https://bc.godfat.org') { public_origin }]
-      end
       @gpt_mcp = GptMcp.new
       @claude_mcp = GptMcp.new(ui_host: :claude)
       @gpt_probe = GptProbe.new
@@ -59,9 +55,24 @@ module BattleCatsRolls
       return @app.call(env) unless %w[GET HEAD].include?(method)
 
       path = env['PATH_INFO']
-      body = @search_assets.fetch(path)
+      body = path == '/sitemap.xml' ? sitemap : robots
       [200, {'content-type' => "#{SearchAssets.fetch(path)}; charset=utf-8",
         'content-length' => body.bytesize.to_s}, method == 'HEAD' ? [] : [body]]
+    end
+
+    def robots
+      @robots ||= File.read(File.expand_path('../asset/robots.txt', __dir__)).
+        sub("https://#{CanonicalWeb}/sitemap.xml", "#{GptMcp.public_origin}/sitemap.xml")
+    end
+
+    def sitemap
+      @sitemap ||= begin
+        Route.reload_balls
+        balls = LangAll.map{ |lang| Route.public_send("ball_#{lang}") }
+        xml = StringIO.new
+        Runner.write_sitemap(xml, balls, origin: GptMcp.public_origin)
+        xml.string
+      end
     end
 
     def blocked_user_agent? env
