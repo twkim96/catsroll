@@ -35,11 +35,12 @@ module BattleCatsRolls
     # This part can be completely replaced by Nginx
     rewrite \
       '/asset' => '',
-      '/robots.txt' => '/robots.txt',
-      '/sitemap.xml' => '/sitemap.xml' do
+      '/robots.txt' => '/robots.txt' do
       run Rack::Files.new(File.expand_path('asset', __dir__))
     end
-    rewrite '/extract' => '' do
+    rewrite \
+      '/extract' => '',
+      '/sitemap.xml' => '/sitemap.xml' do
       run Rack::Files.new("#{Root}/extract/asset")
     end
 

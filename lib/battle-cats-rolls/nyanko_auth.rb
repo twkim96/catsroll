@@ -22,25 +22,24 @@ module BattleCatsRolls
       end
     end
 
-    def self.request url
+    def self.get url
       uri = URI.parse(url)
-      get = Net::HTTP::Get.new(uri)
+      request_with(uri, Net::HTTP::Get.new(uri))
+    end
 
-      # Workaround for weird server cache bug?
-      get.delete('Accept-Encoding')
-
+    def self.request_with uri, request
       http = Net::HTTP.new(uri.hostname, uri.port)
       http.use_ssl = true if uri.scheme == 'https'
       http.response_body_encoding = 'UTF-8'
       # http.set_debug_output($stdout)
-      http.request(get).body
+      http.request(request).body
     end
 
     def generate_inquiry_code
       uri = URI.parse('https://nyanko-backups.ponosgames.com/?action=createAccount&referenceId=')
       request = Net::HTTP::Get.new(uri)
 
-      perform_request(uri, request).dig('accountId') # rubocop:disable Style/SingleArgumentDig
+      request_json(uri, request).dig('accountId') # rubocop:disable Style/SingleArgumentDig
     end
 
     def generate_password
@@ -69,7 +68,7 @@ module BattleCatsRolls
       request.body = payload
       request.content_type = 'application/json'
 
-      perform_request(uri, request)
+      request_json(uri, request)
     end
 
     def inquiry_code
@@ -99,13 +98,8 @@ module BattleCatsRolls
 
     private
 
-    def perform_request uri, request
-      response =
-        Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
-          http.request(request)
-        end
-
-      JSON.parse(response.body.force_encoding('UTF-8'))
+    def request_json uri, request
+      JSON.parse(self.class.request_with(uri, request))
     end
 
     def generate_signature payload

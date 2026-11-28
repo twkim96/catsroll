@@ -50,7 +50,7 @@ module BattleCatsRolls
       def request_tsv lang, file
         runner = Runner.new(*Runner.locale(lang))
 
-        NyankoAuth.request(
+        NyankoAuth.get(
           NyankoAuth.event_url(lang, file: file, jwt: jwt(runner)))
       end
 
@@ -117,7 +117,6 @@ module BattleCatsRolls
     end
 
     get '/tracks' do
-      headers_merge('x-robots-tag' => 'noindex')
       canonical_uri = route.uri(path: '/tracks')
 
       if request.fullpath.sub(/&pick=[^&]+\z/, '') != canonical_uri

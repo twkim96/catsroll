@@ -5,6 +5,8 @@ module BattleCatsRolls
   Region = %w[en tw jp kr].freeze
   LangUnderEN = %w[de es fr it th].freeze
   LangAll = [*Region, *LangUnderEN].freeze
+  CanonicalWeb = 'bc.godfat.org'
+  CanonicalSeek = 'bc-seek.godfat.org'
   WebHost = ENV['WEB_HOST'].freeze
   WebBind = ENV['WEB_BIND'].freeze || '8080'
   WebThreads = Integer(ENV['WEB_THREADS'] || 5)
